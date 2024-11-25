@@ -1,0 +1,13 @@
+# Visual Studio
+.vs/
+*.user
+
+# Dependencias, ejecutables, archivos intermedios y librerías estáticas
+[Dd]ependencies/
+[Bb]in/*
+[Ii]nter/
+[Ll]ib/
+
+
+# Recursos
+![Bb]in/assets/
