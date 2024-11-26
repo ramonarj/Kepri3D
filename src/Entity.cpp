@@ -22,9 +22,12 @@ EjesRGB::EjesRGB(GLdouble l)
 
 // - - - - - - - - - - - - - - - - - 
 
-Poligono::Poligono(GLint sides)
+Poligono::Poligono(GLint sides, bool relleno)
 {
-	m_mesh = Mesh::generatePolygon(50);
+	if(relleno)
+		m_mesh = Mesh::generateFilledPolygon(sides);
+	else
+		m_mesh = Mesh::generatePolygon(sides);
 }
 
 // - - - - - - - - - - - - - - - - - 

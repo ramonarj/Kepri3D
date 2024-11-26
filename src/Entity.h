@@ -45,7 +45,7 @@ public:
 class Poligono : public Entity
 {
 public:
-	Poligono(GLint sides);
+	Poligono(GLint sides, bool relleno);
 	~Poligono() { };
 	//virtual void render();
 };

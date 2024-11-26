@@ -14,6 +14,8 @@ public:
 	static Mesh* generateAxesRGB(GLdouble l);
 	// Polígono regular de n lados, dibujado con triángulos (TRIANGLE_FAN)
 	static Mesh* generatePolygon(GLint sides);
+	// Polígono regular de n lados, dibujado con triángulos (TRIANGLE_FAN)
+	static Mesh* generateFilledPolygon(GLint sides);
 
 private:
 	/* Número total de vértices */
