@@ -31,6 +31,8 @@ void Scene::init()
 	m_entities.push_back(new EjesRGB(0.5));
 	m_entities.push_back(new Poligono(4, false));
 	m_entities.push_back(new Poligono(50, true));
+
+
 }
 
 void Scene::render()

@@ -9,7 +9,7 @@ using namespace glm;
 #define PI 3.14159265358979323846
 
 void Mesh::draw()
-{
+{	
 	// 1) Activar las matrices que vamos a usar y pasarlas a la GPU
 	glEnableClientState(GL_COLOR_ARRAY);
 	// (coordenadas por vértice [2/3/4], tipo de dato, espacio entre cada dato, puntero al array)

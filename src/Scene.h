@@ -3,11 +3,12 @@
 
 #include "Entity.h"
 #include <vector>
+#include "Camera.h"
 
 class Scene
 {
 public:
-	Scene() { };
+	Scene(Camera* cam) : m_camera(cam) { };
 	//Scene(Camera* cam) : camera(cam) { };
 	~Scene();
 	void init();
@@ -20,6 +21,9 @@ public:
 protected:
 	/* Lista de entidades */
 	std::vector<Entity*> m_entities;
+
+	/* Cámara activa */
+	Camera* m_camera;
 
 	//Camera* camera;
 	//Diabolo* diabolo;

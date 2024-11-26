@@ -13,9 +13,12 @@
 
 #include <iostream>
 #include "Scene.h"
+#include "Camera.h"
 
 // Variables globales
-Scene scene;
+Viewport viewport(800, 600);
+Camera camera(&viewport);
+Scene scene(&camera);
 
 // Predeclaración de callbacks
 void display();
@@ -74,11 +77,16 @@ void display()   // double buffer
 
 	scene.render();
 
+	// Hay 2 buffers; uno se está mostrando por ventana, y el otro es el que usamos
+	// para dibujar con la GPU. Cuando se ha terminado de dibujar y llega el siguiente 
+	// frame, se intercambian y se repite el proceso
 	glutSwapBuffers();
 }
 
 void key(unsigned char key, int x, int y)
 {
+	bool need_redisplay = true;
+
 	switch(key)
 	{
 	/* Activar/desactivar el uso del Z-buffer (DEPTH_TEST) */
@@ -104,10 +112,14 @@ void key(unsigned char key, int x, int y)
 		else
 			glEnable(GL_ALPHA_TEST);
 		break;
+	default:
+		need_redisplay = false;
+		break;
 	}
 
 	// Obliga a que la ventana se vuelva a pintar
-	glutPostRedisplay();
+	if (need_redisplay)
+		glutPostRedisplay();
 }
 
 void specialKey(int key, int x, int y)
