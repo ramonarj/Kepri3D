@@ -15,8 +15,15 @@ void Scene::init()
 	glEnable(GL_DEPTH_TEST);
 	//
 	glEnable(GL_TEXTURE_2D);
+	// Activa las transparencias, indicando qué canal usar para ello (SRC_ALPHA).
+	// Si no llamáramos a glBlendFunc, se usarían los parámetros por defecto (0, 1) y no
+	// habría transparencias
 	glEnable(GL_BLEND);
+	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA); //src, dest
+	// Activa el descarte de fragmentos cuyo alfa no cumpla una cierta condición dada
 	glEnable(GL_ALPHA_TEST);
+	glAlphaFunc(GL_GREATER, 0.2);
+
 	//glEnable(GL_CULL_FACE); //cuidado con esto
 
 	// Ejemplo ejes RGB
@@ -42,22 +49,22 @@ void Scene::init()
 	vertices[7] = dvec3(2* l, 0, l);
 
 	/* Colores para cada vértice */
-	colores = new dvec3[numVertices];
-	colores[0] = dvec3(1, 0, 0); //rojo
-	colores[1] = dvec3(1, 0, 0);
-	colores[2] = dvec3(0, 1, 0); //verde
-	colores[3] = dvec3(0, 1, 0);
-	colores[4] = dvec3(0, 0, 1); //azul
-	colores[5] = dvec3(0, 0, 1);
+	colores = new dvec4[numVertices];
+	colores[0] = dvec4(1, 0, 0, 1); //rojo
+	colores[1] = dvec4(1, 1, 0, 1); //amarillo
+	colores[2] = dvec4(0, 1, 0, 1); //verde
+	colores[3] = dvec4(0, 1, 0, 1);
+	colores[4] = dvec4(0, 0, 1, 1); //azul
+	colores[5] = dvec4(0, 0, 1, 1);
 
-	colores[6] = dvec3(0,0,0); //negro
-	colores[7] = dvec3(0,0,0);
+	colores[6] = dvec4(0,0,0, 0); //negro
+	colores[7] = dvec4(0,0,0, 1);
 }
 
 void Scene::render()
 {
 	glEnableClientState(GL_COLOR_ARRAY);
-	glColorPointer(3, GL_DOUBLE, 0, colores);
+	glColorPointer(4, GL_DOUBLE, 0, colores);
 
 	glEnableClientState(GL_VERTEX_ARRAY);
 	glVertexPointer(3, GL_DOUBLE, 0, vertices);

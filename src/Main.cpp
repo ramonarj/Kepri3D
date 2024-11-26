@@ -17,11 +17,10 @@
 // Variables globales
 Scene scene;
 
-bool g_depthTest = true;
-
 // Predeclaración de callbacks
 void display();
 void key(unsigned char key, int x, int y);
+void specialKey(int key, int x, int y);
 
 int main(int argc, char*argv[])
 {
@@ -44,7 +43,8 @@ int main(int argc, char*argv[])
 	//glutReshapeFunc(resize);
 	// Se llama cuando se pulsa una tecla
 	glutKeyboardFunc(key);
-	//glutSpecialFunc(specialKey);
+	// Se llama cuando se pulsa una tecla especial (flechas de dirección)
+	glutSpecialFunc(specialKey);
 	// Se llama cuando la ventana se redibuja
 	glutDisplayFunc(display);
 
@@ -83,14 +83,54 @@ void key(unsigned char key, int x, int y)
 	{
 	/* Activar/desactivar el uso del Z-buffer (DEPTH_TEST) */
 	case 'z':
-		if(g_depthTest)
+		if(glIsEnabled(GL_DEPTH_TEST))
 			glDisable(GL_DEPTH_TEST);
 		else
 			glEnable(GL_DEPTH_TEST);
-		g_depthTest = !g_depthTest;
+		break;
+
+	/* Activar/desactivar las transparencias (BLEND) */
+	case 'b':
+		if (glIsEnabled(GL_BLEND))
+			glDisable(GL_BLEND);
+		else
+			glEnable(GL_BLEND);
+		break;
+
+	/* Activar/desactivar el alpha test (ALPHA_TEST) */
+	case 'a':
+		if (glIsEnabled(GL_ALPHA_TEST))
+			glDisable(GL_ALPHA_TEST);
+		else
+			glEnable(GL_ALPHA_TEST);
 		break;
 	}
 
 	// Obliga a que la ventana se vuelva a pintar
 	glutPostRedisplay();
+}
+
+void specialKey(int key, int x, int y)
+{
+	bool need_redisplay = true;
+
+	switch (key) {
+		float alfaValue;
+		/* Subir el mínimo de alfa para el ALPHA_TEST */
+	case GLUT_KEY_RIGHT:
+		glGetFloatv(GL_ALPHA_TEST_REF, &alfaValue);
+		glAlphaFunc(GL_GREATER, alfaValue + 0.05);
+		break;
+		/* Bajar el mínimo de alfa para el ALPHA_TEST */
+	case GLUT_KEY_LEFT:
+		glGetFloatv(GL_ALPHA_TEST_REF, &alfaValue);
+		glAlphaFunc(GL_GREATER, alfaValue - 0.05);
+		break;
+	default:
+		need_redisplay = false;
+		break;
+	}//switch
+
+	if (need_redisplay)
+		glutPostRedisplay();
 }

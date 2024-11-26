@@ -22,7 +22,7 @@ protected:
 	/* Array de vértices */
 	glm::dvec3* vertices;
 	/* Color de cada uno de los vértices */
-	glm::dvec3* colores;
+	glm::dvec4* colores;
 	//Camera* camera;
 	//Diabolo* diabolo;
 	//Foto* foto;
