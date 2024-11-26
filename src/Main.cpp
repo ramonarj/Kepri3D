@@ -24,6 +24,7 @@ Scene scene(&camera);
 void display();
 void key(unsigned char key, int x, int y);
 void specialKey(int key, int x, int y);
+void resize(int newWidth, int newHeight);
 
 int main(int argc, char*argv[])
 {
@@ -43,7 +44,8 @@ int main(int argc, char*argv[])
 	int win = glutCreateWindow("Informática Gráfica");  // nombre de la ventana
 
 	// 2) Registrar los distintos callbacks (input) 
-	//glutReshapeFunc(resize);
+	// Se llama cuando la ventana es redimensionada (tirando de los bordes/cambiando a pantalla completa)
+	glutReshapeFunc(resize);
 	// Se llama cuando se pulsa una tecla
 	glutKeyboardFunc(key);
 	// Se llama cuando se pulsa una tecla especial (flechas de dirección)
@@ -145,4 +147,12 @@ void specialKey(int key, int x, int y)
 
 	if (need_redisplay)
 		glutPostRedisplay();
+}
+
+void resize(int newWidth, int newHeight)
+{
+	// Resize Viewport 
+	viewport.setSize(newWidth, newHeight);
+	// Resize Scene Visible Area 
+	//camera.setSize(viewPort.getW(), viewPort.getH());    // scale unchanged
 }

@@ -37,7 +37,7 @@ class EjesRGB : public Entity
 public:
 	EjesRGB(GLdouble l);
 	~EjesRGB() { };
-	virtual void render();
+	//void render() override;
 };
 
 // - - - - - - - - - - - - 
@@ -47,7 +47,7 @@ class Poligono : public Entity
 public:
 	Poligono(GLint sides, bool relleno);
 	~Poligono() { };
-	virtual void render();
+	//void render() override;
 };
 
 #endif

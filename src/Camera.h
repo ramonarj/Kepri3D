@@ -8,7 +8,7 @@
 
 class Viewport {
 public:
-	Viewport(GLsizei width, GLsizei height) : x(0), y(0), w(w), h(h) { };
+	Viewport(GLsizei width, GLsizei height) : x(0), y(0), w(width), h(height) { };
 	~Viewport() { };
 
 	/* Establece las dimensiones del puerto de vista */
@@ -40,6 +40,9 @@ class Camera
 {
 public:
 	Camera(Viewport* viewport) : vp(viewport) {}
+
+	/* Devuelve el puerto de vista */
+	Viewport* getVP() { return vp; }
 
 	/* Cambia la posición de la cámara */
 	inline void SetPosition(glm::dvec3 pos) { eye = pos; }
