@@ -21,62 +21,34 @@ void Scene::init()
 	glEnable(GL_BLEND);
 	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA); //src, dest
 	// Activa el descarte de fragmentos cuyo alfa no cumpla una cierta condición dada
+	// NOTA: en el pipeline, va primero el alpha test y después el blend
 	glEnable(GL_ALPHA_TEST);
 	glAlphaFunc(GL_GREATER, 0.2);
 
 	//glEnable(GL_CULL_FACE); //cuidado con esto
 
-	// Ejemplo ejes RGB
-	float l = 0.5;
-	numVertices = 8;
-
-	// COORDENADAS:
-	// X positiva hacia la derecha
-	// Y positiva hacia arriba
-	// Z positiva hacia el fondo
-
-	/* Array de vértices */
-	vertices = new dvec3[numVertices];
-	vertices[0] = dvec3(0, 0, 0);
-	vertices[1] = dvec3(l, 0, 0);
-	vertices[2] = dvec3(0, 0, 0);
-	vertices[3] = dvec3(0, l, 0);
-	vertices[4] = dvec3(0, 0, 0);
-	vertices[5] = dvec3(0, 0, l);
-
-	// Para probar el DEPTH_TEST
-	vertices[6] = dvec3(-2 * l,0, l); // muy lejos
-	vertices[7] = dvec3(2* l, 0, l);
-
-	/* Colores para cada vértice */
-	colores = new dvec4[numVertices];
-	colores[0] = dvec4(1, 0, 0, 1); //rojo
-	colores[1] = dvec4(1, 1, 0, 1); //amarillo
-	colores[2] = dvec4(0, 1, 0, 1); //verde
-	colores[3] = dvec4(0, 1, 0, 1);
-	colores[4] = dvec4(0, 0, 1, 1); //azul
-	colores[5] = dvec4(0, 0, 1, 1);
-
-	colores[6] = dvec4(0,0,0, 0); //negro
-	colores[7] = dvec4(0,0,0, 1);
+	// Crear y meter todas las entidades
+	m_entities.push_back(new EjesRGB(0.5));
+	m_entities.push_back(new Poligono(5));
 }
 
 void Scene::render()
 {
-	glEnableClientState(GL_COLOR_ARRAY);
-	glColorPointer(4, GL_DOUBLE, 0, colores);
-
-	glEnableClientState(GL_VERTEX_ARRAY);
-	glVertexPointer(3, GL_DOUBLE, 0, vertices);
-	// Dibuja los vértices
-	glDrawArrays(GL_LINES, 0, numVertices);
-
-	glDisableClientState(GL_COLOR_ARRAY);
-	glDisableClientState(GL_VERTEX_ARRAY);
+	// Pintar todas las entidades
+	for (Entity* e : m_entities)
+		e->render();
 }
 
 Scene::~Scene()
 {
+	// Borrar las entidades
+	for(Entity * it : m_entities)
+	{
+		delete it;
+	}
+	m_entities.clear();
+
+	// Desactivar los parámetros de OpenGL
 	glDisable(GL_CULL_FACE);
 	glDisable(GL_ALPHA_TEST);
 	glDisable(GL_BLEND);

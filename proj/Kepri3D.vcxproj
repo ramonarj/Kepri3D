@@ -153,10 +153,14 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="..\src\Entity.cpp" />
     <ClCompile Include="..\src\Main.cpp" />
+    <ClCompile Include="..\src\Mesh.cpp" />
     <ClCompile Include="..\src\Scene.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="..\src\Entity.h" />
+    <ClInclude Include="..\src\Mesh.h" />
     <ClInclude Include="..\src\Scene.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

@@ -1,7 +1,8 @@
 #ifndef __SCENE__
 #define __SCENE__
 
-#include <glm.hpp>
+#include "Entity.h"
+#include <vector>
 
 class Scene
 {
@@ -17,12 +18,9 @@ public:
 	//Light* getSphereLight() { return sphereLight; };
 
 protected:
-	/* Número total de vértices */
-	int numVertices;
-	/* Array de vértices */
-	glm::dvec3* vertices;
-	/* Color de cada uno de los vértices */
-	glm::dvec4* colores;
+	/* Lista de entidades */
+	std::vector<Entity*> m_entities;
+
 	//Camera* camera;
 	//Diabolo* diabolo;
 	//Foto* foto;
