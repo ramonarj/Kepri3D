@@ -66,6 +66,14 @@ void Scene::render()
 	//objetos[3]->render(camera->getViewMat());
 }
 
+void Scene::update(GLuint timeElapsed)
+{
+	for(Entity* e : m_entities)
+	{
+		e->update(timeElapsed);
+	}
+}
+
 Scene::~Scene()
 {
 	// Borrar las entidades

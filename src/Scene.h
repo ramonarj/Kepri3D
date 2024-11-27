@@ -13,7 +13,7 @@ public:
 	~Scene();
 	void init();
 	void render();
-	//void update(GLuint timeElapsed);
+	void update(GLuint timeElapsed);
 	//Light* getDirLight() { return dirLight; };
 	//Light* getSpotLight() { return spotLight; };
 	//Light* getSphereLight() { return sphereLight; };

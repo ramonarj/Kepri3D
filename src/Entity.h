@@ -8,20 +8,28 @@
 class Entity
 {
 public:
-	Entity();
+	/* Constructora por defecto */
+	Entity() : modelMat(1.0) {} // Pone la matriz de modelado a la matriz identidad de grado 4 (1 0 0 0 / 0 1 0 0 ...)
+	
+	
 	virtual ~Entity() { };
 
 	virtual void render();
-	//virtual void update(GLuint timeElapsed) {};
+	virtual void update(GLuint timeElapsed);
 
 protected:
+	/* Malla/s que usará la entidad para pintarse */
 	Mesh* m_mesh;
+
+	/* Matriz de modelado de la entidad; recoge las transformaciones 
+	(traslaciones, rotaciones, escalados) hechas a la entidad */
+	glm::dmat4 modelMat;
 
 	//Mesh* mesh = nullptr;
 	//Mesh* mesh2 = nullptr;
 	//Texture texture;
 	//Texture texture2;
-	//glm::dmat4 modelMat;
+
 
 	//virtual void draw();
 	//virtual void setMvM(glm::dmat4 const& modelViewMat);

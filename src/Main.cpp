@@ -20,11 +20,15 @@ Viewport viewport(800, 600);
 Camera camera(&viewport);
 Scene scene(&camera);
 
+GLuint last_update_tick = 0;
+bool animationsOn = true;
+
 // Predeclaración de callbacks
 void display();
 void key(unsigned char key, int x, int y);
 void specialKey(int key, int x, int y);
 void resize(int newWidth, int newHeight);
+void update();
 
 int main(int argc, char*argv[])
 {
@@ -53,7 +57,8 @@ int main(int argc, char*argv[])
 	// Se llama cuando la ventana se redibuja
 	glutDisplayFunc(display);
 
-	//glutIdleFunc(update); //Callbacks nuevas
+	// Se llama cada frame aunque no se reciban eventos de la ventana (para animaciones)
+	glutIdleFunc(update); //Callbacks nuevas
 	//glutMouseFunc(mouse);
 	//glutMotionFunc(motion);
 
@@ -114,6 +119,10 @@ void key(unsigned char key, int x, int y)
 		else
 			glEnable(GL_ALPHA_TEST);
 		break;
+	/* Barra espaciadora: activar/desactivar animaciones */
+	case 32:
+		animationsOn = !animationsOn;
+		break;
 	default:
 		need_redisplay = false;
 		break;
@@ -155,4 +164,15 @@ void resize(int newWidth, int newHeight)
 	viewport.setSize(newWidth, newHeight);
 	// Resize Scene Visible Area 
 	//camera.setSize(viewPort.getW(), viewPort.getH());    // scale unchanged
+}
+
+void update()
+{
+	GLuint deltaTime = glutGet(GLUT_ELAPSED_TIME) - last_update_tick;
+	last_update_tick = glutGet(GLUT_ELAPSED_TIME);
+	if(animationsOn)
+	{
+		scene.update(deltaTime); //Llamamos al update y al render
+		display();
+	}
 }
