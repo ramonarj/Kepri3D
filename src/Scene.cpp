@@ -29,8 +29,8 @@ void Scene::init()
 
 	// Crear y meter todas las entidades
 	m_entities.push_back(new EjesRGB(0.5));
-	m_entities.push_back(new Poligono(4, false));
-	m_entities.push_back(new Poligono(50, true));
+	//m_entities.push_back(new Poligono(4, false));
+	//m_entities.push_back(new Poligono(50, true));
 }
 
 void Scene::render()
@@ -44,21 +44,21 @@ void Scene::render()
 	GLdouble w = view->getW();
 	GLdouble h = view->getH();
 	// Reducimos el tamaño del puerto a 1/4 de la pantalla y dibujamos en los 3 primeros cuadrantes
-	view->setSize(w / 2, h / 2);
+	//view->setSize(w / 2, h / 2);
 
 	// Ejes RGB
-	view->setPosition(0, h/2);
-	m_entities[0]->render();
+	//view->setPosition(0, h/2);
+	m_entities[0]->render(m_camera->getViewMat());
 
-	// Polígono sin rellenar
-	view->setPosition(w / 2, h / 2);
-	m_entities[1]->render();
+	//// Polígono sin rellenar
+	//view->setPosition(w / 2, h / 2);
+	//m_entities[1]->render();
 
-	// Polígono relleno
-	view->setPosition(0, 0); // 0,0 es abajo a la izquierda
-	m_entities[2]->render();
-	// Podemos dibujar un mismo objeto todas las veces que queramos (ejes extra)
-	m_entities[0]->render(); 
+	//// Polígono relleno
+	//view->setPosition(0, 0); // 0,0 es abajo a la izquierda
+	//m_entities[2]->render();
+	//// Podemos dibujar un mismo objeto todas las veces que queramos (ejes extra)
+	//m_entities[0]->render(); 
 
 	view->setSize(w, h); //Volvemos a dejar el viewPort como estaba
 

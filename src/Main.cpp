@@ -2,6 +2,7 @@
 //#include <gl/GL.h> // la versión incluida en Windows es muy antigua, usaremos la que incluye freeglut
 
 #include <glm.hpp>
+#include <gtc/type_ptr.hpp>
 #include <freeglut.h>
 
 // Hay que usar:
@@ -14,6 +15,7 @@
 #include <iostream>
 #include "Scene.h"
 #include "Camera.h"
+#include "Entity.h"
 
 // Variables globales
 Viewport viewport(800, 600);
@@ -57,8 +59,8 @@ int main(int argc, char*argv[])
 	// Se llama cuando la ventana se redibuja
 	glutDisplayFunc(display);
 
-	// Se llama cada frame aunque no se reciban eventos de la ventana (para animaciones)
-	glutIdleFunc(update); //Callbacks nuevas
+	// Se llama cada frame, aunque no se reciban eventos de la ventana (para animaciones)
+	glutIdleFunc(update);
 	//glutMouseFunc(mouse);
 	//glutMotionFunc(motion);
 
@@ -96,6 +98,10 @@ void key(unsigned char key, int x, int y)
 
 	switch(key)
 	{
+	/* Tecla de escape: salir de la aplicación */
+	case 27:  
+		glutLeaveMainLoop();
+		break;
 	/* Activar/desactivar el uso del Z-buffer (DEPTH_TEST) */
 	case 'z':
 		if(glIsEnabled(GL_DEPTH_TEST))
@@ -119,6 +125,16 @@ void key(unsigned char key, int x, int y)
 		else
 			glEnable(GL_ALPHA_TEST);
 		break;
+	// Pruebas con la cámara
+	case 'd':
+		camera.setModelMat(glm::translate(camera.getModelMat(), glm::dvec3(0.02, 0, 0)));
+		break;
+	case 'w':
+		camera.setModelMat(glm::translate(camera.getModelMat(), glm::dvec3(0, 0, 0.1)));
+		break;
+	case 's':
+		camera.setModelMat(glm::translate(camera.getModelMat(), glm::dvec3(0, -0.02, 0)));
+		break;
 	/* Barra espaciadora: activar/desactivar animaciones */
 	case 32:
 		animationsOn = !animationsOn;
@@ -132,6 +148,7 @@ void key(unsigned char key, int x, int y)
 	if (need_redisplay)
 		glutPostRedisplay();
 }
+
 
 void specialKey(int key, int x, int y)
 {

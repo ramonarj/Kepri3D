@@ -8,18 +8,14 @@
 using namespace glm;
 
 
-void Entity::render()
+void Entity::render(glm::dmat4 const& viewMat)
 {
-	// Prueba de transformaciones de la matriz de modelado
-	// 1) Decirle a OpenGL que la siguiente matriz que cargaremos es de modelado (no de vista/proyección)
-	//glMatrixMode(GL_MODELVIEW);
+	// Cargar la matriz M*V
+	glMatrixMode(GL_MODELVIEW);
+	glm::dmat4 modelViewMat = viewMat * modelMat;
+	glLoadMatrixd(value_ptr(modelViewMat));
 
-	//// 2) Modificaciones a la matriz de modelado (escalarla x0.5 en este caso)
-	//modelMat = glm::scale((mat4)modelMat, glm::vec3(0.5, 2, 0.5));
-
-	//// 3) Cargar la matriz de modelado
-	//glLoadMatrixd(value_ptr(modelMat));
-
+	// Dibujar la/s malla/s
 	if (m_mesh != nullptr)
 		m_mesh->draw();
 }
@@ -27,23 +23,24 @@ void Entity::render()
 void Entity::update(GLuint timeElapsed)
 {
 	// Prueba de transformaciones de la matriz de modelado
-	// 1) Decirle a OpenGL que la siguiente matriz que cargaremos es de modelado (no de vista/proyección)
-	glMatrixMode(GL_MODELVIEW);
+	// 1) Decirle a OpenGL que la siguiente matriz que cargaremos es de modelado/vista (no de proyección)
+	//glMatrixMode(GL_MODELVIEW);
 
-	//// 2) Modificaciones a la matriz de modelado
-	// Rotaciones
-	modelMat = glm::rotate(modelMat, timeElapsed / 500.0, glm::dvec3(0, 0, 1));
+	// 2) Modificaciones a la matriz de modelado
 	// Traslaciones
 	modelMat = glm::translate(modelMat, dvec3(timeElapsed / 1000.0, 0.0, 0.0));
+
+	// Rotaciones
+	modelMat = glm::rotate(modelMat, timeElapsed / 500.0, glm::dvec3(0, 0, 1));
+	//PrintMatrix<double, 4>(&modelMat);
 
 	// Escalado
 	//modelMat = glm::scale(modelMat, glm::dvec3(0.99, 0.99, 0.99));
 
-	// Para sacar información de modelMat
-	//std::cout << ((double*)(&modelMat))[12] << std::endl;
 
-	//// 3) Cargar la matriz de modelado
-	glLoadMatrixd(value_ptr(modelMat));
+	// 3) Cargar la matriz de modelado
+	//glLoadMatrixd(value_ptr(modelMat));
+	//glLoadMatrixd((GLdouble*)&modelMat); //equivalente a hacer esto
 }
 
 
