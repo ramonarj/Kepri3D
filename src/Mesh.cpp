@@ -113,7 +113,47 @@ Mesh* Mesh::generateFilledPolygon(GLint sides)
 
 	/* Colores para cada vértice */
 	m->colores = new dvec4[m->numVertices];
-	m->colores[0] = dvec4(1, 0, 0, 0.25); // el centro semitransparente (de prueba)
+	for (int i = 0; i < m->numVertices; i++)
+	{
+		m->colores[i] = dvec4(0.2, 0.1, 0.2, 1);
+	}
+	// devuelve la malla
+	return m;
+}
+
+Mesh* Mesh::generateCube(GLdouble size)
+{
+	//float f;
+	//glGetFloatv(GL_FRONT_FACE, &f);
+	//std::cout << f << std::endl;
+	//std::cout << GL_CW;
+
+	Mesh* m = new Mesh();
+	m->type = GL_TRIANGLE_STRIP;
+	m->numVertices = 10;
+
+	/* Array de vértices */
+	GLdouble halfSize = size / 2.0;
+	m->vertices = new dvec3[m->numVertices];
+	//
+	m->vertices[0] = dvec3(-halfSize, halfSize, halfSize);
+	m->vertices[1] = dvec3(-halfSize, -halfSize, halfSize);
+	m->vertices[2] = dvec3(halfSize, halfSize, halfSize);
+	m->vertices[3] = dvec3(halfSize, -halfSize, halfSize);
+
+	m->vertices[4] = dvec3(halfSize, halfSize, -halfSize);
+	m->vertices[5] = dvec3(halfSize, -halfSize, -halfSize);
+
+	m->vertices[6] = dvec3(-halfSize, halfSize, -halfSize);
+	m->vertices[7] = dvec3(-halfSize, -halfSize, -halfSize);
+
+	m->vertices[8] = dvec3(-halfSize, halfSize, halfSize);
+	m->vertices[9] = dvec3(-halfSize, -halfSize, halfSize);
+
+
+	/* Colores para cada vértice */
+	m->colores = new dvec4[m->numVertices];
+	m->colores[0] = dvec4(1.0, 0.0, 0.0, 1.0);
 	for (int i = 1; i < m->numVertices; i++)
 	{
 		m->colores[i] = dvec4(0.2, 0.1, 0.2, 1);

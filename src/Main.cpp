@@ -19,6 +19,9 @@
 
 // Variables globales
 Viewport viewport(800, 600);
+// También podría hacerse con esto
+//	/*int windowW = glutGet(GLUT_WINDOW_WIDTH);
+//	int windowH = glutGet(GLUT_WINDOW_HEIGHT);*/
 Camera camera(&viewport);
 Scene scene(&camera);
 
@@ -82,13 +85,14 @@ int main(int argc, char*argv[])
 
 void display()   // double buffer
 {
+	// Limpia el color y el depth buffer
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
 	scene.render();
 
 	// Hay 2 buffers; uno se está mostrando por ventana, y el otro es el que usamos
 	// para dibujar con la GPU. Cuando se ha terminado de dibujar y llega el siguiente 
-	// frame, se intercambian y se repite el proceso
+	// frame, se intercambian las referencias y se repite el proceso
 	glutSwapBuffers();
 }
 
@@ -158,13 +162,25 @@ void specialKey(int key, int x, int y)
 		float alfaValue;
 		/* Subir el mínimo de alfa para el ALPHA_TEST */
 	case GLUT_KEY_RIGHT:
-		glGetFloatv(GL_ALPHA_TEST_REF, &alfaValue);
-		glAlphaFunc(GL_GREATER, alfaValue + 0.05);
+		//glGetFloatv(GL_ALPHA_TEST_REF, &alfaValue);
+		//glAlphaFunc(GL_GREATER, alfaValue + 0.05);
+		camera.setModelMat(glm::rotate(camera.getModelMat(), -0.1, glm::dvec3(0, 1, 0)));
 		break;
 		/* Bajar el mínimo de alfa para el ALPHA_TEST */
 	case GLUT_KEY_LEFT:
-		glGetFloatv(GL_ALPHA_TEST_REF, &alfaValue);
-		glAlphaFunc(GL_GREATER, alfaValue - 0.05);
+		//glGetFloatv(GL_ALPHA_TEST_REF, &alfaValue);
+		//glAlphaFunc(GL_GREATER, alfaValue - 0.05);
+		camera.setModelMat(glm::rotate(camera.getModelMat(), 0.1, glm::dvec3(0, 1, 0)));
+		break;
+	case GLUT_KEY_UP:
+		//glGetFloatv(GL_ALPHA_TEST_REF, &alfaValue);
+		//glAlphaFunc(GL_GREATER, alfaValue - 0.05);
+		camera.setModelMat(glm::rotate(camera.getModelMat(), 0.1, glm::dvec3(1, 0, 0)));
+		break;
+	case GLUT_KEY_DOWN:
+		//glGetFloatv(GL_ALPHA_TEST_REF, &alfaValue);
+		//glAlphaFunc(GL_GREATER, alfaValue - 0.05);
+		camera.setModelMat(glm::rotate(camera.getModelMat(), -0.1, glm::dvec3(1, 0, 0)));
 		break;
 	default:
 		need_redisplay = false;

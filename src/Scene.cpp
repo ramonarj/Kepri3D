@@ -29,8 +29,9 @@ void Scene::init()
 
 	// Crear y meter todas las entidades
 	m_entities.push_back(new EjesRGB(0.5));
-	//m_entities.push_back(new Poligono(4, false));
-	//m_entities.push_back(new Poligono(50, true));
+	m_entities.push_back(new Poligono(4, false));
+	m_entities.push_back(new Poligono(50, true));
+	m_entities.push_back(new Cubo(1));
 }
 
 void Scene::render()
@@ -48,17 +49,21 @@ void Scene::render()
 
 	// Ejes RGB
 	//view->setPosition(0, h/2);
-	m_entities[0]->render(m_camera->getViewMat());
+	//m_entities[0]->render(m_camera->getViewMat());
 
 	//// Polígono sin rellenar
 	//view->setPosition(w / 2, h / 2);
-	//m_entities[1]->render();
+	//m_entities[1]->render(m_camera->getViewMat());
 
 	//// Polígono relleno
 	//view->setPosition(0, 0); // 0,0 es abajo a la izquierda
-	//m_entities[2]->render();
+	//m_entities[2]->render(m_camera->getViewMat());
 	//// Podemos dibujar un mismo objeto todas las veces que queramos (ejes extra)
-	//m_entities[0]->render(); 
+	//m_entities[0]->render(m_camera->getViewMat()); 
+
+	// Cubo sin rellenar
+	m_entities[0]->render(m_camera->getViewMat());
+	m_entities[3]->render(m_camera->getViewMat());
 
 	view->setSize(w, h); //Volvemos a dejar el viewPort como estaba
 

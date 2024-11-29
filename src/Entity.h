@@ -94,7 +94,17 @@ class Poligono : public Entity
 public:
 	Poligono(GLint sides, bool relleno);
 	~Poligono() { };
-	//void render() override;
+	void render(glm::dmat4 const& viewMat) override;
+};
+
+// - - - - - - - - - - - - 
+
+class Cubo : public Entity
+{
+public:
+	Cubo(GLdouble size);
+	~Cubo() { };
+	void render(glm::dmat4 const& viewMat) override;
 };
 
 #endif

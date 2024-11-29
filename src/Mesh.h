@@ -16,6 +16,8 @@ public:
 	static Mesh* generatePolygon(GLint sides);
 	// Polígono regular de n lados, dibujado con líneas (LINE_LOOP)
 	static Mesh* generateFilledPolygon(GLint sides);
+	// Cubo con caras opacas
+	static Mesh* generateCube(GLdouble size);
 
 private:
 	/* Número total de vértices */
