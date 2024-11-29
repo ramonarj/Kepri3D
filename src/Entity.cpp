@@ -19,6 +19,7 @@ void Entity::render(glm::dmat4 const& viewMat)
 	glLoadMatrixd(value_ptr(modelViewMat));
 	//glLoadMatrixd((GLdouble*)&modelViewMat); //equivalente a hacer esto
 
+
 	// 2) Dibujar la/s malla/s
 	if (m_mesh != nullptr)
 		m_mesh->draw();
@@ -31,7 +32,7 @@ void Entity::update(GLuint timeElapsed)
 	//modelMat = glm::translate(modelMat, dvec3(timeElapsed / 10000.0, 0.0, 0.0));
 
 	// Rotaciones
-	modelMat = glm::rotate(modelMat, timeElapsed / 1000.0, glm::dvec3(1, 1, 1));
+	//modelMat = glm::rotate(modelMat, timeElapsed / 1000.0, glm::dvec3(1, 1, 1));
 
 	// Escalado
 	//modelMat = glm::scale(modelMat, glm::dvec3(0.99, 0.99, 0.99));

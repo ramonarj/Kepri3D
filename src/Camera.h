@@ -3,6 +3,7 @@
 
 #include <freeglut.h>
 #include <glm.hpp>
+#include <gtc/type_ptr.hpp>
 
 //-------------------------------------------------------------------------
 
@@ -39,7 +40,14 @@ protected:
 class Camera
 {
 public:
-	Camera(Viewport* viewport) : vp(viewport), modelMat(1.0) {}
+	Camera(Viewport* viewport) : vp(viewport), modelMat(1.0) 
+	{
+		// IMPORTANTE, porque la "cámara" de OpenGL está puesta por defecto en 
+		// el (0,0,1) y mirando hacia el (0,0,0), entonces queremos que la 
+		// posición y rotación iniciales de nuestra cámara coincidan con esas
+		//modelMat = glm::translate(modelMat, glm::dvec3(0, 0, -2));
+		//modelMat = glm::rotate(modelMat, 3.14, glm::dvec3(0, 1, 0));
+	}
 
 	/* Devuelve el puerto de vista */
 	Viewport* getVP() { return vp; }
@@ -49,10 +57,22 @@ public:
 
 	/* Getters*/
 	inline glm::dmat4 getViewMat() { return glm::inverse(modelMat); }
-	glm::dmat4& getModelMat() { return modelMat; }
 
-	/* Setters */
-	void setModelMat(const glm::dmat4& mat) { modelMat = mat; }
+	// Giros en el eje de coordenadas local
+	/* Rota la cámara alrededor del eje X local */
+	void pitch(GLdouble angle);
+	/* Rota la cámara alrededor del eje Y local */
+	void yaw(GLdouble angle);
+	/* Rota la cámara alrededor del eje Z local */
+	void roll(GLdouble angle);
+
+	// Movimientos en el eje de coordenadas local 
+	/* Mueve la cámara hacia izquierda/derecha en su eje X local */
+	void moveLR(GLdouble incr);
+	/* Mueve la cámara hacia arriba/abajo en su eje Y local */
+	void moveUD(GLdouble incr);
+	/* Mueve la cámara hacia adelante/atrás en su eje Z local */
+	void moveFB(GLdouble incr);
 
 protected:
 	//Matriz de la cámara (eye, look, up) -> todavía no se usa

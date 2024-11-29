@@ -27,6 +27,7 @@ Scene scene(&camera);
 
 GLuint last_update_tick = 0;
 bool animationsOn = true;
+bool fullscreen = false;
 
 // Predeclaración de callbacks
 void display();
@@ -48,9 +49,11 @@ int main(int argc, char*argv[])
 	glutInitWindowSize(800, 600);   // window size
 	//glutInitWindowPosition (140, 140);
 
-	glutInitDisplayMode(GLUT_RGBA | GLUT_DOUBLE | GLUT_DEPTH);   // | GLUT_STENCIL  
+	glutInitDisplayMode(GLUT_RGBA | GLUT_DOUBLE | GLUT_DEPTH); // | GLUT_MULTISAMPLE);   // | GLUT_STENCIL
 
 	int win = glutCreateWindow("Informática Gráfica");  // nombre de la ventana
+
+	//glutFullScreen(); // pantalla completa
 
 	// 2) Registrar los distintos callbacks (input) 
 	// Se llama cuando la ventana es redimensionada (tirando de los bordes/cambiando a pantalla completa)
@@ -102,6 +105,7 @@ void key(unsigned char key, int x, int y)
 
 	switch(key)
 	{
+		float alfaValue;
 	/* Tecla de escape: salir de la aplicación */
 	case 27:  
 		glutLeaveMainLoop();
@@ -113,7 +117,6 @@ void key(unsigned char key, int x, int y)
 		else
 			glEnable(GL_DEPTH_TEST);
 		break;
-
 	/* Activar/desactivar las transparencias (BLEND) */
 	case 'b':
 		if (glIsEnabled(GL_BLEND))
@@ -121,26 +124,41 @@ void key(unsigned char key, int x, int y)
 		else
 			glEnable(GL_BLEND);
 		break;
-
 	/* Activar/desactivar el alpha test (ALPHA_TEST) */
-	case 'a':
+	case 't':
 		if (glIsEnabled(GL_ALPHA_TEST))
 			glDisable(GL_ALPHA_TEST);
 		else
 			glEnable(GL_ALPHA_TEST);
 		break;
 	// Pruebas con la cámara
+	case 'a':
+		camera.moveLR(-0.02);
+		break;
 	case 'd':
-		camera.setModelMat(glm::translate(camera.getModelMat(), glm::dvec3(0.02, 0, 0)));
+		camera.moveLR(0.02);
 		break;
 	case 'w':
-		camera.setModelMat(glm::translate(camera.getModelMat(), glm::dvec3(0, 0, 0.1)));
+		camera.moveFB(0.02);
 		break;
 	case 's':
-		camera.setModelMat(glm::translate(camera.getModelMat(), glm::dvec3(0, -0.02, 0)));
+		camera.moveFB(-0.02);
 		break;
-	/* Barra espaciadora: activar/desactivar animaciones */
-	case 32:
+	case 32: // espacio
+		camera.moveUD(0.02);
+		break;
+	/* Bajar el mínimo de alfa para el ALPHA_TEST */
+	case '1':
+		glGetFloatv(GL_ALPHA_TEST_REF, &alfaValue);
+        glAlphaFunc(GL_GREATER, alfaValue - 0.05);
+		break;
+	/* Subir el mínimo de alfa para el ALPHA_TEST */
+	case '2':
+		glGetFloatv(GL_ALPHA_TEST_REF, &alfaValue);
+		glAlphaFunc(GL_GREATER, alfaValue + 0.05);
+		break;
+	/* Enter: activar/desactivar animaciones */
+	case 13:
 		animationsOn = !animationsOn;
 		break;
 	default:
@@ -160,27 +178,30 @@ void specialKey(int key, int x, int y)
 
 	switch (key) {
 		float alfaValue;
-		/* Subir el mínimo de alfa para el ALPHA_TEST */
+	/* Rotaciones locales de la cámara (pitch, yaw, roll) */
 	case GLUT_KEY_RIGHT:
-		//glGetFloatv(GL_ALPHA_TEST_REF, &alfaValue);
-		//glAlphaFunc(GL_GREATER, alfaValue + 0.05);
-		camera.setModelMat(glm::rotate(camera.getModelMat(), -0.1, glm::dvec3(0, 1, 0)));
+		camera.yaw(-0.1);
 		break;
-		/* Bajar el mínimo de alfa para el ALPHA_TEST */
 	case GLUT_KEY_LEFT:
-		//glGetFloatv(GL_ALPHA_TEST_REF, &alfaValue);
-		//glAlphaFunc(GL_GREATER, alfaValue - 0.05);
-		camera.setModelMat(glm::rotate(camera.getModelMat(), 0.1, glm::dvec3(0, 1, 0)));
+		camera.yaw(0.1);
 		break;
 	case GLUT_KEY_UP:
-		//glGetFloatv(GL_ALPHA_TEST_REF, &alfaValue);
-		//glAlphaFunc(GL_GREATER, alfaValue - 0.05);
-		camera.setModelMat(glm::rotate(camera.getModelMat(), 0.1, glm::dvec3(1, 0, 0)));
+		camera.pitch(0.1);
 		break;
+	/* Movimiento arriba/abajo de la cámara */
 	case GLUT_KEY_DOWN:
-		//glGetFloatv(GL_ALPHA_TEST_REF, &alfaValue);
-		//glAlphaFunc(GL_GREATER, alfaValue - 0.05);
-		camera.setModelMat(glm::rotate(camera.getModelMat(), -0.1, glm::dvec3(1, 0, 0)));
+		camera.pitch(-0.1);
+		break;
+	case GLUT_KEY_SHIFT_L:
+		camera.moveUD(-0.05);
+		break;
+	/* Modo pantalla completa (entrar/salir) */
+	case GLUT_KEY_F11:
+		fullscreen = !fullscreen;
+		if(fullscreen)
+			glutFullScreen();
+		else
+			glutReshapeWindow(800, 600);
 		break;
 	default:
 		need_redisplay = false;
