@@ -144,6 +144,14 @@ void key(unsigned char key, int x, int y)
 	case 's':
 		camera.moveFB(-0.02);
 		break;
+	// Roll
+	case '9':
+		camera.roll(-0.1);
+		break;
+	case '0':
+		camera.roll(0.1);
+		break;
+	// Movimiento arriba de la cámara
 	case 32: // espacio
 		camera.moveUD(0.02);
 		break;
@@ -177,7 +185,6 @@ void specialKey(int key, int x, int y)
 	bool need_redisplay = true;
 
 	switch (key) {
-		float alfaValue;
 	/* Rotaciones locales de la cámara (pitch, yaw, roll) */
 	case GLUT_KEY_RIGHT:
 		camera.yaw(-0.1);

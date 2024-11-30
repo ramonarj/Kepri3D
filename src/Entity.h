@@ -9,23 +9,24 @@
 #include <iostream>
 
 /**
- * Imprime por consola una matriz cuadrada de una cómoda para la vista.
+ * Imprime por consola una matriz cuadrada de una forma cómoda para la vista.
  *
- * Los datos deben estar contiguos, sin espaciamiento entre ellos
+ * Los datos deben estar contiguos, sin espaciamiento entre ellos, y 
+ * en orden 'column-major' (por columnas, y no por filas)
  *
  * @param matrixPtr Puntero al primer dato de la matriz
- * @param type El tipo de datos que la matriz contiene
- * @param matrixSize El grado de la matriz
  */
-template<typename T, int size>
-static void PrintMatrix(void* matrixPtr)
+template<typename T = double, int size = 4>
+static void PrintMatrix(void* matrixPtr) // ESTÁ MAL-> FILAS Y COLUMNAS CAMBIADAS
 {
+	// Filas
 	for (int i = 0; i < size; i++)
 	{
+		// Columnas
 		std::cout << "(";
 		for (int j = 0; j < size; j++)
 		{
-			std::cout << ((T*)matrixPtr)[i * size + j] << " ";
+			std::cout << ((T*)matrixPtr)[j * size + i] << " ";
 		}
 		std::cout << ")\n";
 	}
@@ -39,11 +40,11 @@ class Entity
 {
 public:
 	/* Constructora por defecto */
-	Entity() : modelMat(1.0) // Pone la matriz de modelado a la matriz identidad de grado 4 (1 0 0 0 / 0 1 0 0 ...)
+	Entity() : m_mesh(nullptr), modelMat(1.0) // Pone la matriz de modelado a la matriz identidad de grado 4 (1 0 0 0 / 0 1 0 0 ...)
 	{
 		//PrintMatrix<double, 4>(&modelMat);
 		//NOMBRE(modelMat);
-	} 
+	}
 	
 	
 	virtual ~Entity() { };

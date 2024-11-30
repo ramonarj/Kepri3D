@@ -40,12 +40,12 @@ protected:
 class Camera
 {
 public:
-	Camera(Viewport* viewport) : vp(viewport), modelMat(1.0) 
+	Camera(Viewport* viewport) : vp(viewport), modelMat(1.0)
 	{
 		// IMPORTANTE, porque la "cámara" de OpenGL está puesta por defecto en 
 		// el (0,0,1) y mirando hacia el (0,0,0), entonces queremos que la 
 		// posición y rotación iniciales de nuestra cámara coincidan con esas
-		//modelMat = glm::translate(modelMat, glm::dvec3(0, 0, -2));
+		modelMat = glm::translate(modelMat, glm::dvec3(0, 0, 1));
 		//modelMat = glm::rotate(modelMat, 3.14, glm::dvec3(0, 1, 0));
 	}
 
@@ -84,7 +84,7 @@ protected:
 	glm::dvec3 up = { 0.0, 1.0, 0.0 };
 
 	/* Matriz de modelado de la cámara
-	 La matriz de vista es la inversa de esta matriz */
+	 La matriz de vista (V) es la inversa de esta matriz */
 	glm::dmat4 modelMat;
 
 	/* Puerto de vista que mostrará lo que hay en el volumen de vista */

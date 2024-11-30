@@ -25,11 +25,14 @@ void Camera::pitch(GLdouble angle)
 {
 	// El producto de matrices no es conmutativo; si queremos que la transformación 
 	// sea local, es T * R, y global es R * T 
-	//auto rotMatrix = glm::rotate((glm::dmat4)(1.0), angle, glm::dvec3(1, 0, 0));
+	glm::dmat4 rotMatrix = glm::rotate(modelMat, angle, glm::dvec3(1, 0, 0));
 	//PrintMatrix<double, 4>(&rotMatrix);
 
 	//modelMat = rotMatrix * modelMat;
 	//PrintMatrix<double, 4>(&modelMat);
+
+	//modelMat = glm::rotate(modelMat, angle, glm::dvec3(1, 0, 0));
+	//PrintMatrix(&modelMat);
 
 	modelMat = glm::rotate(modelMat, angle, glm::dvec3(1, 0, 0));
 }
@@ -56,5 +59,5 @@ void Camera::moveUD(GLdouble incr)
 
 void Camera::moveFB(GLdouble incr)
 {
-	modelMat = glm::translate(modelMat, glm::dvec3(0, 0, incr));
+	modelMat = glm::translate(modelMat, glm::dvec3(0, 0, -incr));
 }

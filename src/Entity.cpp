@@ -3,6 +3,10 @@
 
 #include <gtc/type_ptr.hpp>
 
+#define GLM_ENABLE_EXPERIMENTAL
+#include <gtx/string_cast.hpp>
+#include <gtc/matrix_access.hpp>
+
 #include <iostream>
 
 using namespace glm;
@@ -29,7 +33,7 @@ void Entity::update(GLuint timeElapsed)
 {
 	// *) Prueba de transformaciones de la matriz de modelado
 	// Traslaciones
-	//modelMat = glm::translate(modelMat, dvec3(timeElapsed / 10000.0, 0.0, 0.0));
+	modelMat = glm::translate(modelMat, dvec3(timeElapsed / 10000.0, 0.0, 0.0));
 
 	// Rotaciones
 	//modelMat = glm::rotate(modelMat, timeElapsed / 1000.0, glm::dvec3(1, 1, 1));
@@ -37,7 +41,7 @@ void Entity::update(GLuint timeElapsed)
 	// Escalado
 	//modelMat = glm::scale(modelMat, glm::dvec3(0.99, 0.99, 0.99));
 
-	//PrintMatrix<double, 4>(&modelMat);
+	//PrintMatrix(&modelMat);
 }
 
 
