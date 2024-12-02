@@ -33,7 +33,7 @@ void Entity::update(GLuint timeElapsed)
 {
 	// *) Prueba de transformaciones de la matriz de modelado
 	// Traslaciones
-	modelMat = glm::translate(modelMat, dvec3(timeElapsed / 10000.0, 0.0, 0.0));
+	//modelMat = glm::translate(modelMat, dvec3(timeElapsed / 10000.0, 0.0, 0.0));
 
 	// Rotaciones
 	//modelMat = glm::rotate(modelMat, timeElapsed / 1000.0, glm::dvec3(1, 1, 1));
@@ -56,6 +56,10 @@ EjesRGB::EjesRGB(GLdouble l)
 
 Poligono::Poligono(GLint sides, bool relleno)
 {
+	// Cargar la textura
+	if (!m_texture.load("..\\bin\\assets\\windows.bmp"))
+		std::cout << "CARGA DE TEXTURA INCORRECTA\n";
+
 	if(relleno)
 		m_mesh = Mesh::generateFilledPolygon(sides);
 	else
@@ -64,11 +68,16 @@ Poligono::Poligono(GLint sides, bool relleno)
 
 void Poligono::render(glm::dmat4 const& viewMat)
 {
-	glPolygonMode(GL_FRONT, GL_LINE); // -> si quisiéramos que los triángulos no se rellenen, solo las líneas
+	glCullFace(GL_FRONT);
+	m_texture.bind();
+
+	glPolygonMode(GL_FRONT, GL_FILL); // -> si quisiéramos que los triángulos no se rellenen, solo las líneas
 
 	Entity::render(viewMat);
 
 	glPolygonMode(GL_FRONT_AND_BACK, GL_FILL); // el predeterminado
+
+	m_texture.unbind();
 }
 
 // - - - - - - - - - - - - - - - - - 

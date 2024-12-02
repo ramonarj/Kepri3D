@@ -29,8 +29,11 @@ private:
 	/* Array de vértices */
 	glm::dvec3* vertices;
 
-	/* Color de cada uno de los vértices */
+	/* Array de colores para cada uno de los vértices */
 	glm::dvec4* colores;
+
+	/* Array de coordenadas de textura para cada uno de los vértices */
+	glm::dvec2* texCoords;
 };
 
 #endif

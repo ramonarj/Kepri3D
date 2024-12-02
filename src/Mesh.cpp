@@ -11,12 +11,21 @@ using namespace glm;
 void Mesh::draw()
 {	
 	// 1) Activar las matrices que vamos a usar y pasarlas a la GPU
+	// Vértices
+	glEnableClientState(GL_VERTEX_ARRAY);
+	glVertexPointer(3, GL_DOUBLE, 0, vertices);
+
+	//Colores
 	glEnableClientState(GL_COLOR_ARRAY);
 	// (coordenadas por vértice [2/3/4], tipo de dato, espacio entre cada dato, puntero al array)
 	glColorPointer(4, GL_DOUBLE, 0, colores);
 
-	glEnableClientState(GL_VERTEX_ARRAY);
-	glVertexPointer(3, GL_DOUBLE, 0, vertices);
+	//Texturas
+	if (texCoords != nullptr)
+	{
+		glEnableClientState(GL_TEXTURE_COORD_ARRAY);
+		glTexCoordPointer(2, GL_DOUBLE, 0, texCoords);
+	}
 
 	// 2) Dibuja las matrices pasadas a la GPU con el tipo de primitivas dado (type)
 	glDrawArrays(type, 0, numVertices);
@@ -25,6 +34,7 @@ void Mesh::draw()
 	// 3) Volver a dejarlo todo como estaba
 	glDisableClientState(GL_COLOR_ARRAY);
 	glDisableClientState(GL_VERTEX_ARRAY);
+	glDisableClientState(GL_TEXTURE_COORD_ARRAY);
 }
 
 Mesh* Mesh::generateAxesRGB(GLdouble l)
@@ -90,6 +100,13 @@ Mesh* Mesh::generatePolygon(GLint sides)
 		m->colores[i] = dvec4(0.2, 0.1, 0.2, 1);
 	}
 
+	/* Coordenadas de textura (suponiendo un cuadrado) */
+	m->texCoords = new dvec2[m->numVertices];
+	m->texCoords[0] = dvec2(0, 1);
+	m->texCoords[1] = dvec2(0, 0);
+	m->texCoords[2] = dvec2(1, 1);
+	m->texCoords[3] = dvec2(1, 0);
+
 	// devuelve la malla
 	return m;
 }
@@ -117,6 +134,16 @@ Mesh* Mesh::generateFilledPolygon(GLint sides)
 	{
 		m->colores[i] = dvec4(0.2, 0.1, 0.2, 1);
 	}
+
+	/* Coordenadas de textura (suponiendo un cuadrado) */
+	m->texCoords = new dvec2[m->numVertices];
+	m->texCoords[0] = dvec2(0.5, 0.5);
+	m->texCoords[1] = dvec2(1, 1);
+	m->texCoords[2] = dvec2(0, 1);
+	m->texCoords[3] = dvec2(0, 0);
+	m->texCoords[4] = dvec2(1, 0);
+	m->texCoords[5] = dvec2(1, 1);
+
 	// devuelve la malla
 	return m;
 }

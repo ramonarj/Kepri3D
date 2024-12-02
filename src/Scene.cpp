@@ -13,13 +13,16 @@ void Scene::init()
 	// Activa el Z-buffer. Si no lo activáramos, se pintaría todo con el algoritmo
 	// del pintor (lo más reciente tapa lo antiguo)
 	glEnable(GL_DEPTH_TEST);
-	//
+
+	// Activa el uso de texturas 2D
 	glEnable(GL_TEXTURE_2D);
+
 	// Activa las transparencias, indicando qué canal usar para ello (SRC_ALPHA).
 	// Si no llamáramos a glBlendFunc, se usarían los parámetros por defecto (0, 1) y no
 	// habría transparencias
 	glEnable(GL_BLEND);
 	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA); //src, dest
+
 	// Activa el descarte de fragmentos cuyo alfa no cumpla una cierta condición dada
 	// NOTA: en el pipeline, va primero el alpha test y después el blend
 	glEnable(GL_ALPHA_TEST);
@@ -34,8 +37,8 @@ void Scene::init()
 
 	// Crear y meter todas las entidades
 	m_entities.push_back(new EjesRGB(0.5));
-	m_entities.push_back(new Poligono(4, false));
-	m_entities.push_back(new Poligono(50, true));
+	//m_entities.push_back(new Poligono(4, false));
+	m_entities.push_back(new Poligono(4, true));
 	m_entities.push_back(new Cubo(0.5));
 }
 
@@ -67,8 +70,9 @@ void Scene::render()
 	//m_entities[0]->render(m_camera->getViewMat()); 
 
 	// Cubo sin rellenar
-	m_entities[0]->render(m_camera->getViewMat());
-	m_entities[3]->render(m_camera->getViewMat());
+	//m_entities[0]->render(m_camera->getViewMat());
+	//m_entities[3]->render(m_camera->getViewMat());
+	m_entities[1]->render(m_camera->getViewMat());
 
 	view->setSize(w, h); //Volvemos a dejar el viewPort como estaba
 

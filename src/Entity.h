@@ -2,6 +2,7 @@
 #define __ENTITY__
 
 #include "Mesh.h"
+#include "Texture.h"
 
 #include <glm.hpp>
 #include <freeglut.h>
@@ -64,6 +65,9 @@ protected:
 	/* Matriz de modelado de la entidad; recoge las transformaciones 
 	(traslaciones, rotaciones, escalados) hechas a la entidad */
 	glm::dmat4 modelMat;
+
+	/* Textura utilizada por la entidad */
+	Texture m_texture;
 
 	//Mesh* mesh = nullptr;
 	//Mesh* mesh2 = nullptr;
