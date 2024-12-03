@@ -4,6 +4,7 @@
 #include <freeglut.h>
 #include <glm.hpp>
 #include <gtc/type_ptr.hpp>
+#include <iostream>
 
 //-------------------------------------------------------------------------
 
@@ -40,12 +41,13 @@ protected:
 class Camera
 {
 public:
-	Camera(Viewport* viewport) : vp(viewport), modelMat(1.0)
+	Camera(Viewport* viewport) : vp(viewport), modelMat(1.0), projMat(1.0), orto(true)
 	{
 		// IMPORTANTE, porque la "cámara" de OpenGL está puesta por defecto en 
 		// el (0,0,1) y mirando hacia el (0,0,0), entonces queremos que la 
 		// posición y rotación iniciales de nuestra cámara coincidan con esas
 		modelMat = glm::translate(modelMat, glm::dvec3(0, 0, 1));
+
 		//modelMat = glm::rotate(modelMat, 3.14, glm::dvec3(0, 1, 0));
 	}
 
@@ -74,6 +76,9 @@ public:
 	/* Mueve la cámara hacia adelante/atrás en su eje Z local */
 	void moveFB(GLdouble incr);
 
+	/* Cambia la perspectiva entre ortogonal y frustrum */
+	void changePerspective();
+
 protected:
 	//Matriz de la cámara (eye, look, up) -> todavía no se usa
 	/* 'Ojo': posición de la cámara */
@@ -89,6 +94,12 @@ protected:
 
 	/* Puerto de vista que mostrará lo que hay en el volumen de vista */
 	Viewport* vp;
+
+	/* Matriz de proyección de la escena */
+	glm::dmat4 projMat;
+
+	/* El tipo de proyección actual (con/sin punto de fuga) */
+	bool orto;
 };
 
 #endif

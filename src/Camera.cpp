@@ -61,3 +61,22 @@ void Camera::moveFB(GLdouble incr)
 {
 	modelMat = glm::translate(modelMat, glm::dvec3(0, 0, -incr));
 }
+
+void Camera::changePerspective()
+{
+	orto = !orto;
+
+	glMatrixMode(GL_PROJECTION);
+	// Left, Right, Bottom, Top, Near, Far
+	// Los valores por defecto son: -1, 1, -1, 1, 1, -1 (están al revés zNear y zFar)
+
+	// Ortogonal
+	if(orto)
+		projMat = glm::ortho(-1, 1, -1, 1, 100, -100);
+	// Perspectiva
+	else
+		projMat = glm::frustum(-1, 1, -1, 1, 1, -1);
+
+	glLoadMatrixd(value_ptr(projMat));
+	glMatrixMode(GL_MODELVIEW);
+}

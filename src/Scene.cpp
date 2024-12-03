@@ -72,7 +72,7 @@ void Scene::render()
 	// Cubo sin rellenar
 	//m_entities[0]->render(m_camera->getViewMat());
 	//m_entities[3]->render(m_camera->getViewMat());
-	m_entities[1]->render(m_camera->getViewMat());
+	m_entities[2]->render(m_camera->getViewMat());
 
 	view->setSize(w, h); //Volvemos a dejar el viewPort como estaba
 

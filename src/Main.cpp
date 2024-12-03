@@ -28,6 +28,7 @@ Scene scene(&camera);
 GLuint last_update_tick = 0;
 bool animationsOn = true;
 bool fullscreen = false;
+double velCamara = 0.05;
 
 // Predeclaración de callbacks
 void display();
@@ -133,16 +134,16 @@ void key(unsigned char key, int x, int y)
 		break;
 	// Pruebas con la cámara
 	case 'a':
-		camera.moveLR(-0.02);
+		camera.moveLR(-velCamara);
 		break;
 	case 'd':
-		camera.moveLR(0.02);
+		camera.moveLR(velCamara);
 		break;
 	case 'w':
-		camera.moveFB(0.02);
+		camera.moveFB(velCamara);
 		break;
 	case 's':
-		camera.moveFB(-0.02);
+		camera.moveFB(-velCamara);
 		break;
 	// Roll
 	case '9':
@@ -153,7 +154,11 @@ void key(unsigned char key, int x, int y)
 		break;
 	// Movimiento arriba de la cámara
 	case 32: // espacio
-		camera.moveUD(0.02);
+		camera.moveUD(velCamara);
+		break;
+	/* Cambiar la perspectiva */
+	case 'p':
+		camera.changePerspective();
 		break;
 	/* Bajar el mínimo de alfa para el ALPHA_TEST */
 	case '1':
@@ -200,7 +205,7 @@ void specialKey(int key, int x, int y)
 		camera.pitch(-0.1);
 		break;
 	case GLUT_KEY_SHIFT_L:
-		camera.moveUD(-0.05);
+		camera.moveUD(-velCamara);
 		break;
 	/* Modo pantalla completa (entrar/salir) */
 	case GLUT_KEY_F11:
