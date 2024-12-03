@@ -29,7 +29,7 @@ void Scene::init()
 	glAlphaFunc(GL_GREATER, 0.2);
 
 	/* Antialiasing; tanto para líneas, como para polígonos */
-	//glEnable(GL_LINE_SMOOTH);
+	glEnable(GL_LINE_SMOOTH);
 	//glEnable(GL_POLYGON_SMOOTH);
 	//glHint(GL_POLYGON_SMOOTH_HINT, GL_NICEST);
 
@@ -37,8 +37,8 @@ void Scene::init()
 
 	// Crear y meter todas las entidades
 	m_entities.push_back(new EjesRGB(0.5));
-	//m_entities.push_back(new Poligono(4, false));
-	m_entities.push_back(new Poligono(4, true));
+	m_entities.push_back(new Poligono(6, 0.5, false));
+	//m_entities.push_back(new Poligono(4, true));
 	m_entities.push_back(new Cubo(0.5));
 }
 

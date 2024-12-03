@@ -77,20 +77,24 @@ Mesh* Mesh::generateAxesRGB(GLdouble l)
 	return m;
 }
 
-Mesh* Mesh::generatePolygon(GLint sides)
+Mesh* Mesh::generatePolygon(GLint sides, GLdouble size)
 {
 	Mesh* m = new Mesh();
 	m->type = GL_LINE_LOOP;
 	m->numVertices = sides;
 
+	// 360 / numero de lados
+	double angleIncr = (2 * PI / sides);
+	// 270 - la mitad del ángulo interno para que quede centrado
+	double initialAngle = (3 * PI / 2) - angleIncr / 2; 
 	/* Array de vértices */
 	m->vertices = new dvec3[m->numVertices];
 	for(int i = 0; i < m->numVertices; i++)
 	{
-		double angle = (360.0 / sides / 2) + (360.0 / sides) * i;
-		double posX = cos(angle * 2 * PI / 360.0);
-		double posY = sin(angle * 2 * PI / 360.0);
-		m->vertices[i] = dvec3(posX / 2, posY / 2, 0);
+		// Posición del vértice actual
+		double posX = size * cos(initialAngle + angleIncr * i);
+		double posY = size * sin(initialAngle + angleIncr * i);
+		m->vertices[i] = dvec3(posX, posY, 0);
 	}
 
 	/* Colores para cada vértice */
@@ -99,13 +103,6 @@ Mesh* Mesh::generatePolygon(GLint sides)
 	{
 		m->colores[i] = dvec4(0.2, 0.1, 0.2, 1);
 	}
-
-	/* Coordenadas de textura (suponiendo un cuadrado) */
-	m->texCoords = new dvec2[m->numVertices];
-	m->texCoords[0] = dvec2(0, 1);
-	m->texCoords[1] = dvec2(0, 0);
-	m->texCoords[2] = dvec2(1, 1);
-	m->texCoords[3] = dvec2(1, 0);
 
 	// devuelve la malla
 	return m;
@@ -122,9 +119,9 @@ Mesh* Mesh::generateFilledPolygon(GLint sides)
 	m->vertices[0] = dvec3(0, 0, 0); // el centro de la rueda
 	for (int i = 1; i < m->numVertices; i++)
 	{
-		double angle = (360.0 / sides / 2) + (360.0 / sides) * (i - 1);
-		double posX = cos(angle * 2 * PI / 360.0);
-		double posY = sin(angle * 2 * PI / 360.0);
+		double angle = (PI / sides) + (2 * PI / sides) * (i - 1);
+		double posX = cos(angle);
+		double posY = sin(angle);
 		m->vertices[i] = dvec3(posX / 2, posY / 2, 0);
 	}
 

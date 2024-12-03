@@ -13,7 +13,7 @@ public:
 	// Ejes RGB
 	static Mesh* generateAxesRGB(GLdouble l);
 	// Polígono regular de n lados, dibujado con triángulos (TRIANGLE_FAN)
-	static Mesh* generatePolygon(GLint sides);
+	static Mesh* generatePolygon(GLint sides, GLdouble size);
 	// Polígono regular de n lados, dibujado con líneas (LINE_LOOP)
 	static Mesh* generateFilledPolygon(GLint sides);
 	// Cubo con caras opacas

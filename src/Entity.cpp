@@ -54,16 +54,19 @@ EjesRGB::EjesRGB(GLdouble l)
 
 // - - - - - - - - - - - - - - - - - 
 
-Poligono::Poligono(GLint sides, bool relleno)
+Poligono::Poligono(GLint sides, GLdouble size, bool relleno)
 {
-	// Cargar la textura
-	if (!m_texture.load("..\\bin\\assets\\windows.bmp"))
-		std::cout << "CARGA DE TEXTURA INCORRECTA\n";
-
 	if(relleno)
+	{
+		// Cargar la textura
+		if (!m_texture.load("..\\bin\\assets\\windows.bmp"))
+			std::cout << "CARGA DE TEXTURA INCORRECTA\n";
+
 		m_mesh = Mesh::generateFilledPolygon(sides);
+	}
+
 	else
-		m_mesh = Mesh::generatePolygon(sides);
+		m_mesh = Mesh::generatePolygon(sides, size);
 }
 
 void Poligono::render(glm::dmat4 const& viewMat)
