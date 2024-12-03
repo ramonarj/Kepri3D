@@ -41,7 +41,7 @@ Mesh* Mesh::generateAxesRGB(GLdouble l)
 {
 	Mesh* m = new Mesh();
 	m->type = GL_LINES;
-	m->numVertices = 8;
+	m->numVertices = 6;
 
 	// COORDENADAS:
 	// X positiva hacia la derecha
@@ -58,20 +58,20 @@ Mesh* Mesh::generateAxesRGB(GLdouble l)
 	m->vertices[5] = dvec3(0, 0, l);
 
 	// Para probar el DEPTH_TEST
-	m->vertices[6] = dvec3(-2 * l, 0, l); // muy lejos
-	m->vertices[7] = dvec3(2 * l, 0, l);
+	//m->vertices[6] = dvec3(-2 * l, 0, l); // muy lejos
+	//m->vertices[7] = dvec3(2 * l, 0, l);
 
 	/* Colores para cada vértice */
 	m->colores = new dvec4[m->numVertices];
 	m->colores[0] = dvec4(1, 0, 0, 1); //rojo
-	m->colores[1] = dvec4(1, 1, 0, 1); //amarillo
+	m->colores[1] = dvec4(1, 0, 0, 1); 
 	m->colores[2] = dvec4(0, 1, 0, 1); //verde
 	m->colores[3] = dvec4(0, 1, 0, 1);
 	m->colores[4] = dvec4(0, 0, 1, 1); //azul
 	m->colores[5] = dvec4(0, 0, 1, 1);
 
-	m->colores[6] = dvec4(0, 0, 0, 0); //negro
-	m->colores[7] = dvec4(0, 0, 0, 1);
+	//m->colores[6] = dvec4(0, 0, 0, 0); //negro
+	//m->colores[7] = dvec4(0, 0, 0, 1);
 
 	// devuelve la malla
 	return m;
@@ -108,7 +108,7 @@ Mesh* Mesh::generatePolygon(GLint sides, GLdouble size)
 	return m;
 }
 
-Mesh* Mesh::generateFilledPolygon(GLint sides)
+Mesh* Mesh::generateFilledPolygon(GLint sides, GLint size)
 {
 	Mesh* m = new Mesh();
 	m->type = GL_TRIANGLE_FAN;
@@ -120,8 +120,8 @@ Mesh* Mesh::generateFilledPolygon(GLint sides)
 	for (int i = 1; i < m->numVertices; i++)
 	{
 		double angle = (PI / sides) + (2 * PI / sides) * (i - 1);
-		double posX = cos(angle);
-		double posY = sin(angle);
+		double posX = size * cos(angle);
+		double posY = size * sin(angle);
 		m->vertices[i] = dvec3(posX / 2, posY / 2, 0);
 	}
 

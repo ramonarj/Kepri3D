@@ -69,13 +69,15 @@ void Camera::changePerspective()
 	glMatrixMode(GL_PROJECTION);
 	// Left, Right, Bottom, Top, Near, Far
 	// Los valores por defecto son: -1, 1, -1, 1, 1, -1 (están al revés zNear y zFar)
-
+	// NOTA: usar doubles mejor que enteros
 	// Ortogonal
 	if(orto)
-		projMat = glm::ortho(-1, 1, -1, 1, 100, -100);
+		projMat = glm::ortho(-1.0, 1.0, -1.0, 1.0, 100.0, -100.0);
 	// Perspectiva
 	else
-		projMat = glm::frustum(-1, 1, -1, 1, 1, -1);
+		projMat = glm::frustum(-1.0, 1.0, -1.0, 1.0, 1.0, -1.0);
+
+	PrintMatrix(&projMat);
 
 	glLoadMatrixd(value_ptr(projMat));
 	glMatrixMode(GL_MODELVIEW);

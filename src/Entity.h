@@ -58,6 +58,12 @@ public:
 	// Actualizar
 	virtual void update(GLuint timeElapsed);
 
+	/* Mueve la entidad a la posición dada */
+	void setPosition(glm::dvec3 pos);
+
+	/* Rota la entidad en el eje dado, la cantidad de grados especificada (en radianes) */
+	void rotate(GLdouble alpha, glm::dvec3 axis);
+
 protected:
 	/* Malla/s que usará la entidad para pintarse */
 	Mesh* m_mesh;
@@ -97,7 +103,7 @@ public:
 class Poligono : public Entity
 {
 public:
-	Poligono(GLint sides, GLdouble size, bool relleno);
+	Poligono(GLint sides, GLdouble size, bool relleno = false, std::string textureName = "");
 	~Poligono() { };
 	void render(glm::dmat4 const& viewMat) override;
 };

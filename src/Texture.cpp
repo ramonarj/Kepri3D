@@ -27,7 +27,7 @@ bool Texture::load(const std::string& bmpName, GLubyte alpha)
 
 	// Cargamos la información del BMP y le añadimos la 
 	PixMap32RGBA pixMap; 
-	pixMap.load_bmp24BGR(bmpName); 
+	pixMap.load_bmp24BGR(TEXTURES_PATH + bmpName); 
 	if (pixMap.is_null())
 		return false;
 

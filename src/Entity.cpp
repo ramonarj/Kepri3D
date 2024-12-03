@@ -3,9 +3,9 @@
 
 #include <gtc/type_ptr.hpp>
 
-#define GLM_ENABLE_EXPERIMENTAL
-#include <gtx/string_cast.hpp>
-#include <gtc/matrix_access.hpp>
+//#define GLM_ENABLE_EXPERIMENTAL
+//#include <gtx/string_cast.hpp>
+//#include <gtc/matrix_access.hpp>
 
 #include <iostream>
 
@@ -44,6 +44,16 @@ void Entity::update(GLuint timeElapsed)
 	//PrintMatrix(&modelMat);
 }
 
+void Entity::setPosition(glm::dvec3 pos)
+{
+	modelMat = glm::translate(modelMat, pos);
+}
+
+void Entity::rotate(GLdouble alpha, glm::dvec3 axis)
+{
+	modelMat = glm::rotate(modelMat, alpha, axis);
+}
+
 
 // - - - - - - - - - - - - - - - - - 
 
@@ -54,15 +64,15 @@ EjesRGB::EjesRGB(GLdouble l)
 
 // - - - - - - - - - - - - - - - - - 
 
-Poligono::Poligono(GLint sides, GLdouble size, bool relleno)
+Poligono::Poligono(GLint sides, GLdouble size, bool relleno, std::string textureName)
 {
 	if(relleno)
 	{
 		// Cargar la textura
-		if (!m_texture.load("..\\bin\\assets\\windows.bmp"))
+		if (textureName != "" && !m_texture.load(textureName))
 			std::cout << "CARGA DE TEXTURA INCORRECTA\n";
 
-		m_mesh = Mesh::generateFilledPolygon(sides);
+		m_mesh = Mesh::generateFilledPolygon(sides, size);
 	}
 
 	else

@@ -15,7 +15,7 @@ public:
 	// Polígono regular de n lados, dibujado con triángulos (TRIANGLE_FAN)
 	static Mesh* generatePolygon(GLint sides, GLdouble size);
 	// Polígono regular de n lados, dibujado con líneas (LINE_LOOP)
-	static Mesh* generateFilledPolygon(GLint sides);
+	static Mesh* generateFilledPolygon(GLint sides, GLint size);
 	// Cubo con caras opacas
 	static Mesh* generateCube(GLdouble size);
 

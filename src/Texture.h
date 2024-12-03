@@ -4,6 +4,8 @@
 #include <freeglut.h>
 #include <string>
 
+const std::string TEXTURES_PATH = "..\\bin\\assets\\";
+
 class Texture
 {
 public:

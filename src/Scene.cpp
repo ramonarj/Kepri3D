@@ -39,14 +39,23 @@ void Scene::init()
 	m_entities.push_back(new EjesRGB(0.5));
 	m_entities.push_back(new Poligono(6, 0.5, false));
 	//m_entities.push_back(new Poligono(4, true));
-	m_entities.push_back(new Cubo(0.5));
+	// Cubo
+	Cubo* c = new Cubo(1);
+	m_entities.push_back(c);
+	c->setPosition({ -1.5,0,0 });
+
+	// Suelo
+	Poligono* suelo = new Poligono(4, 8, true, "Zelda.bmp");
+	suelo->setPosition({ 0,-0.5,0 });
+	suelo->rotate(-3.1416 / 2, dvec3(1,0,0));
+	m_entities.push_back(suelo);
 }
 
 void Scene::render()
 {
 	//Pintar todas las entidades
-	//for (Entity* e : m_entities)
-	//	e->render();
+	for (Entity* e : m_entities)
+		e->render(m_camera->getViewMat());
 
 	//Algunas variables locales para facilitar la puesta en escena
 	Viewport * view = m_camera->getVP();
@@ -72,7 +81,7 @@ void Scene::render()
 	// Cubo sin rellenar
 	//m_entities[0]->render(m_camera->getViewMat());
 	//m_entities[3]->render(m_camera->getViewMat());
-	m_entities[2]->render(m_camera->getViewMat());
+	//m_entities[2]->render(m_camera->getViewMat());
 
 	view->setSize(w, h); //Volvemos a dejar el viewPort como estaba
 
