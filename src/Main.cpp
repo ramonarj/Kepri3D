@@ -25,10 +25,13 @@ Viewport viewport(800, 600);
 Camera camera(&viewport);
 Scene scene(&camera);
 
+// Auxiliares
 GLuint last_update_tick = 0;
 bool animationsOn = true;
 bool fullscreen = false;
 double velCamara = 0.05;
+glm::dvec2 mousePos(400, 300);
+int moving = 0; // -1-> atrás, 1-> adelante
 
 // Predeclaración de callbacks
 void display();
@@ -36,6 +39,8 @@ void key(unsigned char key, int x, int y);
 void specialKey(int key, int x, int y);
 void resize(int newWidth, int newHeight);
 void update();
+void motion(int x, int y);
+void mouse(int button, int state, int x, int y);
 
 int main(int argc, char*argv[])
 {
@@ -52,7 +57,11 @@ int main(int argc, char*argv[])
 
 	glutInitDisplayMode(GLUT_RGBA | GLUT_DOUBLE | GLUT_DEPTH); // | GLUT_MULTISAMPLE);   // | GLUT_STENCIL
 
-	int win = glutCreateWindow("Informática Gráfica");  // nombre de la ventana
+	int win = glutCreateWindow("Kepri3D");  // nombre de la ventana
+
+	// Hacer que el cursor sea invisible y moverlo al centro de la ventana
+	glutSetCursor(GLUT_CURSOR_NONE);
+	glutWarpPointer(400, 300);
 
 	//glutFullScreen(); // pantalla completa
 
@@ -68,8 +77,13 @@ int main(int argc, char*argv[])
 
 	// Se llama cada frame, aunque no se reciban eventos de la ventana (para animaciones)
 	glutIdleFunc(update);
-	//glutMouseFunc(mouse);
-	//glutMotionFunc(motion);
+	// Se llama cuando el ratón se mueve por la ventana sin tener ningún botón pulsado
+	glutPassiveMotionFunc(motion);
+	// Se llama cuando se pulsa alguno de los botones del ratón
+	glutMouseFunc(mouse);
+	// Se llama cuando el ratón se mueve por la ventana teniendo pulsado alguno de los botones
+	//glutMotionFunc(clickedMotion);
+
 
 	// Información de debug
 	std::cout << glGetString(GL_VERSION) << '\n';
@@ -107,6 +121,10 @@ void key(unsigned char key, int x, int y)
 	switch(key)
 	{
 		float alfaValue;
+	// Prueba de teletransporte de ratón
+	case 'c':
+		//glutWarpPointer(200, 200);
+		break;
 	/* Tecla de escape: salir de la aplicación */
 	case 27:  
 		glutLeaveMainLoop();
@@ -236,9 +254,64 @@ void update()
 {
 	GLuint deltaTime = glutGet(GLUT_ELAPSED_TIME) - last_update_tick;
 	last_update_tick = glutGet(GLUT_ELAPSED_TIME);
+	// Movimiento de la cámara
+	if (moving == 1)
+		camera.moveFB(velCamara / 50);
+	else if (moving == -1)
+		camera.moveFB(-velCamara / 50);
+
+	// Animaciones de la escena
 	if(animationsOn)
 	{
 		scene.update(deltaTime); //Llamamos al update y al render
 		display();
+	}
+}
+
+void motion(int x, int y)
+{
+	glm::dvec2 diff((double)x - mousePos.x, (double)y - mousePos.y);
+
+	//std::cout << x << ", " << y << std::endl;
+	//std::cout << diff.x << ", " << diff.y << std::endl;
+
+
+	camera.yaw(-diff.x * 0.002);
+	camera.pitch(-diff.y * 0.002);
+
+
+	// Volver a dejarlo en el centro s
+	glutWarpPointer(400, 300);
+	// Repintar
+	//glutPostRedisplay();
+}
+
+void mouse(int button, int state, int x, int y)
+{
+	// Clic izquierdo
+	if (button == 0)
+	{
+		if (state == 0)
+			moving = 1;
+		else if (state == 1)
+			moving = 0;
+	}
+
+	// Clic derecho
+	else if (button == 2)
+	{
+		if (state == 0)
+			moving = -1;
+		else if (state == 1)
+			moving = 0;
+	}
+	// Rueda del ratón
+	if(button == 3)
+	{
+		camera.roll(0.05);
+	}
+	else if(button == 4)
+	{
+		camera.roll(-0.05);
 	}
 }
