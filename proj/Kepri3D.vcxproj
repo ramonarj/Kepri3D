@@ -88,13 +88,13 @@
     <IntDir>$(SolutionDir)inter\$(Platform)\$(Configuration)\</IntDir>
     <TargetName>$(ProjectName)_debug</TargetName>
     <IncludePath>$(SolutionDir)dependencies\glm-1.0.1\glm\;$(SolutionDir)dependencies\freeglut-3.6.0\include\GL\;$(IncludePath)</IncludePath>
-    <LibraryPath>$(SolutionDir)dependencies\freeglut-3.6.0\libs\;$(LibraryPath)</LibraryPath>
+    <LibraryPath>$(SolutionDir)dependencies\freeglut-3.6.0\VisualC\lib\$(Configuration)\;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <OutDir>$(SolutionDir)bin\</OutDir>
     <IntDir>$(SolutionDir)inter\$(Platform)\$(Configuration)\</IntDir>
     <IncludePath>$(SolutionDir)dependencies\glm-1.0.1\glm\;$(SolutionDir)dependencies\freeglut-3.6.0\include\GL\;$(IncludePath)</IncludePath>
-    <LibraryPath>$(SolutionDir)dependencies\freeglut-3.6.0\libs\;$(LibraryPath)</LibraryPath>
+    <LibraryPath>$(SolutionDir)dependencies\freeglut-3.6.0\VisualC\lib\$(Configuration)\;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
