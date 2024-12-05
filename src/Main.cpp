@@ -41,6 +41,7 @@ void resize(int newWidth, int newHeight);
 void update();
 void motion(int x, int y);
 void mouse(int button, int state, int x, int y);
+void clickedMotion(int x, int y);
 
 int main(int argc, char*argv[])
 {
@@ -82,7 +83,7 @@ int main(int argc, char*argv[])
 	// Se llama cuando se pulsa alguno de los botones del ratón
 	glutMouseFunc(mouse);
 	// Se llama cuando el ratón se mueve por la ventana teniendo pulsado alguno de los botones
-	//glutMotionFunc(clickedMotion);
+	glutMotionFunc(clickedMotion);
 
 
 	// Información de debug
@@ -288,6 +289,7 @@ void motion(int x, int y)
 
 void mouse(int button, int state, int x, int y)
 {
+	//std::cout << "a";
 	// Clic izquierdo
 	if (button == 0)
 	{
@@ -314,4 +316,9 @@ void mouse(int button, int state, int x, int y)
 	{
 		camera.roll(-0.05);
 	}
+}
+
+void clickedMotion(int x, int y)
+{
+	motion(x, y);
 }
