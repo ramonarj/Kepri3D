@@ -1,16 +1,23 @@
 #include "Mesh.h"
 
-#include <glut.h>
-
 #include <iostream>
 
 using namespace glm;
 
 #define PI 3.14159265358979323846
 
-void Mesh::draw()
-{	
-	// 1) Activar las matrices que vamos a usar y pasarlas a la GPU
+Mesh::~Mesh()
+{
+	if(texCoords != nullptr)
+		delete[] texCoords;
+	if(colores != nullptr)
+		delete[] colores;
+	if(vertices != nullptr)
+		delete[] vertices;
+}
+
+void Mesh::enableArrays()
+{
 	// Vértices
 	glEnableClientState(GL_VERTEX_ARRAY);
 	glVertexPointer(3, GL_DOUBLE, 0, vertices);
@@ -26,15 +33,26 @@ void Mesh::draw()
 		glEnableClientState(GL_TEXTURE_COORD_ARRAY);
 		glTexCoordPointer(2, GL_DOUBLE, 0, texCoords);
 	}
+}
 
-	// 2) Dibuja las matrices pasadas a la GPU con el tipo de primitivas dado (type)
+void Mesh::disableArrays()
+{
+	glDisableClientState(GL_TEXTURE_COORD_ARRAY);
+	glDisableClientState(GL_COLOR_ARRAY);
+	glDisableClientState(GL_VERTEX_ARRAY);
+}
+
+void Mesh::draw()
+{	
+	// 1) Activar los arrays que vamos a usar y pasarlos a la GPU
+	enableArrays();
+
+	// 2) Dibuja los arrays pasados a la GPU con la primitiva dada (type)
 	glDrawArrays(type, 0, numVertices);
 	//glArrayElement() -> esto dibujaría solamente 1 vértice
 
 	// 3) Volver a dejarlo todo como estaba
-	glDisableClientState(GL_COLOR_ARRAY);
-	glDisableClientState(GL_VERTEX_ARRAY);
-	glDisableClientState(GL_TEXTURE_COORD_ARRAY);
+	disableArrays();
 }
 
 Mesh* Mesh::generateAxesRGB(GLdouble l)
@@ -57,10 +75,6 @@ Mesh* Mesh::generateAxesRGB(GLdouble l)
 	m->vertices[4] = dvec3(0, 0, 0);
 	m->vertices[5] = dvec3(0, 0, l);
 
-	// Para probar el DEPTH_TEST
-	//m->vertices[6] = dvec3(-2 * l, 0, l); // muy lejos
-	//m->vertices[7] = dvec3(2 * l, 0, l);
-
 	/* Colores para cada vértice */
 	m->colores = new dvec4[m->numVertices];
 	m->colores[0] = dvec4(1, 0, 0, 1); //rojo
@@ -69,9 +83,6 @@ Mesh* Mesh::generateAxesRGB(GLdouble l)
 	m->colores[3] = dvec4(0, 1, 0, 1);
 	m->colores[4] = dvec4(0, 0, 1, 1); //azul
 	m->colores[5] = dvec4(0, 0, 1, 1);
-
-	//m->colores[6] = dvec4(0, 0, 0, 0); //negro
-	//m->colores[7] = dvec4(0, 0, 0, 1);
 
 	// devuelve la malla
 	return m;
@@ -145,7 +156,7 @@ Mesh* Mesh::generateFilledPolygon(GLint sides, GLint size)
 	return m;
 }
 
-Mesh* Mesh::generateCube(GLdouble size)
+Mesh* Mesh::generateCubeSides(GLdouble size)
 {
 	//float f;
 	//glGetFloatv(GL_FRONT_FACE, &f);
@@ -159,18 +170,19 @@ Mesh* Mesh::generateCube(GLdouble size)
 	/* Array de vértices */
 	GLdouble halfSize = size / 2.0;
 	m->vertices = new dvec3[m->numVertices];
-	//
+	// Frente
 	m->vertices[0] = dvec3(-halfSize, halfSize, halfSize);
 	m->vertices[1] = dvec3(-halfSize, -halfSize, halfSize);
 	m->vertices[2] = dvec3(halfSize, halfSize, halfSize);
 	m->vertices[3] = dvec3(halfSize, -halfSize, halfSize);
 
+	// Atrás
 	m->vertices[4] = dvec3(halfSize, halfSize, -halfSize);
 	m->vertices[5] = dvec3(halfSize, -halfSize, -halfSize);
-
 	m->vertices[6] = dvec3(-halfSize, halfSize, -halfSize);
 	m->vertices[7] = dvec3(-halfSize, -halfSize, -halfSize);
 
+	// Cerrar el 'loop'
 	m->vertices[8] = dvec3(-halfSize, halfSize, halfSize);
 	m->vertices[9] = dvec3(-halfSize, -halfSize, halfSize);
 
@@ -184,5 +196,118 @@ Mesh* Mesh::generateCube(GLdouble size)
 	}
 
 	// devuelve la malla
+	return m;
+}
+
+
+// - - - - - - - - - - - - - - - - - - -
+
+void IndexMesh::draw()
+{
+	// Activa los arrays de vértices, colores, texturas... y el de índices
+	Mesh::enableArrays();
+	if (indices != nullptr)
+	{
+		glEnableClientState(GL_INDEX_ARRAY);
+		glIndexPointer(GL_UNSIGNED_INT, 0, indices);
+	}
+
+	// Dibuja los triángulos definidos por la tabla de índices
+	glDrawElements(GL_TRIANGLES, numIndices, GL_UNSIGNED_INT, indices);
+
+	// Dejarlo todo como estaba
+	glDisableClientState(GL_INDEX_ARRAY);
+	Mesh::disableArrays();
+}
+
+IndexMesh* IndexMesh::generateCube(GLdouble size)
+{
+	IndexMesh* m = new IndexMesh();
+	m->type = GL_TRIANGLES; // irrelevante, porque no se usa
+	m->numVertices = 8;
+	m->numIndices = 36; // 6 caras x 2 triángulos/cara x 3 vértices/triángulo
+
+	/* Array de vértices */
+	GLdouble halfSize = size / 2.0;
+	m->vertices = new dvec3[m->numVertices];
+	// Cara frontal
+	m->vertices[0] = dvec3(-halfSize, halfSize, halfSize);
+	m->vertices[1] = dvec3(-halfSize, -halfSize, halfSize);
+	m->vertices[2] = dvec3(halfSize, -halfSize, halfSize);
+	m->vertices[3] = dvec3(halfSize, halfSize, halfSize);
+	// Cara trasera
+	m->vertices[4] = dvec3(-halfSize, halfSize, -halfSize);
+	m->vertices[5] = dvec3(-halfSize, -halfSize, -halfSize);
+	m->vertices[6] = dvec3(halfSize, -halfSize, -halfSize);
+	m->vertices[7] = dvec3(halfSize, halfSize, -halfSize);
+
+	/* Colores para cada vértice */
+	m->colores = new dvec4[m->numVertices];
+	m->colores[0] = dvec4(1.0, 0.0, 0.0, 1.0);
+	for (int i = 1; i < m->numVertices; i++)
+	{
+		m->colores[i] = dvec4(0.2, 0.1, 0.2, 1);
+	}
+	// De prueba
+	m->colores[2] = dvec4(0.0, 0.0, 1.0, 1.0);
+	m->colores[7] = dvec4(0.0, 1.0, 0.0, 1.0);
+
+	/* Especificar los triángulos */
+	m->indices = new GLuint[m->numIndices];
+	// Tiene que haber una forma mejor 
+	// Frente
+	m->indices[0] = 0; 
+	m->indices[1] = 1;
+	m->indices[2] = 3;
+	
+	m->indices[3] = 3;
+	m->indices[4] = 1;
+	m->indices[5] = 2;
+
+	// Derecha
+	m->indices[6] = 3;
+	m->indices[7] = 2;
+	m->indices[8] = 7;
+
+	m->indices[9] = 7;
+	m->indices[10] = 2;
+	m->indices[11] = 6;
+
+	// Izquierda
+	m->indices[12] = 4;
+	m->indices[13] = 5;
+	m->indices[14] = 0;
+
+	m->indices[15] = 0;
+	m->indices[16] = 5;
+	m->indices[17] = 1;
+
+	// Arriba
+	m->indices[18] = 4;
+	m->indices[19] = 0;
+	m->indices[20] = 7;
+
+	m->indices[21] = 7;
+	m->indices[22] = 0;
+	m->indices[23] = 3;
+
+	// Abajo
+	m->indices[24] = 1;
+	m->indices[25] = 5;
+	m->indices[26] = 2;
+
+	m->indices[27] = 2;
+	m->indices[28] = 5;
+	m->indices[29] = 6;
+
+	// Atrás
+	m->indices[30] = 7;
+	m->indices[31] = 6;
+	m->indices[32] = 4;
+
+	m->indices[33] = 4;
+	m->indices[34] = 6;
+	m->indices[35] = 5;
+
 	return m;
 }

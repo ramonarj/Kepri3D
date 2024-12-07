@@ -97,7 +97,7 @@ void Poligono::render(glm::dmat4 const& viewMat)
 
 Cubo::Cubo(GLdouble size)
 {
-	m_mesh = Mesh::generateCube(size);
+	m_mesh = IndexMesh::generateCube(size);
 }
 
 void Cubo::render(glm::dmat4 const& viewMat)

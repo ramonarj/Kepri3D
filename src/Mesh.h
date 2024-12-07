@@ -7,7 +7,13 @@
 class Mesh
 {
 public:
-	void draw();
+	/* Constructora */
+	Mesh() : numVertices (0), type(GL_POINTS), vertices(nullptr), colores(nullptr), texCoords(nullptr) {}
+	/* Destructora */
+	virtual ~Mesh();
+
+
+	virtual void draw();
 
 	/* Creación de mallas de los distintos objetos */
 	// Ejes RGB
@@ -17,9 +23,9 @@ public:
 	// Polígono regular de n lados, dibujado con líneas (LINE_LOOP)
 	static Mesh* generateFilledPolygon(GLint sides, GLint size);
 	// Cubo con caras opacas
-	static Mesh* generateCube(GLdouble size);
+	static Mesh* generateCubeSides(GLdouble size);
 
-private:
+protected:
 	/* Número total de vértices */
 	int numVertices;
 
@@ -34,6 +40,39 @@ private:
 
 	/* Array de coordenadas de textura para cada uno de los vértices */
 	glm::dvec2* texCoords;
+
+	// Métodos auxiliares
+	/* Activa los arrays de vértices, colores y texturas */
+	void enableArrays();
+
+	/* Desactiva los arrays de vértices, colores y texturas */
+	void disableArrays();
+};
+
+
+// - - - - - - - - - - - - - - 
+
+class IndexMesh : public Mesh
+{
+public:
+	/* Constructora por defecto */
+	IndexMesh() : indices (nullptr), numIndices(0) {}
+	/* Destructora */
+	virtual ~IndexMesh() { delete[] indices; }
+
+	/* Pinta la malla pero usando la tabla de índices, y no otras primitivas */
+	void draw() override;
+
+	/* Creación de mallas con triángulos indexados */
+	// Cubo cerrado
+	static IndexMesh* generateCube(GLdouble size);
+
+private:
+	/* Tabla de índices para formar los triángulos */
+	GLuint* indices;
+
+	/* Variable auxiliar para ahorrar cálculos (= numTriangulos * 3) */
+	GLuint numIndices;
 };
 
 #endif
