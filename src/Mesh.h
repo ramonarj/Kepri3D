@@ -67,6 +67,9 @@ public:
 	// Cubo cerrado
 	static IndexMesh* generateCube(GLdouble size);
 
+	// Esfera
+	static IndexMesh* generateSphere(GLuint subdivisions);
+
 private:
 	/* Tabla de índices para formar los triángulos */
 	GLuint* indices;

@@ -48,7 +48,13 @@ void Scene::init()
 	Poligono* suelo = new Poligono(4, 8, true, "Zelda.bmp");
 	suelo->setPosition({ 0,-0.5,0 });
 	suelo->rotate(-3.1416 / 2, dvec3(1,0,0));
-	m_entities.push_back(suelo);
+	//m_entities.push_back(suelo);
+
+	// Esfera
+	Esfera* esfera = new Esfera(20);
+	//esfera->setPosition({ 0,-0.5,0 });
+	//esfera->rotate(-3.1416 / 2, dvec3(1, 0, 0));
+	m_entities.push_back(esfera);
 }
 
 void Scene::render()

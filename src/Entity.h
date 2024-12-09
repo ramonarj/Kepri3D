@@ -118,4 +118,14 @@ public:
 	void render(glm::dmat4 const& viewMat) override;
 };
 
+// - - - - - - - - - - - - 
+
+class Esfera : public Entity
+{
+public:
+	Esfera(GLuint subdivisiones);
+	~Esfera() { };
+	void render(glm::dmat4 const& viewMat) override;
+};
+
 #endif

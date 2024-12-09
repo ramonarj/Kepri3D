@@ -109,3 +109,19 @@ void Cubo::render(glm::dmat4 const& viewMat)
 	Entity::render(viewMat);
 	glPolygonMode(GL_FRONT_AND_BACK, GL_FILL); // el predeterminado
 }
+
+
+// - - - - - - - - - - - - - - - - - 
+
+Esfera::Esfera(GLuint subdivisiones)
+{
+	m_mesh = IndexMesh::generateSphere(subdivisiones);
+}
+
+void Esfera::render(glm::dmat4 const& viewMat)
+{
+	glPolygonMode(GL_FRONT, GL_LINE);
+	glPolygonMode(GL_BACK, GL_LINE);
+	Entity::render(viewMat);
+	glPolygonMode(GL_FRONT_AND_BACK, GL_FILL); // el predeterminado
+}

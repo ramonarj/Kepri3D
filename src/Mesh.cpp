@@ -253,61 +253,141 @@ IndexMesh* IndexMesh::generateCube(GLdouble size)
 	m->colores[7] = dvec4(0.0, 1.0, 0.0, 1.0);
 
 	/* Especificar los triángulos */
+	m->indices = new GLuint[m->numIndices]
+	{
+		// Frente
+		0, 1, 3,
+		3, 1, 2,
+
+		// Derecha
+		3, 2, 7,
+		7, 2, 6,
+
+		// Izquierda
+		4, 5, 0,
+		0, 5, 1,
+
+		// Arriba
+		4, 0, 7,
+		7, 0, 3,
+
+		// Abajo
+		1, 5, 2,
+		2, 5, 6,
+
+		// Atrás
+		7, 6, 4,
+		4, 6, 5
+	};
+
+	return m;
+}
+
+IndexMesh* IndexMesh::generateSphere(GLuint subdivisions)
+{
+	IndexMesh* m = new IndexMesh();
+	m->type = GL_TRIANGLES; 
+	m->numVertices = subdivisions * (subdivisions - 1)
+		+ 2; // vértice superior e inferior
+	m->numIndices = subdivisions * 2 //triángulos de arriba y de abajo
+		+ ((subdivisions - 2) * subdivisions * 2); // triángulos del resto del cuerpo
+	m->numIndices *= 3; // 3 índices para cada triángulo
+
+
+	std::cout << m->numIndices << std::endl;
+
+	/* Array de  vértices */
+	m->vertices = new dvec3[m->numVertices];
+	m->vertices[0] = { 0, 1, 0 };
+	m->vertices[m->numVertices - 1] = { 0, -1, 0 };
+
+	GLdouble angleIncr = 2 * PI / subdivisions;
+	GLdouble angleIncrY = PI / subdivisions;
+	GLdouble initialAngle = PI / 2; // 90 grados
+	// Plano cenital
+	int k = 1;
+	for(int i = 1; i < subdivisions; i++)
+	{
+		GLdouble posY = sin(initialAngle + angleIncrY * i);
+		GLdouble radius = cos(initialAngle - angleIncrY * i);
+		// Dibujar cada uno de los cortes cenitales en Y = posY
+		for(int j = 0; j < subdivisions; j++)
+		{
+			GLdouble posX = -radius * cos(initialAngle + angleIncr * j);
+			GLdouble posZ = radius * sin(initialAngle + angleIncr * j);
+			m->vertices[k] = { posX,posY,posZ };
+			//std::cout << "V" << k << ": (" << posX << ", " << posY << ", " << posZ << ")" << std::endl;
+			k++;
+		}
+	}
+
+	/* Array de colores */
+	m->colores = new dvec4[m->numVertices];
+	for (int i = 0; i < m->numVertices; i++)
+	{
+		m->colores[i] = dvec4(1, 0.5, 0, 1);
+	}
+	//m->colores[1] = dvec4( 0, 1, 0, 1 );
+
+
+	/* Especificar los triángulos (array de índices) */
 	m->indices = new GLuint[m->numIndices];
-	// Tiene que haber una forma mejor 
-	// Frente
-	m->indices[0] = 0; 
-	m->indices[1] = 1;
-	m->indices[2] = 3;
-	
-	m->indices[3] = 3;
-	m->indices[4] = 1;
-	m->indices[5] = 2;
+	for (int i = 0; i < m->numIndices; i++)
+		m->indices[i] = 0;
+	// "Tapa" de arriba"
+	for(int i = 0; i < subdivisions; i++)
+	{
+		m->indices[i * 3] = 0;
+		m->indices[i * 3 + 1] = i + 1;
+		m->indices[i * 3 + 2] = i + 2;
+	}
+	m->indices[(subdivisions - 1) * 3 + 2] = 1; //cerrar el círculo
 
-	// Derecha
-	m->indices[6] = 3;
-	m->indices[7] = 2;
-	m->indices[8] = 7;
+	// Cuerpo de la esfera
+	int count = 3 * subdivisions;
+	for(int i = 1; i < subdivisions - 1; i++) // < subdivisions - 1
+	{
+		GLuint v1, v2, v3, v4;
+		// Pintar cuadrados en cada nivel de la esfera
+		for (int j = 1; j <= subdivisions; j++)
+		{
+			//  v1  v3
+			//  |  / |
+			//  | /  |
+			//  v2   v4
+			v1 = subdivisions * (i - 1) + j;
+			v2 = subdivisions * i + j;
+			v3 = subdivisions * (i - 1) + j + 1;
+			v4 = subdivisions * i + j + 1;
+			if(j == subdivisions) // un caso especial, habría mejor forma de hacerlo
+			{
+				v3 -= subdivisions;
+				v4 -= subdivisions;
+			}
 
-	m->indices[9] = 7;
-	m->indices[10] = 2;
-	m->indices[11] = 6;
+			// Primer triángulo del cuadrado
+			m->indices[count] = v1;
+			m->indices[count + 1] = v2;
+			m->indices[count + 2] = v3;
+			count += 3;
 
-	// Izquierda
-	m->indices[12] = 4;
-	m->indices[13] = 5;
-	m->indices[14] = 0;
+			// Segundo triángulo del cuadrado
+			m->indices[count] = v3;
+			m->indices[count + 1] = v2;
+			m->indices[count + 2] = v4;
+			count += 3;
+		}
+	}
 
-	m->indices[15] = 0;
-	m->indices[16] = 5;
-	m->indices[17] = 1;
-
-	// Arriba
-	m->indices[18] = 4;
-	m->indices[19] = 0;
-	m->indices[20] = 7;
-
-	m->indices[21] = 7;
-	m->indices[22] = 0;
-	m->indices[23] = 3;
-
-	// Abajo
-	m->indices[24] = 1;
-	m->indices[25] = 5;
-	m->indices[26] = 2;
-
-	m->indices[27] = 2;
-	m->indices[28] = 5;
-	m->indices[29] = 6;
-
-	// Atrás
-	m->indices[30] = 7;
-	m->indices[31] = 6;
-	m->indices[32] = 4;
-
-	m->indices[33] = 4;
-	m->indices[34] = 6;
-	m->indices[35] = 5;
+	// "Tapa" de abajo
+	for (int i = 0; i < subdivisions; i++)
+	{
+		m->indices[count] = m->numVertices - subdivisions + i - 1;
+		m->indices[count + 1] = m->numVertices - 1;
+		m->indices[count + 2] = m->numVertices - subdivisions + i;
+		count += 3;
+	}
+	m->indices[count - 1] = m->numVertices - subdivisions - 1; //cerrar el círculo
 
 	return m;
 }
