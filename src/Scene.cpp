@@ -41,8 +41,9 @@ void Scene::init()
 	//m_entities.push_back(new Poligono(4, true));
 	// Cubo
 	Cubo* c = new Cubo(1);
-	m_entities.push_back(c);
 	c->setPosition({ -1.5,0,0 });
+	m_entities.push_back(c);
+
 
 	// Suelo
 	Poligono* suelo = new Poligono(4, 8, true, "Zelda.bmp");
@@ -55,6 +56,12 @@ void Scene::init()
 	//esfera->setPosition({ 0,-0.5,0 });
 	//esfera->rotate(-3.1416 / 2, dvec3(1, 0, 0));
 	m_entities.push_back(esfera);
+
+	// Rejilla
+	Grid* grid = new Grid(20, 3, 0.2, 0.8);
+	grid->setPosition({ 0,-1,0 });
+	//esfera->rotate(-3.1416 / 2, dvec3(1, 0, 0));
+	m_entities.push_back(grid);
 }
 
 void Scene::render()
@@ -84,10 +91,6 @@ void Scene::render()
 	//// Podemos dibujar un mismo objeto todas las veces que queramos (ejes extra)
 	//m_entities[0]->render(m_camera->getViewMat()); 
 
-	// Cubo sin rellenar
-	//m_entities[0]->render(m_camera->getViewMat());
-	//m_entities[3]->render(m_camera->getViewMat());
-	//m_entities[2]->render(m_camera->getViewMat());
 
 	view->setSize(w, h); //Volvemos a dejar el viewPort como estaba
 

@@ -125,3 +125,19 @@ void Esfera::render(glm::dmat4 const& viewMat)
 	Entity::render(viewMat);
 	glPolygonMode(GL_FRONT_AND_BACK, GL_FILL); // el predeterminado
 }
+
+// - - - - - - - - - - - - - - - - - 
+
+Grid::Grid(GLuint filas, GLuint columnas, GLdouble tamFila, GLdouble tamColumna)
+{
+	m_mesh = IndexMesh::generateGrid(filas, columnas, tamFila, tamColumna);
+}
+
+void Grid::render(glm::dmat4 const& viewMat)
+{
+	glPolygonMode(GL_FRONT, GL_LINE);
+	//glPolygonMode(GL_BACK, GL_LINE);
+	Entity::render(viewMat);
+	glPolygonMode(GL_FRONT_AND_BACK, GL_FILL); // el predeterminado
+}
+

@@ -3,6 +3,7 @@
 
 #include <glm.hpp>
 #include <freeglut.h>
+#include <string>
 
 class Mesh
 {
@@ -69,6 +70,11 @@ public:
 
 	// Esfera
 	static IndexMesh* generateSphere(GLuint subdivisions);
+
+	// Rejilla
+	static IndexMesh* generateGrid(GLint filas, GLint columnas, GLdouble tamFila, GLdouble tamColumna);
+	// Terreno
+	static IndexMesh* generateTerrain(std::string filename);
 
 private:
 	/* Tabla de índices para formar los triángulos */

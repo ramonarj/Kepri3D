@@ -128,4 +128,14 @@ public:
 	void render(glm::dmat4 const& viewMat) override;
 };
 
+// - - - - - - - - - - - - 
+
+class Grid : public Entity
+{
+public:
+	Grid(GLuint filas, GLuint columnas, GLdouble tamFila, GLdouble tamColumna);
+	~Grid() { };
+	void render(glm::dmat4 const& viewMat) override;
+};
+
 #endif

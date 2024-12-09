@@ -391,3 +391,68 @@ IndexMesh* IndexMesh::generateSphere(GLuint subdivisions)
 
 	return m;
 }
+
+
+IndexMesh* IndexMesh::generateGrid(GLint filas, GLint columnas, GLdouble tamFila, GLdouble tamColumna)
+{
+	IndexMesh* m = new IndexMesh();
+	m->type = GL_TRIANGLES;
+	m->numVertices = (filas + 1) * (columnas + 1);
+	m->numIndices = filas * columnas * 2 * 3;
+
+	/* Lista de vértices */
+	m->vertices = new dvec3[m->numVertices];
+	GLuint k = 0; //var. auxiliar
+	GLdouble iniZ = -filas / 2.0 * tamFila;
+	for(int i = 0; i < filas + 1; i++)
+	{
+		GLdouble iniX = -columnas / 2.0 * tamColumna;
+		for(int j = 0; j < columnas + 1; j++)
+		{
+			//GLdouble posX = -columnas / 2.0 * + tamColumna * (GLdouble)j;
+			//GLdouble posZ = -filas / 2.0 + tamFila * (GLdouble)i;
+			//std::cout << "X: " << posX << ", Z: " << posZ << std::endl;
+			m->vertices[k] = { iniX + tamColumna * j, 0, iniZ + tamFila * i };
+			k++;
+		}
+	}
+
+	/* Lista de colores */
+	m->colores = new dvec4[m->numVertices];
+	for (int i = 0; i < m->numVertices; i++)
+		m->colores[i] = dvec4(1, 0.5, 0, 1);
+
+	/* Lista de triángulos (índices) */
+	m->indices = new GLuint[m->numIndices];
+	k = 0;
+	for(int i = 0; i < filas; i++)
+	{
+		// Pintar cada cuadrado como 2 triángulos
+		for (int j = 0; j < columnas; j++)
+		{
+			// Primer triángulo
+			m->indices[k] = i * (columnas + 1) + j;
+			m->indices[k + 1] = (i + 1) * (columnas + 1) + j;
+			m->indices[k + 2] = i * (columnas + 1) + j + 1;
+			k += 3;
+
+			// Segundo triángulo
+			m->indices[k] = i * (columnas + 1) + j + 1;
+			m->indices[k + 1] = (i + 1) * (columnas + 1) + j;
+			m->indices[k + 2] = (i + 1) * (columnas + 1) + j + 1;
+			k += 3;
+		}
+	}
+
+	return m;
+}
+
+
+IndexMesh* IndexMesh::generateTerrain(std::string filename)
+{
+	IndexMesh* m = generateGrid(3, 3, 1, 1);
+
+
+
+	return m;
+}
