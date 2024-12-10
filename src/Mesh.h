@@ -66,7 +66,7 @@ public:
 
 	/* Creación de mallas con triángulos indexados */
 	// Cubo cerrado
-	static IndexMesh* generateCube(GLdouble size);
+	static IndexMesh* generateCube(GLdouble size, bool textured, bool equalFaces = true);
 
 	// Esfera
 	static IndexMesh* generateSphere(GLuint subdivisions);

@@ -35,15 +35,22 @@ void Scene::init()
 
 	//glEnable(GL_CULL_FACE); //cuidado con esto
 
-	// Crear y meter todas las entidades
+	/* Crear y meter todas las entidades */
+	// Ejes RGB
 	m_entities.push_back(new EjesRGB(0.5));
-	m_entities.push_back(new Poligono(6, 0.5, false));
-	//m_entities.push_back(new Poligono(4, true));
-	// Cubo
-	Cubo* c = new Cubo(1);
+	//m_entities.push_back(new Poligono(6, 0.5, false));
+	// Polígono relleno
+	m_entities.push_back(new Poligono(4, 1, true, "Zelda.bmp"));
+
+	// Cubo con la misma textura en todas las caras
+	Cubo* c = new Cubo(1, "Zelda.bmp");
 	c->setPosition({ -1.5,0,0 });
 	m_entities.push_back(c);
 
+	// Cubo con distintas texturas
+	Cubo* c2 = new Cubo(1, "orientacion.bmp", false);
+	c2->setPosition({ 1.5,0,0 });
+	m_entities.push_back(c2);
 
 	// Suelo
 	Poligono* suelo = new Poligono(4, 8, true, "Zelda.bmp");

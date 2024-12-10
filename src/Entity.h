@@ -113,7 +113,7 @@ public:
 class Cubo : public Entity
 {
 public:
-	Cubo(GLdouble size);
+	Cubo(GLdouble size, std::string textureName = "", bool equalFaces = true);
 	~Cubo() { };
 	void render(glm::dmat4 const& viewMat) override;
 };

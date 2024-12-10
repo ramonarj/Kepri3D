@@ -220,65 +220,146 @@ void IndexMesh::draw()
 	Mesh::disableArrays();
 }
 
-IndexMesh* IndexMesh::generateCube(GLdouble size)
+IndexMesh* IndexMesh::generateCube(GLdouble size, bool textured, bool equalFaces)
 {
 	IndexMesh* m = new IndexMesh();
 	m->type = GL_TRIANGLES; // irrelevante, porque no se usa
-	m->numVertices = 8;
+	m->numVertices = 6 * 4; //para poder texturizar cada cara
 	m->numIndices = 36; // 6 caras x 2 triángulos/cara x 3 vértices/triángulo
 
 	/* Array de vértices */
-	GLdouble halfSize = size / 2.0;
-	m->vertices = new dvec3[m->numVertices];
-	// Cara frontal
-	m->vertices[0] = dvec3(-halfSize, halfSize, halfSize);
-	m->vertices[1] = dvec3(-halfSize, -halfSize, halfSize);
-	m->vertices[2] = dvec3(halfSize, -halfSize, halfSize);
-	m->vertices[3] = dvec3(halfSize, halfSize, halfSize);
-	// Cara trasera
-	m->vertices[4] = dvec3(-halfSize, halfSize, -halfSize);
-	m->vertices[5] = dvec3(-halfSize, -halfSize, -halfSize);
-	m->vertices[6] = dvec3(halfSize, -halfSize, -halfSize);
-	m->vertices[7] = dvec3(halfSize, halfSize, -halfSize);
+	size /= 2.0;
+	m->vertices = new dvec3[m->numVertices]
+	{
+		// Cara frontal
+		{-size, size, size},
+		{-size, -size, size},
+		{size, -size, size},
+		{size, size, size},
+
+		// Cara derecha
+		{size, size, size},
+		{size, -size, size},
+		{size, -size, -size},
+		{size, size, -size},
+
+		// Cara trasera
+		{size, size, -size},
+		{size, -size, -size},
+		{-size, -size, -size},
+		{-size, size, -size},
+
+		// Cara izquierda
+		{-size, size, -size},
+		{-size, -size, -size},
+		{-size, -size, size},
+		{-size, size, size},
+
+		// Cara superior
+		{-size, size, -size},
+		{-size, size, size},
+		{size, size, size},
+		{size, size, -size},
+
+		// Cara inferior
+		{-size, -size, size},
+		{-size, -size, -size},
+		{size, -size, -size},
+		{size, -size, size}
+	};
 
 	/* Colores para cada vértice */
 	m->colores = new dvec4[m->numVertices];
-	m->colores[0] = dvec4(1.0, 0.0, 0.0, 1.0);
-	for (int i = 1; i < m->numVertices; i++)
+	for (int i = 0; i < m->numVertices; i++)
 	{
 		m->colores[i] = dvec4(0.2, 0.1, 0.2, 1);
 	}
 	// De prueba
-	m->colores[2] = dvec4(0.0, 0.0, 1.0, 1.0);
-	m->colores[7] = dvec4(0.0, 1.0, 0.0, 1.0);
+	m->colores[0] = dvec4(1.0, 0.0, 0.0, 1.0);
+	m->colores[17] = dvec4(0, 1.0, 0.0, 1.0);
+	m->colores[15] = dvec4(0, 0.5, 1.0, 1.0);
 
 	/* Especificar los triángulos */
 	m->indices = new GLuint[m->numIndices]
+	// Para cada cara...
+	//for(int i = 0; i < 6; i++)
+	//{
+	//	// Primer triángulo
+	//	m->indices[6 * i] = i;
+	//	m->indices[6 * i + 1] = i + 1;
+	//	m->indices[6 * i + 2] = i + 3;
+
+	//	// Segundo triángulo
+	//	m->indices[6 * i + 3] = i + 3;
+	//	m->indices[6 * i + 4] = i + 3;
+	//	m->indices[6 * i + 5] = i + 3;
+	//}
 	{
 		// Frente
 		0, 1, 3,
 		3, 1, 2,
 
 		// Derecha
-		3, 2, 7,
-		7, 2, 6,
-
-		// Izquierda
-		4, 5, 0,
-		0, 5, 1,
-
-		// Arriba
-		4, 0, 7,
-		7, 0, 3,
-
-		// Abajo
-		1, 5, 2,
-		2, 5, 6,
+		4, 5, 7,
+		7, 5, 6,
 
 		// Atrás
-		7, 6, 4,
-		4, 6, 5
+		8, 9, 11,
+		11, 9, 10,
+
+		// Izquierda
+		12, 13, 15,
+		15, 13, 14,
+
+		// Arriba
+		16, 17, 19,
+		19, 17, 18,
+
+		// Abajo
+		20, 21, 23,
+		23, 21, 22,
 	};
+
+	/* Coordenadas de textura */
+	if(textured)
+	{
+		// Usar la textura completa para cada cara
+		if(equalFaces)
+		{
+			m->texCoords = new dvec2[m->numVertices];
+			for(int i = 0; i < 6; i++)
+			{
+				m->texCoords[i * 4] = { 0, 1 };
+				m->texCoords[i * 4 + 1] = { 0, 0 };
+				m->texCoords[i * 4 + 2] = { 1, 0 };
+				m->texCoords[i * 4 + 3] = { 1, 1 };
+			}
+		}
+		// Usar distintas (6) partes de la textura las distintas caras
+		else
+		{
+			m->texCoords = new dvec2[m->numVertices]
+			{
+				// Frente
+				{0.251, 0.333}, {0.251, 0}, {0.5, 0}, {0.5, 0.333},
+
+				// Derecha
+				{0.501, 0.334}, {0.75, 0.334}, {0.75, 0.66}, {0.501, 0.66},
+
+				// Atrás
+				{0.5, 0.667}, {0.5, 1}, {0.251, 1}, {0.251, 0.667},
+
+				// Izquierda
+				{0.25, 0.666}, {0, 0.666}, {0, 0.334}, {0.25, 0.334},
+
+				// Arriba
+				{0.251, 0.666}, {0.251, 0.334}, {0.5, 0.334}, {0.5, 0.666},
+
+				// Abajo
+				{1, 0.334}, {1, 0.666}, {0.75, 0.666}, {0.75, 0.334}
+			};
+		}
+	}
 
 	return m;
 }

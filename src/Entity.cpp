@@ -95,18 +95,30 @@ void Poligono::render(glm::dmat4 const& viewMat)
 
 // - - - - - - - - - - - - - - - - - 
 
-Cubo::Cubo(GLdouble size)
+Cubo::Cubo(GLdouble size, std::string textureName, bool equalFaces)
 {
-	m_mesh = IndexMesh::generateCube(size);
+	if (textureName != "")
+	{
+		// Cargar la textura
+		if (textureName != "" && !m_texture.load(textureName))
+			std::cout << "ERROR: No se pudo cargar la textura " << textureName << std::endl;
+
+		m_mesh = IndexMesh::generateCube(size, true, equalFaces);
+	}
+
+	else
+		m_mesh = IndexMesh::generateCube(size, false);
 }
 
 void Cubo::render(glm::dmat4 const& viewMat)
 {
 	glPolygonMode(GL_FRONT, GL_FILL);
 	glPolygonMode(GL_BACK, GL_LINE);
-	//glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
-	//glPolygonMode(GL_BACK, GL_FILL);
+	m_texture.bind();
+
 	Entity::render(viewMat);
+
+	m_texture.unbind();
 	glPolygonMode(GL_FRONT_AND_BACK, GL_FILL); // el predeterminado
 }
 
