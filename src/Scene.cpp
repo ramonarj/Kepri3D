@@ -69,6 +69,11 @@ void Scene::init()
 	grid->setPosition({ 0,-1,0 });
 	//esfera->rotate(-3.1416 / 2, dvec3(1, 0, 0));
 	m_entities.push_back(grid);
+
+	// Terreno
+	Terrain* terrain = new Terrain("../bin/assets/terrain.raw", "terrenoTex.bmp", 0.5);
+	terrain->setPosition({ 0,-5,0 });
+	m_entities.push_back(terrain);
 }
 
 void Scene::render()

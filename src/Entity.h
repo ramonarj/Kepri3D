@@ -138,4 +138,15 @@ public:
 	void render(glm::dmat4 const& viewMat) override;
 };
 
+// - - - - - - - - - - - - 
+
+class Terrain : public Entity
+{
+public:
+	/* Crea un terreno con la información de 'filename' y la textura de 'textureName' */
+	Terrain(std::string filename, std::string textureName, GLdouble scale);
+	~Terrain() { };
+	void render(glm::dmat4 const& viewMat) override;
+};
+
 #endif

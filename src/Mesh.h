@@ -74,7 +74,7 @@ public:
 	// Rejilla
 	static IndexMesh* generateGrid(GLint filas, GLint columnas, GLdouble tamFila, GLdouble tamColumna);
 	// Terreno
-	static IndexMesh* generateTerrain(std::string filename);
+	static IndexMesh* generateTerrain(std::string filename, GLdouble scale);
 
 private:
 	/* Tabla de índices para formar los triángulos */

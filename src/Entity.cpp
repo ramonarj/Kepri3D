@@ -153,3 +153,25 @@ void Grid::render(glm::dmat4 const& viewMat)
 	glPolygonMode(GL_FRONT_AND_BACK, GL_FILL); // el predeterminado
 }
 
+// - - - - - - - - - - - - - - - - - 
+
+Terrain::Terrain(std::string filename, std::string textureName, GLdouble scale)
+{
+	if(textureName != "")
+	{
+		if(!m_texture.load(textureName))
+			std::cout << "ERROR: No se pudo cargar la textura " << textureName << std::endl;
+	}
+	m_mesh = IndexMesh::generateTerrain(filename, scale);
+}
+
+void Terrain::render(glm::dmat4 const& viewMat)
+{
+	glPolygonMode(GL_FRONT, GL_FILL);
+	//glPolygonMode(GL_BACK, GL_LINE);
+	m_texture.bind();
+	Entity::render(viewMat);
+	m_texture.unbind();
+	glPolygonMode(GL_FRONT_AND_BACK, GL_FILL); // el predeterminado
+}
+

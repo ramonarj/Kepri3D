@@ -1,6 +1,7 @@
 #include "Mesh.h"
 
 #include <iostream>
+#include <fstream>
 
 using namespace glm;
 
@@ -529,11 +530,38 @@ IndexMesh* IndexMesh::generateGrid(GLint filas, GLint columnas, GLdouble tamFila
 }
 
 
-IndexMesh* IndexMesh::generateTerrain(std::string filename)
+IndexMesh* IndexMesh::generateTerrain(std::string filename, GLdouble scale)
 {
-	IndexMesh* m = generateGrid(3, 3, 1, 1);
+	// Abrimos el archivo binario
+	std::ifstream file(filename, std::ios::binary); // "terrain.raw": 257*257 unsigned chars
+	if (!file.is_open()) 
+		return nullptr; 
 
+	// Crear la malla y leer los datos del archivo
+	IndexMesh* m = generateGrid(256, 256, scale, scale);
+	unsigned char* data = new unsigned char[m->numVertices];
+	// char = byte -> leer en data un bloque de numVertices bytes
+	file.read((char*)data, m->numVertices * sizeof(char));
+	file.close();
 
+	// modificar la coordenada Y de los vértices con los datos de data (*0.5)
+	for (int i = 0; i < m->numVertices; i++)
+	{
+		m->vertices[i].y = int(data[i]) * 0.05 * scale;
+	}
+	delete []data;
+
+	// generar coordenadas de textura -> recorrido de vértices
+	m->texCoords = new dvec2[m->numVertices];
+	GLdouble iniPos = m->vertices[0].x;
+	for(int i = 0; i < m->numVertices; i++)
+	{
+		m->texCoords[i] = { (-iniPos + m->vertices[i].x) / (256.0 * scale), 
+			1 - (-iniPos + m->vertices[i].z) / (256.0 * scale) };
+	}
+
+	// generar normales -> recorrido de triángulos
+	//
 
 	return m;
 }

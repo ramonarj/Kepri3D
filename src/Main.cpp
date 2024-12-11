@@ -29,7 +29,7 @@ Scene scene(&camera);
 GLuint last_update_tick = 0;
 bool animationsOn = true;
 bool fullscreen = false;
-double velCamara = 0.05;
+double velCamara = 0.4;
 glm::dvec2 mousePos(400, 300);
 int moving = 0; // -1-> atrás, 1-> adelante
 
