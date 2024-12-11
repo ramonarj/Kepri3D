@@ -69,7 +69,7 @@ public:
 	static IndexMesh* generateCube(GLdouble size, bool textured, bool equalFaces = true);
 
 	// Esfera
-	static IndexMesh* generateSphere(GLuint subdivisions);
+	static IndexMesh* generateSphere(GLdouble size, GLuint subdivisions, bool textured = false);
 
 	// Rejilla
 	static IndexMesh* generateGrid(GLint filas, GLint columnas, GLdouble tamFila, GLdouble tamColumna);

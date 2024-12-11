@@ -35,43 +35,74 @@ void Scene::init()
 
 	//glEnable(GL_CULL_FACE); //cuidado con esto
 
-	/* Crear y meter todas las entidades */
+	/* Texturas que vamos a usar */
+	Texture* earthTex = new Texture();
+	earthTex->load("earth24.bmp");
+	Texture* venusTex = new Texture();
+	venusTex->load("venus.bmp");
+	Texture* orientacionTex = new Texture();
+	orientacionTex->load("orientacion.bmp");
+	Texture* zeldaTex = new Texture();
+	zeldaTex->load("Zelda.bmp");
+	Texture* terrenoTex = new Texture();
+	terrenoTex->load("terrenoTex.bmp");
+
+	/* Entidades */
 	// Ejes RGB
 	m_entities.push_back(new EjesRGB(0.5));
+
+	// Polígono sin rellenar
 	//m_entities.push_back(new Poligono(6, 0.5, false));
+	
 	// Polígono relleno
-	m_entities.push_back(new Poligono(4, 1, true, "Zelda.bmp"));
+	Poligono* pol = new Poligono(4, 1, true);
+	pol->setTexture(*zeldaTex);
+	m_entities.push_back(pol);
 
 	// Cubo con la misma textura en todas las caras
-	Cubo* c = new Cubo(1, "Zelda.bmp");
+	Cubo* c = new Cubo(1, true);
+	c->setTexture(*zeldaTex);
 	c->setPosition({ -1.5,0,0 });
 	m_entities.push_back(c);
 
 	// Cubo con distintas texturas
-	Cubo* c2 = new Cubo(1, "orientacion.bmp", false);
+	Cubo* c2 = new Cubo(1, true, false);
+	c2->setTexture(*orientacionTex);
 	c2->setPosition({ 1.5,0,0 });
 	m_entities.push_back(c2);
 
 	// Suelo
-	Poligono* suelo = new Poligono(4, 8, true, "Zelda.bmp");
+	Poligono* suelo = new Poligono(4, 8, true);
+	suelo->setTexture(*zeldaTex);
 	suelo->setPosition({ 0,-0.5,0 });
 	suelo->rotate(-3.1416 / 2, dvec3(1,0,0));
 	//m_entities.push_back(suelo);
 
 	// Esfera
-	Esfera* esfera = new Esfera(20);
-	//esfera->setPosition({ 0,-0.5,0 });
-	//esfera->rotate(-3.1416 / 2, dvec3(1, 0, 0));
+	Esfera* esfera = new Esfera(1, 8);
+	esfera->setPosition({ 0,0,-2 });
 	m_entities.push_back(esfera);
+
+	// Tierra
+	Esfera* tierra = new Esfera(5, 20, true);
+	tierra->setTexture(*earthTex);
+	tierra->setPosition({ 0,10,0 });
+	m_entities.push_back(tierra);
+
+	// Venus
+	Esfera* venus = new Esfera(4, 20, true);
+	venus->setTexture(*venusTex);
+	venus->setPosition({ 15,10,0 });
+	m_entities.push_back(venus);
 
 	// Rejilla
 	Grid* grid = new Grid(20, 3, 0.2, 0.8);
 	grid->setPosition({ 0,-1,0 });
-	//esfera->rotate(-3.1416 / 2, dvec3(1, 0, 0));
 	m_entities.push_back(grid);
 
 	// Terreno
-	Terrain* terrain = new Terrain("../bin/assets/terrain.raw", "terrenoTex.bmp", 0.5);
+	Terrain* terrain = new Terrain("../bin/assets/terrain.raw", 0.5);
+	terrain->setTexture(*terrenoTex);
 	terrain->setPosition({ 0,-5,0 });
 	m_entities.push_back(terrain);
 }

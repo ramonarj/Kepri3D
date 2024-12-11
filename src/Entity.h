@@ -64,6 +64,10 @@ public:
 	/* Rota la entidad en el eje dado, la cantidad de grados especificada (en radianes) */
 	void rotate(GLdouble alpha, glm::dvec3 axis);
 
+	// Setters
+	/* Establece la textura (ya creada) que usará la entidad */
+	inline void setTexture(Texture const& tex) { m_texture = tex; };
+
 protected:
 	/* Malla/s que usará la entidad para pintarse */
 	Mesh* m_mesh;
@@ -103,7 +107,7 @@ public:
 class Poligono : public Entity
 {
 public:
-	Poligono(GLint sides, GLdouble size, bool relleno = false, std::string textureName = "");
+	Poligono(GLint sides, GLdouble size, bool relleno = false);
 	~Poligono() { };
 	void render(glm::dmat4 const& viewMat) override;
 };
@@ -113,7 +117,7 @@ public:
 class Cubo : public Entity
 {
 public:
-	Cubo(GLdouble size, std::string textureName = "", bool equalFaces = true);
+	Cubo(GLdouble size, bool textured, bool equalFaces = true);
 	~Cubo() { };
 	void render(glm::dmat4 const& viewMat) override;
 };
@@ -123,7 +127,7 @@ public:
 class Esfera : public Entity
 {
 public:
-	Esfera(GLuint subdivisiones);
+	Esfera(GLdouble size, GLuint subdivisions = 20, bool textured = false);
 	~Esfera() { };
 	void render(glm::dmat4 const& viewMat) override;
 };
@@ -144,7 +148,7 @@ class Terrain : public Entity
 {
 public:
 	/* Crea un terreno con la información de 'filename' y la textura de 'textureName' */
-	Terrain(std::string filename, std::string textureName, GLdouble scale);
+	Terrain(std::string filename, GLdouble scale);
 	~Terrain() { };
 	void render(glm::dmat4 const& viewMat) override;
 };

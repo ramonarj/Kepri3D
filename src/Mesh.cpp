@@ -365,7 +365,7 @@ IndexMesh* IndexMesh::generateCube(GLdouble size, bool textured, bool equalFaces
 	return m;
 }
 
-IndexMesh* IndexMesh::generateSphere(GLuint subdivisions)
+IndexMesh* IndexMesh::generateSphere(GLdouble size, GLuint subdivisions, bool textured)
 {
 	IndexMesh* m = new IndexMesh();
 	m->type = GL_TRIANGLES; 
@@ -380,8 +380,8 @@ IndexMesh* IndexMesh::generateSphere(GLuint subdivisions)
 
 	/* Array de  vértices */
 	m->vertices = new dvec3[m->numVertices];
-	m->vertices[0] = { 0, 1, 0 };
-	m->vertices[m->numVertices - 1] = { 0, -1, 0 };
+	m->vertices[0] = { 0, size, 0 }; //tapas
+	m->vertices[m->numVertices - 1] = { 0, -size, 0 };
 
 	GLdouble angleIncr = 2 * PI / subdivisions;
 	GLdouble angleIncrY = PI / subdivisions;
@@ -390,8 +390,8 @@ IndexMesh* IndexMesh::generateSphere(GLuint subdivisions)
 	int k = 1;
 	for(int i = 1; i < subdivisions; i++)
 	{
-		GLdouble posY = sin(initialAngle + angleIncrY * i);
-		GLdouble radius = cos(initialAngle - angleIncrY * i);
+		GLdouble posY = size * sin(initialAngle + angleIncrY * i);
+		GLdouble radius = size * cos(initialAngle - angleIncrY * i);
 		// Dibujar cada uno de los cortes cenitales en Y = posY
 		for(int j = 0; j < subdivisions; j++)
 		{
@@ -409,7 +409,6 @@ IndexMesh* IndexMesh::generateSphere(GLuint subdivisions)
 	{
 		m->colores[i] = dvec4(1, 0.5, 0, 1);
 	}
-	//m->colores[1] = dvec4( 0, 1, 0, 1 );
 
 
 	/* Especificar los triángulos (array de índices) */
@@ -470,6 +469,28 @@ IndexMesh* IndexMesh::generateSphere(GLuint subdivisions)
 		count += 3;
 	}
 	m->indices[count - 1] = m->numVertices - subdivisions - 1; //cerrar el círculo
+
+
+	/* Coordenadas de textura */
+	if(textured)
+	{
+		m->texCoords = new dvec2[m->numVertices];
+		// Niveles (Y)
+		for(int i = 0; i < subdivisions - 1; i++)
+		{
+			for(int j = 0; j < subdivisions; j++)
+			{
+				GLdouble texX = 0.5 + (1.0 / subdivisions) * j;
+				if (texX >= 1) // se podría hacer mejor
+					texX -= 1.0;
+				GLdouble texY = 1 - (1.0 / (subdivisions + 1) * i);
+				m->texCoords[i * subdivisions + j + 1] = { texX, texY };
+			}
+		}
+		// Tapas
+		m->texCoords[0] = { 0.5, 1 };
+		m->texCoords[m->numVertices - 1] = { 0.5, 0 };
+	}
 
 	return m;
 }
