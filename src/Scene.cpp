@@ -91,16 +91,18 @@ void Scene::init()
 	//m_entities.push_back(suelo);
 
 	// Esfera
-	//Esfera* esfera = new Esfera(1, 8);
-	//esfera->setPosition({ 0,0,-2 });
-	//m_entities.push_back(esfera);
+	Esfera* esfera = new Esfera(1, 8);
+	esfera->setPosition({ 0,0,-2 });
+	m_entities.push_back(esfera);
 
 	// Tierra
 	Esfera* tierra = new Esfera(3, 20, true);
 	tierra->setTexture(*earthTex);
-	tierra->setPosition({ 0,10,0 });
-	tierra->rotate(PI, { 1, 0, 0 });
-	tierra->translate({ 0, 5, 0 }, LOCAL);
+	tierra->setPosition({ 4,10,0 });
+	//tierra->rotate(PI / 2, { 0, 1, 0 }, LOCAL);
+	//tierra->rotate(-PI / 2, { 1, 0, 0 }, LOCAL); // 90º horario en eje X local
+	tierra->rotate(-PI / 8, { 0, 0, 1 }, GLOBAL);
+	//tierra->translate({ 0, 5, 0 }, LOCAL);
 	//tierra->setPosition({ -2,0,0 });
 	//tierra->scale({ 1, 0.5, 1 });
 

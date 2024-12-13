@@ -221,10 +221,10 @@ void specialKey(int key, int x, int y)
 	case GLUT_KEY_UP:
 		camera.pitch(0.1);
 		break;
-	/* Movimiento arriba/abajo de la cámara */
 	case GLUT_KEY_DOWN:
 		camera.pitch(-0.1);
 		break;
+	/* Movimiento arriba/abajo de la cámara */
 	case GLUT_KEY_SHIFT_L:
 		camera.moveUD(-velCamara);
 		break;
@@ -275,13 +275,11 @@ void motion(int x, int y)
 {
 	glm::dvec2 diff((double)x - mousePos.x, (double)y - mousePos.y);
 
-	//std::cout << x << ", " << y << std::endl;
-	//std::cout << diff.x << ", " << diff.y << std::endl;
-
-
-	camera.yaw(-diff.x * 0.002);
-	camera.pitch(-diff.y * 0.002);
-
+	// Cámara tipo FPS; las rotaciones en Y son globales y en X son locales.
+	camera.rotate(-diff.x * 0.002, { 0,1,0 }, GLOBAL);
+	camera.rotate(-diff.y * 0.002, { 1,0,0 }, LOCAL); // lo mismo que hacer pitch
+	//camera.yaw(-diff.x * 0.002);
+	//camera.pitch(-diff.y * 0.002);
 
 	// Volver a dejarlo en el centro s
 	glutWarpPointer(400, 300);

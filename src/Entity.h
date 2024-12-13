@@ -38,7 +38,7 @@ public:
 	void translate(glm::dvec3 transVector, ReferenceSystem refSys = GLOBAL);
 
 	/* Rota la entidad en el eje dado, la cantidad de grados especificada (en radianes) */
-	void rotate(GLdouble alpha, glm::dvec3 axis);
+	void rotate(GLdouble alpha, glm::dvec3 axis, ReferenceSystem refSys = GLOBAL);
 
 	/* Escala la entidad la cantidad dada en cada eje */
 	void scale(glm::dvec3 scale);
@@ -109,6 +109,7 @@ public:
 	Esfera(GLdouble size, GLuint subdivisions = 20, bool textured = false);
 	~Esfera() { };
 	void render(glm::dmat4 const& viewMat) override;
+	void update(GLuint timeElapsed) override;
 };
 
 // - - - - - - - - - - - - 

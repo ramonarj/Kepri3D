@@ -60,8 +60,8 @@ public:
 	/* Devuelve el puerto de vista */
 	Viewport* getVP() { return vp; }
 
-	/* Cambia la posición de la cámara */
-	inline void SetPosition(glm::dvec3 pos) { eye = pos; }
+	/* Mueve la cámara a la posición dada */
+	void setPosition(glm::dvec3 pos);
 
 	/* Getters*/
 	inline glm::dmat4 getViewMat() { return glm::inverse(modelMat); }
@@ -73,6 +73,9 @@ public:
 	void yaw(GLdouble angle);
 	/* Rota la cámara alrededor del eje Z local */
 	void roll(GLdouble angle);
+
+	/* Rota la entidad en el eje dado, la cantidad de grados especificada (en radianes) */
+	void rotate(GLdouble alpha, glm::dvec3 axis, ReferenceSystem refSys = GLOBAL);
 
 	// Movimientos en el eje de coordenadas local 
 	/* Mueve la cámara hacia izquierda/derecha en su eje X local */

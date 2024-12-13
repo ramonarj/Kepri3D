@@ -51,7 +51,8 @@ void Entity::setPosition(glm::dvec3 pos)
 	modelMat[3][0] = pos.x;
 	modelMat[3][1] = pos.y;
 	modelMat[3][2] = pos.z;
-	//modelMat = glm::translate(modelMat, pos);
+	
+	//PrintMatrix(&modelMat);
 }
 
 void Entity::translate(glm::dvec3 transVector, ReferenceSystem refSys)
@@ -70,16 +71,33 @@ void Entity::translate(glm::dvec3 transVector, ReferenceSystem refSys)
 	}
 }
 
-void Entity::rotate(GLdouble alpha, glm::dvec3 axis)
+void Entity::rotate(GLdouble alpha, glm::dvec3 axis, ReferenceSystem refSys)
 {
-	modelMat = glm::rotate(modelMat, alpha, axis);
-	PrintMatrix(&modelMat);
+	// Rotación local: postmultiplicamos la matriz de rotación
+	if(refSys == LOCAL)
+	{
+		// por ahora todas las rotaciones son locales
+		modelMat = glm::rotate(modelMat, alpha, axis);
+	}
+	// Rotación global: premultiplicamos la matriz de rotación
+	else if (refSys == GLOBAL)
+	{
+		// Guardarnos la posición previa
+		dvec3 pos = { modelMat[3][0], modelMat[3][1], modelMat[3][2] };
+
+		// Rotar respecto al eje global
+		dmat4 rotMatrix = glm::rotate(dmat4(1.0), alpha, axis);
+		modelMat = rotMatrix * modelMat;
+
+		// Devolver la entidad a su sitio
+		setPosition(pos);
+	}
+	//PrintMatrix(&modelMat);
 }
 
 void Entity::scale(glm::dvec3 scale)
 {
 	modelMat = glm::scale(modelMat, scale);
-	PrintMatrix(&modelMat);
 }
 
 
@@ -139,8 +157,6 @@ void Cubo::render(glm::dmat4 const& viewMat)
 Esfera::Esfera(GLdouble size, GLuint subdivisions, bool textured)
 {
 	m_mesh = IndexMesh::generateSphere(size, subdivisions, textured);
-	PrintMatrix(&modelMat);
-	//modelMat = glm::rotate(modelMat, -PI, dvec3(0, 1, 0));
 }
 
 void Esfera::render(glm::dmat4 const& viewMat)
@@ -151,6 +167,11 @@ void Esfera::render(glm::dmat4 const& viewMat)
 	Entity::render(viewMat);
 	m_texture.unbind();
 	glPolygonMode(GL_FRONT_AND_BACK, GL_FILL); // el predeterminado
+}
+
+void Esfera::update(GLuint timeElapsed)
+{
+	rotate(timeElapsed * 0.001, { 0,1,0 }, LOCAL);
 }
 
 // - - - - - - - - - - - - - - - - - 
