@@ -79,21 +79,26 @@ void Scene::init()
 	//m_entities.push_back(suelo);
 
 	// Esfera
-	Esfera* esfera = new Esfera(1, 8);
-	esfera->setPosition({ 0,0,-2 });
-	m_entities.push_back(esfera);
+	//Esfera* esfera = new Esfera(1, 8);
+	//esfera->setPosition({ 0,0,-2 });
+	//m_entities.push_back(esfera);
 
 	// Tierra
-	Esfera* tierra = new Esfera(5, 20, true);
+	Esfera* tierra = new Esfera(3, 20, true);
 	tierra->setTexture(*earthTex);
 	tierra->setPosition({ 0,10,0 });
+	tierra->rotate(PI, { 1, 0, 0 });
+	tierra->translate({ 0, 5, 0 }, LOCAL);
+	//tierra->setPosition({ -2,0,0 });
+	//tierra->scale({ 1, 0.5, 1 });
+
 	m_entities.push_back(tierra);
 
 	// Venus
-	Esfera* venus = new Esfera(4, 20, true);
-	venus->setTexture(*venusTex);
-	venus->setPosition({ 15,10,0 });
-	m_entities.push_back(venus);
+	//Esfera* venus = new Esfera(4, 20, true);
+	//venus->setTexture(*venusTex);
+	//venus->setPosition({ 15,10,0 });
+	//m_entities.push_back(venus);
 
 	// Rejilla
 	Grid* grid = new Grid(20, 3, 0.2, 0.8);

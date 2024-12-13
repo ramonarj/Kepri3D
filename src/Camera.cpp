@@ -77,7 +77,7 @@ void Camera::changePerspective()
 	else
 		projMat = glm::frustum(-1.0, 1.0, -1.0, 1.0, 1.0, -1.0);
 
-	PrintMatrix(&projMat);
+	//PrintMatrix(&projMat);
 
 	glLoadMatrixd(value_ptr(projMat));
 	glMatrixMode(GL_MODELVIEW);

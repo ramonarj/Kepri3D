@@ -8,34 +8,8 @@
 #include <freeglut.h>
 
 #include <iostream>
+#include "Utils.h"
 
-/**
- * Imprime por consola una matriz cuadrada de una forma cómoda para la vista.
- *
- * Los datos deben estar contiguos, sin espaciamiento entre ellos, y 
- * en orden 'column-major' (por columnas, y no por filas)
- *
- * @param matrixPtr Puntero al primer dato de la matriz
- */
-template<typename T = double, int size = 4>
-static void PrintMatrix(void* matrixPtr) // ESTÁ MAL-> FILAS Y COLUMNAS CAMBIADAS
-{
-	// Filas
-	for (int i = 0; i < size; i++)
-	{
-		// Columnas
-		std::cout << "(";
-		for (int j = 0; j < size; j++)
-		{
-			std::cout << ((T*)matrixPtr)[j * size + i] << " ";
-		}
-		std::cout << ")\n";
-	}
-	std::cout << "\n";
-}
-
-// Imprime el nombre y contenido de una variable por pantalla
-#define NOMBRE(VAR) std::cout << #VAR << std::endl;
 
 class Entity
 {
@@ -60,9 +34,14 @@ public:
 
 	/* Mueve la entidad a la posición dada */
 	void setPosition(glm::dvec3 pos);
+	/* Suma el vector de tralación dado a la entidad, usando un sistema de referencia dado */
+	void translate(glm::dvec3 transVector, ReferenceSystem refSys = GLOBAL);
 
 	/* Rota la entidad en el eje dado, la cantidad de grados especificada (en radianes) */
 	void rotate(GLdouble alpha, glm::dvec3 axis);
+
+	/* Escala la entidad la cantidad dada en cada eje */
+	void scale(glm::dvec3 scale);
 
 	// Setters
 	/* Establece la textura (ya creada) que usará la entidad */

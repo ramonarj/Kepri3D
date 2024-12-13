@@ -8,16 +8,17 @@
 //#include <gtc/matrix_access.hpp>
 
 #include <iostream>
+#include "Utils.h"
 
 using namespace glm;
 
 
 void Entity::render(glm::dmat4 const& viewMat)
 {
-	// 1) Cargar la matriz M*V
+	// 1) Cargar la matriz V*M
 	// Decirle a OpenGL que la siguiente matriz que cargaremos es de modelado/vista (no de proyección)
 	glMatrixMode(GL_MODELVIEW);
-	// Calcular la matriz MV (modelado*vista)
+	// Calcular la matriz VM (vista * modelado)
 	glm::dmat4 modelViewMat = viewMat * modelMat;
 	// Cargarla 
 	glLoadMatrixd(value_ptr(modelViewMat));
@@ -46,12 +47,39 @@ void Entity::update(GLuint timeElapsed)
 
 void Entity::setPosition(glm::dvec3 pos)
 {
-	modelMat = glm::translate(modelMat, pos);
+	// Cambiamos la última columna, que contiene la posición
+	modelMat[3][0] = pos.x;
+	modelMat[3][1] = pos.y;
+	modelMat[3][2] = pos.z;
+	//modelMat = glm::translate(modelMat, pos);
+}
+
+void Entity::translate(glm::dvec3 transVector, ReferenceSystem refSys)
+{
+	dmat4 transMat = glm::translate({ 1.0 }, transVector);
+
+	// Traslación local: postmultiplicamos la matriz de traslación
+	if(refSys == LOCAL)
+	{
+		modelMat = modelMat * transMat;
+	}
+	// Traslación global: premultiplicamos " "
+	else if(refSys == GLOBAL)
+	{
+		modelMat = transMat * modelMat;
+	}
 }
 
 void Entity::rotate(GLdouble alpha, glm::dvec3 axis)
 {
 	modelMat = glm::rotate(modelMat, alpha, axis);
+	PrintMatrix(&modelMat);
+}
+
+void Entity::scale(glm::dvec3 scale)
+{
+	modelMat = glm::scale(modelMat, scale);
+	PrintMatrix(&modelMat);
 }
 
 
@@ -111,6 +139,8 @@ void Cubo::render(glm::dmat4 const& viewMat)
 Esfera::Esfera(GLdouble size, GLuint subdivisions, bool textured)
 {
 	m_mesh = IndexMesh::generateSphere(size, subdivisions, textured);
+	PrintMatrix(&modelMat);
+	//modelMat = glm::rotate(modelMat, -PI, dvec3(0, 1, 0));
 }
 
 void Esfera::render(glm::dmat4 const& viewMat)

@@ -6,6 +6,8 @@
 #include <gtc/type_ptr.hpp>
 #include <iostream>
 
+#include "Utils.h"
+
 //-------------------------------------------------------------------------
 
 class Viewport {
@@ -46,7 +48,11 @@ public:
 		// IMPORTANTE, porque la "cámara" de OpenGL está puesta por defecto en 
 		// el (0,0,1) y mirando hacia el (0,0,0), entonces queremos que la 
 		// posición y rotación iniciales de nuestra cámara coincidan con esas
+		//PrintMatrix(&modelMat);
 		modelMat = glm::translate(modelMat, glm::dvec3(0, 0, 1));
+		//modelMat = glm::translate(modelMat, glm::dvec3(5, 5, 5));
+		//modelMat = glm::translate(modelMat, glm::dvec3(-5, -7, -5));
+		//PrintMatrix(&modelMat);
 
 		//modelMat = glm::rotate(modelMat, 3.14, glm::dvec3(0, 1, 0));
 	}

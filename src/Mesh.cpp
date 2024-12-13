@@ -2,10 +2,10 @@
 
 #include <iostream>
 #include <fstream>
+#include "Utils.h"
 
 using namespace glm;
 
-#define PI 3.14159265358979323846
 
 Mesh::~Mesh()
 {
