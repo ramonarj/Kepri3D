@@ -10,12 +10,12 @@
 // 2) Open GL Mathematics (glm) -> tipos definidos, como vectores y matrices de distinto tipo
 // 3) FreeGLUT -> creación de ventanas e input del usuario (reemplazable por SDL, por ejemplo)
 // Nota: FreeGLUT ya incluye OpenGL de por sí
-// La configuración se mantendrá en Release/x64, al menos por el momento
 
 #include <iostream>
 #include "Scene.h"
 #include "Camera.h"
 #include "Entity.h"
+#include "checkML.h"
 
 // Variables globales
 Viewport viewport(800, 600);
@@ -45,6 +45,8 @@ void clickedMotion(int x, int y);
 
 int main(int argc, char*argv[])
 {
+	// Detección de basura dinámica
+	_CrtSetDbgFlag ( _CRTDBG_ALLOC_MEM_DF | _CRTDBG_LEAK_CHECK_DF ); 
 	std::cout << "Starting console..." << '\n';
 
 	// 1) Inicializar GLUT y crear la ventana

@@ -1,9 +1,12 @@
 #ifndef __SCENE__
 #define __SCENE__
 
-#include "Entity.h"
 #include <vector>
-#include "Camera.h"
+#include <freeglut.h>
+
+class Texture;
+class Entity;
+class Camera;
 
 class Scene
 {
@@ -19,6 +22,8 @@ public:
 	//Light* getSphereLight() { return sphereLight; };
 
 protected:
+	/* Lista de texturas */
+	std::vector<Texture*> m_textures;
 	/* Lista de entidades */
 	std::vector<Entity*> m_entities;
 

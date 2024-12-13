@@ -21,8 +21,8 @@ public:
 		//NOMBRE(modelMat);
 	}
 	
-	
-	virtual ~Entity() { };
+	/* Destructora virtual */
+	virtual ~Entity() { delete m_mesh; };
 
 	/* La entidad pinta su malla, cargando antes la matriz M*V para 
 	que la posición de la cámara afecte a la posición los vértices que van a pintarse. (espacio local -> global)

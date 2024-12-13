@@ -2,6 +2,9 @@
 #include <freeglut.h>
 #include <glm.hpp>
 
+#include "Entity.h"
+#include "Camera.h"
+
 using namespace glm;
 
 void Scene::init()
@@ -38,14 +41,23 @@ void Scene::init()
 	/* Texturas que vamos a usar */
 	Texture* earthTex = new Texture();
 	earthTex->load("earth24.bmp");
+	m_textures.push_back(earthTex);
+
 	Texture* venusTex = new Texture();
 	venusTex->load("venus.bmp");
+	m_textures.push_back(venusTex);
+
 	Texture* orientacionTex = new Texture();
 	orientacionTex->load("orientacion.bmp");
+	m_textures.push_back(orientacionTex);
+
 	Texture* zeldaTex = new Texture();
 	zeldaTex->load("Zelda.bmp");
+	m_textures.push_back(zeldaTex);
+
 	Texture* terrenoTex = new Texture();
 	terrenoTex->load("terrenoTex.bmp");
+	m_textures.push_back(terrenoTex);
 
 	/* Entidades */
 	// Ejes RGB
@@ -72,10 +84,10 @@ void Scene::init()
 	m_entities.push_back(c2);
 
 	// Suelo
-	Poligono* suelo = new Poligono(4, 8, true);
-	suelo->setTexture(*zeldaTex);
-	suelo->setPosition({ 0,-0.5,0 });
-	suelo->rotate(-3.1416 / 2, dvec3(1,0,0));
+	//Poligono* suelo = new Poligono(4, 8, true);
+	//suelo->setTexture(*zeldaTex);
+	//suelo->setPosition({ 0,-0.5,0 });
+	//suelo->rotate(-3.1416 / 2, dvec3(1,0,0));
 	//m_entities.push_back(suelo);
 
 	// Esfera
@@ -162,6 +174,13 @@ Scene::~Scene()
 		delete it;
 	}
 	m_entities.clear();
+
+	// Borrar las texturas
+	for (Texture* it : m_textures)
+	{
+		delete it;
+	}
+	m_textures.clear();
 
 	// Desactivar los parámetros de OpenGL
 	glDisable(GL_CULL_FACE);
