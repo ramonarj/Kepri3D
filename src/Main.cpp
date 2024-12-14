@@ -29,8 +29,8 @@ Scene scene(&camera);
 GLuint last_update_tick = 0;
 bool animationsOn = true;
 bool fullscreen = false;
+bool lockedMouse = true;
 double velCamara = 0.4;
-glm::dvec2 mousePos(400, 300);
 int moving = 0; // -1-> atrás, 1-> adelante
 
 // Predeclaración de callbacks
@@ -55,7 +55,7 @@ int main(int argc, char*argv[])
 	glutInitContextVersion(3, 3);
 	glutInitContextProfile(GLUT_COMPATIBILITY_PROFILE);
 	glutSetOption(GLUT_ACTION_ON_WINDOW_CLOSE, GLUT_ACTION_GLUTMAINLOOP_RETURNS);
-	glutInitWindowSize(800, 600);   // window size
+	glutInitWindowSize(viewport.getW(), viewport.getH());   // window size
 	//glutInitWindowPosition (140, 140);
 
 	glutInitDisplayMode(GLUT_RGBA | GLUT_DOUBLE | GLUT_DEPTH); // | GLUT_MULTISAMPLE);   // | GLUT_STENCIL
@@ -64,7 +64,7 @@ int main(int argc, char*argv[])
 
 	// Hacer que el cursor sea invisible y moverlo al centro de la ventana
 	glutSetCursor(GLUT_CURSOR_NONE);
-	glutWarpPointer(400, 300);
+	glutWarpPointer(viewport.getW() / 2, viewport.getH() / 2);
 
 	//glutFullScreen(); // pantalla completa
 
@@ -128,9 +128,18 @@ void key(unsigned char key, int x, int y)
 	case 'c':
 		//glutWarpPointer(200, 200);
 		break;
-	/* Tecla de escape: salir de la aplicación */
-	case 27:  
-		glutLeaveMainLoop();
+	/* Tecla de escape: */ 
+	case 27: 
+		// Desbloquear el ratón
+		if(lockedMouse)
+		{
+			lockedMouse = false;
+			// Podemos seleccionar el cursor que más nos guste!!
+			glutSetCursor(GLUT_CURSOR_RIGHT_ARROW);
+		}
+		// Salir de la aplicación
+		else
+			glutLeaveMainLoop();
 		break;
 	/* Activar/desactivar el uso del Z-buffer (DEPTH_TEST) */
 	case 'z':
@@ -232,9 +241,15 @@ void specialKey(int key, int x, int y)
 	case GLUT_KEY_F11:
 		fullscreen = !fullscreen;
 		if(fullscreen)
+		{
 			glutFullScreen();
+			
+		}
 		else
+		{
 			glutReshapeWindow(800, 600);
+		}
+			
 		break;
 	default:
 		need_redisplay = false;
@@ -273,7 +288,11 @@ void update()
 
 void motion(int x, int y)
 {
-	glm::dvec2 diff((double)x - mousePos.x, (double)y - mousePos.y);
+	if (!lockedMouse)
+		return;
+
+	// Incremento en la posición del ratón
+	glm::dvec2 diff((double)x - viewport.getW() / 2, (double)y - viewport.getH() / 2);
 
 	// Cámara tipo FPS; las rotaciones en Y son globales y en X son locales.
 	camera.rotate(-diff.x * 0.002, { 0,1,0 }, GLOBAL);
@@ -281,15 +300,26 @@ void motion(int x, int y)
 	//camera.yaw(-diff.x * 0.002);
 	//camera.pitch(-diff.y * 0.002);
 
-	// Volver a dejarlo en el centro s
-	glutWarpPointer(400, 300);
+	// Volver a dejar el ratón en el centro
+	glutWarpPointer(viewport.getW() / 2, viewport.getH() / 2);
+
 	// Repintar
 	//glutPostRedisplay();
 }
 
 void mouse(int button, int state, int x, int y)
 {
-	//std::cout << "a";
+	// Volver a bloquear el ratón
+	if(!lockedMouse)
+	{
+		if(button == 0)
+		{
+			lockedMouse = true;
+			glutSetCursor(GLUT_CURSOR_NONE);
+		}
+		return;
+	}
+
 	// Clic izquierdo
 	if (button == 0)
 	{

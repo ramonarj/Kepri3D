@@ -159,11 +159,6 @@ Mesh* Mesh::generateFilledPolygon(GLint sides, GLint size)
 
 Mesh* Mesh::generateCubeSides(GLdouble size)
 {
-	//float f;
-	//glGetFloatv(GL_FRONT_FACE, &f);
-	//std::cout << f << std::endl;
-	//std::cout << GL_CW;
-
 	Mesh* m = new Mesh();
 	m->type = GL_TRIANGLE_STRIP;
 	m->numVertices = 10;
@@ -376,8 +371,6 @@ IndexMesh* IndexMesh::generateSphere(GLdouble size, GLuint subdivisions, bool te
 	m->numIndices *= 3; // 3 índices para cada triángulo
 
 
-	std::cout << m->numIndices << std::endl;
-
 	/* Array de  vértices */
 	m->vertices = new dvec3[m->numVertices];
 	m->vertices[0] = { 0, size, 0 }; //tapas
@@ -512,9 +505,6 @@ IndexMesh* IndexMesh::generateGrid(GLint filas, GLint columnas, GLdouble tamFila
 		GLdouble iniX = -columnas / 2.0 * tamColumna;
 		for(int j = 0; j < columnas + 1; j++)
 		{
-			//GLdouble posX = -columnas / 2.0 * + tamColumna * (GLdouble)j;
-			//GLdouble posZ = -filas / 2.0 + tamFila * (GLdouble)i;
-			//std::cout << "X: " << posX << ", Z: " << posZ << std::endl;
 			m->vertices[k] = { iniX + tamColumna * j, 0, iniZ + tamFila * i };
 			k++;
 		}

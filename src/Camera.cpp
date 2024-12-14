@@ -23,17 +23,6 @@ void Viewport::setPosition(GLint x, GLint y)
 
 void Camera::pitch(GLdouble angle)
 {
-	// El producto de matrices no es conmutativo; si queremos que la transformación 
-	// sea local, es T * R, y global es R * T 
-	glm::dmat4 rotMatrix = glm::rotate(modelMat, angle, glm::dvec3(1, 0, 0));
-	//PrintMatrix<double, 4>(&rotMatrix);
-
-	//modelMat = rotMatrix * modelMat;
-	//PrintMatrix<double, 4>(&modelMat);
-
-	//modelMat = glm::rotate(modelMat, angle, glm::dvec3(1, 0, 0));
-	//PrintMatrix(&modelMat);
-
 	modelMat = glm::rotate(modelMat, angle, glm::dvec3(1, 0, 0));
 }
 
@@ -101,16 +90,22 @@ void Camera::changePerspective()
 	glMatrixMode(GL_PROJECTION);
 	// Left, Right, Bottom, Top, Near, Far
 	// Los valores por defecto son: -1, 1, -1, 1, 1, -1 (están al revés zNear y zFar)
-	// NOTA: usar doubles mejor que enteros
+	// NOTA: usar DOUBLES (con enteros no funciona)
 	// Ortogonal
 	if(orto)
-		projMat = glm::ortho(-1.0, 1.0, -1.0, 1.0, 100.0, -100.0);
+	{
+		//projMat = glm::ortho(-4.0, 4.0, -4.0, 4.0, -100.0, 100.0);
+		projMat = glm::ortho(-50.0, 50.0, -50.0, 50.0, 0.0, 500.0);
+	}
+		
 	// Perspectiva
 	else
-		projMat = glm::frustum(-1.0, 1.0, -1.0, 1.0, 1.0, -1.0);
+	{
+		//projMat = glm::frustum(-1.0, 1.0, -1.0, 1.0, 1.0, -1.0);
+		projMat = glm::frustum(-1.0, 1.0, -1.0, 1.0, 1.0, 500.0);
+	}
 
 	//PrintMatrix(&projMat);
-
 	glLoadMatrixd(value_ptr(projMat));
 	glMatrixMode(GL_MODELVIEW);
 }
