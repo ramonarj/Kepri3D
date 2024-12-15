@@ -85,14 +85,17 @@ public:
 	/* Cambia la perspectiva entre ortogonal y frustrum */
 	void changePerspective();
 
+	/* Establece las dimensiones de la cámara */
+	void setSize(GLdouble aw, GLdouble ah);
+
 protected:
 	//Matriz de la cámara (eye, look, up) -> todavía no se usa
 	/* 'Ojo': posición de la cámara */
-	glm::dvec3 eye = { 0.0, 0.0, - 500.0 };
-	/* 'Mirada': posición a la que apunta la cámara */
-	glm::dvec3 look = { 0.0, 0.0, 0.0 };
-	/* 'Arriba': vector positivo en el eje Y global */
-	glm::dvec3 up = { 0.0, 1.0, 0.0 };
+	//glm::dvec3 eye = { 0.0, 0.0, - 500.0 };
+	///* 'Mirada': posición a la que apunta la cámara */
+	//glm::dvec3 look = { 0.0, 0.0, 0.0 };
+	///* 'Arriba': vector positivo en el eje Y global */
+	//glm::dvec3 up = { 0.0, 1.0, 0.0 };
 
 	/* Matriz de modelado de la cámara
 	 La matriz de vista (V) es la inversa de esta matriz */
@@ -106,6 +109,14 @@ protected:
 
 	/* El tipo de proyección actual (con/sin punto de fuga) */
 	bool orto;
+
+	/* Dimensiones del volumen de vista (VV) */
+	GLdouble nearW;
+	GLdouble nearH;
+
+	// Métodos auxiliares
+	/* Actualiza la proyección de la escena */
+	void updatePM();
 };
 
 #endif

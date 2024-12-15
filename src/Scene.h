@@ -30,11 +30,12 @@ protected:
 	/* Cámara activa */
 	Camera* m_camera;
 
+	// Métodos auxiliares
+	void ViewportTest();
+
 	//Camera* camera;
-	//Diabolo* diabolo;
 	//Foto* foto;
 	//Light* dirLight, * spotLight, * sphereLight;
-	//std::vector<Entity*> objetos;
 };
 
 #endif

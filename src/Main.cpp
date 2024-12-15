@@ -265,7 +265,7 @@ void resize(int newWidth, int newHeight)
 	// Resize Viewport 
 	viewport.setSize(newWidth, newHeight);
 	// Resize Scene Visible Area 
-	//camera.setSize(viewPort.getW(), viewPort.getH());    // scale unchanged
+	camera.setSize(viewport.getW(), viewport.getH());
 }
 
 void update()

@@ -129,18 +129,24 @@ void Scene::init()
 void Scene::render()
 {
 	//Pintar todas las entidades
-	//for (Entity* e : m_entities)
-	//	e->render(m_camera->getViewMat());
+	for (Entity* e : m_entities)
+		e->render(m_camera->getViewMat());
+
+	//ViewportTest();
+}
+
+void Scene::ViewportTest()
+{
 
 	//Algunas variables locales para facilitar la puesta en escena
-	Viewport * view = m_camera->getVP();
+	Viewport* view = m_camera->getVP();
 	GLdouble w = view->getW();
 	GLdouble h = view->getH();
 	// Reducimos el tamaño del puerto a 1/4 de la pantalla y dibujamos en los 3 primeros cuadrantes
 	view->setSize(w / 2, h / 2);
 
 	// Ejes RGB
-	view->setPosition(0, h/2);
+	view->setPosition(0, h / 2);
 	m_entities[0]->render(m_camera->getViewMat());
 
 	// Polígono sin rellenar
@@ -151,7 +157,7 @@ void Scene::render()
 	view->setPosition(0, 0); // 0,0 es abajo a la izquierda
 	m_entities[2]->render(m_camera->getViewMat());
 	// Podemos dibujar un mismo objeto todas las veces que queramos (ejes extra)
-	m_entities[0]->render(m_camera->getViewMat()); 
+	m_entities[0]->render(m_camera->getViewMat());
 
 	// Cubo orientación
 	view->setPosition(w / 2, 0);
