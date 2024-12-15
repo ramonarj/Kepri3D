@@ -34,6 +34,7 @@ public:
 
 	/* Mueve la entidad a la posición dada */
 	void setPosition(glm::dvec3 pos);
+
 	/* Suma el vector de tralación dado a la entidad, usando un sistema de referencia dado */
 	void translate(glm::dvec3 transVector, ReferenceSystem refSys = GLOBAL);
 

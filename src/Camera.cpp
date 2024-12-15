@@ -21,66 +21,10 @@ void Viewport::setPosition(GLint x, GLint y)
 
 // - - - - - - - - - - - - -
 
-void Camera::pitch(GLdouble angle)
+void Camera::translate(glm::dvec3 transVector, ReferenceSystem refSys)
 {
-	modelMat = glm::rotate(modelMat, angle, glm::dvec3(1, 0, 0));
-}
-
-void Camera::yaw(GLdouble angle)
-{
-	modelMat = glm::rotate(modelMat, angle, glm::dvec3(0, 1, 0));
-}
-
-void Camera::roll(GLdouble angle)
-{
-	modelMat = glm::rotate(modelMat, angle, glm::dvec3(0, 0, 1));
-}
-
-void Camera::setPosition(glm::dvec3 pos)
-{
-	// Cambiamos la última columna, que contiene la posición
-	modelMat[3][0] = pos.x;
-	modelMat[3][1] = pos.y;
-	modelMat[3][2] = pos.z;
-}
-
-// Todo esto está duplicado con Entity
-void Camera::rotate(GLdouble alpha, glm::dvec3 axis, ReferenceSystem refSys)
-{
-	// Rotación local: postmultiplicamos la matriz de rotación
-	if (refSys == LOCAL)
-	{
-		// por ahora todas las rotaciones son locales
-		modelMat = glm::rotate(modelMat, alpha, axis);
-	}
-	// Rotación global: premultiplicamos la matriz de rotación
-	else if (refSys == GLOBAL)
-	{
-		// Guardarnos la posición previa
-		glm::dvec3 pos = { modelMat[3][0], modelMat[3][1], modelMat[3][2] };
-
-		// Rotar respecto al eje global
-		glm::dmat4 rotMatrix = glm::rotate(glm::dmat4(1.0), alpha, axis);
-		modelMat = rotMatrix * modelMat;
-
-		// Devolver la entidad a su sitio
-		setPosition(pos);
-	}
-}
-
-void Camera::moveLR(GLdouble incr)
-{
-	modelMat = glm::translate(modelMat, glm::dvec3(incr, 0, 0));
-}
-
-void Camera::moveUD(GLdouble incr)
-{
-	modelMat = glm::translate(modelMat, glm::dvec3(0, incr, 0));
-}
-
-void Camera::moveFB(GLdouble incr)
-{
-	modelMat = glm::translate(modelMat, glm::dvec3(0, 0, -incr));
+	transVector.z *= -1;
+	Entity::translate(transVector, refSys);
 }
 
 void Camera::setSize(GLdouble w, GLdouble h)

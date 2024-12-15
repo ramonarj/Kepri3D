@@ -7,6 +7,7 @@
 #include <iostream>
 
 #include "Utils.h"
+#include "Entity.h"
 
 //-------------------------------------------------------------------------
 
@@ -40,10 +41,11 @@ protected:
 
 //-------------------------------------------------------------------------
 
-class Camera
+class Camera : public Entity
 {
 public:
-	Camera(Viewport* viewport) : vp(viewport), modelMat(1.0), projMat(1.0), orto(true)
+	/* Constructora */
+	Camera(Viewport* viewport) : vp(viewport), projMat(1.0), orto(true), nearW(0), nearH(0)
 	{
 		// IMPORTANTE, porque la "cámara" de OpenGL está puesta por defecto en 
 		// el (0,0,1) y mirando hacia el (0,0,0), entonces queremos que la 
@@ -54,33 +56,21 @@ public:
 		//modelMat = glm::rotate(modelMat, PI, glm::dvec3(0, 1, 0));
 	}
 
+	// Heredados
+	void render(glm::dmat4 const& viewMat) override {}
+
+	/* Necesario invertir el parámetro Z antes de llamar al método de Entity */
+	void translate(glm::dvec3 transVector, ReferenceSystem refSys = GLOBAL);
+
+
+	// Getters
+	/* Devuelve la matriz de vista (inversa de la de modelado) */
+	inline glm::dmat4 getViewMat() { return glm::inverse(modelMat); }
+
 	/* Devuelve el puerto de vista */
 	Viewport* getVP() { return vp; }
 
-	/* Mueve la cámara a la posición dada */
-	void setPosition(glm::dvec3 pos);
-
-	/* Getters*/
-	inline glm::dmat4 getViewMat() { return glm::inverse(modelMat); }
-
-	// Giros en el eje de coordenadas local
-	/* Rota la cámara alrededor del eje X local */
-	void pitch(GLdouble angle);
-	/* Rota la cámara alrededor del eje Y local */
-	void yaw(GLdouble angle);
-	/* Rota la cámara alrededor del eje Z local */
-	void roll(GLdouble angle);
-
-	/* Rota la entidad en el eje dado, la cantidad de grados especificada (en radianes) */
-	void rotate(GLdouble alpha, glm::dvec3 axis, ReferenceSystem refSys = GLOBAL);
-
-	// Movimientos en el eje de coordenadas local 
-	/* Mueve la cámara hacia izquierda/derecha en su eje X local */
-	void moveLR(GLdouble incr);
-	/* Mueve la cámara hacia arriba/abajo en su eje Y local */
-	void moveUD(GLdouble incr);
-	/* Mueve la cámara hacia adelante/atrás en su eje Z local */
-	void moveFB(GLdouble incr);
+	// Pitch, yaw y roll han sido eliminados (llamar en su lugar a "rotate" con el eje adecuado y refSys = LOCAL)
 
 	/* Cambia la perspectiva entre ortogonal y frustrum */
 	void changePerspective();
@@ -97,9 +87,9 @@ protected:
 	///* 'Arriba': vector positivo en el eje Y global */
 	//glm::dvec3 up = { 0.0, 1.0, 0.0 };
 
-	/* Matriz de modelado de la cámara
+	/* Matriz de modelado de la cámara -> la hereda de Entity
 	 La matriz de vista (V) es la inversa de esta matriz */
-	glm::dmat4 modelMat;
+	//glm::dmat4 modelMat;
 
 	/* Puerto de vista que mostrará lo que hay en el volumen de vista */
 	Viewport* vp;

@@ -20,6 +20,7 @@ public:
 	// Activar/desactivar la textura
 	void bind(GLuint mix = GL_REPLACE);
 	void unbind();
+
 private:
 	// Dimensiones de la textura (en píxeles)
 	GLuint w;

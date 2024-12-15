@@ -160,6 +160,7 @@
     <ClCompile Include="..\src\Pixmap32RGBA.cpp" />
     <ClCompile Include="..\src\Scene.cpp" />
     <ClCompile Include="..\src\Texture.cpp" />
+    <ClCompile Include="..\src\UI\Button.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\src\Camera.h" />
@@ -169,6 +170,7 @@
     <ClInclude Include="..\src\Pixmap32RGBA.h" />
     <ClInclude Include="..\src\Scene.h" />
     <ClInclude Include="..\src\Texture.h" />
+    <ClInclude Include="..\src\UI\Button.h" />
     <ClInclude Include="..\src\Utils.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

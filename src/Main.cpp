@@ -106,15 +106,7 @@ int main(int argc, char*argv[])
 
 void display()   // double buffer
 {
-	// Limpia el color y el depth buffer
-	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-
 	scene.render();
-
-	// Hay 2 buffers; uno se está mostrando por ventana, y el otro es el que usamos
-	// para dibujar con la GPU. Cuando se ha terminado de dibujar y llega el siguiente 
-	// frame, se intercambian las referencias y se repite el proceso
-	glutSwapBuffers();
 }
 
 void key(unsigned char key, int x, int y)
@@ -164,27 +156,27 @@ void key(unsigned char key, int x, int y)
 		break;
 	// Pruebas con la cámara
 	case 'a':
-		camera.moveLR(-velCamara);
+		camera.translate({ -velCamara, 0, 0 }, LOCAL);
 		break;
 	case 'd':
-		camera.moveLR(velCamara);
+		camera.translate({ velCamara, 0, 0 }, LOCAL);
 		break;
 	case 'w':
-		camera.moveFB(velCamara);
+		camera.translate({ 0, 0, velCamara }, LOCAL);
 		break;
 	case 's':
-		camera.moveFB(-velCamara);
+		camera.translate({ 0, 0, -velCamara }, LOCAL);
 		break;
 	// Roll
 	case '9':
-		camera.roll(-0.1);
+		camera.rotate(-0.1, { 0, 0, 1 }, LOCAL);
 		break;
 	case '0':
-		camera.roll(0.1);
+		camera.rotate(0.1, { 0, 0, 1 }, LOCAL);
 		break;
 	// Movimiento arriba de la cámara
 	case 32: // espacio
-		camera.moveUD(velCamara);
+		camera.translate({ 0, velCamara, 0 }, GLOBAL);
 		break;
 	/* Cambiar la perspectiva */
 	case 'p':
@@ -222,20 +214,20 @@ void specialKey(int key, int x, int y)
 	switch (key) {
 	/* Rotaciones locales de la cámara (pitch, yaw, roll) */
 	case GLUT_KEY_RIGHT:
-		camera.yaw(-0.1);
+		camera.rotate(-0.1, { 0, 1, 0 }, LOCAL);
 		break;
 	case GLUT_KEY_LEFT:
-		camera.yaw(0.1);
+		camera.rotate(0.1, { 0, 1, 0 }, LOCAL);
 		break;
 	case GLUT_KEY_UP:
-		camera.pitch(0.1);
+		camera.rotate(0.1, { 1, 0, 0 }, LOCAL);
 		break;
 	case GLUT_KEY_DOWN:
-		camera.pitch(-0.1);
+		camera.rotate(-0.1, { 1, 0, 0 }, LOCAL);
 		break;
 	/* Movimiento arriba/abajo de la cámara */
 	case GLUT_KEY_SHIFT_L:
-		camera.moveUD(-velCamara);
+		camera.translate({ 0, -velCamara, 0 }, GLOBAL);
 		break;
 	/* Modo pantalla completa (entrar/salir) */
 	case GLUT_KEY_F11:
@@ -274,9 +266,9 @@ void update()
 	last_update_tick = glutGet(GLUT_ELAPSED_TIME);
 	// Movimiento de la cámara
 	if (moving == 1)
-		camera.moveFB(velCamara / 50);
+		camera.translate({ 0, 0, velCamara / 50 }, LOCAL);
 	else if (moving == -1)
-		camera.moveFB(-velCamara / 50);
+		camera.translate({ 0, 0, -velCamara / 50 }, LOCAL);
 
 	// Animaciones de la escena
 	if(animationsOn)
@@ -340,11 +332,11 @@ void mouse(int button, int state, int x, int y)
 	// Rueda del ratón
 	if(button == 3)
 	{
-		camera.roll(0.05);
+		camera.rotate(0.05, { 0, 0, 1 }, LOCAL);
 	}
 	else if(button == 4)
 	{
-		camera.roll(-0.05);
+		camera.rotate(-0.05, { 0, 0, 1 }, LOCAL);
 	}
 }
 

@@ -4,6 +4,7 @@
 
 #include "Entity.h"
 #include "Camera.h"
+#include "UI/Button.h"
 
 using namespace glm;
 
@@ -58,6 +59,10 @@ void Scene::init()
 	Texture* terrenoTex = new Texture();
 	terrenoTex->load("terrenoTex.bmp");
 	m_textures.push_back(terrenoTex);
+
+	Texture* buttonTex = new Texture();
+	buttonTex->load("ray.bmp");
+	m_textures.push_back(buttonTex);
 
 	/* Entidades */
 	// Ejes RGB
@@ -124,15 +129,30 @@ void Scene::init()
 	terrain->setTexture(*terrenoTex);
 	terrain->setPosition({ 0,-5,0 });
 	m_entities.push_back(terrain);
+
+
+	// Botón: prueba
+	Button* button = new Button(buttonTex);
+	button->scale({ 0.5, 0.3, 1 });
+	button->setPositionUI(0.15, 0.8);
+	m_entities.push_back(button);
 }
 
 void Scene::render()
 {
+	// Limpia el color y el depth buffer
+	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+
 	//Pintar todas las entidades
 	for (Entity* e : m_entities)
 		e->render(m_camera->getViewMat());
 
 	//ViewportTest();
+
+	// Hay 2 buffers; uno se está mostrando por ventana, y el otro es el que usamos
+	// para dibujar con la GPU. Cuando se ha terminado de dibujar y llega el siguiente 
+	// frame, se intercambian las referencias y se repite el proceso
+	glutSwapBuffers();
 }
 
 void Scene::ViewportTest()
