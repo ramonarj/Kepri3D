@@ -4,11 +4,12 @@
 
 #include "Entity.h"
 #include "Camera.h"
+#include "Light.h"
 #include "UI/Button.h"
 
 using namespace glm;
 
-void Scene::init()
+void Scene::initGLSubsystems()
 {
 	// Color de fondo (el predeterminado es negro)
 	glClearColor(1.0, 1.0, 1.0, 0);  // (alpha=1 -> opaque)
@@ -36,8 +37,23 @@ void Scene::init()
 	glEnable(GL_LINE_SMOOTH);
 	//glEnable(GL_POLYGON_SMOOTH);
 	//glHint(GL_POLYGON_SMOOTH_HINT, GL_NICEST);
-
 	//glEnable(GL_CULL_FACE); //cuidado con esto
+
+	/* Iluminación */
+	glEnable(GL_LIGHTING);
+	// Tipo de modelo de coloreado -> GL_FLAT (flat), GL_SMOOTH (gouraud)
+	glShadeModel(GL_SMOOTH);
+}
+
+void Scene::init()
+{
+	// Activa el depth test, uso de texturas, iluminación, etc.
+	initGLSubsystems();
+	
+	/* Luces */
+	m_pointLight = new Light();
+	m_pointLight->setPosition({ 0,0,0 });
+	//m_pointLight->setDirection({ 0,0,0 });
 
 	/* Texturas que vamos a usar */
 	Texture* earthTex = new Texture();
@@ -66,7 +82,7 @@ void Scene::init()
 
 	/* Entidades */
 	// Ejes RGB
-	m_entities.push_back(new EjesRGB(0.5));
+	//m_entities.push_back(new EjesRGB(0.5));
 
 	// Polígono sin rellenar
 	//m_entities.push_back(new Poligono(6, 0.5, false));
@@ -74,7 +90,7 @@ void Scene::init()
 	// Polígono relleno
 	Poligono* pol = new Poligono(4, 1, true);
 	pol->setTexture(*zeldaTex);
-	m_entities.push_back(pol);
+	//m_entities.push_back(pol);
 
 	// Cubo con la misma textura en todas las caras
 	Cubo* c = new Cubo(1, true);
@@ -104,13 +120,8 @@ void Scene::init()
 	Esfera* tierra = new Esfera(3, 20, true);
 	tierra->setTexture(*earthTex);
 	tierra->setPosition({ 4,10,0 });
-	//tierra->rotate(PI / 2, { 0, 1, 0 }, LOCAL);
 	//tierra->rotate(-PI / 2, { 1, 0, 0 }, LOCAL); // 90º horario en eje X local
 	tierra->rotate(-PI / 8, { 0, 0, 1 }, GLOBAL);
-	//tierra->translate({ 0, 5, 0 }, LOCAL);
-	//tierra->setPosition({ -2,0,0 });
-	//tierra->scale({ 1, 0.5, 1 });
-
 	m_entities.push_back(tierra);
 
 	// Venus
@@ -120,14 +131,14 @@ void Scene::init()
 	//m_entities.push_back(venus);
 
 	// Rejilla
-	Grid* grid = new Grid(20, 3, 0.2, 0.8);
+	Grid* grid = new Grid(20, 20, 0.5, 0.5);
 	grid->setPosition({ 0,-1,0 });
 	m_entities.push_back(grid);
 
 	// Terreno
 	Terrain* terrain = new Terrain("../bin/assets/terrain.raw", 0.5);
 	terrain->setTexture(*terrenoTex);
-	terrain->setPosition({ 0,-5,0 });
+	terrain->setPosition({ 0,-10,0 });
 	m_entities.push_back(terrain);
 
 
@@ -135,13 +146,16 @@ void Scene::init()
 	Button* button = new Button(buttonTex);
 	button->scale({ 0.5, 0.3, 1 });
 	button->setPositionUI(0.15, 0.8);
-	m_entities.push_back(button);
+	//m_entities.push_back(button);
 }
 
 void Scene::render()
 {
 	// Limpia el color y el depth buffer
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+
+	// Cargar la luz
+	m_pointLight->load(m_camera->getViewMat());
 
 	//Pintar todas las entidades
 	for (Entity* e : m_entities)

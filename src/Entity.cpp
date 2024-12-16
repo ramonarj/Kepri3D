@@ -171,7 +171,7 @@ void Esfera::render(glm::dmat4 const& viewMat)
 
 void Esfera::update(GLuint timeElapsed)
 {
-	rotate(timeElapsed * 0.001, { 0,1,0 }, LOCAL);
+	//rotate(timeElapsed * 0.001, { 0,1,0 }, LOCAL);
 }
 
 // - - - - - - - - - - - - - - - - - 
@@ -183,8 +183,8 @@ Grid::Grid(GLuint filas, GLuint columnas, GLdouble tamFila, GLdouble tamColumna)
 
 void Grid::render(glm::dmat4 const& viewMat)
 {
-	glPolygonMode(GL_FRONT, GL_LINE);
-	//glPolygonMode(GL_BACK, GL_LINE);
+	glPolygonMode(GL_FRONT, GL_FILL);
+	glPolygonMode(GL_BACK, GL_LINE);
 	Entity::render(viewMat);
 	glPolygonMode(GL_FRONT_AND_BACK, GL_FILL); // el predeterminado
 }

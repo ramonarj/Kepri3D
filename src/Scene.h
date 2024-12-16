@@ -7,19 +7,21 @@
 class Texture;
 class Entity;
 class Camera;
+class Light;
 
 class Scene
 {
 public:
-	Scene(Camera* cam) : m_camera(cam) { };
-	//Scene(Camera* cam) : camera(cam) { };
+	/* Constructora por defecto*/
+	Scene(Camera* cam) : m_camera(cam), m_pointLight(nullptr) { };
 	~Scene();
+
+	/* Inicia los subsistemas de openGL y crea texturas y entidades */
 	void init();
+	/* Pinta todas las entidades */
 	void render();
+	/* Actualiza todas las entidades */
 	void update(GLuint timeElapsed);
-	//Light* getDirLight() { return dirLight; };
-	//Light* getSpotLight() { return spotLight; };
-	//Light* getSphereLight() { return sphereLight; };
 
 protected:
 	/* Lista de texturas */
@@ -30,7 +32,12 @@ protected:
 	/* Cámara activa */
 	Camera* m_camera;
 
+	/* Luz puntual */
+	Light* m_pointLight;
+
 	// Métodos auxiliares
+	void initGLSubsystems();
+
 	void ViewportTest();
 
 	//Camera* camera;
