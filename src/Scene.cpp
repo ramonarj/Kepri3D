@@ -51,6 +51,8 @@ void Scene::initGLSubsystems()
 	glShadeModel(GL_SMOOTH);
 	// Para no iluminar las caras traseras de las mallas. Por defecto está a false
 	glLightModeli(GL_LIGHT_MODEL_TWO_SIDE, GL_TRUE);
+	// Punto de vista para la reflexión especular de los materiales
+	glLightModeli(GL_LIGHT_MODEL_LOCAL_VIEWER, GL_TRUE);
 	// Normalizar los vectores normales
 	glEnable(GL_NORMALIZE);
 }
@@ -62,14 +64,12 @@ void Scene::init()
 	
 	/* Luces */
 	// Puntual
-	Light* m_pointLight = new Light({ 0.6, 0.6, 0.1, 1 });
-	//m_pointLight->setAmbient({ 0.5, 0.5, 0 ,1 });
-	m_pointLight->setPosition({ -2.5,-0.5,-2.5 });
+	Light* m_pointLight = new Light({ 1, 1, 0, 1 });
+	m_pointLight->setPosition({ -2.5,0.5,-2.5 });
 	m_pointLight->setActive(true);
 	m_lights.push_back(m_pointLight);
 
 	Light* m_pointLight2 = new Light({ 0, 0, 1, 1 });
-	//m_pointLight->setAmbient({ 0.5, 0.5, 0 ,1 });
 	m_pointLight2->setPosition({ 3,3,-3 });
 	m_lights.push_back(m_pointLight2);
 
@@ -105,6 +105,14 @@ void Scene::init()
 	buttonTex->load("ray.bmp");
 	m_textures.push_back(buttonTex);
 
+	/* Materiales */
+	Material* defaultMat = new Material();
+	m_materials.push_back(defaultMat);
+	Material* cromeMat = new Material({ 0.25, 0.25, 0.25 }, {0.4, 0.4, 0.4}, {0.77, 0.77, 0.77}, 77.0);
+	m_materials.push_back(cromeMat);
+	Material* cobreMat = new Material({ 0.19, 0.07, 0.02 }, { 0.7, 0.27, 0.08 }, { 0.26, 0.14, 0.086 }, 13.0);
+	m_materials.push_back(cobreMat);
+
 	/* Entidades */
 	// Ejes RGB
 	//m_entities.push_back(new EjesRGB(0.5));
@@ -115,19 +123,37 @@ void Scene::init()
 	// Polígono relleno
 	Poligono* pol = new Poligono(4, 1, true);
 	pol->setTexture(*zeldaTex);
-	m_entities.push_back(pol);
+	//m_entities.push_back(pol);
 
 	// Cubo con la misma textura en todas las caras
-	Cubo* c = new Cubo(1, true);
+	Cubo* c = new Cubo(2, true);
 	c->setTexture(*zeldaTex);
-	c->setPosition({ -1.5,0,0 });
+	c->setPosition({ -10,0,0 });
 	m_entities.push_back(c);
 
 	// Cubo con distintas texturas
-	Cubo* c2 = new Cubo(1, true, false);
+	Cubo* c2 = new Cubo(2, true, false);
 	c2->setTexture(*orientacionTex);
-	c2->setPosition({ 1.5,0,0 });
+	c2->setPosition({ -5,0,0 });
 	m_entities.push_back(c2);
+
+	// Cubo default
+	Cubo* cuboDef = new Cubo(2, false);
+	cuboDef->setMaterial(*defaultMat);
+	cuboDef->setPosition({ 0,0,0 });
+	m_entities.push_back(cuboDef);
+
+	// Cubo de cromo
+	Cubo* cuboCromo = new Cubo(2, false);
+	cuboCromo->setMaterial(*cromeMat);
+	cuboCromo->setPosition({ 5,0,0 });
+	m_entities.push_back(cuboCromo);
+
+	// Cubo de cobre
+	Cubo* cuboCobre = new Cubo(2, false);
+	cuboCobre->setMaterial(*cobreMat);
+	cuboCobre->setPosition({ 10,0,0 });
+	m_entities.push_back(cuboCobre);
 
 	// Esfera
 	Esfera* esfera = new Esfera(1, 8);
@@ -148,10 +174,12 @@ void Scene::init()
 	//venus->setPosition({ 15,10,0 });
 	//m_entities.push_back(venus);
 
-	// Rejilla
-	Grid* grid = new Grid(20, 20, 0.5, 0.5);
+	// Rejilla (suelo)
+	Grid* grid = new Grid(80, 160, 0.25, 0.25);
+	grid->setMaterial(*cromeMat);
 	grid->setPosition({ 0,-1,0 });
 	m_entities.push_back(grid);
+
 
 	// Terreno
 	Terrain* terrain = new Terrain("../bin/assets/terrain.raw", 0.5);
@@ -172,7 +200,7 @@ void Scene::render()
 	// Limpia el color y el depth buffer
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-	// Cargar las luces
+	// Cargar las luces; IMPORTANTE hacerlo antes de pintar los objetos a los que puedan iluminar
 	for (Light* l : m_lights)
 		l->load(m_camera->getViewMat());
 
@@ -196,7 +224,7 @@ void Scene::update(GLuint deltaTime)
 	}
 
 	// Animación para la luz
-	m_lights[1]->setPosition({3 * cos(totalTime * 0.002), -0.5, 3 * sin(totalTime * 0.002)});
+	m_lights[1]->setPosition({15 * cos(totalTime * 0.002), 1, 5 * sin(totalTime * 0.002)});
 	totalTime += deltaTime;
 }
 
@@ -239,6 +267,13 @@ Scene::~Scene()
 		delete it;
 	}
 	m_entities.clear();
+
+	// Borrar los materiales
+	for (Material* it : m_materials)
+	{
+		delete it;
+	}
+	m_materials.clear();
 
 	// Borrar las texturas
 	for (Texture* it : m_textures)

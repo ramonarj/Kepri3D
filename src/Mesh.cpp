@@ -280,9 +280,9 @@ IndexMesh* IndexMesh::generateCube(GLdouble size, bool textured, bool equalFaces
 		m->colores[i] = dvec4(1, 1, 1, 1);
 	}
 	// De prueba
-	m->colores[0] = dvec4(1.0, 0.0, 0.0, 1.0);
-	m->colores[17] = dvec4(0, 1.0, 0.0, 1.0);
-	m->colores[15] = dvec4(0, 0.5, 1.0, 1.0);
+	//m->colores[0] = dvec4(1.0, 0.0, 0.0, 1.0);
+	//m->colores[17] = dvec4(0, 1.0, 0.0, 1.0);
+	//m->colores[15] = dvec4(0, 0.5, 1.0, 1.0);
 
 	/* Especificar los triángulos */
 	m->indices = new GLuint[m->numIndices]

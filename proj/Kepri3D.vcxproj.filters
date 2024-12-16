@@ -43,6 +43,9 @@
     <ClCompile Include="..\src\Light.cpp">
       <Filter>Core</Filter>
     </ClCompile>
+    <ClCompile Include="..\src\Material.cpp">
+      <Filter>Core</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\src\UI\Button.h">
@@ -73,6 +76,9 @@
       <Filter>Utils</Filter>
     </ClInclude>
     <ClInclude Include="..\src\Light.h">
+      <Filter>Core</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\Material.h">
       <Filter>Core</Filter>
     </ClInclude>
   </ItemGroup>

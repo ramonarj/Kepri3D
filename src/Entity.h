@@ -3,6 +3,7 @@
 
 #include "Mesh.h"
 #include "Texture.h"
+#include "Material.h"
 
 #include <glm.hpp>
 #include <freeglut.h>
@@ -48,6 +49,9 @@ public:
 	/* Establece la textura (ya creada) que usará la entidad */
 	inline void setTexture(Texture const& tex) { m_texture = tex; };
 
+	/* Establece el material (ya creado) que usará la entidad */
+	inline void setMaterial(Material const& mat) { m_material = mat; };
+
 protected:
 	/* Malla/s que usará la entidad para pintarse */
 	Mesh* m_mesh;
@@ -58,6 +62,9 @@ protected:
 
 	/* Textura utilizada por la entidad */
 	Texture m_texture;
+
+	/* Material usado por la entidad */
+	Material m_material;
 
 	//Mesh* mesh = nullptr;
 	//Mesh* mesh2 = nullptr;

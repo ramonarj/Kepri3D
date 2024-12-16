@@ -32,6 +32,7 @@ bool animationsOn = true;
 bool fullscreen = false;
 bool lockedMouse = true;
 double velCamara = 0.4;
+double velLuz = 0.25;
 int moving = 0; // -1-> atrás, 1-> adelante
 
 // Predeclaración de callbacks
@@ -170,10 +171,10 @@ void key(unsigned char key, int x, int y)
 		break;
 	/* Movimiento de la luz en el eje Y */
 	case '9':
-		scene.getLight()->setPosition(scene.getLight()->getPosition() + glm::fvec4(0, -velCamara, 0, 0));
+		scene.getLight()->setPosition(scene.getLight()->getPosition() + glm::fvec4(0, -velLuz, 0, 0));
 		break;
 	case '0':
-		scene.getLight()->setPosition(scene.getLight()->getPosition() + glm::fvec4(0, velCamara, 0, 0));
+		scene.getLight()->setPosition(scene.getLight()->getPosition() + glm::fvec4(0, velLuz, 0, 0));
 		break;
 	// Movimiento arriba de la cámara
 	case 32: // espacio
@@ -215,16 +216,16 @@ void specialKey(int key, int x, int y)
 	switch (key) {
 	/* Movimiento de la luz en el plano XZ */
 	case GLUT_KEY_RIGHT:
-		scene.getLight()->setPosition(scene.getLight()->getPosition() + glm::fvec4(velCamara, 0, 0, 0));
+		scene.getLight()->setPosition(scene.getLight()->getPosition() + glm::fvec4(velLuz, 0, 0, 0));
 		break;
 	case GLUT_KEY_LEFT:
-		scene.getLight()->setPosition(scene.getLight()->getPosition() + glm::fvec4(-velCamara, 0, 0, 0));
+		scene.getLight()->setPosition(scene.getLight()->getPosition() + glm::fvec4(-velLuz, 0, 0, 0));
 		break;
 	case GLUT_KEY_UP:
-		scene.getLight()->setPosition(scene.getLight()->getPosition() + glm::fvec4(0, 0, -velCamara, 0));
+		scene.getLight()->setPosition(scene.getLight()->getPosition() + glm::fvec4(0, 0, -velLuz, 0));
 		break;
 	case GLUT_KEY_DOWN:
-		scene.getLight()->setPosition(scene.getLight()->getPosition() + glm::fvec4(0, 0, velCamara, 0));
+		scene.getLight()->setPosition(scene.getLight()->getPosition() + glm::fvec4(0, 0, velLuz, 0));
 		break;
 	/* Movimiento arriba/abajo de la cámara */
 	case GLUT_KEY_SHIFT_L:

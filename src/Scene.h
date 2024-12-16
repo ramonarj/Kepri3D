@@ -8,6 +8,7 @@ class Texture;
 class Entity;
 class Camera;
 class Light;
+class Material;
 
 class Scene
 {
@@ -31,6 +32,8 @@ protected:
 	std::vector<Texture*> m_textures;
 	/* Lista de entidades */
 	std::vector<Entity*> m_entities;
+	/* Lista de materiales */
+	std::vector<Material*> m_materials;
 	/* Lista de luces */
 	std::vector<Light*> m_lights;
 

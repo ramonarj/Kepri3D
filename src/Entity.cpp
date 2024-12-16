@@ -26,6 +26,7 @@ void Entity::render(glm::dmat4 const& viewMat)
 
 
 	// 2) Dibujar la/s malla/s
+	m_material.load();
 	if (m_mesh != nullptr)
 		m_mesh->draw();
 }
@@ -151,7 +152,7 @@ void Cubo::render(glm::dmat4 const& viewMat)
 
 void Cubo::update(GLuint deltaTime)
 {
-	rotate(deltaTime * 0.001, { 0,1,0 }, LOCAL);
+	//rotate(deltaTime * 0.001, { 0,1,0 }, LOCAL);
 }
 
 
