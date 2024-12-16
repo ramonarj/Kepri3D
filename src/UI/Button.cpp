@@ -13,7 +13,7 @@ Button::Button(Texture* texture)
 
 void Button::render(glm::dmat4 const& viewMat)
 {
-	m_texture.bind();
+	m_texture.bind(GL_REPLACE); // a los elementos del canvas NO les afecta la iluminación (no usamos MODULATE)
 
 	// Cargar la matriz de modelado
 	glMatrixMode(GL_MODELVIEW);

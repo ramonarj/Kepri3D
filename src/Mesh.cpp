@@ -15,6 +15,8 @@ Mesh::~Mesh()
 		delete[] colores;
 	if(vertices != nullptr)
 		delete[] vertices;
+	if (normales != nullptr)
+		delete[] normales;
 }
 
 void Mesh::enableArrays()
@@ -34,10 +36,17 @@ void Mesh::enableArrays()
 		glEnableClientState(GL_TEXTURE_COORD_ARRAY);
 		glTexCoordPointer(2, GL_DOUBLE, 0, texCoords);
 	}
+	// Normales 
+	if(normales != nullptr)
+	{
+		glEnableClientState(GL_NORMAL_ARRAY);
+		glNormalPointer(GL_DOUBLE, 0, normales);
+	}
 }
 
 void Mesh::disableArrays()
 {
+	glDisableClientState(GL_NORMAL_ARRAY);
 	glDisableClientState(GL_TEXTURE_COORD_ARRAY);
 	glDisableClientState(GL_COLOR_ARRAY);
 	glDisableClientState(GL_VERTEX_ARRAY);
@@ -536,6 +545,12 @@ IndexMesh* IndexMesh::generateGrid(GLint filas, GLint columnas, GLdouble tamFila
 			k += 3;
 		}
 	}
+
+	/* Lista de vectores normales */
+	m->normales = new dvec3[m->numVertices];
+	for (int i = 0; i < m->numVertices; i++)
+		m->normales[i] = { 0,1, 0 };
+
 
 	return m;
 }

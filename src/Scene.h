@@ -13,7 +13,7 @@ class Scene
 {
 public:
 	/* Constructora por defecto*/
-	Scene(Camera* cam) : m_camera(cam), m_pointLight(nullptr) { };
+	Scene(Camera* cam) : m_camera(cam), m_pointLight(nullptr), m_dirLight(nullptr) { };
 	~Scene();
 
 	/* Inicia los subsistemas de openGL y crea texturas y entidades */
@@ -21,7 +21,7 @@ public:
 	/* Pinta todas las entidades */
 	void render();
 	/* Actualiza todas las entidades */
-	void update(GLuint timeElapsed);
+	void update(GLuint deltaTime);
 
 protected:
 	/* Lista de texturas */
@@ -34,6 +34,9 @@ protected:
 
 	/* Luz puntual */
 	Light* m_pointLight;
+
+	/* Luz direccional */
+	Light* m_dirLight;
 
 	// Métodos auxiliares
 	void initGLSubsystems();

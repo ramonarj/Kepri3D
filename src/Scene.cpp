@@ -9,6 +9,8 @@
 
 using namespace glm;
 
+GLuint totalTime = 0;
+
 void Scene::initGLSubsystems()
 {
 	// Color de fondo (el predeterminado es negro)
@@ -43,6 +45,10 @@ void Scene::initGLSubsystems()
 	glEnable(GL_LIGHTING);
 	// Tipo de modelo de coloreado -> GL_FLAT (flat), GL_SMOOTH (gouraud)
 	glShadeModel(GL_SMOOTH);
+	// Para no iluminar las caras traseras de las mallas
+	glLightModeli(GL_LIGHT_MODEL_TWO_SIDE, GL_TRUE);
+	// Normalizar los vectores normales
+	//glEnable(GL_NORMALIZE);
 }
 
 void Scene::init()
@@ -51,9 +57,14 @@ void Scene::init()
 	initGLSubsystems();
 	
 	/* Luces */
-	m_pointLight = new Light();
-	m_pointLight->setPosition({ 0,0,0 });
-	//m_pointLight->setDirection({ 0,0,0 });
+	// Puntual
+	m_pointLight = new Light({0.4, 0.4, 1, 1});
+	m_pointLight->setAmbient({ 0.5, 0.5, 0 ,1 });
+	m_pointLight->setPosition({ 0,1,0 });
+
+	// Direccional
+	m_dirLight = new Light();
+	m_dirLight->setDirection({ 0, 1, 0 });
 
 	/* Texturas que vamos a usar */
 	Texture* earthTex = new Texture();
@@ -146,7 +157,7 @@ void Scene::init()
 	Button* button = new Button(buttonTex);
 	button->scale({ 0.5, 0.3, 1 });
 	button->setPositionUI(0.15, 0.8);
-	//m_entities.push_back(button);
+	m_entities.push_back(button);
 }
 
 void Scene::render()
@@ -154,8 +165,9 @@ void Scene::render()
 	// Limpia el color y el depth buffer
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-	// Cargar la luz
+	// Cargar las luces
 	m_pointLight->load(m_camera->getViewMat());
+	//m_dirLight->load(m_camera->getViewMat());
 
 	//Pintar todas las entidades
 	for (Entity* e : m_entities)
@@ -167,6 +179,18 @@ void Scene::render()
 	// para dibujar con la GPU. Cuando se ha terminado de dibujar y llega el siguiente 
 	// frame, se intercambian las referencias y se repite el proceso
 	glutSwapBuffers();
+}
+
+void Scene::update(GLuint deltaTime)
+{
+	for (Entity* e : m_entities)
+	{
+		e->update(deltaTime);
+	}
+
+	// Animación para la luz
+	m_pointLight->setPosition({ 2 * cos(totalTime * 0.005), 1, 2 * sin(totalTime * 0.005)});
+	totalTime += deltaTime;
 }
 
 void Scene::ViewportTest()
@@ -200,14 +224,6 @@ void Scene::ViewportTest()
 	view->setSize(w, h); //Volvemos a dejar el viewPort como estaba
 }
 
-void Scene::update(GLuint timeElapsed)
-{
-	for(Entity* e : m_entities)
-	{
-		e->update(timeElapsed);
-	}
-}
-
 Scene::~Scene()
 {
 	// Borrar las entidades
@@ -225,6 +241,7 @@ Scene::~Scene()
 	m_textures.clear();
 
 	// Desactivar los parámetros de OpenGL
+	glDisable(GL_LIGHTING);
 	glDisable(GL_CULL_FACE);
 	glDisable(GL_ALPHA_TEST);
 	glDisable(GL_BLEND);

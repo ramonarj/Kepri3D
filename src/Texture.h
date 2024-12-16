@@ -18,7 +18,7 @@ public:
 	bool load(const std::string& bmpName, GLubyte alpha = 255);
 
 	// Activar/desactivar la textura
-	void bind(GLuint mix = GL_REPLACE);
+	void bind(GLuint mix = GL_MODULATE);
 	void unbind();
 
 private:

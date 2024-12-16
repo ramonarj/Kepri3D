@@ -4,7 +4,7 @@
 
 GLuint Light::cont = 0;
 
-Light::Light() : id(GL_MAX_LIGHTS), posDir({0,0,0,0})
+Light::Light(glm::fvec4 diffuse) : id(GL_MAX_LIGHTS), posDir({0,0,0,0})
 {
 	if(cont < GL_MAX_LIGHTS)
 	{
@@ -14,7 +14,7 @@ Light::Light() : id(GL_MAX_LIGHTS), posDir({0,0,0,0})
 		cont++;
 
 		ambient = { 0,0,0,1 };
-		diffuse = { 1,1,1,1 };
+		this->diffuse = diffuse;
 		specular = { 0,0,0,1 };
 	}
 }
@@ -30,7 +30,7 @@ void Light::load(glm::dmat4 viewMat)
 	glMatrixMode(GL_MODELVIEW);
 	glLoadMatrixd(value_ptr(viewMat));
 
-	// Posición de la luz
+	// Posición /dirección de la luz
 	glLightfv(id, GL_POSITION, value_ptr(posDir));
 
 	//fv = float vector (puntero a)

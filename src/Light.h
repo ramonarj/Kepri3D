@@ -8,7 +8,7 @@ class Light
 {
 public:
 	/* Constructora por defecto */
-	Light();
+	Light(glm::fvec4 diffuse = {1, 1, 1, 1});
 
 	/* Destructora */
 	~Light();

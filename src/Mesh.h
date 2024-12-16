@@ -10,7 +10,8 @@ class Mesh
 {
 public:
 	/* Constructora */
-	Mesh() : numVertices (0), type(GL_POINTS), vertices(nullptr), colores(nullptr), texCoords(nullptr) {}
+	Mesh() : numVertices (0), type(GL_POINTS), 
+		vertices(nullptr), colores(nullptr), texCoords(nullptr), normales(nullptr) {}
 	/* Destructora */
 	virtual ~Mesh();
 
@@ -42,6 +43,9 @@ protected:
 
 	/* Array de coordenadas de textura para cada uno de los vértices */
 	glm::dvec2* texCoords;
+
+	/* Array de vectores normales a cada uno de los vértices */
+	glm::dvec3* normales;
 
 	// Métodos auxiliares
 	/* Activa los arrays de vértices, colores y texturas */
