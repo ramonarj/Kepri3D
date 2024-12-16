@@ -179,7 +179,7 @@ void Esfera::render(glm::dmat4 const& viewMat)
 
 void Esfera::update(GLuint timeElapsed)
 {
-	//rotate(timeElapsed * 0.001, { 0,1,0 }, LOCAL);
+	rotate(timeElapsed * 0.0005, { 0,1,0 }, LOCAL);
 }
 
 // - - - - - - - - - - - - - - - - - 

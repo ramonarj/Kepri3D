@@ -225,6 +225,35 @@ void IndexMesh::draw()
 	Mesh::disableArrays();
 }
 
+void IndexMesh::SetNormals()
+{
+	// Se inicializan todas a 0
+	normales = new dvec3[numVertices];
+	for (int i = 0; i < numVertices; i++)
+		normales[i] = { 0,0,0 };
+
+	// Recorrido de los triángulos
+	for (int i = 0; i < numIndices; i += 3)
+	{
+		// Los 3 vértices del triángulo
+		glm::dvec3 a = vertices[indices[i]];
+		glm::dvec3 b = vertices[indices[i + 1]];
+		glm::dvec3 c = vertices[indices[i + 2]];
+
+		// Vector normal al triángulo
+		dvec3 n = glm::normalize(glm::cross(c - b, a - b));
+
+		// Sumárselo a sus vértices
+		normales[indices[i]] += n;
+		normales[indices[i + 1]] += n;
+		normales[indices[i + 2]] += n;
+	}
+
+	// Normalizar las normales
+	for (int i = 0; i < numVertices; i++)
+		glm::normalize(normales[i]);
+}
+
 IndexMesh* IndexMesh::generateCube(GLdouble size, bool textured, bool equalFaces)
 {
 	IndexMesh* m = new IndexMesh();
@@ -366,31 +395,8 @@ IndexMesh* IndexMesh::generateCube(GLdouble size, bool textured, bool equalFaces
 		}
 	}
 
-	/* Normales */
-	m->normales = new dvec3[m->numVertices]
-	{
-		// Frente
-		{0 ,0, 1}, {0 ,0, 1}, {0 ,0, 1}, {0 ,0, 1},
-
-		// Derecha
-		{1 ,0, 0}, {1 ,0, 0}, {1 ,0, 0}, {1 ,0, 0},
-
-		// Atrás
-		{0 ,0, -1}, {0 ,0, -1}, {0 ,0, -1}, {0 ,0, -1},
-
-		// Izquierda
-		{-1 ,0, 0},{-1 ,0, 0},{-1 ,0, 0},{-1 ,0, 0},
-
-		// Arriba
-		{0 ,1, 0},{0 ,1, 0},{0 ,1, 0},{0 ,1, 0},
-
-		// Abajo
-		{0 ,-1, 0},{0 ,-1, 0},{0 ,-1, 0},{0 ,-1, 0},
-	};
-
-	// Normalizar las normales
-	for (int i = 0; i < m->numVertices; i++)
-		glm::normalize(m->normales[i]);
+	/* Generar las normales */
+	m->SetNormals();
 
 	return m;
 }
@@ -520,6 +526,9 @@ IndexMesh* IndexMesh::generateSphere(GLdouble size, GLuint subdivisions, bool te
 		m->texCoords[m->numVertices - 1] = { 0.5, 0 };
 	}
 
+	/* Normales */
+	m->SetNormals();
+
 	return m;
 }
 
@@ -612,8 +621,8 @@ IndexMesh* IndexMesh::generateTerrain(std::string filename, GLdouble scale)
 			1 - (-iniPos + m->vertices[i].z) / (256.0 * scale) };
 	}
 
-	// generar normales -> recorrido de triángulos
-	//
+	/* Generar normales */
+	m->SetNormals();
 
 	return m;
 }

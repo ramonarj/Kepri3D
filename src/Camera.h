@@ -51,6 +51,7 @@ public:
 		// el (0,0,1) y mirando hacia el (0,0,0), entonces queremos que la 
 		// posición y rotación iniciales de nuestra cámara coincidan con esas
 
+		setPosition({ 0, 5, 8 });
 		//modelMat = glm::translate(modelMat, glm::dvec3(0, 0, -1));
 		//PrintMatrix(&modelMat);
 		//modelMat = glm::rotate(modelMat, PI, glm::dvec3(0, 1, 0));

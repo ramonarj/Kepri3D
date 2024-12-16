@@ -7,7 +7,7 @@ Material::Material()
 {
 	// Valores por defecto
 	m_ambient = { 0.2, 0.2, 0.2, 1.0 };
-	m_diffuse = { 1, 1, 1, 1.0 };
+	m_diffuse = { 0.8, 0.8, 0.8, 1.0 };
 	m_specular = { 0.0, 0.0, 0.0, 1.0 };
 	m_expF = 0;
 }
@@ -26,6 +26,7 @@ void Material::load()
 	//glMaterialfv(GL_FRONT_AND_BACK, GL_AMBIENT, value_ptr(m_ambient));
 	//glMaterialfv(GL_FRONT_AND_BACK, GL_DIFFUSE, value_ptr(m_diffuse));
 
+	// El "front and back" produce algunos efectos no deseados
 	glMaterialfv(GL_FRONT_AND_BACK, GL_AMBIENT_AND_DIFFUSE, value_ptr(m_diffuse));
 	glMaterialfv(GL_FRONT_AND_BACK, GL_SPECULAR, value_ptr(m_specular));
 

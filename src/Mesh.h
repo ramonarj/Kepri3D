@@ -87,6 +87,11 @@ private:
 
 	/* Variable auxiliar para ahorrar cálculos (= numTriangulos * 3) */
 	GLuint numIndices;
+
+
+	// Métodos auxiliares
+	/* Rellena el vector de normales usando los triángulos indexados */
+	void SetNormals();
 };
 
 #endif

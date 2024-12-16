@@ -64,18 +64,18 @@ void Scene::init()
 	
 	/* Luces */
 	// Puntual
-	Light* m_pointLight = new Light({ 1, 1, 0, 1 });
-	m_pointLight->setPosition({ -2.5,0.5,-2.5 });
-	m_pointLight->setActive(true);
-	m_lights.push_back(m_pointLight);
+	//Light* m_pointLight = new Light({ 1, 1, 0, 1 });
+	//m_pointLight->setPosition({ -2.5,0.5,-2.5 });
+	//m_pointLight->setActive(true);
+	//m_lights.push_back(m_pointLight);
 
-	Light* m_pointLight2 = new Light({ 0, 0, 1, 1 });
-	m_pointLight2->setPosition({ 3,3,-3 });
-	m_lights.push_back(m_pointLight2);
+	//Light* m_pointLight2 = new Light({ 0, 0, 1, 1 });
+	//m_pointLight2->setPosition({ 3,3,-3 });
+	//m_lights.push_back(m_pointLight2);
 
 	// Direccional
 	Light* m_dirLight = new Light();
-	m_dirLight->setDirection({ -1, -1, -1 });
+	m_dirLight->setDirection({ -1,0 , 0 });
 	m_dirLight->setAmbient({ 0.2, 0.2, 0.2 ,1 });
 	m_dirLight->setActive(true);
 	m_lights.push_back(m_dirLight);
@@ -156,14 +156,15 @@ void Scene::init()
 	m_entities.push_back(cuboCobre);
 
 	// Esfera
-	Esfera* esfera = new Esfera(1, 8);
-	esfera->setPosition({ 0,0,-2 });
-	//m_entities.push_back(esfera);
+	Esfera* esfera = new Esfera(1, 8, true);
+	esfera->setTexture(*earthTex);
+	esfera->setPosition({ 0,2,-3 });
+	m_entities.push_back(esfera);
 
 	// Tierra
 	Esfera* tierra = new Esfera(3, 20, true);
 	tierra->setTexture(*earthTex);
-	tierra->setPosition({ 4,10,0 });
+	tierra->setPosition({ 6,15,0 });
 	//tierra->rotate(-PI / 2, { 1, 0, 0 }, LOCAL); // 90º horario en eje X local
 	tierra->rotate(-PI / 8, { 0, 0, 1 }, GLOBAL);
 	m_entities.push_back(tierra);
@@ -224,7 +225,9 @@ void Scene::update(GLuint deltaTime)
 	}
 
 	// Animación para la luz
-	m_lights[1]->setPosition({15 * cos(totalTime * 0.002), 1, 5 * sin(totalTime * 0.002)});
+	//m_lights[1]->setPosition({15 * cos(totalTime * 0.002), 1, 5 * sin(totalTime * 0.002)});
+
+	m_lights[0]->setDirection({ -cos(totalTime * 0.0001),-sin(totalTime * 0.0001), 0});
 	totalTime += deltaTime;
 }
 
