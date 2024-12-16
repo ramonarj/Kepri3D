@@ -13,9 +13,11 @@ Light::Light(glm::fvec4 diffuse) : id(GL_MAX_LIGHTS), posDir({0,0,0,0})
 		glEnable(id); // es como hacer glEnable(GL_LIGHTid)
 		cont++;
 
-		ambient = { 0,0,0,1 };
+		ambient = { 0.1,0.1,0.1,1 };
+		//ambient = { 0.5,0.5,0.5,1 };
 		this->diffuse = diffuse;
-		specular = { 0,0,0,1 };
+		specular = { 0.5,0.5,0.5,1 };
+		//specular = { 0,0,0,1 };
 	}
 }
 

@@ -15,6 +15,7 @@
 #include "Scene.h"
 #include "Camera.h"
 #include "Entity.h"
+#include "Light.h"
 #include "checkML.h"
 
 // Variables globales
@@ -167,12 +168,12 @@ void key(unsigned char key, int x, int y)
 	case 's':
 		camera.translate({ 0, 0, -velCamara }, LOCAL);
 		break;
-	// Roll
+	/* Movimiento de la luz en el eje Y */
 	case '9':
-		camera.rotate(-0.1, { 0, 0, 1 }, LOCAL);
+		scene.getLight()->setPosition(scene.getLight()->getPosition() + glm::fvec4(0, -velCamara, 0, 0));
 		break;
 	case '0':
-		camera.rotate(0.1, { 0, 0, 1 }, LOCAL);
+		scene.getLight()->setPosition(scene.getLight()->getPosition() + glm::fvec4(0, velCamara, 0, 0));
 		break;
 	// Movimiento arriba de la cámara
 	case 32: // espacio
@@ -212,18 +213,18 @@ void specialKey(int key, int x, int y)
 	bool need_redisplay = true;
 
 	switch (key) {
-	/* Rotaciones locales de la cámara (pitch, yaw, roll) */
+	/* Movimiento de la luz en el plano XZ */
 	case GLUT_KEY_RIGHT:
-		camera.rotate(-0.1, { 0, 1, 0 }, LOCAL);
+		scene.getLight()->setPosition(scene.getLight()->getPosition() + glm::fvec4(velCamara, 0, 0, 0));
 		break;
 	case GLUT_KEY_LEFT:
-		camera.rotate(0.1, { 0, 1, 0 }, LOCAL);
+		scene.getLight()->setPosition(scene.getLight()->getPosition() + glm::fvec4(-velCamara, 0, 0, 0));
 		break;
 	case GLUT_KEY_UP:
-		camera.rotate(0.1, { 1, 0, 0 }, LOCAL);
+		scene.getLight()->setPosition(scene.getLight()->getPosition() + glm::fvec4(0, 0, -velCamara, 0));
 		break;
 	case GLUT_KEY_DOWN:
-		camera.rotate(-0.1, { 1, 0, 0 }, LOCAL);
+		scene.getLight()->setPosition(scene.getLight()->getPosition() + glm::fvec4(0, 0, velCamara, 0));
 		break;
 	/* Movimiento arriba/abajo de la cámara */
 	case GLUT_KEY_SHIFT_L:

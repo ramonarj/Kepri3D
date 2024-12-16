@@ -100,6 +100,7 @@ public:
 	Cubo(GLdouble size, bool textured, bool equalFaces = true);
 	~Cubo() { };
 	void render(glm::dmat4 const& viewMat) override;
+	void update(GLuint timeElapsed) override;
 };
 
 // - - - - - - - - - - - - 

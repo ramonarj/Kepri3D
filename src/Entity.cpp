@@ -120,15 +120,13 @@ Poligono::Poligono(GLint sides, GLdouble size, bool relleno)
 
 void Poligono::render(glm::dmat4 const& viewMat)
 {
-	glCullFace(GL_FRONT);
-	m_texture.bind();
 
+	m_texture.bind();
 	glPolygonMode(GL_FRONT, GL_FILL); // -> si quisiéramos que los triángulos no se rellenen, solo las líneas
 
 	Entity::render(viewMat);
 
 	glPolygonMode(GL_FRONT_AND_BACK, GL_FILL); // el predeterminado
-
 	m_texture.unbind();
 }
 
@@ -151,6 +149,11 @@ void Cubo::render(glm::dmat4 const& viewMat)
 	glPolygonMode(GL_FRONT_AND_BACK, GL_FILL); // el predeterminado
 }
 
+void Cubo::update(GLuint deltaTime)
+{
+	rotate(deltaTime * 0.001, { 0,1,0 }, LOCAL);
+}
+
 
 // - - - - - - - - - - - - - - - - - 
 
@@ -161,12 +164,16 @@ Esfera::Esfera(GLdouble size, GLuint subdivisions, bool textured)
 
 void Esfera::render(glm::dmat4 const& viewMat)
 {
+	glDisable(GL_CULL_FACE);
+
 	glPolygonMode(GL_FRONT, GL_FILL);
 	glPolygonMode(GL_BACK, GL_LINE);
 	m_texture.bind();
 	Entity::render(viewMat);
 	m_texture.unbind();
 	glPolygonMode(GL_FRONT_AND_BACK, GL_FILL); // el predeterminado
+
+	//glEnable(GL_CULL_FACE);
 }
 
 void Esfera::update(GLuint timeElapsed)
@@ -199,7 +206,7 @@ Terrain::Terrain(std::string filename, GLdouble scale)
 void Terrain::render(glm::dmat4 const& viewMat)
 {
 	glPolygonMode(GL_FRONT, GL_FILL);
-	//glPolygonMode(GL_BACK, GL_LINE);
+	glPolygonMode(GL_BACK, GL_LINE);
 	m_texture.bind();
 	Entity::render(viewMat);
 	m_texture.unbind();

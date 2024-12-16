@@ -277,7 +277,7 @@ IndexMesh* IndexMesh::generateCube(GLdouble size, bool textured, bool equalFaces
 	m->colores = new dvec4[m->numVertices];
 	for (int i = 0; i < m->numVertices; i++)
 	{
-		m->colores[i] = dvec4(0.2, 0.1, 0.2, 1);
+		m->colores[i] = dvec4(1, 1, 1, 1);
 	}
 	// De prueba
 	m->colores[0] = dvec4(1.0, 0.0, 0.0, 1.0);
@@ -365,6 +365,32 @@ IndexMesh* IndexMesh::generateCube(GLdouble size, bool textured, bool equalFaces
 			};
 		}
 	}
+
+	/* Normales */
+	m->normales = new dvec3[m->numVertices]
+	{
+		// Frente
+		{0 ,0, 1}, {0 ,0, 1}, {0 ,0, 1}, {0 ,0, 1},
+
+		// Derecha
+		{1 ,0, 0}, {1 ,0, 0}, {1 ,0, 0}, {1 ,0, 0},
+
+		// Atrás
+		{0 ,0, -1}, {0 ,0, -1}, {0 ,0, -1}, {0 ,0, -1},
+
+		// Izquierda
+		{-1 ,0, 0},{-1 ,0, 0},{-1 ,0, 0},{-1 ,0, 0},
+
+		// Arriba
+		{0 ,1, 0},{0 ,1, 0},{0 ,1, 0},{0 ,1, 0},
+
+		// Abajo
+		{0 ,-1, 0},{0 ,-1, 0},{0 ,-1, 0},{0 ,-1, 0},
+	};
+
+	// Normalizar las normales
+	for (int i = 0; i < m->numVertices; i++)
+		glm::normalize(m->normales[i]);
 
 	return m;
 }

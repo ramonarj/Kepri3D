@@ -22,11 +22,16 @@ public:
 	/* Cambia la luz ambiente */
 	inline void setAmbient(glm::fvec4 ambient) { this->ambient = ambient; }
 
+	// Getters
+	/* Devuelve la posición */
+	inline glm::fvec4 getPosition() const { return posDir; }
+
+	// Setters
 	/* Cambia la posición de la luz, y la convierte en puntual */
 	inline void setPosition(glm::fvec3 pos) { posDir = glm::fvec4(pos, 1.0f); }
 
 	/* Cambia la dirección de la luz, y la convierte en direccional */
-	inline void setDirection(glm::fvec3 dir) { posDir = glm::fvec4(dir, 0.0f); }
+	inline void setDirection(glm::fvec3 dir) { posDir = glm::fvec4(-dir, 0.0f); } //-dir
 
 protected:
 	/* Número de luces totales en la escena */

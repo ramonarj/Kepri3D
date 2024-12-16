@@ -36,19 +36,23 @@ void Scene::initGLSubsystems()
 	glAlphaFunc(GL_GREATER, 0.2);
 
 	/* Antialiasing; tanto para líneas, como para polígonos */
-	glEnable(GL_LINE_SMOOTH);
+	//glEnable(GL_LINE_SMOOTH);
 	//glEnable(GL_POLYGON_SMOOTH);
 	//glHint(GL_POLYGON_SMOOTH_HINT, GL_NICEST);
-	//glEnable(GL_CULL_FACE); //cuidado con esto
+	
+	/* Culling; descarta el dibujado de los polígonos traseros. 
+	Lo suyo sería tenerlo siempre activo, y las entidades que necesiten renderizar las 2 caras,
+	lo desactivan y vuelven a activar en su 'render' */
+	//glEnable(GL_CULL_FACE); 
 
-	/* Iluminación */
+	/* Iluminación, activa el uso de las luces y sombreado */
 	glEnable(GL_LIGHTING);
-	// Tipo de modelo de coloreado -> GL_FLAT (flat), GL_SMOOTH (gouraud)
+	// Tipo de modelo de sombreado -> GL_FLAT (flat), GL_SMOOTH (gouraud)
 	glShadeModel(GL_SMOOTH);
-	// Para no iluminar las caras traseras de las mallas
+	// Para no iluminar las caras traseras de las mallas. Por defecto está a false
 	glLightModeli(GL_LIGHT_MODEL_TWO_SIDE, GL_TRUE);
 	// Normalizar los vectores normales
-	//glEnable(GL_NORMALIZE);
+	glEnable(GL_NORMALIZE);
 }
 
 void Scene::init()
@@ -58,13 +62,23 @@ void Scene::init()
 	
 	/* Luces */
 	// Puntual
-	m_pointLight = new Light({0.4, 0.4, 1, 1});
-	m_pointLight->setAmbient({ 0.5, 0.5, 0 ,1 });
-	m_pointLight->setPosition({ 0,1,0 });
+	Light* m_pointLight = new Light({ 0.6, 0.6, 0.1, 1 });
+	//m_pointLight->setAmbient({ 0.5, 0.5, 0 ,1 });
+	m_pointLight->setPosition({ -2.5,-0.5,-2.5 });
+	m_pointLight->setActive(true);
+	m_lights.push_back(m_pointLight);
+
+	Light* m_pointLight2 = new Light({ 0, 0, 1, 1 });
+	//m_pointLight->setAmbient({ 0.5, 0.5, 0 ,1 });
+	m_pointLight2->setPosition({ 3,3,-3 });
+	m_lights.push_back(m_pointLight2);
 
 	// Direccional
-	m_dirLight = new Light();
-	m_dirLight->setDirection({ 0, 1, 0 });
+	Light* m_dirLight = new Light();
+	m_dirLight->setDirection({ -1, -1, -1 });
+	m_dirLight->setAmbient({ 0.2, 0.2, 0.2 ,1 });
+	m_dirLight->setActive(true);
+	m_lights.push_back(m_dirLight);
 
 	/* Texturas que vamos a usar */
 	Texture* earthTex = new Texture();
@@ -101,7 +115,7 @@ void Scene::init()
 	// Polígono relleno
 	Poligono* pol = new Poligono(4, 1, true);
 	pol->setTexture(*zeldaTex);
-	//m_entities.push_back(pol);
+	m_entities.push_back(pol);
 
 	// Cubo con la misma textura en todas las caras
 	Cubo* c = new Cubo(1, true);
@@ -115,17 +129,10 @@ void Scene::init()
 	c2->setPosition({ 1.5,0,0 });
 	m_entities.push_back(c2);
 
-	// Suelo
-	//Poligono* suelo = new Poligono(4, 8, true);
-	//suelo->setTexture(*zeldaTex);
-	//suelo->setPosition({ 0,-0.5,0 });
-	//suelo->rotate(-3.1416 / 2, dvec3(1,0,0));
-	//m_entities.push_back(suelo);
-
 	// Esfera
 	Esfera* esfera = new Esfera(1, 8);
 	esfera->setPosition({ 0,0,-2 });
-	m_entities.push_back(esfera);
+	//m_entities.push_back(esfera);
 
 	// Tierra
 	Esfera* tierra = new Esfera(3, 20, true);
@@ -166,8 +173,8 @@ void Scene::render()
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
 	// Cargar las luces
-	m_pointLight->load(m_camera->getViewMat());
-	//m_dirLight->load(m_camera->getViewMat());
+	for (Light* l : m_lights)
+		l->load(m_camera->getViewMat());
 
 	//Pintar todas las entidades
 	for (Entity* e : m_entities)
@@ -189,7 +196,7 @@ void Scene::update(GLuint deltaTime)
 	}
 
 	// Animación para la luz
-	m_pointLight->setPosition({ 2 * cos(totalTime * 0.005), 1, 2 * sin(totalTime * 0.005)});
+	m_lights[1]->setPosition({3 * cos(totalTime * 0.002), -0.5, 3 * sin(totalTime * 0.002)});
 	totalTime += deltaTime;
 }
 
