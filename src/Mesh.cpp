@@ -227,8 +227,10 @@ void IndexMesh::draw()
 
 void IndexMesh::SetNormals()
 {
+	if(normales == nullptr)
+		normales = new dvec3[numVertices];
+
 	// Se inicializan todas a 0
-	normales = new dvec3[numVertices];
 	for (int i = 0; i < numVertices; i++)
 		normales[i] = { 0,0,0 };
 

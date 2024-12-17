@@ -47,7 +47,7 @@ public:
 
 	// Setters
 	/* Establece la textura (ya creada) que usará la entidad */
-	inline void setTexture(Texture const& tex) { m_texture = tex; };
+	void setTexture(std::string textureID);
 
 	/* Establece el material (ya creado) que usará la entidad */
 	inline void setMaterial(Material const& mat) { m_material = mat; };

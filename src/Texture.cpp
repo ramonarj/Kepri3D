@@ -19,7 +19,7 @@ void Texture::Init()
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
 }
 
-bool Texture::load(const std::string& bmpName, GLubyte alpha)
+bool Texture::load(const std::string& filePath, GLubyte alpha)
 {
 	// Crear la textura y establecer los filtros
 	if (id == 0) 
@@ -27,7 +27,7 @@ bool Texture::load(const std::string& bmpName, GLubyte alpha)
 
 	// Cargamos la información del BMP y le añadimos la 
 	PixMap32RGBA pixMap; 
-	pixMap.load_bmp24BGR(TEXTURES_PATH + bmpName); 
+	pixMap.load_bmp24BGR(filePath); 
 	if (pixMap.is_null())
 		return false;
 

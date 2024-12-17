@@ -9,6 +9,7 @@
 
 #include <iostream>
 #include "Utils.h"
+#include "TextureManager.h"
 
 using namespace glm;
 
@@ -99,6 +100,11 @@ void Entity::rotate(GLdouble alpha, glm::dvec3 axis, ReferenceSystem refSys)
 void Entity::scale(glm::dvec3 scale)
 {
 	modelMat = glm::scale(modelMat, scale);
+}
+
+void Entity::setTexture(std::string textureID)
+{
+	m_texture = TextureManager::Instance()->getTexture(textureID);
 }
 
 

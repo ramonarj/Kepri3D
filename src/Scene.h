@@ -27,13 +27,17 @@ public:
 	/* Devuelve la luz puntual */
 	Light* getLight() { return m_lights[0]; }
 
+	/* Añade una entidad a la escena */
+	void AddEntity(Entity* e, bool isTranslucid = false);
+
+	/* Añade una luz a la escena */
+	inline void AddLight(Light* l) { m_lights.push_back(l); }
+
 protected:
-	/* Lista de texturas */
-	std::vector<Texture*> m_textures;
-	/* Lista de entidades */
-	std::vector<Entity*> m_entities;
 	/* Lista de materiales */
 	std::vector<Material*> m_materials;
+	/* Lista de entidades */
+	std::vector<Entity*> m_entities;
 	/* Lista de luces */
 	std::vector<Light*> m_lights;
 

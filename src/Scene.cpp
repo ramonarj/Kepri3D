@@ -5,11 +5,21 @@
 #include "Entity.h"
 #include "Camera.h"
 #include "Light.h"
+#include "TextureManager.h"
 #include "UI/Button.h"
 
 using namespace glm;
 
 GLuint totalTime = 0;
+
+void Scene::AddEntity(Entity* e, bool isTranslucid)
+{
+	//if (!isTranslucid)
+	//	m_opaqueEntities.push_back(e);
+	//else
+	//	m_translucentEntities.push_back(e);
+	m_entities.push_back(e);
+}
 
 void Scene::initGLSubsystems()
 {
@@ -61,57 +71,45 @@ void Scene::init()
 {
 	// Activa el depth test, uso de texturas, iluminación, etc.
 	initGLSubsystems();
+
+	// CARGA DE RECURSOS
+	/* Texturas que vamos a usar */
+	TextureManager::Instance()->load("earth24.bmp", "earth");
+	TextureManager::Instance()->load("venus.bmp", "venus");
+	TextureManager::Instance()->load("orientacion.bmp", "orientacion");
+	TextureManager::Instance()->load("Zelda.bmp", "zelda");
+	TextureManager::Instance()->load("terrenoTex.bmp", "terreno");
+	TextureManager::Instance()->load("ray.bmp", "boton");
+
+	// Prueba excepciones
+	TextureManager::Instance()->load("ladrillo.bmp", "ladrillo");
+
+
+	/* Materiales */
+	Material* defaultMat = new Material();
+	m_materials.push_back(defaultMat);
+	Material* cromeMat = new Material({ 0.25, 0.25, 0.25 }, { 0.4, 0.4, 0.4 }, { 0.77, 0.77, 0.77 }, 77.0);
+	m_materials.push_back(cromeMat);
+	Material* cobreMat = new Material({ 0.19, 0.07, 0.02 }, { 0.7, 0.27, 0.08 }, { 0.26, 0.14, 0.086 }, 13.0);
+	m_materials.push_back(cobreMat);
 	
 	/* Luces */
 	// Puntual
 	//Light* m_pointLight = new Light({ 1, 1, 0, 1 });
 	//m_pointLight->setPosition({ -2.5,0.5,-2.5 });
 	//m_pointLight->setActive(true);
-	//m_lights.push_back(m_pointLight);
+	//AddLight(m_pointLight);
 
 	//Light* m_pointLight2 = new Light({ 0, 0, 1, 1 });
 	//m_pointLight2->setPosition({ 3,3,-3 });
-	//m_lights.push_back(m_pointLight2);
+	//AddLight(m_pointLight2);
 
 	// Direccional
 	Light* m_dirLight = new Light();
 	m_dirLight->setDirection({ -1,0 , 0 });
 	m_dirLight->setAmbient({ 0.2, 0.2, 0.2 ,1 });
 	m_dirLight->setActive(true);
-	m_lights.push_back(m_dirLight);
-
-	/* Texturas que vamos a usar */
-	Texture* earthTex = new Texture();
-	earthTex->load("earth24.bmp");
-	m_textures.push_back(earthTex);
-
-	Texture* venusTex = new Texture();
-	venusTex->load("venus.bmp");
-	m_textures.push_back(venusTex);
-
-	Texture* orientacionTex = new Texture();
-	orientacionTex->load("orientacion.bmp");
-	m_textures.push_back(orientacionTex);
-
-	Texture* zeldaTex = new Texture();
-	zeldaTex->load("Zelda.bmp");
-	m_textures.push_back(zeldaTex);
-
-	Texture* terrenoTex = new Texture();
-	terrenoTex->load("terrenoTex.bmp");
-	m_textures.push_back(terrenoTex);
-
-	Texture* buttonTex = new Texture();
-	buttonTex->load("ray.bmp");
-	m_textures.push_back(buttonTex);
-
-	/* Materiales */
-	Material* defaultMat = new Material();
-	m_materials.push_back(defaultMat);
-	Material* cromeMat = new Material({ 0.25, 0.25, 0.25 }, {0.4, 0.4, 0.4}, {0.77, 0.77, 0.77}, 77.0);
-	m_materials.push_back(cromeMat);
-	Material* cobreMat = new Material({ 0.19, 0.07, 0.02 }, { 0.7, 0.27, 0.08 }, { 0.26, 0.14, 0.086 }, 13.0);
-	m_materials.push_back(cobreMat);
+	AddLight(m_dirLight);
 
 	/* Entidades */
 	// Ejes RGB
@@ -121,53 +119,53 @@ void Scene::init()
 	//m_entities.push_back(new Poligono(6, 0.5, false));
 	
 	// Polígono relleno
-	Poligono* pol = new Poligono(4, 1, true);
-	pol->setTexture(*zeldaTex);
-	//m_entities.push_back(pol);
+	//Poligono* pol = new Poligono(4, 1, true);
+	//pol->setTexture("zelda");
+	//AddEntity(pol);
 
 	// Cubo con la misma textura en todas las caras
 	Cubo* c = new Cubo(2, true);
-	c->setTexture(*zeldaTex);
+	c->setTexture("zelda");
 	c->setPosition({ -10,0,0 });
-	m_entities.push_back(c);
+	AddEntity(c);
 
 	// Cubo con distintas texturas
 	Cubo* c2 = new Cubo(2, true, false);
-	c2->setTexture(*orientacionTex);
+	c2->setTexture("orientacion");
 	c2->setPosition({ -5,0,0 });
-	m_entities.push_back(c2);
+	AddEntity(c2);
 
 	// Cubo default
 	Cubo* cuboDef = new Cubo(2, false);
 	cuboDef->setMaterial(*defaultMat);
 	cuboDef->setPosition({ 0,0,0 });
-	m_entities.push_back(cuboDef);
+	AddEntity(cuboDef);
 
 	// Cubo de cromo
 	Cubo* cuboCromo = new Cubo(2, false);
 	cuboCromo->setMaterial(*cromeMat);
 	cuboCromo->setPosition({ 5,0,0 });
-	m_entities.push_back(cuboCromo);
+	AddEntity(cuboCromo);
 
 	// Cubo de cobre
 	Cubo* cuboCobre = new Cubo(2, false);
 	cuboCobre->setMaterial(*cobreMat);
 	cuboCobre->setPosition({ 10,0,0 });
-	m_entities.push_back(cuboCobre);
+	AddEntity(cuboCobre);
 
 	// Esfera
 	Esfera* esfera = new Esfera(1, 8, true);
-	esfera->setTexture(*earthTex);
+	esfera->setTexture("earth");
 	esfera->setPosition({ 0,2,-3 });
-	m_entities.push_back(esfera);
+	AddEntity(esfera);
 
 	// Tierra
 	Esfera* tierra = new Esfera(3, 20, true);
-	tierra->setTexture(*earthTex);
+	tierra->setTexture("earth");
 	tierra->setPosition({ 6,15,0 });
 	//tierra->rotate(-PI / 2, { 1, 0, 0 }, LOCAL); // 90º horario en eje X local
 	tierra->rotate(-PI / 8, { 0, 0, 1 }, GLOBAL);
-	m_entities.push_back(tierra);
+	AddEntity(tierra);
 
 	// Venus
 	//Esfera* venus = new Esfera(4, 20, true);
@@ -179,21 +177,21 @@ void Scene::init()
 	Grid* grid = new Grid(80, 160, 0.25, 0.25);
 	grid->setMaterial(*cromeMat);
 	grid->setPosition({ 0,-1,0 });
-	m_entities.push_back(grid);
+	AddEntity(grid);
 
 
 	// Terreno
 	Terrain* terrain = new Terrain("../bin/assets/terrain.raw", 0.5);
-	terrain->setTexture(*terrenoTex);
+	terrain->setTexture("terreno");
 	terrain->setPosition({ 0,-10,0 });
-	m_entities.push_back(terrain);
+	AddEntity(terrain);
 
 
 	// Botón: prueba
-	Button* button = new Button(buttonTex);
+	Button* button = new Button("boton");
 	button->scale({ 0.5, 0.3, 1 });
 	button->setPositionUI(0.15, 0.8);
-	m_entities.push_back(button);
+	AddEntity(button);
 }
 
 void Scene::render()
@@ -278,12 +276,15 @@ Scene::~Scene()
 	}
 	m_materials.clear();
 
-	// Borrar las texturas
-	for (Texture* it : m_textures)
+	// Borrar las luces
+	for (Light* it : m_lights)
 	{
 		delete it;
 	}
-	m_textures.clear();
+	m_lights.clear();
+
+	// Managers
+	TextureManager::Instance()->Clean();
 
 	// Desactivar los parámetros de OpenGL
 	glDisable(GL_LIGHTING);

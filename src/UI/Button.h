@@ -16,7 +16,7 @@ class Button : public Entity
 {
 public:
 	/* Constructora por defecto */
-	Button(Texture* texture);
+	Button(std::string textureName);
 
 	/* Establece la posición del botón, relativa a la pantalla, y alineado a la izquierda (0 < x, y < 1)
 	-> (0, 0) es la esquina inferior izquierda */

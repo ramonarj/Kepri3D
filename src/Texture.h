@@ -5,7 +5,6 @@
 #include <string>
 #include <gl/GLext.h>
 
-const std::string TEXTURES_PATH = "..\\bin\\assets\\";
 
 class Texture
 {
@@ -16,7 +15,7 @@ public:
 	~Texture() { if (id != 0) glDeleteTextures(1, &id); };
 
 	/* Carga la textura */
-	bool load(const std::string& bmpName, GLubyte alpha = 255);
+	bool load(const std::string& filePath, GLubyte alpha = 255);
 
 	// Activar/desactivar la textura
 	/* Activa la textura y mezcla la luz de la escena con el mix dado
