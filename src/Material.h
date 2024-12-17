@@ -21,8 +21,11 @@ private:
 	/* Componente especular del material */
 	glm::fvec4 m_specular;
 
-	/* Exponente especular */
-	GLfloat m_expF;
+	/* Exponente especular { 0 - 128 } */
+	GLfloat m_brillo;
+
+	/* Cara en la que se usará el material */
+	GLuint m_face;
 
 	/* ¿Emite luz? */
 	//bool m_lightEmitter;

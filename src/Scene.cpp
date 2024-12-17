@@ -63,6 +63,9 @@ void Scene::initGLSubsystems()
 	glLightModeli(GL_LIGHT_MODEL_TWO_SIDE, GL_TRUE);
 	// Punto de vista para la reflexión especular de los materiales
 	glLightModeli(GL_LIGHT_MODEL_LOCAL_VIEWER, GL_TRUE);
+	// Establecer la luz ambiente de toda la escena. Por defecto es (0.2, 0.2, 0.2, 1).
+	GLfloat amb[4]{ 0, 0.6, 0, 1 };
+	glLightModelfv(GL_LIGHT_MODEL_AMBIENT, amb);
 	// Normalizar los vectores normales
 	glEnable(GL_NORMALIZE);
 }
@@ -81,10 +84,12 @@ void Scene::init()
 	ResourceManager::Instance()->loadTexture("terrenoTex.bmp", "terreno");
 	ResourceManager::Instance()->loadTexture("ray.bmp", "boton");
 	ResourceManager::Instance()->loadTexture("caja.bmp", "caja");
+	ResourceManager::Instance()->loadTexture("cobre.bmp", "cobre");
 
 	/* Materiales que vamos a usar */
 	ResourceManager::Instance()->loadMaterial("copper.material", "cobre");
 	ResourceManager::Instance()->loadMaterial("crome.material", "cromo");
+	ResourceManager::Instance()->loadMaterial("ruby.material", "ruby");
 	
 	// Prueba excepciones
 	ResourceManager::Instance()->loadTexture("ladrillo.bmp", "ladrillo");
@@ -97,9 +102,9 @@ void Scene::init()
 	//m_pointLight->setActive(true);
 	//AddLight(m_pointLight);
 
-	//Light* m_pointLight2 = new Light({ 0, 0, 1, 1 });
-	//m_pointLight2->setPosition({ 3,3,-3 });
-	//AddLight(m_pointLight2);
+	Light* m_pointLight2 = new Light({ 0, 0, 1, 1 });
+	m_pointLight2->setPosition({ 3,3,-3 });
+	AddLight(m_pointLight2);
 
 	// Direccional
 	Light* m_dirLight = new Light();
@@ -126,9 +131,10 @@ void Scene::init()
 	c->setPosition({ -10,0,0 });
 	AddEntity(c);
 
-	// Cubo con distintas texturas
+	// Cubo de orientación (distintas texturas)
 	Cubo* c2 = new Cubo(2, true, false);
 	c2->setTexture("orientacion");
+	c2->setMaterial("orientacion");
 	c2->setPosition({ -5,0,0 });
 	AddEntity(c2);
 
@@ -138,14 +144,15 @@ void Scene::init()
 	cuboDef->setPosition({ 0,0,0 });
 	AddEntity(cuboDef);
 
-	// Cubo de cromo
-	Cubo* cuboCromo = new Cubo(2, false);
-	cuboCromo->setMaterial("plata");
-	cuboCromo->setPosition({ 5,0,0 });
-	AddEntity(cuboCromo);
+	// Cubo de rubi
+	Cubo* cuboRubi = new Cubo(2, false);
+	cuboRubi->setMaterial("cromo");
+	cuboRubi->setPosition({ 5,0,0 });
+	AddEntity(cuboRubi);
 
 	// Cubo de cobre
-	Cubo* cuboCobre = new Cubo(2, false);
+	Cubo* cuboCobre = new Cubo(2,true);
+	//cuboCobre->setTexture("cobre");
 	cuboCobre->setMaterial("cobre");
 	cuboCobre->setPosition({ 10,0,0 });
 	AddEntity(cuboCobre);
@@ -172,6 +179,7 @@ void Scene::init()
 
 	// Rejilla (suelo)
 	Grid* grid = new Grid(80, 160, 0.25, 0.25);
+	grid->setTexture("cobre");
 	grid->setMaterial("cromo");
 	grid->setPosition({ 0,-1,0 });
 	AddEntity(grid);
@@ -220,9 +228,9 @@ void Scene::update(GLuint deltaTime)
 	}
 
 	// Animación para la luz
-	//m_lights[1]->setPosition({15 * cos(totalTime * 0.002), 1, 5 * sin(totalTime * 0.002)});
+	m_lights[0]->setPosition({15 * cos(totalTime * 0.002), 1, 5 * sin(totalTime * 0.002)});
 
-	m_lights[0]->setDirection({ -cos(totalTime * 0.0001),-sin(totalTime * 0.0001), 0});
+	m_lights[1]->setDirection({ -cos(totalTime * 0.0001),-sin(totalTime * 0.0001), 0});
 	totalTime += deltaTime;
 }
 

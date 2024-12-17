@@ -202,10 +202,13 @@ Grid::Grid(GLuint filas, GLuint columnas, GLdouble tamFila, GLdouble tamColumna)
 
 void Grid::render(glm::dmat4 const& viewMat)
 {
+	m_texture.bind();
 	glPolygonMode(GL_FRONT, GL_FILL);
 	glPolygonMode(GL_BACK, GL_LINE);
 	Entity::render(viewMat);
 	glPolygonMode(GL_FRONT_AND_BACK, GL_FILL); // el predeterminado
+
+	m_texture.unbind();
 }
 
 // - - - - - - - - - - - - - - - - - 

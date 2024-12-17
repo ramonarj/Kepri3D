@@ -561,6 +561,20 @@ IndexMesh* IndexMesh::generateGrid(GLint filas, GLint columnas, GLdouble tamFila
 	for (int i = 0; i < m->numVertices; i++)
 		m->colores[i] = dvec4(1, 0.5, 0, 1);
 
+	/* Coordenadas de textura -> se podría meter en el mismo bucle que los vértices */
+	m->texCoords = new dvec2[m->numVertices];
+	GLdouble texIncrX = 1.0 / columnas;
+	GLdouble texIncrZ = 1.0 / filas;
+	k = 0;
+	for (int i = 0; i < filas + 1; i++)
+	{
+		for (int j = 0; j < columnas + 1; j++)
+		{
+			m->texCoords[k] = { texIncrX * j , 1 - texIncrZ * i };
+			k++;
+		}
+	}
+
 	/* Lista de triángulos (índices) */
 	m->indices = new GLuint[m->numIndices];
 	k = 0;
@@ -613,15 +627,6 @@ IndexMesh* IndexMesh::generateTerrain(std::string filename, GLdouble scale)
 		m->vertices[i].y = int(data[i]) * 0.05 * scale;
 	}
 	delete []data;
-
-	// generar coordenadas de textura -> recorrido de vértices
-	m->texCoords = new dvec2[m->numVertices];
-	GLdouble iniPos = m->vertices[0].x;
-	for(int i = 0; i < m->numVertices; i++)
-	{
-		m->texCoords[i] = { (-iniPos + m->vertices[i].x) / (256.0 * scale), 
-			1 - (-iniPos + m->vertices[i].z) / (256.0 * scale) };
-	}
 
 	/* Generar normales */
 	m->SetNormals();
