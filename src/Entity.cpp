@@ -9,7 +9,7 @@
 
 #include <iostream>
 #include "Utils.h"
-#include "TextureManager.h"
+#include "ResourceManager.h"
 
 using namespace glm;
 
@@ -104,7 +104,12 @@ void Entity::scale(glm::dvec3 scale)
 
 void Entity::setTexture(std::string textureID)
 {
-	m_texture = TextureManager::Instance()->getTexture(textureID);
+	m_texture = ResourceManager::Instance()->getTexture(textureID);
+}
+
+void Entity::setMaterial(std::string materialID)
+{
+	m_material = ResourceManager::Instance()->getMaterial(materialID);
 }
 
 

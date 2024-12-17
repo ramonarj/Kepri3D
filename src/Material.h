@@ -9,7 +9,7 @@ class Material
 public: 
 	/* Constructora por defecto */
 	Material();
-	Material(glm::fvec3 ambient, glm::fvec3 diffuse, glm::fvec3 specular, GLfloat expF = 0);
+	Material(glm::fvec4 ambient, glm::fvec4 diffuse, glm::fvec4 specular, GLfloat expF = 0);
 
 	/* Carga el material */
 	virtual void load();

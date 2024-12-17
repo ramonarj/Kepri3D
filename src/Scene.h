@@ -34,8 +34,6 @@ public:
 	inline void AddLight(Light* l) { m_lights.push_back(l); }
 
 protected:
-	/* Lista de materiales */
-	std::vector<Material*> m_materials;
 	/* Lista de entidades */
 	std::vector<Entity*> m_entities;
 	/* Lista de luces */

@@ -5,7 +5,7 @@
 #include "Entity.h"
 #include "Camera.h"
 #include "Light.h"
-#include "TextureManager.h"
+#include "ResourceManager.h"
 #include "UI/Button.h"
 
 using namespace glm;
@@ -74,24 +74,21 @@ void Scene::init()
 
 	// CARGA DE RECURSOS
 	/* Texturas que vamos a usar */
-	TextureManager::Instance()->load("earth24.bmp", "earth");
-	TextureManager::Instance()->load("venus.bmp", "venus");
-	TextureManager::Instance()->load("orientacion.bmp", "orientacion");
-	TextureManager::Instance()->load("Zelda.bmp", "zelda");
-	TextureManager::Instance()->load("terrenoTex.bmp", "terreno");
-	TextureManager::Instance()->load("ray.bmp", "boton");
+	ResourceManager::Instance()->loadTexture("earth24.bmp", "earth");
+	ResourceManager::Instance()->loadTexture("venus.bmp", "venus");
+	ResourceManager::Instance()->loadTexture("orientacion.bmp", "orientacion");
+	ResourceManager::Instance()->loadTexture("Zelda.bmp", "zelda");
+	ResourceManager::Instance()->loadTexture("terrenoTex.bmp", "terreno");
+	ResourceManager::Instance()->loadTexture("ray.bmp", "boton");
+	ResourceManager::Instance()->loadTexture("caja.bmp", "caja");
 
+	/* Materiales que vamos a usar */
+	ResourceManager::Instance()->loadMaterial("copper.material", "cobre");
+	ResourceManager::Instance()->loadMaterial("crome.material", "cromo");
+	
 	// Prueba excepciones
-	TextureManager::Instance()->load("ladrillo.bmp", "ladrillo");
-
-
-	/* Materiales */
-	Material* defaultMat = new Material();
-	m_materials.push_back(defaultMat);
-	Material* cromeMat = new Material({ 0.25, 0.25, 0.25 }, { 0.4, 0.4, 0.4 }, { 0.77, 0.77, 0.77 }, 77.0);
-	m_materials.push_back(cromeMat);
-	Material* cobreMat = new Material({ 0.19, 0.07, 0.02 }, { 0.7, 0.27, 0.08 }, { 0.26, 0.14, 0.086 }, 13.0);
-	m_materials.push_back(cobreMat);
+	ResourceManager::Instance()->loadTexture("ladrillo.bmp", "ladrillo");
+	ResourceManager::Instance()->loadMaterial("plata.material", "plata");
 	
 	/* Luces */
 	// Puntual
@@ -125,7 +122,7 @@ void Scene::init()
 
 	// Cubo con la misma textura en todas las caras
 	Cubo* c = new Cubo(2, true);
-	c->setTexture("zelda");
+	c->setTexture("caja2");
 	c->setPosition({ -10,0,0 });
 	AddEntity(c);
 
@@ -137,19 +134,19 @@ void Scene::init()
 
 	// Cubo default
 	Cubo* cuboDef = new Cubo(2, false);
-	cuboDef->setMaterial(*defaultMat);
+	cuboDef->setMaterial("default");
 	cuboDef->setPosition({ 0,0,0 });
 	AddEntity(cuboDef);
 
 	// Cubo de cromo
 	Cubo* cuboCromo = new Cubo(2, false);
-	cuboCromo->setMaterial(*cromeMat);
+	cuboCromo->setMaterial("plata");
 	cuboCromo->setPosition({ 5,0,0 });
 	AddEntity(cuboCromo);
 
 	// Cubo de cobre
 	Cubo* cuboCobre = new Cubo(2, false);
-	cuboCobre->setMaterial(*cobreMat);
+	cuboCobre->setMaterial("cobre");
 	cuboCobre->setPosition({ 10,0,0 });
 	AddEntity(cuboCobre);
 
@@ -175,7 +172,7 @@ void Scene::init()
 
 	// Rejilla (suelo)
 	Grid* grid = new Grid(80, 160, 0.25, 0.25);
-	grid->setMaterial(*cromeMat);
+	grid->setMaterial("cromo");
 	grid->setPosition({ 0,-1,0 });
 	AddEntity(grid);
 
@@ -269,13 +266,6 @@ Scene::~Scene()
 	}
 	m_entities.clear();
 
-	// Borrar los materiales
-	for (Material* it : m_materials)
-	{
-		delete it;
-	}
-	m_materials.clear();
-
 	// Borrar las luces
 	for (Light* it : m_lights)
 	{
@@ -283,8 +273,8 @@ Scene::~Scene()
 	}
 	m_lights.clear();
 
-	// Managers
-	TextureManager::Instance()->Clean();
+	// Borrar texturas y materiales
+	ResourceManager::Instance()->Clean();
 
 	// Desactivar los parámetros de OpenGL
 	glDisable(GL_LIGHTING);

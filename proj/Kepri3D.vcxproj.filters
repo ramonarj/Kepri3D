@@ -46,7 +46,7 @@
     <ClCompile Include="..\src\Material.cpp">
       <Filter>Core</Filter>
     </ClCompile>
-    <ClCompile Include="..\src\TextureManager.cpp">
+    <ClCompile Include="..\src\ResourceManager.cpp">
       <Filter>Core</Filter>
     </ClCompile>
   </ItemGroup>
@@ -84,7 +84,7 @@
     <ClInclude Include="..\src\Material.h">
       <Filter>Core</Filter>
     </ClInclude>
-    <ClInclude Include="..\src\TextureManager.h">
+    <ClInclude Include="..\src\ResourceManager.h">
       <Filter>Core</Filter>
     </ClInclude>
   </ItemGroup>

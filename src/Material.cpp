@@ -12,11 +12,11 @@ Material::Material()
 	m_expF = 0;
 }
 
-Material::Material(glm::fvec3 ambient, glm::fvec3 diffuse, glm::fvec3 specular, GLfloat expF)
+Material::Material(glm::fvec4 ambient, glm::fvec4 diffuse, glm::fvec4 specular, GLfloat expF)
 {
-	m_ambient = glm::fvec4(ambient, 1.0);
-	m_diffuse = glm::fvec4(diffuse, 1.0);
-	m_specular = glm::fvec4(specular, 1.0);
+	m_ambient = ambient;;
+	m_diffuse = diffuse;
+	m_specular = specular;
 
 	m_expF = expF;
 }

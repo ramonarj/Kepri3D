@@ -50,7 +50,7 @@ public:
 	void setTexture(std::string textureID);
 
 	/* Establece el material (ya creado) que usará la entidad */
-	inline void setMaterial(Material const& mat) { m_material = mat; };
+	void setMaterial(std::string materialID);
 
 protected:
 	/* Malla/s que usará la entidad para pintarse */
