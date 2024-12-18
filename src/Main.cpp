@@ -156,6 +156,10 @@ void key(unsigned char key, int x, int y)
 		else
 			glEnable(GL_ALPHA_TEST);
 		break;
+	/* Hacer una foto */
+	case 'f':
+		scene.takePhoto();
+		break;
 	// Pruebas con la cámara
 	case 'a':
 		camera.translate({ -velCamara, 0, 0 }, LOCAL);

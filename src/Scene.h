@@ -33,6 +33,9 @@ public:
 	/* Añade una luz a la escena */
 	inline void AddLight(Light* l) { m_lights.push_back(l); }
 
+	/* Hace una foto */
+	void takePhoto();
+
 protected:
 	/* Lista de entidades */
 	std::vector<Entity*> m_entities;

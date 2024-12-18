@@ -25,6 +25,12 @@ public:
 	void bind(GLuint mix = GL_MODULATE);
 	void unbind();
 
+	/* Carga un rectángulo de píxeles RGBA de tamaño 'width * height' desde el buffer 'buf' para su posterior lectura */
+	static void loadColorBuffer(GLsizei width, GLsizei height, GLenum buf = GL_BACK);
+
+	/* Salva la textura obtenida del color buffer en un archivo BMP */
+	static void save(const std::string& BMP_Name);
+
 private:
 	// Dimensiones de la textura (en píxeles)
 	GLuint w;

@@ -55,3 +55,20 @@ void Texture::unbind()
 {
 	glBindTexture(GL_TEXTURE_2D, 0);
 }
+
+void Texture::loadColorBuffer(GLsizei width, GLsizei height, GLenum buf)
+{
+	glReadBuffer(buf);
+	glCopyTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, 0, 0, width, height, 0);
+}
+
+void Texture::save(const std::string& BMP_Name)
+{
+	// Crea el mapa de píxeles con las dimensiones de la pantalla
+	PixMap32RGBA pixMap;
+	pixMap.create_pixmap(glutGet(GLUT_WINDOW_WIDTH), glutGet(GLUT_WINDOW_HEIGHT));
+
+	// Lo rellena con la info obtenida del color buffer y lo guarda en formato BMP
+	glGetTexImage(GL_TEXTURE_2D, 0, GL_RGBA, GL_UNSIGNED_BYTE, pixMap.data());
+	pixMap.save_bmp24BGR("..\\bin\\assets\\" + BMP_Name);
+}

@@ -24,7 +24,7 @@ void Scene::AddEntity(Entity* e, bool isTranslucid)
 void Scene::initGLSubsystems()
 {
 	// Color de fondo (el predeterminado es negro)
-	glClearColor(1.0, 1.0, 1.0, 0);  // (alpha=1 -> opaque)
+	glClearColor(0.0, 0.0, 0.0, 0);  // (alpha=1 -> opaque)
 
 	/* OpenGL basic settings */
 	// Activa el Z-buffer. Si no lo activáramos, se pintaría todo con el algoritmo
@@ -64,8 +64,8 @@ void Scene::initGLSubsystems()
 	// Punto de vista para la reflexión especular de los materiales
 	glLightModeli(GL_LIGHT_MODEL_LOCAL_VIEWER, GL_TRUE);
 	// Establecer la luz ambiente de toda la escena. Por defecto es (0.2, 0.2, 0.2, 1).
-	GLfloat amb[4]{ 0, 0.6, 0, 1 };
-	glLightModelfv(GL_LIGHT_MODEL_AMBIENT, amb);
+	GLfloat amb[4]{ 0.1, 0.1, 0.4, 1 };
+	//glLightModelfv(GL_LIGHT_MODEL_AMBIENT, amb);
 	// Normalizar los vectores normales
 	glEnable(GL_NORMALIZE);
 }
@@ -109,7 +109,7 @@ void Scene::init()
 	// Direccional
 	Light* m_dirLight = new Light();
 	m_dirLight->setDirection({ -1,0 , 0 });
-	m_dirLight->setAmbient({ 0.2, 0.2, 0.2 ,1 });
+	//m_dirLight->setAmbient({ 0.2, 0.2, 0.2 ,1 });
 	m_dirLight->setActive(true);
 	AddLight(m_dirLight);
 
@@ -230,7 +230,7 @@ void Scene::update(GLuint deltaTime)
 	// Animación para la luz
 	m_lights[0]->setPosition({15 * cos(totalTime * 0.002), 1, 5 * sin(totalTime * 0.002)});
 
-	m_lights[1]->setDirection({ -cos(totalTime * 0.0001),-sin(totalTime * 0.0001), 0});
+	m_lights[1]->setDirection({ cos(totalTime * 0.0001),sin(totalTime * 0.0001), 0});
 	totalTime += deltaTime;
 }
 
@@ -263,6 +263,16 @@ void Scene::ViewportTest()
 	m_entities[3]->render(m_camera->getViewMat());
 
 	view->setSize(w, h); //Volvemos a dejar el viewPort como estaba
+}
+
+void Scene::takePhoto()
+{
+	// Leemos la información del front buffer (el que está en pantalla), porque 
+	// el trasero podría estar dibujándose y tendríamos 'tearing'0
+	Texture::loadColorBuffer(m_camera->getVP()->getW(), m_camera->getVP()->getH(), GL_BACK);
+	// Sin embargo, con GL_BACK afecta menos al rendimiento (framerate)
+
+	Texture::save("foto.bmp");
 }
 
 Scene::~Scene()
