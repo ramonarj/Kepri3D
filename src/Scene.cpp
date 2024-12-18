@@ -24,7 +24,7 @@ void Scene::AddEntity(Entity* e, bool isTranslucid)
 void Scene::initGLSubsystems()
 {
 	// Color de fondo (el predeterminado es negro)
-	glClearColor(0.0, 0.0, 0.0, 0);  // (alpha=1 -> opaque)
+	glClearColor(1.0, 1.0, 1.0, 0);  // (alpha=1 -> opaque)
 
 	/* OpenGL basic settings */
 	// Activa el Z-buffer. Si no lo activáramos, se pintaría todo con el algoritmo
@@ -53,7 +53,7 @@ void Scene::initGLSubsystems()
 	/* Culling; descarta el dibujado de los polígonos traseros. 
 	Lo suyo sería tenerlo siempre activo, y las entidades que necesiten renderizar las 2 caras,
 	lo desactivan y vuelven a activar en su 'render' */
-	//glEnable(GL_CULL_FACE); 
+	glEnable(GL_CULL_FACE); 
 
 	/* Iluminación, activa el uso de las luces y sombreado */
 	glEnable(GL_LIGHTING);
@@ -76,6 +76,10 @@ void Scene::init()
 	initGLSubsystems();
 
 	// CARGA DE RECURSOS
+	/* Mallas que vamos a usar */
+	ResourceManager::Instance()->loadMesh("Torre_tri.obj", "torre");
+	ResourceManager::Instance()->loadMesh("Peon.obj", "peon");
+
 	/* Texturas que vamos a usar */
 	ResourceManager::Instance()->loadTexture("earth24.bmp", "earth");
 	ResourceManager::Instance()->loadTexture("venus.bmp", "venus");
@@ -97,10 +101,10 @@ void Scene::init()
 	
 	/* Luces */
 	// Puntual
-	//Light* m_pointLight = new Light({ 1, 1, 0, 1 });
-	//m_pointLight->setPosition({ -2.5,0.5,-2.5 });
-	//m_pointLight->setActive(true);
-	//AddLight(m_pointLight);
+	Light* m_pointLight = new Light({ 1, 1, 0, 1 });
+	m_pointLight->setPosition({ -2.5,0.5,-2.5 });
+	m_pointLight->setActive(true);
+	AddLight(m_pointLight);
 
 	Light* m_pointLight2 = new Light({ 0, 0, 1, 1 });
 	m_pointLight2->setPosition({ 3,3,-3 });
@@ -125,57 +129,24 @@ void Scene::init()
 	//pol->setTexture("zelda");
 	//AddEntity(pol);
 
-	// Cubo con la misma textura en todas las caras
-	Cubo* c = new Cubo(2, true);
-	c->setTexture("caja2");
-	c->setPosition({ -10,0,0 });
-	AddEntity(c);
+	// Torre de ajedrez
+	Entity* torre = new Entity();
+	torre->setMesh("torre");
+	torre->setTexture("cobre");
+	//torre->setMaterial("cromo");
+	torre->setPosition({ 0,0,-2 });
+	AddEntity(torre);
 
-	// Cubo de orientación (distintas texturas)
-	Cubo* c2 = new Cubo(2, true, false);
-	c2->setTexture("orientacion");
-	c2->setMaterial("orientacion");
-	c2->setPosition({ -5,0,0 });
-	AddEntity(c2);
+	// Peon de ajedrez
+	Entity* peon = new Entity();
+	peon->setMesh("peon");
+	peon->setTexture("cobre");
+	peon->setMaterial("cromo");
+	peon->setPosition({ 0,0,-2 });
+	AddEntity(peon);
 
-	// Cubo default
-	Cubo* cuboDef = new Cubo(2, false);
-	cuboDef->setMaterial("default");
-	cuboDef->setPosition({ 0,0,0 });
-	AddEntity(cuboDef);
-
-	// Cubo de rubi
-	Cubo* cuboRubi = new Cubo(2, false);
-	cuboRubi->setMaterial("cromo");
-	cuboRubi->setPosition({ 5,0,0 });
-	AddEntity(cuboRubi);
-
-	// Cubo de cobre
-	Cubo* cuboCobre = new Cubo(2,true);
-	//cuboCobre->setTexture("cobre");
-	cuboCobre->setMaterial("cobre");
-	cuboCobre->setPosition({ 10,0,0 });
-	AddEntity(cuboCobre);
-
-	// Esfera
-	Esfera* esfera = new Esfera(1, 8, true);
-	esfera->setTexture("earth");
-	esfera->setPosition({ 0,2,-3 });
-	AddEntity(esfera);
-
-	// Tierra
-	Esfera* tierra = new Esfera(3, 20, true);
-	tierra->setTexture("earth");
-	tierra->setPosition({ 6,15,0 });
-	//tierra->rotate(-PI / 2, { 1, 0, 0 }, LOCAL); // 90º horario en eje X local
-	tierra->rotate(-PI / 8, { 0, 0, 1 }, GLOBAL);
-	AddEntity(tierra);
-
-	// Venus
-	//Esfera* venus = new Esfera(4, 20, true);
-	//venus->setTexture(*venusTex);
-	//venus->setPosition({ 15,10,0 });
-	//m_entities.push_back(venus);
+	// Materiales y cubos
+	//PruebaMateriales();
 
 	// Rejilla (suelo)
 	Grid* grid = new Grid(80, 160, 0.25, 0.25);
@@ -183,13 +154,6 @@ void Scene::init()
 	grid->setMaterial("cromo");
 	grid->setPosition({ 0,-1,0 });
 	AddEntity(grid);
-
-
-	// Terreno
-	Terrain* terrain = new Terrain("../bin/assets/terrain.raw", 0.5);
-	terrain->setTexture("terreno");
-	terrain->setPosition({ 0,-10,0 });
-	AddEntity(terrain);
 
 
 	// Botón: prueba
@@ -228,9 +192,9 @@ void Scene::update(GLuint deltaTime)
 	}
 
 	// Animación para la luz
-	m_lights[0]->setPosition({15 * cos(totalTime * 0.002), 1, 5 * sin(totalTime * 0.002)});
+	m_lights[1]->setPosition({15 * cos(totalTime * 0.002), 1, 5 * sin(totalTime * 0.002)});
 
-	m_lights[1]->setDirection({ cos(totalTime * 0.0001),sin(totalTime * 0.0001), 0});
+	m_lights[2]->setDirection({ -cos(totalTime * 0.0001),-sin(totalTime * 0.0001), 0});
 	totalTime += deltaTime;
 }
 
@@ -263,6 +227,75 @@ void Scene::ViewportTest()
 	m_entities[3]->render(m_camera->getViewMat());
 
 	view->setSize(w, h); //Volvemos a dejar el viewPort como estaba
+}
+
+void Scene::PruebaMateriales()
+{
+	// Cubo con la misma textura en todas las caras
+	Cubo* c = new Cubo(2, true);
+	c->setTexture("caja2");
+	c->setPosition({ -10,0,0 });
+	AddEntity(c);
+
+	// Cubo de orientación (distintas texturas)
+	Cubo* c2 = new Cubo(2, true, false);
+	c2->setTexture("orientacion");
+	c2->setMaterial("orientacion");
+	c2->setPosition({ -5,0,0 });
+	AddEntity(c2);
+
+	// Cubo default
+	Cubo* cuboDef = new Cubo(2, false);
+	cuboDef->setMaterial("default");
+	cuboDef->setPosition({ 0,0,0 });
+	AddEntity(cuboDef);
+
+	// Cubo de rubi
+	Cubo* cuboRubi = new Cubo(2, false);
+	cuboRubi->setMaterial("cromo");
+	cuboRubi->setPosition({ 5,0,0 });
+	AddEntity(cuboRubi);
+
+	// Cubo de cobre
+	Cubo* cuboCobre = new Cubo(2, true);
+	//cuboCobre->setTexture("cobre");
+	cuboCobre->setMaterial("cobre");
+	cuboCobre->setPosition({ 10,0,0 });
+	AddEntity(cuboCobre);
+
+	// Esfera
+	Esfera* esfera = new Esfera(1, 8, true);
+	esfera->setTexture("earth");
+	esfera->setPosition({ 0,2,-3 });
+	AddEntity(esfera);
+
+	// Tierra
+	Esfera* tierra = new Esfera(3, 20, true);
+	tierra->setTexture("earth");
+	tierra->setPosition({ 6,15,0 });
+	//tierra->rotate(-PI / 2, { 1, 0, 0 }, LOCAL); // 90º horario en eje X local
+	tierra->rotate(-PI / 8, { 0, 0, 1 }, GLOBAL);
+	AddEntity(tierra);
+
+	// Venus
+	//Esfera* venus = new Esfera(4, 20, true);
+	//venus->setTexture(*venusTex);
+	//venus->setPosition({ 15,10,0 });
+	//m_entities.push_back(venus);
+
+	// Rejilla (suelo)
+	Grid* grid = new Grid(80, 160, 0.25, 0.25);
+	grid->setTexture("cobre");
+	grid->setMaterial("cromo");
+	grid->setPosition({ 0,-1,0 });
+	AddEntity(grid);
+
+
+	// Terreno
+	Terrain* terrain = new Terrain("../bin/assets/terrain.raw", 0.5);
+	terrain->setTexture("terreno");
+	terrain->setPosition({ 0,-10,0 });
+	AddEntity(terrain);
 }
 
 void Scene::takePhoto()

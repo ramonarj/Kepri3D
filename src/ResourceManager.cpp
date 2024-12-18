@@ -1,26 +1,60 @@
 #include "ResourceManager.h"
 
+#include "Mesh.h"
 #include "Texture.h"
 #include "Material.h"
+#include "MeshLoader.h"
 
 #include <fstream>
 #include <iostream>
 
 ResourceManager* ResourceManager::instance = nullptr;
 
-bool ResourceManager::loadTexture(std::string fileName, std::string id)
+bool ResourceManager::loadMesh(std::string meshName, std::string id)
+{
+	try
+	{
+		// Cargamos la malla gracias a MeshLoader
+		MeshLoader meshLoader;
+		meshLoader.loadOBJ(MESHES_PATH + meshName);
+		IndexMesh* m = meshLoader.getMesh();
+
+		// la guardamos en el diccionario
+		meshes[id] = m;
+		return true;
+	}
+
+	catch (const std::ios_base::failure& f)
+	{
+		std::cout << "No se pudo cargar la malla " << "\"" << meshName << "\"" << std::endl;
+		return false;
+	}
+}
+
+const Mesh& ResourceManager::getMesh(std::string id)
+{
+	// Si no se encuentra la textura dada, se devuelve por defecto una magenta chillón
+	if (meshes.find(id) != meshes.end())
+		return *meshes[id];
+	else
+		return *meshes["default"];
+}
+
+// - - - - - - - - - - - - 
+
+bool ResourceManager::loadTexture(std::string textureName, std::string id)
 {
 	Texture* tex = new Texture();
 	try
 	{
-		tex->load(TEXTURES_PATH + fileName);
+		tex->load(TEXTURES_PATH + textureName);
 		textures[id] = tex;
 		return true;
 	}
 
 	catch(const std::ios_base::failure& f)
 	{
-		std::cout << "No se pudo cargar la textura " << "\"" << fileName << "\"" << std::endl;
+		std::cout << "No se pudo cargar la textura " << "\"" << textureName << "\"" << std::endl;
 		//std::cout << f.what() << std::endl;
 		// Como no se ha podido cargar la imagen, borramos la textura creada
 		delete tex;
@@ -39,12 +73,12 @@ const Texture& ResourceManager::getTexture(std::string id)
 
 // - - - - - - - - - - - - 
 
-bool ResourceManager::loadMaterial(std::string fileName, std::string id)
+bool ResourceManager::loadMaterial(std::string materialName, std::string id)
 {
 	try
 	{
 		// Abrir el archivo
-		std::ifstream stream((MATERIALS_PATH + fileName).c_str());
+		std::ifstream stream((MATERIALS_PATH + materialName).c_str());
 		if (!stream.is_open())
 		{
 			throw std::ios_base::failure("ResourceManager ERROR: Could not open file");
@@ -73,7 +107,7 @@ bool ResourceManager::loadMaterial(std::string fileName, std::string id)
 
 	catch (const std::ios_base::failure& f)
 	{
-		std::cout << "No se pudo cargar el material " << "\"" << fileName << "\"" << std::endl;
+		std::cout << "No se pudo cargar el material " << "\"" << materialName << "\"" << std::endl;
 		return false;
 	}
 }

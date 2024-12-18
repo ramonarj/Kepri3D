@@ -49,6 +49,9 @@
     <ClCompile Include="..\src\ResourceManager.cpp">
       <Filter>Core</Filter>
     </ClCompile>
+    <ClCompile Include="..\src\MeshLoader.cpp">
+      <Filter>Utils</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\src\UI\Button.h">
@@ -86,6 +89,9 @@
     </ClInclude>
     <ClInclude Include="..\src\ResourceManager.h">
       <Filter>Core</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\MeshLoader.h">
+      <Filter>Utils</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

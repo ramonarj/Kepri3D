@@ -5,7 +5,9 @@
 #include <string>
 class Texture;
 class Material;
+class Mesh;
 
+const std::string MESHES_PATH = "..\\bin\\assets\\meshes\\";
 const std::string TEXTURES_PATH = "..\\bin\\assets\\";
 const std::string MATERIALS_PATH = "..\\bin\\assets\\materials\\";
 
@@ -27,11 +29,18 @@ public:
 		return instance;
 	}
 
+
+	/* Carga una malla de archivo y le asigna el ID dado */
+	bool loadMesh(std::string meshName, std::string id);
+
 	/* Carga una textura de archivo y le asigna el ID dado */
-	bool loadTexture(std::string fileName, std::string id);
+	bool loadTexture(std::string textureName, std::string id);
 
 	/* Carga un material de archivo y le asigna el ID dado */
-	bool loadMaterial(std::string fileName, std::string id);
+	bool loadMaterial(std::string materialName, std::string id);
+
+	/* Devuelve una textura dada */
+	const Mesh& getMesh(std::string id);
 
 	/* Devuelve una textura dada */
 	const Texture& getTexture(std::string id);
@@ -44,6 +53,9 @@ public:
 private:
 	ResourceManager() {}
 	static ResourceManager* instance;
+
+	/* Diccionario de mallas accesibles por su nombre (string) */
+	std::map<std::string, Mesh*> meshes;
 
 	/* Diccionario de texturas accesibles por su nombre (string) */
 	std::map<std::string, Texture*> textures;

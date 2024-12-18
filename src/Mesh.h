@@ -82,6 +82,8 @@ public:
 	static IndexMesh* generateTerrain(std::string filename, GLdouble scale);
 
 private:
+	friend class MeshLoader;
+
 	/* Tabla de índices para formar los triángulos */
 	GLuint* indices;
 

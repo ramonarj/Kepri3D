@@ -50,6 +50,8 @@ protected:
 
 	void ViewportTest();
 
+	void PruebaMateriales();
+
 	//Camera* camera;
 	//Foto* foto;
 	//Light* dirLight, * spotLight, * sphereLight;

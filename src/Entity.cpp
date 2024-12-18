@@ -10,6 +10,7 @@
 #include <iostream>
 #include "Utils.h"
 #include "ResourceManager.h"
+#include "MeshLoader.h"
 
 using namespace glm;
 
@@ -100,6 +101,11 @@ void Entity::rotate(GLdouble alpha, glm::dvec3 axis, ReferenceSystem refSys)
 void Entity::scale(glm::dvec3 scale)
 {
 	modelMat = glm::scale(modelMat, scale);
+}
+
+void Entity::setMesh(std::string meshID)
+{
+	m_mesh = (Mesh*) & ResourceManager::Instance()->getMesh(meshID);
 }
 
 void Entity::setTexture(std::string textureID)
@@ -227,4 +233,23 @@ void Terrain::render(glm::dmat4 const& viewMat)
 	m_texture.unbind();
 	glPolygonMode(GL_FRONT_AND_BACK, GL_FILL); // el predeterminado
 }
+
+// - - - - - - - - - - - - - - - - - 
+
+Torre::Torre(std::string filename)
+{
+	//MeshLoader ml("..\\bin\\assets\\meshes\\" + filename);
+	MeshLoader ml;
+	m_mesh = ml.getMesh();
+}
+
+//void Torre::render(glm::dmat4 const& viewMat)
+//{
+//	//glPolygonMode(GL_FRONT, GL_FILL);
+//	//glPolygonMode(GL_BACK, GL_LINE);
+//	////m_texture.bind();
+//	//Entity::render(viewMat);
+//	////m_texture.unbind();
+//	//glPolygonMode(GL_FRONT_AND_BACK, GL_FILL); // el predeterminado
+//}
 

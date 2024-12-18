@@ -46,6 +46,9 @@ public:
 	void scale(glm::dvec3 scale);
 
 	// Setters
+	/* Establece la malla (ya creada) que usará la entidad */
+	void setMesh(std::string meshID);
+
 	/* Establece la textura (ya creada) que usará la entidad */
 	void setTexture(std::string textureID);
 
@@ -140,6 +143,17 @@ public:
 	Terrain(std::string filename, GLdouble scale);
 	~Terrain() { };
 	void render(glm::dmat4 const& viewMat) override;
+};
+
+// - - - - - - - - - - - - 
+
+class Torre : public Entity
+{
+public:
+	/* Crea un terreno con la información de 'filename' y la textura de 'textureName' */
+	Torre(std::string filename);
+	~Torre() { };
+	//void render(glm::dmat4 const& viewMat) override;
 };
 
 #endif

@@ -25,10 +25,10 @@ void Mesh::enableArrays()
 	glEnableClientState(GL_VERTEX_ARRAY);
 	glVertexPointer(3, GL_DOUBLE, 0, vertices);
 
-	//Colores
-	glEnableClientState(GL_COLOR_ARRAY);
-	// (coordenadas por vértice [2/3/4], tipo de dato, espacio entre cada dato, puntero al array)
-	glColorPointer(4, GL_DOUBLE, 0, colores);
+	////Colores
+	//glEnableClientState(GL_COLOR_ARRAY);
+	//// (coordenadas por vértice [2/3/4], tipo de dato, espacio entre cada dato, puntero al array)
+	//glColorPointer(4, GL_DOUBLE, 0, colores);
 
 	//Texturas
 	if (texCoords != nullptr)
