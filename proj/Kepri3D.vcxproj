@@ -165,6 +165,8 @@
     <ClCompile Include="..\src\Texture.cpp" />
     <ClCompile Include="..\src\ResourceManager.cpp" />
     <ClCompile Include="..\src\UI\Button.cpp" />
+    <ClCompile Include="..\src\UI\Canvas.cpp" />
+    <ClCompile Include="..\src\UI\UIElement.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\src\Camera.h" />
@@ -179,6 +181,8 @@
     <ClInclude Include="..\src\Texture.h" />
     <ClInclude Include="..\src\ResourceManager.h" />
     <ClInclude Include="..\src\UI\Button.h" />
+    <ClInclude Include="..\src\UI\Canvas.h" />
+    <ClInclude Include="..\src\UI\UIElement.h" />
     <ClInclude Include="..\src\Utils.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

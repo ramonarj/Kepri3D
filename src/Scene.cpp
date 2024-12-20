@@ -7,6 +7,7 @@
 #include "Light.h"
 #include "ResourceManager.h"
 #include "UI/Button.h"
+#include "UI/Canvas.h"
 
 using namespace glm;
 
@@ -146,7 +147,8 @@ void Scene::init()
 	AddEntity(peon);
 
 	// Materiales y cubos
-	//PruebaMateriales();
+	PruebaMateriales();
+
 
 	// Rejilla (suelo)
 	Grid* grid = new Grid(80, 160, 0.25, 0.25);
@@ -155,29 +157,37 @@ void Scene::init()
 	grid->setPosition({ 0,-1,0 });
 	AddEntity(grid);
 
+	/* Canvas */
+	m_canvas = new Canvas();
 
 	// Botón: prueba
 	Button* button = new Button("boton");
 	button->scale({ 0.5, 0.3, 1 });
 	button->setPositionUI(0.15, 0.8);
-	AddEntity(button);
+	button->setCallback(buttonPressed);
+	m_canvas->addElement(button);
 }
 
 void Scene::render()
 {
-	// Limpia el color y el depth buffer
+	// 0) Limpia el color y el depth buffer
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-	// Cargar las luces; IMPORTANTE hacerlo antes de pintar los objetos a los que puedan iluminar
+	// 1) Cargar las luces; IMPORTANTE hacerlo antes de pintar los objetos a los que puedan iluminar
 	for (Light* l : m_lights)
 		l->load(m_camera->getViewMat());
 
-	//Pintar todas las entidades
+	// 2) Pintar todas las entidades
 	for (Entity* e : m_entities)
 		e->render(m_camera->getViewMat());
 
+	// 3) Pintar el canvas, limpiando antes el Z-buffer para que se pinte encima de todo
+	glClear(GL_DEPTH_BUFFER_BIT);
+	m_canvas->render(m_camera->getViewMat());
+
 	//ViewportTest();
 
+	// 4) Hacer swap de buffers
 	// Hay 2 buffers; uno se está mostrando por ventana, y el otro es el que usamos
 	// para dibujar con la GPU. Cuando se ha terminado de dibujar y llega el siguiente 
 	// frame, se intercambian las referencias y se repite el proceso
@@ -306,6 +316,11 @@ void Scene::takePhoto()
 	// Sin embargo, con GL_BACK afecta menos al rendimiento (framerate)
 
 	Texture::save("foto.bmp");
+}
+
+void Scene::buttonPressed()
+{
+	std::cout << "Botón pulsado" << std::endl;
 }
 
 Scene::~Scene()

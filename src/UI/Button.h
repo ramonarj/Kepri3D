@@ -2,28 +2,22 @@
 #define __BUTTON__
 
 #include "../Mesh.h"
-#include "../Entity.h"
 #include "../Camera.h"
 
-enum ALLIGNMENT_TYPE
-{
-	LEFT = 0,
-	CENTER = 1,
-	RIGHT = 2
-};
+#include "UIElement.h"
 
-class Button : public Entity
+class Button : public UIElement
 {
 public:
 	/* Constructora por defecto */
 	Button(std::string textureName);
 
-	/* Establece la posición del botón, relativa a la pantalla, y alineado a la izquierda (0 < x, y < 1)
-	-> (0, 0) es la esquina inferior izquierda */
-	void setPositionUI(float x, float y, ALLIGNMENT_TYPE allignment = LEFT);
+	/* Establece el callback del botón */
+	inline void setCallback(void(*callback)()) { m_callback = callback; }
 
-	void render(glm::dmat4 const& viewMat) override;
 private:
+	/* Puntero a la función que llama el botón al clicarse */
+	void(*m_callback)();
 };
 
 #endif

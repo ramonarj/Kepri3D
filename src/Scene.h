@@ -4,11 +4,10 @@
 #include <vector>
 #include <freeglut.h>
 
-class Texture;
 class Entity;
 class Camera;
 class Light;
-class Material;
+class Canvas;
 
 class Scene
 {
@@ -45,12 +44,17 @@ protected:
 	/* Cámara activa */
 	Camera* m_camera;
 
+	/* Canvas de la escena */
+	Canvas* m_canvas;
+
 	// Métodos auxiliares
 	void initGLSubsystems();
 
 	void ViewportTest();
 
 	void PruebaMateriales();
+	
+	static void buttonPressed();
 
 	//Camera* camera;
 	//Foto* foto;

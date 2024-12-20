@@ -52,6 +52,12 @@
     <ClCompile Include="..\src\MeshLoader.cpp">
       <Filter>Utils</Filter>
     </ClCompile>
+    <ClCompile Include="..\src\UI\Canvas.cpp">
+      <Filter>UI</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\UI\UIElement.cpp">
+      <Filter>UI</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\src\UI\Button.h">
@@ -92,6 +98,12 @@
     </ClInclude>
     <ClInclude Include="..\src\MeshLoader.h">
       <Filter>Utils</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\UI\Canvas.h">
+      <Filter>UI</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\UI\UIElement.h">
+      <Filter>UI</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>
