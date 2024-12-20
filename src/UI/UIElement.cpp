@@ -2,7 +2,7 @@
 
 #include <gtc/type_ptr.hpp>
 
-UIElement::UIElement() : x(0), y(0)
+UIElement::UIElement() : x(0), y(0), width(0), height(0), canvas(nullptr)
 {
 
 }

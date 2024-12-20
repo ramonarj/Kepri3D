@@ -36,6 +36,7 @@ void Camera::setSize(GLdouble w, GLdouble h)
 
 void Camera::updatePM()
 {
+	// Dependerá de si es una resolución apaisada o retrato
 	double maxSize = std::max(nearW, nearH);
 
 	// Left, Right, Bottom, Top, Near, Far
@@ -45,9 +46,9 @@ void Camera::updatePM()
 	// Ortogonal
 	if (orto)
 	{
-		//projMat = glm::ortho(-4.0, 4.0, -4.0, 4.0, -100.0, 100.0);
-		projMat = glm::ortho(-nearW / maxSize * 50, nearW / maxSize * 50, 
-			-nearH / maxSize * 50, nearH / maxSize * 50, 0.0, 500.0);
+		projMat = glm::ortho(-nearW / maxSize, nearW / maxSize, -nearH / maxSize, nearH / maxSize, 0.0, 500.0);
+		//projMat = glm::ortho(-nearW / maxSize * 50, nearW / maxSize * 50, 
+		//	-nearH / maxSize * 50, nearH / maxSize * 50, 0.0, 500.0);
 	}
 	// Perspectiva; teniendo en cuenta el aspect ratio
 	else

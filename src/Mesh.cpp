@@ -166,6 +166,8 @@ Mesh* Mesh::generateFilledPolygon(GLint sides, GLint size)
 	return m;
 }
 
+
+
 Mesh* Mesh::generateCubeSides(GLdouble size)
 {
 	Mesh* m = new Mesh();
@@ -204,6 +206,30 @@ Mesh* Mesh::generateCubeSides(GLdouble size)
 	return m;
 }
 
+Mesh* Mesh::generateButton(GLdouble width, GLdouble height)
+{
+	Mesh* m = new Mesh();
+	m->type = GL_TRIANGLE_STRIP;
+	m->numVertices = 4;
+
+	/* Array de vértices */
+	m->vertices = new dvec3[m->numVertices]
+	{
+		{-width / 2.0, height / 2.0, 0},
+		{-width / 2.0, -height / 2.0, 0},
+		{width / 2.0, height / 2.0, 0},
+		{width / 2.0, -height / 2.0, 0}
+	};
+
+
+	/* Coordenadas de textura*/
+	m->texCoords = new dvec2[m->numVertices]
+	{
+		{0,1}, {0, 0}, {1, 1}, {1, 0}
+	};
+
+	return m;
+}
 
 // - - - - - - - - - - - - - - - - - - -
 
@@ -529,7 +555,7 @@ IndexMesh* IndexMesh::generateSphere(GLdouble size, GLuint subdivisions, bool te
 	}
 
 	/* Normales */
-	//m->SetNormals();
+	m->SetNormals();
 
 	return m;
 }

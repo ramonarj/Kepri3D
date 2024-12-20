@@ -31,6 +31,13 @@ public:
 	/* Salva la textura obtenida del color buffer en un archivo BMP */
 	static void save(const std::string& BMP_Name);
 
+	//Getters
+	/* Ancho de la textura, en píxeles */
+	inline GLuint getWidth() const{ return w; };
+
+	/* Alto de la textura, en píxeles */
+	inline GLuint getHeight() const { return h; };
+
 private:
 	// Dimensiones de la textura (en píxeles)
 	GLuint w;

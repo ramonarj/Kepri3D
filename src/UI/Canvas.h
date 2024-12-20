@@ -13,9 +13,23 @@ public:
 	void render(glm::dmat4 const& viewMat);
 
 	/* Añade un elemento al canvas */
-	inline void addElement(UIElement* e) { m_elements.push_back(e); }
+	void addElement(UIElement* e);
+
+	/* Establece el tamaño de referencia del canvas */
+	inline void setSize(int w, int h) { width = w; height = h; }
+
+	// Getters
+	/* Ancho del canvas, en píxeles */
+	inline int getWidth() const { return width; }
+
+	/* Alto del canvas, en píxeles */
+	inline int getHeight() const { return height; }
 
 private:
 	std::vector<UIElement*> m_elements;
+
+	/* Tamaño de referencia del canvas (no tiene por qué coincidir con el tamaño de pantalla) */
+	int width;
+	int height;
 };
 #endif

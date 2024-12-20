@@ -159,13 +159,14 @@ void Scene::init()
 
 	/* Canvas */
 	m_canvas = new Canvas();
+	m_canvas->setSize(800, 600);
 
 	// Botón: prueba
-	Button* button = new Button("boton");
-	button->scale({ 0.5, 0.3, 1 });
+	Button* button = new Button("boton", m_canvas);
+	button->scale({ 0.2, 0.15, 1 });
 	button->setPositionUI(0.15, 0.8);
+	//button->setPositionUI(50, 35);
 	button->setCallback(buttonPressed);
-	m_canvas->addElement(button);
 }
 
 void Scene::render()
