@@ -13,7 +13,7 @@ class Scene
 {
 public:
 	/* Constructora por defecto*/
-	Scene(Camera* cam) : m_camera(cam) { };
+	Scene(Camera* cam) : m_camera(cam), m_canvas(nullptr) { };
 	~Scene();
 
 	/* Inicia los subsistemas de openGL y crea texturas y entidades */

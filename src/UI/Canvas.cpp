@@ -19,3 +19,9 @@ void Canvas::render(glm::dmat4 const& viewMat)
 	for (UIElement* e : m_elements)
 		e->render(viewMat);
 }
+
+void Canvas::update(GLuint deltaTime)
+{
+	for (UIElement* e : m_elements)
+		e->update(deltaTime);
+}

@@ -6,6 +6,7 @@
 #include "Camera.h"
 #include "Light.h"
 #include "ResourceManager.h"
+#include "InputManager.h"
 #include "UI/Button.h"
 #include "UI/Canvas.h"
 
@@ -163,8 +164,8 @@ void Scene::init()
 
 	// Botón: prueba
 	Button* button = new Button("boton", m_canvas);
-	button->scale({ 0.2, 0.15, 1 });
-	button->setPositionUI(0.15, 0.8);
+	button->setPositionUI(0.12, 0.9);
+	button->setScaleUI(0.2, 0.15);
 	//button->setPositionUI(50, 35);
 	button->setCallback(buttonPressed);
 }
@@ -201,6 +202,7 @@ void Scene::update(GLuint deltaTime)
 	{
 		e->update(deltaTime);
 	}
+	m_canvas->update(deltaTime);
 
 	// Animación para la luz
 	m_lights[1]->setPosition({15 * cos(totalTime * 0.002), 1, 5 * sin(totalTime * 0.002)});
@@ -321,7 +323,16 @@ void Scene::takePhoto()
 
 void Scene::buttonPressed()
 {
-	std::cout << "Botón pulsado" << std::endl;
+	std::cout << "Botón culling pulsado" << std::endl;
+	// Activar / desactivar el culling de polígonos traseros
+	GLboolean cullingActive;
+	glGetBooleanv(GL_CULL_FACE, &cullingActive);
+	if (!cullingActive)
+		glEnable(GL_CULL_FACE);
+	else
+		glDisable(GL_CULL_FACE);
+
+	InputManager::Instance()->setMousePos(400, 300);
 }
 
 Scene::~Scene()

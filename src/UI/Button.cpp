@@ -1,5 +1,7 @@
 #include "Button.h"
 
+#include "../InputManager.h"
+
 
 Button::Button(std::string textureName, Canvas* canvas) : m_callback(nullptr)
 {
@@ -13,10 +15,23 @@ Button::Button(std::string textureName, Canvas* canvas) : m_callback(nullptr)
 	m_mesh = Mesh::generateButton((double)width / canvas->getWidth() * 2,
 		(double)height / canvas->getHeight() * 2 / aspectRatio);
 
-
-	// Para estar siempre visible por la cámara (sobra)
-	setPosition({ 0, 0, -1 }); // tiene que coincir con -nearPlane
-
 	// Añadirlo al canvas
 	canvas->addElement(this);
+}
+
+void Button::update(GLuint deltaTime)
+{
+	// Clic izquierdo del ratón
+	if(InputManager::Instance()->mouseButtonClicked(LEFT))
+	{
+		glm::ivec2 mousePos = InputManager::Instance()->mousePos();
+		mousePos.y = canvas->getHeight() - mousePos.y;
+		//std::cout << "{ " << mousePos.x << ", " << mousePos.y << " }" << std::endl;
+		// Se ha pulsado dentro del rectángulo del botón
+		if(mousePos.x > (x - width / 2.0) && mousePos.x < (x + width / 2.0) &&
+			mousePos.y > (y - height / 2.0) && mousePos.y < (y + height / 2.0))
+		{
+			m_callback();
+		}
+	}
 }

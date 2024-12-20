@@ -3,6 +3,7 @@
 
 #include <vector>
 #include <glm.hpp>
+#include <freeglut.h>
 
 class UIElement;
 class Canvas
@@ -11,6 +12,7 @@ public:
 	Canvas();
 
 	void render(glm::dmat4 const& viewMat);
+	void update(GLuint deltaTime);
 
 	/* Añade un elemento al canvas */
 	void addElement(UIElement* e);
@@ -24,6 +26,9 @@ public:
 
 	/* Alto del canvas, en píxeles */
 	inline int getHeight() const { return height; }
+
+	/* Aspect ratio (altura / ancho) */
+	inline double aspectRatio() const { return (double)width / height; }
 
 private:
 	std::vector<UIElement*> m_elements;

@@ -182,8 +182,6 @@ Esfera::Esfera(GLdouble size, GLuint subdivisions, bool textured)
 
 void Esfera::render(glm::dmat4 const& viewMat)
 {
-	glDisable(GL_CULL_FACE);
-
 	glPolygonMode(GL_FRONT, GL_FILL);
 	glPolygonMode(GL_BACK, GL_LINE);
 	m_texture.bind();

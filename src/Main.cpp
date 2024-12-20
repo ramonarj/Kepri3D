@@ -17,6 +17,7 @@
 #include "Entity.h"
 #include "Light.h"
 #include "checkML.h"
+#include "InputManager.h"
 
 // Variables globales
 Viewport viewport(800, 600);
@@ -30,9 +31,9 @@ Scene scene(&camera);
 GLuint last_update_tick = 0;
 bool animationsOn = true;
 bool fullscreen = false;
-bool lockedMouse = true;
 double velCamara = 0.4;
 double velLuz = 0.25;
+bool lockedMouse = true;
 int moving = 0; // -1-> atrás, 1-> adelante
 
 // Predeclaración de callbacks
@@ -70,6 +71,7 @@ int main(int argc, char*argv[])
 
 	//glutFullScreen(); // pantalla completa
 
+	InputManager::Instance();
 	// 2) Registrar los distintos callbacks (input) 
 	// Se llama cuando la ventana es redimensionada (tirando de los bordes/cambiando a pantalla completa)
 	glutReshapeFunc(resize);
@@ -284,37 +286,17 @@ void update()
 	}
 }
 
-void motion(int x, int y)
-{
-	if (!lockedMouse)
-		return;
-
-	// Incremento en la posición del ratón
-	glm::dvec2 diff((double)x - viewport.getW() / 2, (double)y - viewport.getH() / 2);
-
-	// Cámara tipo FPS; las rotaciones en Y son globales y en X son locales.
-	camera.rotate(-diff.x * 0.002, { 0,1,0 }, GLOBAL);
-	camera.rotate(-diff.y * 0.002, { 1,0,0 }, LOCAL); // lo mismo que hacer pitch
-	//camera.yaw(-diff.x * 0.002);
-	//camera.pitch(-diff.y * 0.002);
-
-	// Volver a dejar el ratón en el centro
-	glutWarpPointer(viewport.getW() / 2, viewport.getH() / 2);
-
-	// Repintar
-	//glutPostRedisplay();
-}
-
 void mouse(int button, int state, int x, int y)
 {
-	// Volver a bloquear el ratón
-	if(!lockedMouse)
+	// Temporal
+	InputManager::Instance()->mouseKeyPressed(button, state, x, y);
+
+
+	 // Se encarga la escena
+	if (!lockedMouse)
 	{
-		if(button == 0)
-		{
-			lockedMouse = true;
-			glutSetCursor(GLUT_CURSOR_NONE);
-		}
+		lockedMouse = true;
+		glutSetCursor(GLUT_CURSOR_NONE);
 		return;
 	}
 
@@ -336,15 +318,40 @@ void mouse(int button, int state, int x, int y)
 			moving = 0;
 	}
 	// Rueda del ratón
-	if(button == 3)
+	if (button == 3)
 	{
 		camera.rotate(0.05, { 0, 0, 1 }, LOCAL);
 	}
-	else if(button == 4)
+	else if (button == 4)
 	{
 		camera.rotate(-0.05, { 0, 0, 1 }, LOCAL);
 	}
 }
+
+void motion(int x, int y)
+{
+	// Solución temporal
+	InputManager::Instance()->mouseMotion(x, y);
+
+	if (!lockedMouse)
+		return;
+
+	// Incremento en la posición del ratón
+	glm::dvec2 diff((double)x - viewport.getW() / 2, (double)y - viewport.getH() / 2);
+
+	// Cámara tipo FPS; las rotaciones en Y son globales y en X son locales.
+	camera.rotate(-diff.x * 0.002, { 0,1,0 }, GLOBAL);
+	camera.rotate(-diff.y * 0.002, { 1,0,0 }, LOCAL); // lo mismo que hacer pitch
+	//camera.yaw(-diff.x * 0.002);
+	//camera.pitch(-diff.y * 0.002);
+
+	// Volver a dejar el ratón en el centro
+	InputManager::Instance()->setMousePos(viewport.getW() / 2, viewport.getH() / 2);
+
+	// Repintar
+	//glutPostRedisplay();
+}
+
 
 void clickedMotion(int x, int y)
 {

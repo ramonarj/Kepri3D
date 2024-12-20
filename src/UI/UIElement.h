@@ -9,14 +9,15 @@ class Canvas;
 
 enum ALLIGNMENT_TYPE
 {
-	LEFT = 0,
-	CENTER = 1,
-	RIGHT = 2
+	ALLIGN_LEFT = 0,
+	ALLIGN_CENTER = 1,
+	ALLIGN_RIGHT = 2
 };
 
 class UIElement : public Entity
 {
 public:
+	/* Constructora por defecto */
 	UIElement();
 
 	/* Establece la referencia al canvas */
@@ -24,9 +25,12 @@ public:
 
 	/* Establece la posición del botón, relativa a la pantalla, y alineado a la izquierda (0 < x, y < 1)
 	-> (0, 0) es la esquina inferior izquierda */
-	void setPositionUI(float x, float y, ALLIGNMENT_TYPE allignment = LEFT);
+	void setPositionUI(float x, float y, ALLIGNMENT_TYPE allignment = ALLIGN_CENTER);
+
+	void setScaleUI(float x, float y);
 
 	void render(glm::dmat4 const& viewMat);
+	virtual void update(GLuint deltaTime);
 protected:
 	/* Referencia al canvas que pertenece */
 	Canvas* canvas;
