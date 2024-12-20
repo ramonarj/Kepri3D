@@ -52,7 +52,7 @@ void MeshLoader::loadOBJ(const std::string& filename)
 	mesh->normales = new glm::dvec3[mesh->numVertices];
 	for (int i = 0; i < mesh->numVertices; i++)
 		mesh->vertices[i] = this->vertices[i];
-	std::cout << "Num. vertices: " << mesh->numVertices << std::endl;
+	//std::cout << "Num. vertices: " << mesh->numVertices << std::endl;
 
 	/* 2) Leer las normales */
 	readNormals(stream);
@@ -73,6 +73,7 @@ void MeshLoader::loadOBJ(const std::string& filename)
 		mesh->indices[i+2] = tri.z;
 	}
 
+	// No sería necesario
 	mesh->SetNormals();
 
 

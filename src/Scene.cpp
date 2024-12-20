@@ -37,8 +37,8 @@ void Scene::initGLSubsystems()
 	// Activa las transparencias, indicando qué canal usar para ello (SRC_ALPHA).
 	// Si no llamáramos a glBlendFunc, se usarían los parámetros por defecto (0, 1) y no
 	// habría transparencias
-	glEnable(GL_BLEND);
-	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA); //src, dest
+	//glEnable(GL_BLEND);
+	//glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA); //src, dest
 
 	// Activa el descarte de fragmentos cuyo alfa no cumpla una cierta condición dada
 	// NOTA: en el pipeline, va primero el alpha test y después el blend
@@ -60,14 +60,14 @@ void Scene::initGLSubsystems()
 	// Tipo de modelo de sombreado -> GL_FLAT (flat), GL_SMOOTH (gouraud)
 	glShadeModel(GL_SMOOTH);
 	// Para no iluminar las caras traseras de las mallas. Por defecto está a false
-	glLightModeli(GL_LIGHT_MODEL_TWO_SIDE, GL_TRUE);
+	glLightModeli(GL_LIGHT_MODEL_TWO_SIDE, GL_FALSE);
 	// Punto de vista para la reflexión especular de los materiales
 	glLightModeli(GL_LIGHT_MODEL_LOCAL_VIEWER, GL_TRUE);
 	// Establecer la luz ambiente de toda la escena. Por defecto es (0.2, 0.2, 0.2, 1).
 	GLfloat amb[4]{ 0.1, 0.1, 0.4, 1 };
 	//glLightModelfv(GL_LIGHT_MODEL_AMBIENT, amb);
-	// Normalizar los vectores normales
-	glEnable(GL_NORMALIZE);
+	// Normalizar los vectores normales. Si hacemos bien el cálculo de las normales en IndexMesh, no haría ni falta.
+	//glEnable(GL_NORMALIZE);
 }
 
 void Scene::init()
@@ -77,7 +77,7 @@ void Scene::init()
 
 	// CARGA DE RECURSOS
 	/* Mallas que vamos a usar */
-	ResourceManager::Instance()->loadMesh("Torre_tri.obj", "torre");
+	ResourceManager::Instance()->loadMesh("Torre.obj", "torre");
 	ResourceManager::Instance()->loadMesh("Peon.obj", "peon");
 
 	/* Texturas que vamos a usar */
@@ -133,7 +133,7 @@ void Scene::init()
 	Entity* torre = new Entity();
 	torre->setMesh("torre");
 	torre->setTexture("cobre");
-	//torre->setMaterial("cromo");
+	torre->setMaterial("ruby");
 	torre->setPosition({ 0,0,-2 });
 	AddEntity(torre);
 

@@ -253,7 +253,7 @@ void IndexMesh::SetNormals()
 
 	// Normalizar las normales
 	for (int i = 0; i < numVertices; i++)
-		glm::normalize(normales[i]);
+		normales[i] = glm::normalize(normales[i]);
 }
 
 IndexMesh* IndexMesh::generateCube(GLdouble size, bool textured, bool equalFaces)
@@ -529,7 +529,7 @@ IndexMesh* IndexMesh::generateSphere(GLdouble size, GLuint subdivisions, bool te
 	}
 
 	/* Normales */
-	m->SetNormals();
+	//m->SetNormals();
 
 	return m;
 }
