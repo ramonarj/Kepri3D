@@ -8,7 +8,7 @@ class Material;
 class Mesh;
 
 const std::string MESHES_PATH = "..\\bin\\assets\\meshes\\";
-const std::string TEXTURES_PATH = "..\\bin\\assets\\";
+const std::string TEXTURES_PATH = "..\\bin\\assets\\textures\\";
 const std::string MATERIALS_PATH = "..\\bin\\assets\\materials\\";
 
 class ResourceManager

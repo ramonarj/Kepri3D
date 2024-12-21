@@ -53,8 +53,15 @@ protected:
 	void ViewportTest();
 
 	void PruebaMateriales();
+
+	static void switchBoolParam(GLenum param);
 	
-	static void buttonPressed();
+	// Callbacks para los botones
+	static void cullingButtonPressed();
+	static void blendingButtonPressed();
+	static void lightingButtonPressed();
+	static void texturesButtonPressed();
+	static void shadingButtonPressed();
 
 	//Camera* camera;
 	//Foto* foto;

@@ -17,6 +17,17 @@ using namespace glm;
 
 void Entity::render(glm::dmat4 const& viewMat)
 {
+	// Para materiales translúcidos
+	if (m_material.isTranslucid())
+	{
+		//glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+		//glDepthMask(GL_FALSE);
+	}
+
+	// Por defecto
+	glPolygonMode(GL_FRONT, GL_FILL);
+	glPolygonMode(GL_BACK, GL_LINE);
+
 	// 1) Cargar la matriz V*M
 	// Decirle a OpenGL que la siguiente matriz que cargaremos es de modelado/vista (no de proyección)
 	glMatrixMode(GL_MODELVIEW);
@@ -31,6 +42,14 @@ void Entity::render(glm::dmat4 const& viewMat)
 	m_material.load();
 	if (m_mesh != nullptr)
 		m_mesh->draw();
+
+
+	// Dejarlo como estaba
+	glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+	if (m_material.isTranslucid())
+	{
+		//glDepthMask(GL_TRUE);
+	}
 }
 
 void Entity::update(GLuint timeElapsed)

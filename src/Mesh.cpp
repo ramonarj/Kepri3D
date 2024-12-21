@@ -25,11 +25,13 @@ void Mesh::enableArrays()
 	glEnableClientState(GL_VERTEX_ARRAY);
 	glVertexPointer(3, GL_DOUBLE, 0, vertices);
 
-	////Colores
-	//glEnableClientState(GL_COLOR_ARRAY);
-	//// (coordenadas por vértice [2/3/4], tipo de dato, espacio entre cada dato, puntero al array)
-	//glColorPointer(4, GL_DOUBLE, 0, colores);
-
+	//Colores
+	if (colores != nullptr)
+	{
+		glEnableClientState(GL_COLOR_ARRAY);
+		// (coordenadas por vértice [2/3/4], tipo de dato, espacio entre cada dato, puntero al array)
+		glColorPointer(4, GL_DOUBLE, 0, colores);
+	}
 	//Texturas
 	if (texCoords != nullptr)
 	{
@@ -469,7 +471,7 @@ IndexMesh* IndexMesh::generateSphere(GLdouble size, GLuint subdivisions, bool te
 	m->colores = new dvec4[m->numVertices];
 	for (int i = 0; i < m->numVertices; i++)
 	{
-		m->colores[i] = dvec4(1, 0.5, 0, 1);
+		m->colores[i] = dvec4(0.8, 0.8, 0.8, 1);
 	}
 
 
@@ -585,7 +587,7 @@ IndexMesh* IndexMesh::generateGrid(GLint filas, GLint columnas, GLdouble tamFila
 	/* Lista de colores */
 	m->colores = new dvec4[m->numVertices];
 	for (int i = 0; i < m->numVertices; i++)
-		m->colores[i] = dvec4(1, 0.5, 0, 1);
+		m->colores[i] = dvec4(0.8, 0.8, 0.8, 1);
 
 	/* Coordenadas de textura -> se podría meter en el mismo bucle que los vértices */
 	m->texCoords = new dvec2[m->numVertices];

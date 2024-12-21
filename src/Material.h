@@ -13,6 +13,11 @@ public:
 
 	/* Carga el material */
 	virtual void load();
+
+	static inline void setShadingType(GLuint sh) { m_shading = sh; }
+
+	/* Indica si el material es translúcido o no */
+	inline bool isTranslucid() const { return m_translucent; }
 private:
 	/* Componente ambiente del material */
 	glm::fvec4 m_ambient;
@@ -26,6 +31,12 @@ private:
 
 	/* Cara en la que se usará el material */
 	GLuint m_face;
+
+	/* Tipo de sombreado para el material */
+	static GLuint m_shading;
+
+	/* ¿Es translúcido? */
+	bool m_translucent;
 
 	/* ¿Emite luz? */
 	//bool m_lightEmitter;

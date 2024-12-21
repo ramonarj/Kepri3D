@@ -40,7 +40,7 @@ void Scene::initGLSubsystems()
 	// Si no llamáramos a glBlendFunc, se usarían los parámetros por defecto (0, 1) y no
 	// habría transparencias
 	//glEnable(GL_BLEND);
-	//glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA); //src, dest
+	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA); //src, dest
 
 	// Activa el descarte de fragmentos cuyo alfa no cumpla una cierta condición dada
 	// NOTA: en el pipeline, va primero el alpha test y después el blend
@@ -61,6 +61,8 @@ void Scene::initGLSubsystems()
 	glEnable(GL_LIGHTING);
 	// Tipo de modelo de sombreado -> GL_FLAT (flat), GL_SMOOTH (gouraud)
 	glShadeModel(GL_SMOOTH);
+	Material::setShadingType(GL_SMOOTH); // importante especificarlo para materiales también
+
 	// Para no iluminar las caras traseras de las mallas. Por defecto está a false
 	glLightModeli(GL_LIGHT_MODEL_TWO_SIDE, GL_FALSE);
 	// Punto de vista para la reflexión especular de los materiales
@@ -70,6 +72,8 @@ void Scene::initGLSubsystems()
 	//glLightModelfv(GL_LIGHT_MODEL_AMBIENT, amb);
 	// Normalizar los vectores normales. Si hacemos bien el cálculo de las normales en IndexMesh, no haría ni falta.
 	//glEnable(GL_NORMALIZE);
+	// Usar los colores de los vértices
+	//glEnable(GL_COLOR_MATERIAL);
 }
 
 void Scene::init()
@@ -88,9 +92,14 @@ void Scene::init()
 	ResourceManager::Instance()->loadTexture("orientacion.bmp", "orientacion");
 	ResourceManager::Instance()->loadTexture("Zelda.bmp", "zelda");
 	ResourceManager::Instance()->loadTexture("terrenoTex.bmp", "terreno");
-	ResourceManager::Instance()->loadTexture("ray.bmp", "boton");
 	ResourceManager::Instance()->loadTexture("caja.bmp", "caja");
 	ResourceManager::Instance()->loadTexture("cobre.bmp", "cobre");
+
+	ResourceManager::Instance()->loadTexture("botonCulling.bmp", "botonCulling");
+	ResourceManager::Instance()->loadTexture("botonBlending.bmp", "botonBlending");
+	ResourceManager::Instance()->loadTexture("botonLighting.bmp", "botonLighting");
+	ResourceManager::Instance()->loadTexture("botonTextures.bmp", "botonTextures");
+	ResourceManager::Instance()->loadTexture("botonShading.bmp", "botonShading");
 
 	/* Materiales que vamos a usar */
 	ResourceManager::Instance()->loadMaterial("copper.material", "cobre");
@@ -130,14 +139,9 @@ void Scene::init()
 	//Poligono* pol = new Poligono(4, 1, true);
 	//pol->setTexture("zelda");
 	//AddEntity(pol);
-
-	// Torre de ajedrez
-	Entity* torre = new Entity();
-	torre->setMesh("torre");
-	torre->setTexture("cobre");
-	torre->setMaterial("ruby");
-	torre->setPosition({ 0,0,-2 });
-	AddEntity(torre);
+	
+	// Materiales y cubos
+	PruebaMateriales();
 
 	// Peon de ajedrez
 	Entity* peon = new Entity();
@@ -147,27 +151,53 @@ void Scene::init()
 	peon->setPosition({ 0,0,-2 });
 	AddEntity(peon);
 
-	// Materiales y cubos
-	PruebaMateriales();
 
+	// Torre de ajedrez
+	Entity* torre = new Entity();
+	torre->setMesh("torre");
+	//torre->setTexture("cobre");
+	torre->setMaterial("ruby");
+	torre->setPosition({ 0,0,-2 });
+	AddEntity(torre);
+	// Para que el blending del rubí funcione bien (de momento), 
+	// tiene que estar la última de las entidades
 
-	// Rejilla (suelo)
-	Grid* grid = new Grid(80, 160, 0.25, 0.25);
-	grid->setTexture("cobre");
-	grid->setMaterial("cromo");
-	grid->setPosition({ 0,-1,0 });
-	AddEntity(grid);
 
 	/* Canvas */
 	m_canvas = new Canvas();
 	m_canvas->setSize(800, 600);
 
-	// Botón: prueba
-	Button* button = new Button("boton", m_canvas);
-	button->setPositionUI(0.12, 0.9);
-	button->setScaleUI(0.2, 0.15);
+	// Botones
+	// Culling
+	Button* cullButton = new Button("botonCulling", m_canvas);
+	cullButton->setPositionUI(0.12, 0.9);
+	cullButton->setScaleUI(0.3, 0.3);
 	//button->setPositionUI(50, 35);
-	button->setCallback(buttonPressed);
+	cullButton->setCallback(cullingButtonPressed);
+
+	// Blending
+	Button* blendButton = new Button("botonBlending", m_canvas);
+	blendButton->setPositionUI(0.12, 0.75);
+	blendButton->setScaleUI(0.3, 0.3);
+	blendButton->setCallback(blendingButtonPressed);
+
+	// Lighting
+	Button* lightButton = new Button("botonLighting", m_canvas);
+	lightButton->setPositionUI(0.12, 0.6);
+	lightButton->setScaleUI(0.3, 0.3);
+	lightButton->setCallback(lightingButtonPressed);
+
+	// Textures
+	Button* texturesButton = new Button("botonTextures", m_canvas);
+	texturesButton->setPositionUI(0.12, 0.45);
+	texturesButton->setScaleUI(0.3, 0.3);
+	texturesButton->setCallback(texturesButtonPressed);
+
+	// Shading
+	Button* shadingButton = new Button("botonShading", m_canvas);
+	shadingButton->setPositionUI(0.12, 0.3);
+	shadingButton->setScaleUI(0.3, 0.3);
+	shadingButton->setCallback(shadingButtonPressed);
 }
 
 void Scene::render()
@@ -321,16 +351,64 @@ void Scene::takePhoto()
 	Texture::save("foto.bmp");
 }
 
-void Scene::buttonPressed()
+void Scene::switchBoolParam(GLenum param)
 {
-	std::cout << "Botón culling pulsado" << std::endl;
-	// Activar / desactivar el culling de polígonos traseros
-	GLboolean cullingActive;
-	glGetBooleanv(GL_CULL_FACE, &cullingActive);
-	if (!cullingActive)
-		glEnable(GL_CULL_FACE);
+	GLboolean value;
+	glGetBooleanv(param, &value);
+	if (value)
+		glDisable(param);
 	else
-		glDisable(GL_CULL_FACE);
+		glEnable(param);
+}
+
+void Scene::cullingButtonPressed()
+{
+	// Activar / desactivar el culling de polígonos traseros
+	switchBoolParam(GL_CULL_FACE);
+
+	InputManager::Instance()->setMousePos(400, 300);
+}
+
+void Scene::blendingButtonPressed()
+{
+	// Activar / desactivar las transparencias en texturas y materiales
+	switchBoolParam(GL_BLEND);
+
+	InputManager::Instance()->setMousePos(400, 300);
+}
+
+void Scene::lightingButtonPressed()
+{
+	// Activar / desactivar la iluminación
+	switchBoolParam(GL_LIGHTING);
+
+	InputManager::Instance()->setMousePos(400, 300);
+}
+
+void Scene::texturesButtonPressed()
+{
+	// Activar / desactivar el uso de texturas
+	switchBoolParam(GL_TEXTURE_2D);
+
+	InputManager::Instance()->setMousePos(400, 300);
+}
+
+void Scene::shadingButtonPressed()
+{
+	// Cambiar entre sombreado FLAT y SMOOTH
+	GLint shadeType;
+	glGetIntegerv(GL_SHADE_MODEL, &shadeType);
+	if (shadeType == GL_FLAT)
+	{
+		glShadeModel(GL_SMOOTH);
+		Material::setShadingType(GL_SMOOTH);
+	}
+
+	else
+	{
+		glShadeModel(GL_FLAT);
+		Material::setShadingType(GL_FLAT);
+	}
 
 	InputManager::Instance()->setMousePos(400, 300);
 }
