@@ -1,6 +1,4 @@
 #include "Material.h"
-
-#include <freeglut.h>
 #include <gtc/type_ptr.hpp>
 
 GLuint Material::m_shading;

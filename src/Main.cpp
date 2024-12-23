@@ -3,6 +3,7 @@
 
 #include <glm.hpp>
 #include <gtc/type_ptr.hpp>
+#include <glew.h>
 #include <freeglut.h>
 
 // Hay que usar:

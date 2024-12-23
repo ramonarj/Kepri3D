@@ -2,7 +2,7 @@
 #define __SCENE__
 
 #include <vector>
-#include <freeglut.h>
+#include <glew.h>
 
 class Entity;
 class Camera;

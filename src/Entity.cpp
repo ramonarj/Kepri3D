@@ -1,4 +1,5 @@
 #include "Entity.h"
+
 #include <glut.h>
 
 #include <gtc/type_ptr.hpp>

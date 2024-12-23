@@ -6,7 +6,7 @@
 #include "Material.h"
 
 #include <glm.hpp>
-#include <freeglut.h>
+
 
 #include <iostream>
 #include "Utils.h"

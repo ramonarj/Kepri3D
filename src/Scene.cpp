@@ -1,5 +1,5 @@
 #include "Scene.h"
-#include <freeglut.h>
+
 #include <glm.hpp>
 
 #include "Entity.h"
@@ -9,6 +9,9 @@
 #include "InputManager.h"
 #include "UI/Button.h"
 #include "UI/Canvas.h"
+
+//#include <glew.h>
+#include <freeglut.h>
 
 using namespace glm;
 
@@ -243,6 +246,7 @@ void Scene::update(GLuint deltaTime)
 
 void Scene::ViewportTest()
 {
+	glUseProgram(0);
 
 	//Algunas variables locales para facilitar la puesta en escena
 	Viewport* view = m_camera->getVP();

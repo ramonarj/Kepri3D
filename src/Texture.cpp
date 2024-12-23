@@ -2,6 +2,7 @@
 
 #include "Pixmap32RGBA.h"
 #include <iostream>
+#include <freeglut.h>
 
 void Texture::Init()
 {

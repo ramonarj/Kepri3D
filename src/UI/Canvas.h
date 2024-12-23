@@ -3,7 +3,7 @@
 
 #include <vector>
 #include <glm.hpp>
-#include <freeglut.h>
+#include <glew.h>
 
 class UIElement;
 class Canvas

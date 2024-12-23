@@ -2,7 +2,7 @@
 #define __MESH__
 
 #include <glm.hpp>
-#include <freeglut.h>
+#include <glew.h>
 #include <string>
 #include "checkML.h"
 

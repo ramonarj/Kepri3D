@@ -1,10 +1,8 @@
 #ifndef __TEXTURE__
 #define __TEXTURE__
 
-#include <freeglut.h>
+#include <glew.h>
 #include <string>
-#include <gl/GLext.h>
-
 
 class Texture
 {

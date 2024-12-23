@@ -1,7 +1,7 @@
 #ifndef __CAMERA__
 #define __CAMERA__
 
-#include <freeglut.h>
+#include <glew.h>
 #include <glm.hpp>
 #include <gtc/type_ptr.hpp>
 #include <iostream>

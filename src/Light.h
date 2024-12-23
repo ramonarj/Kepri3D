@@ -1,7 +1,6 @@
 #ifndef __LIGHT__
 #define __LIGHT__
-
-#include <freeglut.h>
+#include <glew.h>
 #include <glm.hpp>
 
 class Light

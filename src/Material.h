@@ -2,7 +2,7 @@
 #define __MATERIAL__
 
 #include <glm.hpp>
-#include <freeglut.h>
+#include <glew.h>
 
 class Material
 {

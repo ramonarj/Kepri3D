@@ -1,4 +1,5 @@
 #include "InputManager.h"
+
 #include <freeglut.h>
 
 InputManager* InputManager::s_instance = nullptr;
