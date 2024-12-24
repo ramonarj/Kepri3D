@@ -16,6 +16,23 @@
 using namespace glm;
 
 GLuint totalTime = 0;
+bool Scene::shadersActive = false;
+
+// Código fuente del vertex shader
+const char* vertexShaderSource = "#version 330 core\n"
+"in vec4 vertex;\n"
+"uniform mat4 modelMat;\n" 
+"void main()\n"
+"{\n"
+"gl_Position = vertex;\n"
+"}";
+// Código fuente del Fragment Shader
+const char* fragmentShaderSource = "#version 330 core\n"
+"out vec4 FragColor;\n"
+"void main()\n"
+"{\n"
+"FragColor = vec4(0.3f, 0.8f, 0.2f, 1.0f);\n"
+"}";
 
 void Scene::AddEntity(Entity* e, bool isTranslucid)
 {
@@ -103,6 +120,7 @@ void Scene::init()
 	ResourceManager::Instance()->loadTexture("botonLighting.bmp", "botonLighting");
 	ResourceManager::Instance()->loadTexture("botonTextures.bmp", "botonTextures");
 	ResourceManager::Instance()->loadTexture("botonShading.bmp", "botonShading");
+	ResourceManager::Instance()->loadTexture("botonShaders.bmp", "botonShader");
 
 	/* Materiales que vamos a usar */
 	ResourceManager::Instance()->loadMaterial("copper.material", "cobre");
@@ -112,7 +130,54 @@ void Scene::init()
 	// Prueba excepciones
 	ResourceManager::Instance()->loadTexture("ladrillo.bmp", "ladrillo");
 	ResourceManager::Instance()->loadMaterial("plata.material", "plata");
-	
+
+	/* Shaders que vamos a usar */
+	if (!GLEW_ARB_shading_language_100 || !GLEW_ARB_vertex_shader || !GLEW_ARB_fragment_shader || !GLEW_ARB_shader_objects)
+	{
+		std::cerr << "Shaders not available" << std::endl;
+	}
+	// Identificadores
+	unsigned int vertexShader, fragmentShader;
+	vertexShader = glCreateShader(GL_VERTEX_SHADER);
+	fragmentShader = glCreateShader(GL_FRAGMENT_SHADER);
+	// Pasarle el código fuente a los identificadores
+	glShaderSource(vertexShader, 1, &vertexShaderSource, NULL);
+	glShaderSource(fragmentShader, 1, &fragmentShaderSource, NULL);
+	// Compilarlos
+	glCompileShader(vertexShader);
+	glCompileShader(fragmentShader);
+	// Comprobar que la compilación ha sido exitosa
+	int  success;
+	char infoLog[512];
+	glGetShaderiv(vertexShader, GL_COMPILE_STATUS, &success);
+	if (!success)
+	{
+		glGetShaderInfoLog(vertexShader, 512, NULL, infoLog);
+		std::cout << "ERROR::SHADER::VERTEX::COMPILATION_FAILED\n" << infoLog << std::endl;
+	}
+	glGetShaderiv(fragmentShader, GL_COMPILE_STATUS, &success);
+	if (!success)
+	{
+		glGetShaderInfoLog(fragmentShader, 512, NULL, infoLog);
+		std::cout << "ERROR::SHADER::FRAGMENT::COMPILATION_FAILED\n" << infoLog << std::endl;
+	}
+
+
+	// Crear un programa de shaders y asignarle los shaders
+	m_shaderProgram = glCreateProgram();
+	//glAttachShader(m_shaderProgram, vertexShader);
+	glAttachShader(m_shaderProgram, fragmentShader);
+	glLinkProgram(m_shaderProgram);
+	// Comprobar que ha sido exitoso
+	glGetProgramiv(m_shaderProgram, GL_LINK_STATUS, &success);
+	if (!success) {
+		glGetProgramInfoLog(m_shaderProgram, 512, NULL, infoLog);
+	}
+
+	// Una vez enlazados, podemos borrar los VS y FS
+	glDeleteShader(vertexShader);
+	glDeleteShader(fragmentShader);
+
 	/* Luces */
 	// Puntual
 	Light* m_pointLight = new Light({ 1, 1, 0, 1 });
@@ -201,6 +266,12 @@ void Scene::init()
 	shadingButton->setPositionUI(0.12, 0.3);
 	shadingButton->setScaleUI(0.3, 0.3);
 	shadingButton->setCallback(shadingButtonPressed);
+
+	// Shaders
+	Button* shaderButton = new Button("botonShader", m_canvas);
+	shaderButton->setPositionUI(0.12, 0.15);
+	shaderButton->setScaleUI(0.3, 0.3);
+	shaderButton->setCallback(shaderButtonPressed);
 }
 
 void Scene::render()
@@ -212,11 +283,24 @@ void Scene::render()
 	for (Light* l : m_lights)
 		l->load(m_camera->getViewMat());
 
+	// Activar el/los shader
+	if(shadersActive)
+		glUseProgram(m_shaderProgram);
+	//if(shaderActive)
+	//	glUseProgram(m_shaderProgram);
+	//int mvpLocation = glGetUniformLocation(m_shaderProgram, "modelMat");
+	//glUniformMatrix4dv(mvpLocation, 1, GL_FALSE, glm::value_ptr(m_camera->getViewMat()));
+
 	// 2) Pintar todas las entidades
 	for (Entity* e : m_entities)
+	{
 		e->render(m_camera->getViewMat());
+	}
+	// Desactivamos los shaders para el canvas
+	glUseProgram(0);
 
-	// 3) Pintar el canvas, limpiando antes el Z-buffer para que se pinte encima de todo
+
+	// 3) Pintar el canvas, limpiando antes el Z-buffer para que se pinte encima de tod
 	glClear(GL_DEPTH_BUFFER_BIT);
 	m_canvas->render(m_camera->getViewMat());
 
@@ -413,6 +497,13 @@ void Scene::shadingButtonPressed()
 		glShadeModel(GL_FLAT);
 		Material::setShadingType(GL_FLAT);
 	}
+
+	InputManager::Instance()->setMousePos(400, 300);
+}
+
+void Scene::shaderButtonPressed()
+{
+	shadersActive = !shadersActive;
 
 	InputManager::Instance()->setMousePos(400, 300);
 }

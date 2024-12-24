@@ -9,7 +9,8 @@
 // Hay que usar:
 // 1) OpenGL
 // 2) Open GL Mathematics (glm) -> tipos definidos, como vectores y matrices de distinto tipo
-// 3) FreeGLUT -> creación de ventanas e input del usuario (reemplazable por SDL, por ejemplo)
+// 3) GLEW
+// 4) FreeGLUT -> creación de ventanas e input del usuario (reemplazable por SDL, por ejemplo)
 // Nota: FreeGLUT ya incluye OpenGL de por sí
 
 #include <iostream>
@@ -65,6 +66,15 @@ int main(int argc, char*argv[])
 	glutInitDisplayMode(GLUT_RGBA | GLUT_DOUBLE | GLUT_DEPTH); // | GLUT_MULTISAMPLE);   // | GLUT_STENCIL
 
 	int win = glutCreateWindow("Kepri3D");  // nombre de la ventana
+
+	// 2) Inicializar GLEW (IMPORTANTE)
+	GLenum err = glewInit();
+	if (GLEW_OK != err)
+	{
+		/* Problem: glewInit failed, something is seriously wrong. */
+		fprintf(stderr, "Error: %s\n", glewGetErrorString(err));
+	}
+	fprintf(stdout, "Status: Using GLEW %s\n", glewGetString(GLEW_VERSION));
 
 	// Hacer que el cursor sea invisible y moverlo al centro de la ventana
 	glutSetCursor(GLUT_CURSOR_NONE);

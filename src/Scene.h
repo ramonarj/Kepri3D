@@ -13,7 +13,7 @@ class Scene
 {
 public:
 	/* Constructora por defecto*/
-	Scene(Camera* cam) : m_camera(cam), m_canvas(nullptr) { };
+	Scene(Camera* cam) : m_camera(cam), m_canvas(nullptr), m_shaderProgram(0) { };
 	~Scene();
 
 	/* Inicia los subsistemas de openGL y crea texturas y entidades */
@@ -47,6 +47,11 @@ protected:
 	/* Canvas de la escena */
 	Canvas* m_canvas;
 
+	/* Programa de shaders que se usará */
+	unsigned int m_shaderProgram;
+
+	static bool shadersActive;
+
 	// Métodos auxiliares
 	void initGLSubsystems();
 
@@ -62,6 +67,7 @@ protected:
 	static void lightingButtonPressed();
 	static void texturesButtonPressed();
 	static void shadingButtonPressed();
+	static void shaderButtonPressed();
 
 	//Camera* camera;
 	//Foto* foto;
