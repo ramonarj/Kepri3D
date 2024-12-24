@@ -3,13 +3,17 @@
 
 #include <map>
 #include <string>
+
+class Mesh;
 class Texture;
 class Material;
-class Mesh;
+class Shader;
+
 
 const std::string MESHES_PATH = "..\\bin\\assets\\meshes\\";
 const std::string TEXTURES_PATH = "..\\bin\\assets\\textures\\";
 const std::string MATERIALS_PATH = "..\\bin\\assets\\materials\\";
+const std::string SHADERS_PATH = "..\\bin\\assets\\shaders\\";
 
 class ResourceManager
 {
@@ -24,6 +28,7 @@ public:
 			// Carga de textura y material por defecto
 			instance->loadTexture("default.bmp", "default");
 			instance->loadMaterial("default.material", "default");
+			instance->loadShader("simpleVS.glsl", "simpleFS.glsl", "default");
 		}
 			
 		return instance;
@@ -39,6 +44,9 @@ public:
 	/* Carga un material de archivo y le asigna el ID dado */
 	bool loadMaterial(std::string materialName, std::string id);
 
+	/* Carga un shader de archivo y le asigna el ID dado */
+	bool loadShader(std::string vertexName, std::string fragmentName, std::string id);
+
 	/* Devuelve una textura dada */
 	const Mesh& getMesh(std::string id);
 
@@ -47,6 +55,9 @@ public:
 
 	/* Devuelve un material dado */
 	const Material& getMaterial(std::string id);
+
+	/* Devuelve un shader dado */
+	const Shader& getShader(std::string id);
 
 	/* Limpia la instancia; debe llamarse explícitamente */
 	void Clean();
@@ -62,6 +73,9 @@ private:
 
 	/* Diccionario de materiales accesibles por su nombre (string) */
 	std::map<std::string, Material*> materials;
+
+	/* Diccionario de shaders accesibles por su nombre (string) */
+	std::map<std::string, Shader*> shaders;
 };
 
 #endif

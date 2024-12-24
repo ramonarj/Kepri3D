@@ -164,6 +164,7 @@
     <ClCompile Include="..\src\MeshLoader.cpp" />
     <ClCompile Include="..\src\Pixmap32RGBA.cpp" />
     <ClCompile Include="..\src\Scene.cpp" />
+    <ClCompile Include="..\src\Shader.cpp" />
     <ClCompile Include="..\src\Texture.cpp" />
     <ClCompile Include="..\src\ResourceManager.cpp" />
     <ClCompile Include="..\src\UI\Button.cpp" />
@@ -181,6 +182,7 @@
     <ClInclude Include="..\src\MeshLoader.h" />
     <ClInclude Include="..\src\Pixmap32RGBA.h" />
     <ClInclude Include="..\src\Scene.h" />
+    <ClInclude Include="..\src\Shader.h" />
     <ClInclude Include="..\src\Texture.h" />
     <ClInclude Include="..\src\ResourceManager.h" />
     <ClInclude Include="..\src\UI\Button.h" />

@@ -8,12 +8,13 @@ class Entity;
 class Camera;
 class Light;
 class Canvas;
+class Shader;
 
 class Scene
 {
 public:
 	/* Constructora por defecto*/
-	Scene(Camera* cam) : m_camera(cam), m_canvas(nullptr), m_shaderProgram(0) { };
+	Scene(Camera* cam) : m_camera(cam), m_canvas(nullptr), activeShader(nullptr) { };
 	~Scene();
 
 	/* Inicia los subsistemas de openGL y crea texturas y entidades */
@@ -48,7 +49,7 @@ protected:
 	Canvas* m_canvas;
 
 	/* Programa de shaders que se usará */
-	unsigned int m_shaderProgram;
+	Shader* activeShader;
 
 	static bool shadersActive;
 

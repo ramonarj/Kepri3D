@@ -61,6 +61,9 @@
     <ClCompile Include="..\src\InputManager.cpp">
       <Filter>Core</Filter>
     </ClCompile>
+    <ClCompile Include="..\src\Shader.cpp">
+      <Filter>Core</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\src\UI\Button.h">
@@ -109,6 +112,9 @@
       <Filter>UI</Filter>
     </ClInclude>
     <ClInclude Include="..\src\InputManager.h">
+      <Filter>Core</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\Shader.h">
       <Filter>Core</Filter>
     </ClInclude>
   </ItemGroup>

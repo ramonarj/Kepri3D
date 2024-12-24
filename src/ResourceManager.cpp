@@ -3,6 +3,7 @@
 #include "Mesh.h"
 #include "Texture.h"
 #include "Material.h"
+#include "Shader.h"
 #include "MeshLoader.h"
 
 #include <fstream>
@@ -33,7 +34,7 @@ bool ResourceManager::loadMesh(std::string meshName, std::string id)
 
 const Mesh& ResourceManager::getMesh(std::string id)
 {
-	// Si no se encuentra la textura dada, se devuelve por defecto una magenta chillón
+	// Si no se encuentra la malla dada, se devuelve por defecto... TODO
 	if (meshes.find(id) != meshes.end())
 		return *meshes[id];
 	else
@@ -114,12 +115,77 @@ bool ResourceManager::loadMaterial(std::string materialName, std::string id)
 
 const Material& ResourceManager::getMaterial(std::string id)
 {
-	// Si no se encuentra la textura dada, se devuelve por defecto una magenta chillón
+	// Si no se encuentra el material dado, se devuelve el predeterminado
 	if (materials.find(id) != materials.end())
 		return *materials[id];
 	else
 		return *materials["default"];
 }
+
+// - - - - - - - - - - - - 
+
+bool ResourceManager::loadShader(std::string vertexName, std::string fragmentName, std::string id)
+{
+	try
+	{
+		// 1) Abrir y leer el vertex shader
+		std::ifstream stream((SHADERS_PATH + vertexName).c_str());
+		if (!stream.is_open())
+		{
+			throw std::ios_base::failure("No se pudo abrir el vertex shader '" + vertexName + "'");
+		}
+		std::string linea;
+
+		// Leer todo el archivo línea a línea
+		std::string VSprogram = "";
+		while (!stream.eof())
+		{
+			std::getline(stream, linea);
+			VSprogram = VSprogram + linea + '\n';
+		}
+		// Cerrar el archivo
+		stream.close();
+
+		// 2) Abrir y leer el fragment shader
+		stream = std::ifstream((SHADERS_PATH + fragmentName).c_str());
+		if (!stream.is_open())
+		{
+			throw std::ios_base::failure("No se pudo abrir el fragment shader '" + fragmentName + "'");
+		}
+		// Leer todo el archivo línea a línea
+		std::string FSprogram = "";
+		while (!stream.eof())
+		{
+			std::getline(stream, linea);
+			FSprogram = FSprogram + linea + '\n';
+		}
+		// Cerrar el archivo
+		stream.close();
+
+		// 3) Crear el shader y añadirlo al diccionario
+		Shader* sh = new Shader();
+		sh->load(VSprogram.c_str(), FSprogram.c_str());
+		shaders[id] = sh;
+		return true;
+	}
+
+	catch (const std::ios_base::failure& f)
+	{
+		std::cout << f.what();
+		return false;
+	}
+}
+
+const Shader& ResourceManager::getShader(std::string id)
+{
+	// Si no se encuentra el shader especificado, se devuelve el predeterminado
+	if (shaders.find(id) != shaders.end())
+		return *shaders[id];
+	else
+		return *shaders["default"];
+}
+
+// - - - - - - - - - - - - 
 
 void ResourceManager::Clean()
 {
