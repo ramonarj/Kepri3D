@@ -207,6 +207,15 @@ void ResourceManager::Clean()
 	}
 	materials.clear();
 
+	// Borrar todos los shaders
+	auto itShader = shaders.begin();
+	while (itShader != shaders.end())
+	{
+		delete itShader->second;
+		itShader++;
+	}
+	shaders.clear();
+
 	delete instance; 
 	instance = nullptr;
 }

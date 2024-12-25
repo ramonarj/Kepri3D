@@ -20,6 +20,9 @@ public:
 	/* Constructora por defecto */
 	UIElement();
 
+	/* Destructora virtual */
+	virtual ~UIElement(){}
+
 	/* Establece la referencia al canvas */
 	inline void setCanvas(Canvas* c) { canvas = c; }
 

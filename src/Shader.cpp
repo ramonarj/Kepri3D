@@ -40,7 +40,7 @@ void Shader::load(const char* vertexShaderSrc, const char* fragmentShaderSrc)
 
 	// Crear un programa de shaders y asignarle el VS y FS
 	programId = glCreateProgram();
-	//glAttachShader(m_shaderProgram, vertexShader);
+	glAttachShader(programId, vertexShader);
 	glAttachShader(programId, fragmentShader);
 	glLinkProgram(programId);
 
@@ -49,6 +49,7 @@ void Shader::load(const char* vertexShaderSrc, const char* fragmentShaderSrc)
 	if (!success) 
 	{
 		glGetProgramInfoLog(programId, 512, NULL, infoLog);
+		std::cout << "ERROR: shader program linking went wrong" << std::endl;
 	}
 
 	// Una vez enlazados, podemos borrar los VS y FS

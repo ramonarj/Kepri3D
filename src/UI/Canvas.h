@@ -10,6 +10,7 @@ class Canvas
 {
 public:
 	Canvas();
+	~Canvas();
 
 	void render(glm::dmat4 const& viewMat);
 	void update(GLuint deltaTime);

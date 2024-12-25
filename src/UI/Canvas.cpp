@@ -24,3 +24,10 @@ void Canvas::update(GLuint deltaTime)
 	for (UIElement* e : m_elements)
 		e->update(deltaTime);
 }
+
+Canvas::~Canvas()
+{
+	for (UIElement* e : m_elements)
+		delete e;
+	m_elements.clear();
+}

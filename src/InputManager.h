@@ -36,6 +36,10 @@ public:
 	static void mouseMotion(int x, int y);
 	static void mouseKeyPressed(int button, int state, int x, int y);
 
+
+	/* Limpia la instancia; debe llamarse explícitamente */
+	inline void Clean() { delete s_instance; s_instance = nullptr; }
+
 private:
 	/* Instancia y constructora privada */
 	InputManager() {}

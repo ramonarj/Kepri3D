@@ -452,6 +452,9 @@ void Scene::shaderButtonPressed()
 
 Scene::~Scene()
 {
+	// Borrar el canvas
+	delete m_canvas;
+
 	// Borrar las entidades
 	for(Entity * it : m_entities)
 	{
@@ -466,7 +469,10 @@ Scene::~Scene()
 	}
 	m_lights.clear();
 
-	// Borrar texturas y materiales
+	// Borrar managers
+	InputManager::Instance()->Clean();
+
+	// Borrar las mallas, texturas, materiales y shaders cargados a la escena
 	ResourceManager::Instance()->Clean();
 
 	// Desactivar los parámetros de OpenGL
