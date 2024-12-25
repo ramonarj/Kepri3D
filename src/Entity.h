@@ -55,6 +55,10 @@ public:
 	/* Establece el material (ya creado) que usará la entidad */
 	void setMaterial(std::string materialID);
 
+
+
+	const glm::dmat4& getModelMat() { return modelMat; }
+
 protected:
 	/* Malla/s que usará la entidad para pintarse */
 	Mesh* m_mesh;

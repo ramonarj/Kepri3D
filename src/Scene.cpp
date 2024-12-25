@@ -45,7 +45,7 @@ void Scene::initGLSubsystems()
 	// Activa las transparencias, indicando qué canal usar para ello (SRC_ALPHA).
 	// Si no llamáramos a glBlendFunc, se usarían los parámetros por defecto (0, 1) y no
 	// habría transparencias
-	//glEnable(GL_BLEND);
+	glEnable(GL_BLEND);
 	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA); //src, dest
 
 	// Activa el descarte de fragmentos cuyo alfa no cumpla una cierta condición dada
@@ -118,7 +118,7 @@ void Scene::init()
 	ResourceManager::Instance()->loadMaterial("plata.material", "plata");
 
 	/* Shaders que vamos a usar */
-	ResourceManager::Instance()->loadShader("simpleVS.glsl", "simpleFS.glsl", "simpleShader");
+	ResourceManager::Instance()->loadShader("default.vert", "default.frag", "simpleShader");
 	activeShader = (Shader*)&ResourceManager::Instance()->getShader("simpleShader");
 
 
@@ -230,12 +230,14 @@ void Scene::render()
 	// Activar el/los shader
 	if(shadersActive)
 		glUseProgram(activeShader->getId());
-	//int mvpLocation = glGetUniformLocation(m_shaderProgram, "modelMat");
-	//glUniformMatrix4dv(mvpLocation, 1, GL_FALSE, glm::value_ptr(m_camera->getViewMat()));
 
 	// 2) Pintar todas las entidades
+	int mvpMatLoc = glGetUniformLocation(activeShader->getId(), "mvpMat");
+	glm::dmat4 projViewMat = m_camera->getProjMat() * m_camera->getViewMat();
 	for (Entity* e : m_entities)
 	{
+		// Pasar la matriz MVP al vertex shader
+		glUniformMatrix4dv(mvpMatLoc, 1, GL_FALSE, glm::value_ptr(projViewMat * e->getModelMat()));
 		e->render(m_camera->getViewMat());
 	}
 	// Desactivamos los shaders para el canvas

@@ -68,6 +68,9 @@ public:
 	/* Devuelve la matriz de vista (inversa de la de modelado) */
 	inline glm::dmat4 getViewMat() { return glm::inverse(modelMat); }
 
+	/* Devuelve la matriz de proyección de la escena */
+	inline glm::dmat4 getProjMat() { return projMat; }
+
 	/* Devuelve el puerto de vista */
 	Viewport* getVP() { return vp; }
 
