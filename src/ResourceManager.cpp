@@ -5,6 +5,7 @@
 #include "Material.h"
 #include "Shader.h"
 #include "MeshLoader.h"
+#include "Utils.h"
 
 #include <fstream>
 #include <iostream>
@@ -190,31 +191,13 @@ const Shader& ResourceManager::getShader(std::string id)
 void ResourceManager::Clean()
 {
 	// Borrar todas las texturas
-	auto itTex = textures.begin();
-	while (itTex != textures.end())
-	{
-		delete itTex->second;
-		itTex++;
-	}
-	textures.clear();
+	CleanMap(textures);
 
 	// Borrar todos los materiales
-	auto itMat = materials.begin();
-	while (itMat != materials.end())
-	{
-		delete itMat->second;
-		itMat++;
-	}
-	materials.clear();
+	CleanMap(materials);
 
 	// Borrar todos los shaders
-	auto itShader = shaders.begin();
-	while (itShader != shaders.end())
-	{
-		delete itShader->second;
-		itShader++;
-	}
-	shaders.clear();
+	CleanMap(shaders);
 
 	delete instance; 
 	instance = nullptr;

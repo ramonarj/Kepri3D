@@ -156,6 +156,7 @@
   <ItemGroup>
     <ClCompile Include="..\src\Camera.cpp" />
     <ClCompile Include="..\src\Entity.cpp" />
+    <ClCompile Include="..\src\GameManager.cpp" />
     <ClCompile Include="..\src\InputManager.cpp" />
     <ClCompile Include="..\src\Light.cpp" />
     <ClCompile Include="..\src\Main.cpp" />
@@ -175,6 +176,7 @@
     <ClInclude Include="..\src\Camera.h" />
     <ClInclude Include="..\src\checkML.h" />
     <ClInclude Include="..\src\Entity.h" />
+    <ClInclude Include="..\src\GameManager.h" />
     <ClInclude Include="..\src\InputManager.h" />
     <ClInclude Include="..\src\Light.h" />
     <ClInclude Include="..\src\Material.h" />

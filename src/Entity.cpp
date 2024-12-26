@@ -1,14 +1,9 @@
 #include "Entity.h"
 
-#include <glut.h>
+#include <iostream>
 
 #include <gtc/type_ptr.hpp>
 
-//#define GLM_ENABLE_EXPERIMENTAL
-//#include <gtx/string_cast.hpp>
-//#include <gtc/matrix_access.hpp>
-
-#include <iostream>
 #include "Utils.h"
 #include "ResourceManager.h"
 #include "MeshLoader.h"

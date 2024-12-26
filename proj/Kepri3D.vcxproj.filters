@@ -64,6 +64,9 @@
     <ClCompile Include="..\src\Shader.cpp">
       <Filter>Core</Filter>
     </ClCompile>
+    <ClCompile Include="..\src\GameManager.cpp">
+      <Filter>Archivos de origen</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\src\UI\Button.h">
@@ -116,6 +119,9 @@
     </ClInclude>
     <ClInclude Include="..\src\Shader.h">
       <Filter>Core</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\GameManager.h">
+      <Filter>Archivos de origen</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

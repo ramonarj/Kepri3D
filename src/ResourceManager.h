@@ -28,7 +28,7 @@ public:
 			// Carga de textura y material por defecto
 			instance->loadTexture("default.bmp", "default");
 			instance->loadMaterial("default.material", "default");
-			instance->loadShader("simpleVS.glsl", "simpleFS.glsl", "default");
+			instance->loadShader("default.vert", "default.frag", "default");
 		}
 			
 		return instance;

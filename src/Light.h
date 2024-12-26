@@ -23,7 +23,7 @@ public:
 
 	// Getters
 	/* Devuelve la posición */
-	inline glm::fvec4 getPosition() const { return posDir; }
+	inline glm::fvec3 getPosition() const { return posDir; }
 
 	// Setters
 	/* Cambia la posición de la luz, y la convierte en puntual */

@@ -27,7 +27,6 @@ void Canvas::update(GLuint deltaTime)
 
 Canvas::~Canvas()
 {
-	for (UIElement* e : m_elements)
-		delete e;
-	m_elements.clear();
+	// Borrar los elementos UI
+	CleanVector(m_elements);
 }

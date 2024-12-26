@@ -8,8 +8,10 @@
 #include "Shader.h"
 #include "ResourceManager.h"
 #include "InputManager.h"
+#include "GameManager.h"
 #include "UI/Button.h"
 #include "UI/Canvas.h"
+
 
 //#include <glew.h>
 #include <freeglut.h>
@@ -84,6 +86,10 @@ void Scene::initGLSubsystems()
 
 void Scene::init()
 {
+	// Hacer que el cursor sea invisible y moverlo al centro de la ventana
+	glutSetCursor(GLUT_CURSOR_NONE);
+	glutWarpPointer(m_camera->getVP()->getW() / 2, m_camera->getVP()->getH() / 2);
+
 	// Activa el depth test, uso de texturas, iluminación, etc.
 	initGLSubsystems();
 
@@ -122,7 +128,7 @@ void Scene::init()
 	activeShader = (Shader*)&ResourceManager::Instance()->getShader("simpleShader");
 
 
-	/* Luces */
+	// LUCES
 	// Puntual
 	Light* m_pointLight = new Light({ 1, 1, 0, 1 });
 	m_pointLight->setPosition({ -2.5,0.5,-2.5 });
@@ -140,7 +146,7 @@ void Scene::init()
 	m_dirLight->setActive(true);
 	AddLight(m_dirLight);
 
-	/* Entidades */
+	// ENTIDADES
 	// Ejes RGB
 	//m_entities.push_back(new EjesRGB(0.5));
 
@@ -179,7 +185,7 @@ void Scene::init()
 	m_canvas = new Canvas();
 	m_canvas->setSize(800, 600);
 
-	// Botones
+	// CANVAS
 	// Culling
 	Button* cullButton = new Button("botonCulling", m_canvas);
 	cullButton->setPositionUI(0.12, 0.9);
@@ -216,6 +222,9 @@ void Scene::init()
 	shaderButton->setPositionUI(0.12, 0.15);
 	shaderButton->setScaleUI(0.3, 0.3);
 	shaderButton->setCallback(shaderButtonPressed);
+
+	// GAMEMANAGER
+	AddEntity(new GameManager(this, m_camera));
 }
 
 void Scene::render()
@@ -259,6 +268,7 @@ void Scene::render()
 
 void Scene::update(GLuint deltaTime)
 {
+	// Actualizar las entidades
 	for (Entity* e : m_entities)
 	{
 		e->update(deltaTime);
@@ -270,6 +280,9 @@ void Scene::update(GLuint deltaTime)
 
 	m_lights[2]->setDirection({ -cos(totalTime * 0.0001),-sin(totalTime * 0.0001), 0});
 	totalTime += deltaTime;
+
+	// Limpiar el input para el siguiente frame
+	InputManager::Instance()->Update();
 }
 
 void Scene::ViewportTest()
@@ -381,6 +394,8 @@ void Scene::takePhoto()
 	// Sin embargo, con GL_BACK afecta menos al rendimiento (framerate)
 
 	Texture::save("foto.bmp");
+
+	std::cout << "Se ha hecho una foto" << std::endl;
 }
 
 void Scene::switchBoolParam(GLenum param)
@@ -458,18 +473,10 @@ Scene::~Scene()
 	delete m_canvas;
 
 	// Borrar las entidades
-	for(Entity * it : m_entities)
-	{
-		delete it;
-	}
-	m_entities.clear();
+	CleanVector(m_entities);
 
 	// Borrar las luces
-	for (Light* it : m_lights)
-	{
-		delete it;
-	}
-	m_lights.clear();
+	CleanVector(m_lights);
 
 	// Borrar managers
 	InputManager::Instance()->Clean();

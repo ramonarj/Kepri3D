@@ -1,7 +1,10 @@
 #ifndef __UTILS__
 #define __UTILS__
 
-#include <iomanip> 
+#include <vector>
+#include <map>
+#include <string>
+#include <iostream>
 
 // PI
 #define PI 3.14159265358979323846
@@ -44,7 +47,35 @@ void PrintMatrix(void* matrixPtr)
 	}
 	std::cout << "\n";
 }
-// Imprime el nombre y contenido de una variable por pantalla
-#define NOMBRE(VAR) std::cout << #VAR << std::endl;
+
+/**
+ * Limpia un vector de punteros a memoria dinámica, llamando a sus destructoras y limpiando el vector
+ *
+ */
+template<typename T>
+void CleanVector(std::vector<T*> & v)
+{
+	for (T* it : v)
+	{
+		delete it;
+	}
+	v.clear();
+}
+
+/**
+ * Limpia un diccionario de punteros a memoria dinámica, llamando a sus destructoras y limpiando el diccionario
+ *
+ */
+template<typename T>
+void CleanMap(std::map<std::string, T*>& map)
+{
+	auto it = map.begin();
+	while (it != map.end())
+	{
+		delete it->second;
+		it++;
+	}
+	map.clear();
+}
 
 #endif
