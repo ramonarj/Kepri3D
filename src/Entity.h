@@ -1,8 +1,8 @@
 #ifndef __ENTITY__
 #define __ENTITY__
 
-#include "Mesh.h"
-#include "Texture.h"
+class Mesh;
+class Texture;
 #include "Material.h"
 
 #include <glm.hpp>
@@ -16,7 +16,7 @@ class Entity
 {
 public:
 	/* Constructora por defecto */
-	Entity() : m_mesh(nullptr), modelMat(1.0) // Pone la matriz de modelado a la matriz identidad de grado 4 (1 0 0 0 / 0 1 0 0 ...)
+	Entity() : m_mesh(nullptr), m_texture(nullptr), modelMat(1.0) // Pone la matriz de modelado a la matriz identidad de grado 4 (1 0 0 0 / 0 1 0 0 ...)
 	{
 		//PrintMatrix<double, 4>(&modelMat);
 		//NOMBRE(modelMat);
@@ -25,17 +25,14 @@ public:
 	/* Destructora virtual */
 	virtual ~Entity() { delete m_mesh; };
 
-	/* La entidad pinta su malla, cargando antes la matriz M*V para 
-	que la posición de la cámara afecte a la posición los vértices que van a pintarse. (espacio local -> global)
-	Si 'viewMat' fuera la identidad, estos 2 espacios coincidirían ¿? */
+	/* La entidad pinta su malla en función de la matriz de vista, cargando antes su textura y 
+	material correspondiente */
 	virtual void render(glm::dmat4 const& viewMat);
 
 	// Actualizar
-	virtual void update(GLuint timeElapsed);
+	virtual void update(GLuint timeElapsed) { }
 
-	/* Mueve la entidad a la posición dada */
-	void setPosition(glm::dvec3 pos);
-
+	// Transformaciones afines
 	/* Suma el vector de tralación dado a la entidad, usando un sistema de referencia dado */
 	void translate(glm::dvec3 transVector, ReferenceSystem refSys = GLOBAL);
 
@@ -46,6 +43,9 @@ public:
 	void scale(glm::dvec3 scale);
 
 	// Setters
+	/* Mueve la entidad a la posición dada */
+	void setPosition(glm::dvec3 pos);
+
 	/* Establece la malla (ya creada) que usará la entidad */
 	void setMesh(std::string meshID);
 
@@ -55,8 +55,8 @@ public:
 	/* Establece el material (ya creado) que usará la entidad */
 	void setMaterial(std::string materialID);
 
-
-
+	// Getters
+	/* Devuelve la matriz de modelado de la entidad */
 	const glm::dmat4& getModelMat() { return modelMat; }
 
 protected:
@@ -68,7 +68,7 @@ protected:
 	glm::dmat4 modelMat;
 
 	/* Textura utilizada por la entidad */
-	Texture m_texture;
+	Texture* m_texture;
 
 	/* Material usado por la entidad */
 	Material m_material;
@@ -103,7 +103,6 @@ class Poligono : public Entity
 public:
 	Poligono(GLint sides, GLdouble size, bool relleno = false);
 	~Poligono() { };
-	void render(glm::dmat4 const& viewMat) override;
 };
 
 // - - - - - - - - - - - - 
@@ -113,7 +112,6 @@ class Cubo : public Entity
 public:
 	Cubo(GLdouble size, bool textured, bool equalFaces = true);
 	~Cubo() { };
-	void render(glm::dmat4 const& viewMat) override;
 	void update(GLuint timeElapsed) override;
 };
 
@@ -124,7 +122,6 @@ class Esfera : public Entity
 public:
 	Esfera(GLdouble size, GLuint subdivisions = 20, bool textured = false);
 	~Esfera() { };
-	void render(glm::dmat4 const& viewMat) override;
 	void update(GLuint timeElapsed) override;
 };
 
@@ -135,7 +132,6 @@ class Grid : public Entity
 public:
 	Grid(GLuint filas, GLuint columnas, GLdouble tamFila, GLdouble tamColumna);
 	~Grid() { };
-	void render(glm::dmat4 const& viewMat) override;
 };
 
 // - - - - - - - - - - - - 
@@ -146,18 +142,6 @@ public:
 	/* Crea un terreno con la información de 'filename' y la textura de 'textureName' */
 	Terrain(std::string filename, GLdouble scale);
 	~Terrain() { };
-	void render(glm::dmat4 const& viewMat) override;
-};
-
-// - - - - - - - - - - - - 
-
-class Torre : public Entity
-{
-public:
-	/* Crea un terreno con la información de 'filename' y la textura de 'textureName' */
-	Torre(std::string filename);
-	~Torre() { };
-	//void render(glm::dmat4 const& viewMat) override;
 };
 
 #endif

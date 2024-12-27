@@ -1,4 +1,5 @@
 #include "Button.h"
+#include "../Texture.h"
 
 #include "../InputManager.h"
 
@@ -7,8 +8,8 @@ Button::Button(std::string textureName, Canvas* canvas) : m_callback(nullptr)
 {
 	// Coger el tamaño en píxeles de la textura
 	setTexture(textureName);
-	width = m_texture.getWidth();
-	height = m_texture.getHeight();
+	width = m_texture->getWidth();
+	height = m_texture->getHeight();
 
 	// 
 	double aspectRatio = (double)canvas->getWidth() / canvas->getHeight();

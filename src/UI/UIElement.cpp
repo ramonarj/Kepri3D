@@ -1,5 +1,8 @@
 #include "UIElement.h"
 
+#include "../Mesh.h"
+#include "../Texture.h"
+
 #include <gtc/type_ptr.hpp>
 
 UIElement::UIElement() : x(0), y(0), width(0), height(0), canvas(nullptr)
@@ -29,7 +32,7 @@ void UIElement::setScaleUI(float x, float y)
 
 void UIElement::render(glm::dmat4 const& viewMat)
 {
-	m_texture.bind(GL_REPLACE); // a los elementos del canvas NO les afecta la iluminación (no usamos MODULATE)
+	m_texture->bind(GL_REPLACE); // a los elementos del canvas NO les afecta la iluminación (no usamos MODULATE)
 
 	// Cargar la matriz de modelado
 	glMatrixMode(GL_MODELVIEW);
@@ -39,7 +42,7 @@ void UIElement::render(glm::dmat4 const& viewMat)
 	if (m_mesh != nullptr)
 		m_mesh->draw();
 
-	m_texture.unbind();
+	m_texture->unbind();
 }
 
 void UIElement::update(GLuint deltaTime)

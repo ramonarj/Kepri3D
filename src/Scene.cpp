@@ -2,6 +2,7 @@
 
 #include <glm.hpp>
 
+#include "Texture.h"
 #include "Entity.h"
 #include "Camera.h"
 #include "Light.h"
@@ -124,8 +125,9 @@ void Scene::init()
 	ResourceManager::Instance()->loadMaterial("plata.material", "plata");
 
 	/* Shaders que vamos a usar */
-	ResourceManager::Instance()->loadShader("default.vert", "default.frag", "simpleShader");
-	activeShader = (Shader*)&ResourceManager::Instance()->getShader("simpleShader");
+	//ResourceManager::Instance()->loadShader("default.vert", "default.frag", "simpleShader");
+	ResourceManager::Instance()->loadShader("maximize.vert", "fog.frag", "bigFogShader");
+	activeShader = (Shader*)&ResourceManager::Instance()->getShader("bigFogShader");
 
 
 	// LUCES
@@ -151,12 +153,13 @@ void Scene::init()
 	//m_entities.push_back(new EjesRGB(0.5));
 
 	// Polígono sin rellenar
-	//m_entities.push_back(new Poligono(6, 0.5, false));
+	AddEntity(new Poligono(6, 0.5, false));
 	
 	// Polígono relleno
-	//Poligono* pol = new Poligono(4, 1, true);
-	//pol->setTexture("zelda");
-	//AddEntity(pol);
+	Poligono* pol = new Poligono(4, 1, true);
+	pol->setTexture("zelda");
+	//pol->setMaterial("default");
+	AddEntity(pol);
 	
 	// Materiales y cubos
 	PruebaMateriales();
@@ -164,7 +167,6 @@ void Scene::init()
 	// Peon de ajedrez
 	Entity* peon = new Entity();
 	peon->setMesh("peon");
-	peon->setTexture("cobre");
 	peon->setMaterial("cromo");
 	peon->setPosition({ 0,0,-2 });
 	AddEntity(peon);
@@ -336,7 +338,7 @@ void Scene::PruebaMateriales()
 	Cubo* cuboDef = new Cubo(2, false);
 	cuboDef->setMaterial("default");
 	cuboDef->setPosition({ 0,0,0 });
-	AddEntity(cuboDef);
+	//AddEntity(cuboDef);
 
 	// Cubo de rubi
 	Cubo* cuboRubi = new Cubo(2, false);

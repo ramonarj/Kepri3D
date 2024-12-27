@@ -152,7 +152,7 @@ Mesh* Mesh::generateFilledPolygon(GLint sides, GLint size)
 	m->colores = new dvec4[m->numVertices];
 	for (int i = 0; i < m->numVertices; i++)
 	{
-		m->colores[i] = dvec4(0.2, 0.1, 0.2, 1);
+		m->colores[i] = dvec4(0.8, 0.8, 0.8, 1);
 	}
 
 	/* Coordenadas de textura (suponiendo un cuadrado) */
