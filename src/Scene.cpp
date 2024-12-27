@@ -126,8 +126,9 @@ void Scene::init()
 
 	/* Shaders que vamos a usar */
 	//ResourceManager::Instance()->loadShader("default.vert", "default.frag", "simpleShader");
-	ResourceManager::Instance()->loadShader("maximize.vert", "fog.frag", "bigFogShader");
-	activeShader = (Shader*)&ResourceManager::Instance()->getShader("bigFogShader");
+	//ResourceManager::Instance()->loadShader("maximize.vert", "fog.frag", "bigFogShader");
+	ResourceManager::Instance()->loadShader("default.vert", "default.frag", "normalsShader");
+	activeShader = (Shader*)&ResourceManager::Instance()->getShader("normalsShader");
 
 
 	// LUCES
@@ -335,9 +336,9 @@ void Scene::PruebaMateriales()
 	AddEntity(c2);
 
 	// Cubo default
-	Cubo* cuboDef = new Cubo(2, false);
-	cuboDef->setMaterial("default");
-	cuboDef->setPosition({ 0,0,0 });
+	//Cubo* cuboDef = new Cubo(2, false);
+	//cuboDef->setMaterial("default");
+	//cuboDef->setPosition({ 0,0,0 });
 	//AddEntity(cuboDef);
 
 	// Cubo de rubi

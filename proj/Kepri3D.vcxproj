@@ -171,6 +171,7 @@
     <ClCompile Include="..\src\UI\Button.cpp" />
     <ClCompile Include="..\src\UI\Canvas.cpp" />
     <ClCompile Include="..\src\UI\UIElement.cpp" />
+    <ClCompile Include="..\src\Utils.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\src\Camera.h" />

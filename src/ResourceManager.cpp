@@ -129,43 +129,20 @@ bool ResourceManager::loadShader(std::string vertexName, std::string fragmentNam
 {
 	try
 	{
-		// 1) Abrir y leer el vertex shader
-		std::ifstream stream((SHADERS_PATH + vertexName).c_str());
-		if (!stream.is_open())
-		{
-			throw std::ios_base::failure("No se pudo abrir el vertex shader '" + vertexName + "'");
-		}
-		std::string linea;
+		// Leer los shaders de archivo
+		std::string VSprogram = FileToString((SHADERS_PATH + vertexName).c_str());
+		std::string FSprogram = FileToString((SHADERS_PATH + fragmentName).c_str());
+		std::string GSprogram = FileToString((SHADERS_PATH + "lineas.geom").c_str());
 
-		// Leer todo el archivo línea a línea
-		std::string VSprogram = "";
-		while (!stream.eof())
-		{
-			std::getline(stream, linea);
-			VSprogram = VSprogram + linea + '\n';
-		}
-		// Cerrar el archivo
-		stream.close();
-
-		// 2) Abrir y leer el fragment shader
-		stream = std::ifstream((SHADERS_PATH + fragmentName).c_str());
-		if (!stream.is_open())
-		{
-			throw std::ios_base::failure("No se pudo abrir el fragment shader '" + fragmentName + "'");
-		}
-		// Leer todo el archivo línea a línea
-		std::string FSprogram = "";
-		while (!stream.eof())
-		{
-			std::getline(stream, linea);
-			FSprogram = FSprogram + linea + '\n';
-		}
-		// Cerrar el archivo
-		stream.close();
-
-		// 3) Crear el shader y añadirlo al diccionario
+		// Crear el shader program y añadirlo al diccionario
 		Shader* sh = new Shader();
-		sh->load(VSprogram.c_str(), FSprogram.c_str());
+		//sh->load(VSprogram.c_str(), FSprogram.c_str());
+		sh->load(GL_VERTEX_SHADER, VSprogram.c_str());
+		sh->load(GL_FRAGMENT_SHADER, FSprogram.c_str());
+		sh->load(GL_GEOMETRY_SHADER, GSprogram.c_str());
+		// Compilarlo
+		sh->link();
+
 		shaders[id] = sh;
 		return true;
 	}
@@ -190,6 +167,9 @@ const Shader& ResourceManager::getShader(std::string id)
 
 void ResourceManager::Clean()
 {
+	// Borrar todas las mallas
+	//CleanMap(meshes);
+
 	// Borrar todas las texturas
 	CleanMap(textures);
 

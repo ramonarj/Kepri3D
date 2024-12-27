@@ -78,4 +78,7 @@ void CleanMap(std::map<std::string, T*>& map)
 	map.clear();
 }
 
+/* Convierte un archivo en una cadena de texto, incluyendo los saltos de línea que haya */
+std::string FileToString(const char* fileName);
+
 #endif
