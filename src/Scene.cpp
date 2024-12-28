@@ -54,7 +54,7 @@ void Scene::initGLSubsystems()
 	// Activa el descarte de fragmentos cuyo alfa no cumpla una cierta condición dada
 	// NOTA: en el pipeline, va primero el alpha test y después el blend
 	glEnable(GL_ALPHA_TEST);
-	glAlphaFunc(GL_GREATER, 0.2);
+	glAlphaFunc(GL_GREATER, 0.04);
 
 	/* Antialiasing; tanto para líneas, como para polígonos */
 	//glEnable(GL_LINE_SMOOTH);
@@ -125,10 +125,10 @@ void Scene::init()
 	ResourceManager::Instance()->loadMaterial("plata.material", "plata");
 
 	/* Shaders que vamos a usar */
-	//ResourceManager::Instance()->loadShader("default.vert", "default.frag", "simpleShader");
+	ResourceManager::Instance()->loadShader("default.vert", "fog.frag", "defaultShader");
 	//ResourceManager::Instance()->loadShader("maximize.vert", "fog.frag", "bigFogShader");
-	ResourceManager::Instance()->loadShader("default.vert", "default.frag", "normalsShader");
-	activeShader = (Shader*)&ResourceManager::Instance()->getShader("normalsShader");
+	//ResourceManager::Instance()->loadShader("default.vert", "default.frag", "normalsShader");
+	activeShader = (Shader*)&ResourceManager::Instance()->getShader("defaultShader");
 
 
 	// LUCES
@@ -158,7 +158,7 @@ void Scene::init()
 	
 	// Polígono relleno
 	Poligono* pol = new Poligono(4, 1, true);
-	pol->setTexture("zelda");
+	pol->setTexture("caja");
 	//pol->setMaterial("default");
 	AddEntity(pol);
 	

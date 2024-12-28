@@ -23,7 +23,7 @@ public:
 	}
 	
 	/* Destructora virtual */
-	virtual ~Entity() { delete m_mesh; };
+	virtual ~Entity();
 
 	/* La entidad pinta su malla en función de la matriz de vista, cargando antes su textura y 
 	material correspondiente */

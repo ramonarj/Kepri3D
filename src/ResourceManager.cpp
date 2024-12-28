@@ -136,10 +136,10 @@ bool ResourceManager::loadShader(std::string vertexName, std::string fragmentNam
 
 		// Crear el shader program y añadirlo al diccionario
 		Shader* sh = new Shader();
-		//sh->load(VSprogram.c_str(), FSprogram.c_str());
 		sh->load(GL_VERTEX_SHADER, VSprogram.c_str());
 		sh->load(GL_FRAGMENT_SHADER, FSprogram.c_str());
 		sh->load(GL_GEOMETRY_SHADER, GSprogram.c_str());
+
 		// Compilarlo
 		sh->link();
 

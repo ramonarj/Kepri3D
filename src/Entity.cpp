@@ -12,6 +12,10 @@
 
 using namespace glm;
 
+Entity::~Entity()
+{
+	delete m_mesh;
+}
 
 void Entity::render(glm::dmat4 const& viewMat)
 {

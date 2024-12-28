@@ -8,8 +8,6 @@ class Shader
 public:
 	Shader();
 
-	void load(const char* vertexShaderSrc, const char* fragmentShaderSrc);
-
 	/* Carga un shader específico para ser usado por el programa */
 	void load(GLenum shaderType, const char* shaderSrc);
 

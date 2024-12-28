@@ -37,6 +37,10 @@ void Mesh::enableArrays()
 	{
 		glEnableClientState(GL_TEXTURE_COORD_ARRAY);
 		glTexCoordPointer(2, GL_DOUBLE, 0, texCoords);
+
+		// Para el vertex shader
+		glVertexAttribPointer(2, 2, GL_DOUBLE, GL_FALSE, 0, texCoords);
+		glEnableVertexAttribArray(2);
 	}
 	// Normales 
 	if(normales != nullptr)
