@@ -86,7 +86,7 @@ void iniciarGlut(int argc, char* argv[])
 	glutInitWindowSize(viewport.getW(), viewport.getH());   // window size
 	//glutInitWindowPosition (140, 140);
 
-	glutInitDisplayMode(GLUT_RGBA | GLUT_DOUBLE | GLUT_DEPTH); // | GLUT_MULTISAMPLE);   // | GLUT_STENCIL
+	glutInitDisplayMode(GLUT_RGBA | GLUT_DOUBLE | GLUT_DEPTH | GLUT_MULTISAMPLE); // | GLUT_STENCIL
 
 	glutWindow = glutCreateWindow("Kepri3D");  // nombre de la ventana
 	//glutFullScreen();

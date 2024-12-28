@@ -69,6 +69,7 @@ protected:
 	static void texturesButtonPressed();
 	static void shadingButtonPressed();
 	static void shaderButtonPressed();
+	static void multisamplingButtonPressed();
 
 	//Camera* camera;
 	//Foto* foto;

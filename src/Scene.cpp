@@ -57,6 +57,7 @@ void Scene::initGLSubsystems()
 	glAlphaFunc(GL_GREATER, 0.04);
 
 	/* Antialiasing; tanto para líneas, como para polígonos */
+	glDisable(GL_MULTISAMPLE); //desactivado por defecto
 	//glEnable(GL_LINE_SMOOTH);
 	//glEnable(GL_POLYGON_SMOOTH);
 	//glHint(GL_POLYGON_SMOOTH_HINT, GL_NICEST);
@@ -114,6 +115,7 @@ void Scene::init()
 	ResourceManager::Instance()->loadTexture("botonTextures.bmp", "botonTextures");
 	ResourceManager::Instance()->loadTexture("botonShading.bmp", "botonShading");
 	ResourceManager::Instance()->loadTexture("botonShaders.bmp", "botonShader");
+	ResourceManager::Instance()->loadTexture("botonMultisampling.bmp", "botonMultisampling");
 
 	/* Materiales que vamos a usar */
 	ResourceManager::Instance()->loadMaterial("copper.material", "cobre");
@@ -225,6 +227,12 @@ void Scene::init()
 	shaderButton->setPositionUI(0.12, 0.15);
 	shaderButton->setScaleUI(0.3, 0.3);
 	shaderButton->setCallback(shaderButtonPressed);
+
+	// Aliasing
+	Button* multisamplingButton = new Button("botonMultisampling", m_canvas);
+	multisamplingButton->setPositionUI(0.88, 0.9);
+	multisamplingButton->setScaleUI(0.3, 0.3);
+	multisamplingButton->setCallback(multisamplingButtonPressed);
 
 	// GAMEMANAGER
 	AddEntity(new GameManager(this, m_camera));
@@ -466,6 +474,14 @@ void Scene::shadingButtonPressed()
 void Scene::shaderButtonPressed()
 {
 	shadersActive = !shadersActive;
+
+	InputManager::Instance()->setMousePos(400, 300);
+}
+
+void Scene::multisamplingButtonPressed()
+{
+	// Activar / desactivar el multisampling
+	switchBoolParam(GL_MULTISAMPLE);
 
 	InputManager::Instance()->setMousePos(400, 300);
 }
