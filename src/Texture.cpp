@@ -11,7 +11,8 @@ void Texture::Init()
 	// Indica a OpenGL que todo lo que hagamos con texturas será con la especificada
 	glBindTexture(GL_TEXTURE_2D, id); 
 
-	// Tipos de filtros de magnificación y minificación
+	// Tipos de filtros de magnificación y minificación.
+	// Los 'mipmaps' solo se usan para minificación, no magnificación
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
 
@@ -43,6 +44,9 @@ bool Texture::load(const std::string& filePath, GLubyte alpha)
 	glBindTexture(GL_TEXTURE_2D, id);
 	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, w, h, 0, GL_RGBA, GL_UNSIGNED_BYTE, pixMap.data());
 
+	// Genera un mipmap para la textura
+	glGenerateMipmap(GL_TEXTURE_2D);
+
 	return true;
 }
 
@@ -55,6 +59,17 @@ void Texture::bind(GLuint mix)
 void Texture::unbind()
 {
 	glBindTexture(GL_TEXTURE_2D, 0);
+}
+
+void Texture::useMipmaps(bool b)
+{
+	glBindTexture(GL_TEXTURE_2D, id);
+
+	// Se activa/desactiva el filtro de minificación que cambia entre texturas de distintos tamaños (mipmaps)
+	if(b)
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
+	else
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
 }
 
 void Texture::loadColorBuffer(GLsizei width, GLsizei height, GLenum buf)

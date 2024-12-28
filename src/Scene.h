@@ -52,6 +52,7 @@ protected:
 	Shader* activeShader;
 
 	static bool shadersActive;
+	static bool mipmapsActive;
 
 	// Métodos auxiliares
 	void initGLSubsystems();
@@ -70,6 +71,7 @@ protected:
 	static void shadingButtonPressed();
 	static void shaderButtonPressed();
 	static void multisamplingButtonPressed();
+	static void mipmapButtonPressed();
 
 	//Camera* camera;
 	//Foto* foto;

@@ -17,10 +17,9 @@
 //#include <glew.h>
 #include <freeglut.h>
 
-using namespace glm;
-
 GLuint totalTime = 0;
 bool Scene::shadersActive = false;
+bool Scene::mipmapsActive = false;
 
 
 void Scene::AddEntity(Entity* e, bool isTranslucid)
@@ -116,6 +115,7 @@ void Scene::init()
 	ResourceManager::Instance()->loadTexture("botonShading.bmp", "botonShading");
 	ResourceManager::Instance()->loadTexture("botonShaders.bmp", "botonShader");
 	ResourceManager::Instance()->loadTexture("botonMultisampling.bmp", "botonMultisampling");
+	ResourceManager::Instance()->loadTexture("botonMipmaps.bmp", "botonMipmaps");
 
 	/* Materiales que vamos a usar */
 	ResourceManager::Instance()->loadMaterial("copper.material", "cobre");
@@ -228,11 +228,17 @@ void Scene::init()
 	shaderButton->setScaleUI(0.3, 0.3);
 	shaderButton->setCallback(shaderButtonPressed);
 
-	// Aliasing
+	// Multisampling
 	Button* multisamplingButton = new Button("botonMultisampling", m_canvas);
 	multisamplingButton->setPositionUI(0.88, 0.9);
 	multisamplingButton->setScaleUI(0.3, 0.3);
 	multisamplingButton->setCallback(multisamplingButtonPressed);
+
+	// Mipmaps
+	Button* mipmapsButton = new Button("botonMipmaps", m_canvas);
+	mipmapsButton->setPositionUI(0.88, 0.75);
+	mipmapsButton->setScaleUI(0.3, 0.3);
+	mipmapsButton->setCallback(mipmapButtonPressed);
 
 	// GAMEMANAGER
 	AddEntity(new GameManager(this, m_camera));
@@ -482,6 +488,16 @@ void Scene::multisamplingButtonPressed()
 {
 	// Activar / desactivar el multisampling
 	switchBoolParam(GL_MULTISAMPLE);
+
+	InputManager::Instance()->setMousePos(400, 300);
+}
+
+void Scene::mipmapButtonPressed()
+{
+	// Activar / desactivar el uso de mipmaps
+	mipmapsActive = !mipmapsActive;
+	ResourceManager::Instance()->enableMipmaps(mipmapsActive);
+
 
 	InputManager::Instance()->setMousePos(400, 300);
 }

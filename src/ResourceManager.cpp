@@ -163,6 +163,19 @@ const Shader& ResourceManager::getShader(std::string id)
 		return *shaders["default"];
 }
 
+// 
+
+void ResourceManager::enableMipmaps(bool b)
+{
+	// Actualizar los parámetros de todas las texturas para que usen/no mipmaps
+	auto it = textures.begin();
+	while (it != textures.end())
+	{
+		it->second->useMipmaps(b);
+		it++;
+	}
+}
+
 // - - - - - - - - - - - - 
 
 void ResourceManager::Clean()

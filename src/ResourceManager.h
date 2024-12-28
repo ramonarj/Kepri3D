@@ -34,7 +34,7 @@ public:
 		return instance;
 	}
 
-
+	// Carga de recursos
 	/* Carga una malla de archivo y le asigna el ID dado */
 	bool loadMesh(std::string meshName, std::string id);
 
@@ -47,6 +47,7 @@ public:
 	/* Carga un shader de archivo y le asigna el ID dado */
 	bool loadShader(std::string vertexName, std::string fragmentName, std::string id);
 
+	// Proporcionar los recursos
 	/* Devuelve una textura dada */
 	const Mesh& getMesh(std::string id);
 
@@ -59,6 +60,10 @@ public:
 	/* Devuelve un shader dado */
 	const Shader& getShader(std::string id);
 
+	// Otros métodos
+	void enableMipmaps(bool b);
+
+	// Limpieza
 	/* Limpia la instancia; debe llamarse explícitamente */
 	void Clean();
 private:

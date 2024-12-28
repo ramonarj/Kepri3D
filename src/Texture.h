@@ -36,6 +36,10 @@ public:
 	/* Alto de la textura, en píxeles */
 	inline GLuint getHeight() const { return h; };
 
+	// Otros
+	/* Activa o desactiva el uso de mipmaps */
+	void useMipmaps(bool b);
+
 private:
 	// Dimensiones de la textura (en píxeles)
 	GLuint w;
