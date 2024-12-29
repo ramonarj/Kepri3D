@@ -44,7 +44,7 @@ void GameManager::update(GLuint deltaTime)
 
 
 	// Bloquear/desbloquear el ratón
-	if (InputManager::Instance()->getMouseKeyDown(LEFT))
+	if (InputManager::Instance()->getMouseKey(LEFT))
 	{
 		if (!lockedMouse)
 		{
@@ -75,45 +75,45 @@ void GameManager::movimientoCamara(GLuint deltaTime)
 
 	// INPUT DE TECLADO
 	// Adelante / atrás
-	if (InputManager::Instance()->getKeyDown('w'))
+	if (InputManager::Instance()->getKey('w'))
 	{
 		movCamara.z = 1;
 	}
-	if (InputManager::Instance()->getKeyDown('s'))
+	if (InputManager::Instance()->getKey('s'))
 	{
 		movCamara.z = -1;
 	}
 	// Izquierda / derecha
-	if (InputManager::Instance()->getKeyDown('a'))
+	if (InputManager::Instance()->getKey('a'))
 	{
 		movCamara.x = -1;
 	}
-	if (InputManager::Instance()->getKeyDown('d'))
+	if (InputManager::Instance()->getKey('d'))
 	{
 		movCamara.x = 1;
 	}
 	// Arriba / abajo
-	if (InputManager::Instance()->getKeyDown(32)) // barra espaciadora
+	if (InputManager::Instance()->getKey(32)) // barra espaciadora
 	{
 		movCamara.y = 1;
 	}
 	if (InputManager::Instance()->getSpecialKey(GLUT_KEY_SHIFT_L))
 	{
-		movCamara.y = -1 / 15.0;
+		movCamara.y = -1;
 	}
 
 	// Input de ratón
-	if (InputManager::Instance()->getMouseKeyDown(LEFT))
+	if (InputManager::Instance()->getMouseKey(LEFT))
 	{
-		movCamara.z = 1 / 15.0;
+		movCamara.z = 1;
 	}
-	else if (InputManager::Instance()->getMouseKeyDown(RIGHT))
+	else if (InputManager::Instance()->getMouseKey(RIGHT))
 	{
-		movCamara.z = -1 / 15.0;
+		movCamara.z = -1;
 	}
 
 	// Moverla en los 3 ejes
-	movCamara = movCamara * (float)velCamara * (float)deltaTime;
+	movCamara = movCamara * (float)velCamara * (deltaTime / 1000.0f);
 	cam->translate({ movCamara.x, 0, movCamara.z }, LOCAL);
 	cam->translate({ 0, movCamara.y, 0 }, GLOBAL);
 }
@@ -130,11 +130,11 @@ void GameManager::rotacionesCamara()
 	cam->rotate(-diff.y * 0.002, { 1,0,0 }, LOCAL); // lo mismo que hacer pitch
 
 	// Rotar la cámara
-	if (InputManager::Instance()->getMouseKeyDown(WHEEL_DOWN))
+	if (InputManager::Instance()->getMouseKey(WHEEL_DOWN))
 	{
 		cam->rotate(0.05, { 0, 0, 1 }, LOCAL);
 	}
-	else if (InputManager::Instance()->getMouseKeyDown(WHEEL_UP))
+	else if (InputManager::Instance()->getMouseKey(WHEEL_UP))
 	{
 		cam->rotate(-0.05, { 0, 0, 1 }, LOCAL);
 	}
@@ -174,6 +174,6 @@ void GameManager::controlLuces(GLuint deltaTime)
 	}
 
 	// Mover la luz
-	movLuz = movLuz * velLuz * (float)deltaTime;
+	movLuz = movLuz * velLuz * (deltaTime / 1000.0f);
 	scene->getLight()->setPosition(scene->getLight()->getPosition() + movLuz);
 }

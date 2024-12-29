@@ -23,7 +23,7 @@ Button::Button(std::string textureName, Canvas* canvas) : m_callback(nullptr)
 void Button::update(GLuint deltaTime)
 {
 	// Clic izquierdo del ratón
-	if(InputManager::Instance()->getMouseKeyDown(LEFT))
+	if(InputManager::Instance()->getMouseKey(LEFT))
 	{
 		glm::ivec2 mousePos = InputManager::Instance()->getMousePos();
 		mousePos.y = canvas->getHeight() - mousePos.y;

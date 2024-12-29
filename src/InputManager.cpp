@@ -7,7 +7,7 @@ InputManager* InputManager::s_instance = nullptr;
 bool InputManager::thisFrameKey = false;
 bool InputManager::thisFrameSpecialKey = false;
 
-unsigned char InputManager::m_pressedKey = ' ';
+unsigned char InputManager::m_pressedKey = NULL;
 int InputManager::m_specialKey = 0;
 bool InputManager::botonesMouse[5];
 glm::ivec2 InputManager::m_mousePos;
@@ -21,7 +21,7 @@ void InputManager::Update()
 	botonesMouse[4] = false;
 }
 
-bool InputManager::getMouseKeyDown(MOUSEBUTTON button) const
+bool InputManager::getMouseKey(MOUSEBUTTON button) const
 {
 	return botonesMouse[button];
 }
@@ -75,7 +75,7 @@ void InputManager::keyPressed(unsigned char key)
 void InputManager::keyUp(unsigned char key)
 {
 	if(m_pressedKey == key)
-		m_pressedKey = ' ';
+		m_pressedKey = NULL;
 }
 
 void InputManager::specialKeyPressed(int key)

@@ -89,6 +89,7 @@ void iniciarGlut(int argc, char* argv[])
 	glutInitDisplayMode(GLUT_RGBA | GLUT_DOUBLE | GLUT_DEPTH | GLUT_MULTISAMPLE); // | GLUT_STENCIL
 
 	glutWindow = glutCreateWindow("Kepri3D");  // nombre de la ventana
+	glutIgnoreKeyRepeat(true);
 	//glutFullScreen();
 
 	// Inicializar GLEW (IMPORTANTE)

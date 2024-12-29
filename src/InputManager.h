@@ -25,7 +25,7 @@ public:
 
 	// GETTERS
 	/* Indica si el botón del ratón está pulsado */
-	bool getMouseKeyDown(MOUSEBUTTON button) const;
+	bool getMouseKey(MOUSEBUTTON button) const;
 
 	/* Devuelve la posición del ratón en la pantalla */
 	glm::ivec2 getMousePos() const;
