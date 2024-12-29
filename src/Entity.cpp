@@ -9,6 +9,9 @@
 #include "Mesh.h"
 #include "Texture.h"
 #include "MeshLoader.h"
+#include "Shader.h"
+
+#include <freeglut.h>
 
 using namespace glm;
 
@@ -114,22 +117,27 @@ void Entity::scale(glm::dvec3 scale)
 	modelMat = glm::scale(modelMat, scale);
 }
 
-void Entity::setMesh(std::string meshID)
+void Entity::setMesh(const std::string& meshID)
 {
 	m_mesh = (Mesh*) & ResourceManager::Instance()->getMesh(meshID);
 }
 
-void Entity::setTexture(std::string textureID)
+void Entity::setTexture(const std::string& textureID)
 {
 	m_texture = (Texture*)&ResourceManager::Instance()->getTexture(textureID);
 }
 
-void Entity::setMaterial(std::string materialID)
+void Entity::setMaterial(const std::string& materialID)
 {
 	m_material = ResourceManager::Instance()->getMaterial(materialID);
 }
 
-void Entity::setSpecularMap(std::string textureID)
+void Entity::setShader(const std::string& shaderID)
+{
+	m_shader = (Shader*)&ResourceManager::Instance()->getShader(shaderID);
+}
+
+void Entity::setSpecularMap(const std::string& textureID)
 {
 	m_specMap = (Texture*)&ResourceManager::Instance()->getTexture(textureID);
 }
@@ -184,6 +192,23 @@ void Esfera::update(GLuint timeElapsed)
 Grid::Grid(GLuint filas, GLuint columnas, GLdouble tamFila, GLdouble tamColumna)
 {
 	m_mesh = IndexMesh::generateGrid(filas, columnas, tamFila, tamColumna);
+}
+
+void Grid::update(GLuint timeElapsed)
+{
+	// Pasarle el tiempo al fragment shader
+	timeLoc = glGetUniformLocation(m_shader->getId(), "tiempo");
+	//glUniform1f(timeLoc, 1.0f);
+}
+
+void Grid::render(glm::dmat4 const& viewMat)
+{
+	// Pasarle el tiempo al fragment shader
+	//timeLoc = glGetUniformLocation(m_shader->getId(), "tiempo");
+	float t = glutGet(GLUT_ELAPSED_TIME);
+	glUniform1f(timeLoc, t / 10000.0f);
+
+	Entity::render(viewMat);
 }
 
 // - - - - - - - - - - - - - - - - - 

@@ -3,6 +3,7 @@
 
 class Mesh;
 class Texture;
+class Shader;
 #include "Material.h"
 
 #include <glm.hpp>
@@ -16,7 +17,8 @@ class Entity
 {
 public:
 	/* Constructora por defecto */
-	Entity() : m_mesh(nullptr), m_texture(nullptr), modelMat(1.0) // Pone la matriz de modelado a la matriz identidad de grado 4 (1 0 0 0 / 0 1 0 0 ...)
+	Entity() : m_active(true), m_mesh(nullptr), m_texture(nullptr), modelMat(1.0), m_shader(nullptr), m_specMap(nullptr)
+		// Pone la matriz de modelado a la matriz identidad de grado 4 (1 0 0 0 / 0 1 0 0 ...)
 	{
 		//PrintMatrix<double, 4>(&modelMat);
 		//NOMBRE(modelMat);
@@ -43,26 +45,41 @@ public:
 	void scale(glm::dvec3 scale);
 
 	// Setters
+	/* Activa / desactiva la entidad */
+	inline void setActive(bool b) { m_active = b; }
+
 	/* Mueve la entidad a la posición dada */
 	void setPosition(glm::dvec3 pos);
 
 	/* Establece la malla (ya creada) que usará la entidad */
-	void setMesh(std::string meshID);
+	void setMesh(const std::string& meshID);
 
 	/* Establece la textura (ya creada) que usará la entidad */
-	void setTexture(std::string textureID);
+	void setTexture(const std::string& textureID);
 
 	/* Establece el material (ya creado) que usará la entidad */
-	void setMaterial(std::string materialID);
+	void setMaterial(const std::string& materialID);
+
+	/* Establece el shader (ya creado) que usará la entidad */
+	void setShader(const std::string& shaderID);
 
 	/* Establece el mapa especular (textura en B/N) que se usará para los brillos especulares de la textura principal */
-	void setSpecularMap(std::string textureID);
+	void setSpecularMap(const std::string& textureID);
 
 	// Getters
 	/* Devuelve la matriz de modelado de la entidad */
 	const glm::dmat4& getModelMat() { return modelMat; }
 
+	/* Devuelve el shader que usa la entidad */
+	const Shader* getShader() const { return m_shader; }
+
+	/* Devuelve 'true' si la entidad debe pintarse, false e.o.c. */
+	inline bool isActive() const { return m_active; }
+
 protected:
+	/* Indica si la entidad debe actualizarse y pintarse */
+	bool m_active;
+
 	/* Malla/s que usará la entidad para pintarse */
 	Mesh* m_mesh;
 
@@ -75,6 +92,9 @@ protected:
 
 	/* Material usado por la entidad */
 	Material m_material;
+
+	/* Shader usado por la entidad */
+	Shader* m_shader;
 
 	/* Mapa especular usado para la entidad */
 	Texture* m_specMap;
@@ -138,6 +158,10 @@ class Grid : public Entity
 public:
 	Grid(GLuint filas, GLuint columnas, GLdouble tamFila, GLdouble tamColumna);
 	~Grid() { };
+	void update(GLuint timeElapsed) override;
+	void render(glm::dmat4 const& viewMat) override;
+private:
+	int timeLoc;
 };
 
 // - - - - - - - - - - - - 

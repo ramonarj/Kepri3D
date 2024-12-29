@@ -15,6 +15,7 @@ public:
 	void link();
 
 	inline unsigned int getId() const { return programId; }
+
 private:
 	/* IDs del Vertex, geometry y fragment shader (de momento) */
 	unsigned int shadersIds[3];

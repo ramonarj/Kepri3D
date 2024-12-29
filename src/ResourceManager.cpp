@@ -129,20 +129,27 @@ bool ResourceManager::loadShader(std::string vertexName, std::string geometryNam
 {
 	try
 	{
-		// Leer los shaders de archivo
-		std::string VSprogram = FileToString((SHADERS_PATH + vertexName).c_str());
-		std::string FSprogram = FileToString((SHADERS_PATH + fragmentName).c_str());
-		std::string GSprogram = FileToString((SHADERS_PATH + geometryName).c_str());
-
-		// Crear el shader program y añadirlo al diccionario
 		Shader* sh = new Shader();
-		sh->load(GL_VERTEX_SHADER, VSprogram.c_str());
-		sh->load(GL_GEOMETRY_SHADER, GSprogram.c_str());
-		sh->load(GL_FRAGMENT_SHADER, FSprogram.c_str());
 
-		// Compilarlo
+		// Leer los shaders de archivo y cargarlos en el shader program
+		if(vertexName != "")
+		{
+			std::string VSprogram = FileToString((SHADERS_PATH + vertexName).c_str());
+			sh->load(GL_VERTEX_SHADER, VSprogram.c_str());
+		}
+		if (geometryName != "")
+		{
+			std::string GSprogram = FileToString((SHADERS_PATH + geometryName).c_str());
+			sh->load(GL_GEOMETRY_SHADER, GSprogram.c_str());
+		}
+		if (fragmentName != "")
+		{
+			std::string FSprogram = FileToString((SHADERS_PATH + fragmentName).c_str());
+			sh->load(GL_FRAGMENT_SHADER, FSprogram.c_str());
+		}
+		
+		// Compilarlo y añadirlo al diccionario
 		sh->link();
-
 		shaders[id] = sh;
 		return true;
 	}

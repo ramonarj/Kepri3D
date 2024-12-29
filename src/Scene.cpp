@@ -109,6 +109,7 @@ void Scene::init()
 	ResourceManager::Instance()->loadTexture("caja.bmp", "caja");
 	ResourceManager::Instance()->loadTexture("caja_specular.bmp", "caja_spec");
 	ResourceManager::Instance()->loadTexture("cobre.bmp", "cobre");
+	ResourceManager::Instance()->loadTexture("agua.bmp", "agua");
 
 	ResourceManager::Instance()->loadTexture("botonCulling.bmp", "botonCulling");
 	ResourceManager::Instance()->loadTexture("botonBlending.bmp", "botonBlending");
@@ -130,11 +131,11 @@ void Scene::init()
 	ResourceManager::Instance()->loadMaterial("plata.material", "plata");
 
 	/* Shaders que vamos a usar */
-	//ResourceManager::Instance()->loadShader("maximize.vert", "fog.frag", "bigFogShader");
+	ResourceManager::Instance()->loadShader("default.vert", "cruces.geom", "default.frag", "cruces");
+	ResourceManager::Instance()->loadShader("maximize.vert", "", "fog.frag", "bigFog");
 	ResourceManager::Instance()->loadShader("normals.vert", "normals.geom", "normals.frag", "normals");
+	ResourceManager::Instance()->loadShader("default.vert", "", "movimiento.frag", "movimiento");
 	//ResourceManager::Instance()->loadShader("default.vert", "default.frag", "specularMap.frag", "specMapShader");
-	activeShader = (Shader*)&ResourceManager::Instance()->getShader("default");
-	//normalsShader = (Shader*)&ResourceManager::Instance()->getShader("normals");
 
 
 	// LUCES
@@ -263,18 +264,34 @@ void Scene::render()
 	for (Light* l : m_lights)
 		l->load(m_camera->getViewMat());
 
-	// Activar el/los shader
-	if(shadersActive)
-		glUseProgram(activeShader->getId());
-
-	// 2) Pintar todas las entidades
-	int mvpMatLoc = glGetUniformLocation(activeShader->getId(), "mvpMat");
+	// 2) Pintar todas las entidades 
+	int mvpMatLoc;
+	const Shader* activeShader = nullptr;
 	glm::dmat4 projViewMat = m_camera->getProjMat() * m_camera->getViewMat();
+	// pintamos todas las entidades activas
 	for (Entity* e : m_entities)
 	{
-		// Pasar la matriz MVP al vertex shader
-		glUniformMatrix4dv(mvpMatLoc, 1, GL_FALSE, glm::value_ptr(projViewMat * e->getModelMat()));
-		e->render(m_camera->getViewMat());
+		if(e->isActive())
+		{
+			// la entidad no usa shaders; desactivamos
+			if (e->getShader() == nullptr)
+				glUseProgram(0);
+			// la entidad usa shaders
+			else
+			{
+				// hay que cambiar el shader que usó la entidad anterior
+				if (e->getShader() != activeShader)
+				{
+					activeShader = e->getShader();
+					mvpMatLoc = glGetUniformLocation(activeShader->getId(), "mvpMat");
+					glUseProgram(activeShader->getId());
+				}
+				// pasar la matriz MVP al vertex shader
+				glUniformMatrix4dv(mvpMatLoc, 1, GL_FALSE, glm::value_ptr(projViewMat * e->getModelMat()));
+			}
+			// en cualquier caso, mandamos la info de los vértices
+			e->render(m_camera->getViewMat());
+		}
 	}
 
 	// 3) Pintar los vectores normales, si están activos
@@ -311,7 +328,8 @@ void Scene::update(GLuint deltaTime)
 	// Actualizar las entidades
 	for (Entity* e : m_entities)
 	{
-		e->update(deltaTime);
+		if(e->isActive())
+			e->update(deltaTime);
 	}
 	m_canvas->update(deltaTime);
 
@@ -364,6 +382,7 @@ void Scene::PruebaMateriales()
 	c->setTexture("caja");
 	c->setSpecularMap("caja_spec");
 	c->setPosition({ -10,0,0 });
+	c->setShader("default");
 	AddEntity(c);
 
 	// Cubo de orientación (distintas texturas)
@@ -396,6 +415,7 @@ void Scene::PruebaMateriales()
 	Esfera* esfera = new Esfera(1, 8, true);
 	esfera->setTexture("earth");
 	esfera->setPosition({ 0,2,-3 });
+	esfera->setShader("bigFog");
 	AddEntity(esfera);
 
 	// Tierra
@@ -404,6 +424,7 @@ void Scene::PruebaMateriales()
 	tierra->setPosition({ 6,15,0 });
 	//tierra->rotate(-PI / 2, { 1, 0, 0 }, LOCAL); // 90º horario en eje X local
 	tierra->rotate(-PI / 8, { 0, 0, 1 }, GLOBAL);
+	tierra->setShader("cruces");
 	AddEntity(tierra);
 
 	// Venus
@@ -414,10 +435,19 @@ void Scene::PruebaMateriales()
 
 	// Rejilla (suelo)
 	Grid* grid = new Grid(80, 160, 0.25, 0.25);
-	grid->setTexture("cobre");
-	grid->setMaterial("cromo");
+	grid->setTexture("agua");
+	//grid->setMaterial("cromo");
 	grid->setPosition({ 0,-1,0 });
+	grid->setShader("movimiento");
 	AddEntity(grid);
+
+	// "Cascada"
+	Grid* vGrid = new Grid(80, 80, 0.25, 0.25);
+	vGrid->setTexture("agua");
+	vGrid->setPosition({ 20,-11,0 });
+	vGrid->rotate(-PI / 2, {0, 0, 1}, GLOBAL);
+	vGrid->setShader("movimiento");
+	AddEntity(vGrid);
 
 
 	// Terreno
