@@ -51,6 +51,7 @@ protected:
 	/* Programa de shaders que se usará */
 	Shader* activeShader;
 
+	static Shader* normalsShader;
 	static bool shadersActive;
 	static bool mipmapsActive;
 
@@ -72,6 +73,7 @@ protected:
 	static void shaderButtonPressed();
 	static void multisamplingButtonPressed();
 	static void mipmapButtonPressed();
+	static void normalsButtonPressed();
 
 	//Camera* camera;
 	//Foto* foto;

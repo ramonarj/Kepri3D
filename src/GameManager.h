@@ -18,16 +18,16 @@ private:
 	Scene* scene;
 
 	glm::vec3 movCamara = { 0,0,0 };
-	double velCamara = 0.4;
+	double velCamara = 0.08;
 	bool lockedMouse = true;
 	bool fullscreen = false;
-	float velLuz = 0.02f;
+	float velLuz = 0.01f;
 
 	// Métodos
-	void movimientoCamara();
+	void movimientoCamara(GLuint deltaTime);
 	void rotacionesCamara();
 
-	void controlLuces();
+	void controlLuces(GLuint deltaTime);
 };
 
 #endif

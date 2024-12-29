@@ -125,20 +125,20 @@ const Material& ResourceManager::getMaterial(std::string id)
 
 // - - - - - - - - - - - - 
 
-bool ResourceManager::loadShader(std::string vertexName, std::string fragmentName, std::string id)
+bool ResourceManager::loadShader(std::string vertexName, std::string geometryName, std::string fragmentName, std::string id)
 {
 	try
 	{
 		// Leer los shaders de archivo
 		std::string VSprogram = FileToString((SHADERS_PATH + vertexName).c_str());
 		std::string FSprogram = FileToString((SHADERS_PATH + fragmentName).c_str());
-		std::string GSprogram = FileToString((SHADERS_PATH + "lineas.geom").c_str());
+		std::string GSprogram = FileToString((SHADERS_PATH + geometryName).c_str());
 
 		// Crear el shader program y añadirlo al diccionario
 		Shader* sh = new Shader();
 		sh->load(GL_VERTEX_SHADER, VSprogram.c_str());
-		sh->load(GL_FRAGMENT_SHADER, FSprogram.c_str());
 		sh->load(GL_GEOMETRY_SHADER, GSprogram.c_str());
+		sh->load(GL_FRAGMENT_SHADER, FSprogram.c_str());
 
 		// Compilarlo
 		sh->link();

@@ -55,6 +55,9 @@ public:
 	/* Establece el material (ya creado) que usará la entidad */
 	void setMaterial(std::string materialID);
 
+	/* Establece el mapa especular (textura en B/N) que se usará para los brillos especulares de la textura principal */
+	void setSpecularMap(std::string textureID);
+
 	// Getters
 	/* Devuelve la matriz de modelado de la entidad */
 	const glm::dmat4& getModelMat() { return modelMat; }
@@ -72,6 +75,9 @@ protected:
 
 	/* Material usado por la entidad */
 	Material m_material;
+
+	/* Mapa especular usado para la entidad */
+	Texture* m_specMap;
 
 	//Mesh* mesh = nullptr;
 	//Mesh* mesh2 = nullptr;

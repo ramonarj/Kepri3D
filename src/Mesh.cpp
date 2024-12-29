@@ -47,6 +47,10 @@ void Mesh::enableArrays()
 	{
 		glEnableClientState(GL_NORMAL_ARRAY);
 		glNormalPointer(GL_DOUBLE, 0, normales);
+
+		// Para el vertex shader
+		glVertexAttribPointer(3, 3, GL_DOUBLE, GL_FALSE, 0, normales);
+		glEnableVertexAttribArray(3);
 	}
 }
 

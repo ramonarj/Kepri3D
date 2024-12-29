@@ -20,6 +20,7 @@
 GLuint totalTime = 0;
 bool Scene::shadersActive = false;
 bool Scene::mipmapsActive = false;
+Shader* Scene::normalsShader = nullptr;
 
 
 void Scene::AddEntity(Entity* e, bool isTranslucid)
@@ -106,6 +107,7 @@ void Scene::init()
 	ResourceManager::Instance()->loadTexture("Zelda.bmp", "zelda");
 	ResourceManager::Instance()->loadTexture("terrenoTex.bmp", "terreno");
 	ResourceManager::Instance()->loadTexture("caja.bmp", "caja");
+	ResourceManager::Instance()->loadTexture("caja_specular.bmp", "caja_spec");
 	ResourceManager::Instance()->loadTexture("cobre.bmp", "cobre");
 
 	ResourceManager::Instance()->loadTexture("botonCulling.bmp", "botonCulling");
@@ -116,6 +118,7 @@ void Scene::init()
 	ResourceManager::Instance()->loadTexture("botonShaders.bmp", "botonShader");
 	ResourceManager::Instance()->loadTexture("botonMultisampling.bmp", "botonMultisampling");
 	ResourceManager::Instance()->loadTexture("botonMipmaps.bmp", "botonMipmaps");
+	ResourceManager::Instance()->loadTexture("botonNormales.bmp", "botonNormales");
 
 	/* Materiales que vamos a usar */
 	ResourceManager::Instance()->loadMaterial("copper.material", "cobre");
@@ -127,10 +130,11 @@ void Scene::init()
 	ResourceManager::Instance()->loadMaterial("plata.material", "plata");
 
 	/* Shaders que vamos a usar */
-	ResourceManager::Instance()->loadShader("default.vert", "fog.frag", "defaultShader");
 	//ResourceManager::Instance()->loadShader("maximize.vert", "fog.frag", "bigFogShader");
-	//ResourceManager::Instance()->loadShader("default.vert", "default.frag", "normalsShader");
-	activeShader = (Shader*)&ResourceManager::Instance()->getShader("defaultShader");
+	ResourceManager::Instance()->loadShader("normals.vert", "normals.geom", "normals.frag", "normals");
+	//ResourceManager::Instance()->loadShader("default.vert", "default.frag", "specularMap.frag", "specMapShader");
+	activeShader = (Shader*)&ResourceManager::Instance()->getShader("default");
+	//normalsShader = (Shader*)&ResourceManager::Instance()->getShader("normals");
 
 
 	// LUCES
@@ -240,6 +244,12 @@ void Scene::init()
 	mipmapsButton->setScaleUI(0.3, 0.3);
 	mipmapsButton->setCallback(mipmapButtonPressed);
 
+	// Visualización de normales
+	Button* normalsButton = new Button("botonNormales", m_canvas);
+	normalsButton->setPositionUI(0.88, 0.6);
+	normalsButton->setScaleUI(0.3, 0.3);
+	normalsButton->setCallback(normalsButtonPressed);
+
 	// GAMEMANAGER
 	AddEntity(new GameManager(this, m_camera));
 }
@@ -266,17 +276,30 @@ void Scene::render()
 		glUniformMatrix4dv(mvpMatLoc, 1, GL_FALSE, glm::value_ptr(projViewMat * e->getModelMat()));
 		e->render(m_camera->getViewMat());
 	}
+
+	// 3) Pintar los vectores normales, si están activos
+	if(normalsShader != nullptr)
+	{
+		glUseProgram(normalsShader->getId());
+		mvpMatLoc = glGetUniformLocation(normalsShader->getId(), "mvpMat");
+		for (Entity* e : m_entities)
+		{
+			// Pasar la matriz MVP al vertex shader
+			glUniformMatrix4dv(mvpMatLoc, 1, GL_FALSE, glm::value_ptr(projViewMat * e->getModelMat()));
+			e->render(m_camera->getViewMat());
+		}
+	}
+	
 	// Desactivamos los shaders para el canvas
 	glUseProgram(0);
 
-
-	// 3) Pintar el canvas, limpiando antes el Z-buffer para que se pinte encima de tod
+	// 4) Pintar el canvas, limpiando antes el Z-buffer para que se pinte encima de tod
 	glClear(GL_DEPTH_BUFFER_BIT);
 	m_canvas->render(m_camera->getViewMat());
 
 	//ViewportTest();
 
-	// 4) Hacer swap de buffers
+	// 5) Hacer swap de buffers
 	// Hay 2 buffers; uno se está mostrando por ventana, y el otro es el que usamos
 	// para dibujar con la GPU. Cuando se ha terminado de dibujar y llega el siguiente 
 	// frame, se intercambian las referencias y se repite el proceso
@@ -338,7 +361,8 @@ void Scene::PruebaMateriales()
 {
 	// Cubo con la misma textura en todas las caras
 	Cubo* c = new Cubo(2, true);
-	c->setTexture("caja2");
+	c->setTexture("caja");
+	c->setSpecularMap("caja_spec");
 	c->setPosition({ -10,0,0 });
 	AddEntity(c);
 
@@ -498,6 +522,17 @@ void Scene::mipmapButtonPressed()
 	mipmapsActive = !mipmapsActive;
 	ResourceManager::Instance()->enableMipmaps(mipmapsActive);
 
+
+	InputManager::Instance()->setMousePos(400, 300);
+}
+
+void Scene::normalsButtonPressed()
+{
+	// Activar / desactivar la visualización de vectores normales a cada vértice
+	if (normalsShader == nullptr)
+		normalsShader = (Shader*)&ResourceManager::Instance()->getShader("normals");
+	else
+		normalsShader = nullptr;
 
 	InputManager::Instance()->setMousePos(400, 300);
 }

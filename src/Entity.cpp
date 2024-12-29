@@ -129,6 +129,11 @@ void Entity::setMaterial(std::string materialID)
 	m_material = ResourceManager::Instance()->getMaterial(materialID);
 }
 
+void Entity::setSpecularMap(std::string textureID)
+{
+	m_specMap = (Texture*)&ResourceManager::Instance()->getTexture(textureID);
+}
+
 
 // - - - - - - - - - - - - - - - - - 
 

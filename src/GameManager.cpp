@@ -31,12 +31,12 @@ void GameManager::update(GLuint deltaTime)
 	}
 
 	// Controlar las luces
-	controlLuces();
+	controlLuces(deltaTime);
 
 	// Movimiento y rotaciones de la cámara
 	if(lockedMouse)
 	{
-		movimientoCamara();
+		movimientoCamara(deltaTime);
 		rotacionesCamara();
 		// Volver a dejar el ratón en el centro
 		InputManager::Instance()->setMousePos(cam->getVP()->getW() / 2, cam->getVP()->getH() / 2);
@@ -69,7 +69,7 @@ void GameManager::update(GLuint deltaTime)
 	}
 }
 
-void GameManager::movimientoCamara()
+void GameManager::movimientoCamara(GLuint deltaTime)
 {
 	movCamara = { 0,0,0 };
 
@@ -99,21 +99,21 @@ void GameManager::movimientoCamara()
 	}
 	if (InputManager::Instance()->getSpecialKey(GLUT_KEY_SHIFT_L))
 	{
-		movCamara.y = -1 / 40.0;
+		movCamara.y = -1 / 15.0;
 	}
 
 	// Input de ratón
 	if (InputManager::Instance()->getMouseKeyDown(LEFT))
 	{
-		movCamara.z = 1 / 40.0;
+		movCamara.z = 1 / 15.0;
 	}
 	else if (InputManager::Instance()->getMouseKeyDown(RIGHT))
 	{
-		movCamara.z = -1 / 40.0;
+		movCamara.z = -1 / 15.0;
 	}
 
 	// Moverla en los 3 ejes
-	movCamara *= velCamara;
+	movCamara = movCamara * (float)velCamara * (float)deltaTime;
 	cam->translate({ movCamara.x, 0, movCamara.z }, LOCAL);
 	cam->translate({ 0, movCamara.y, 0 }, GLOBAL);
 }
@@ -140,7 +140,7 @@ void GameManager::rotacionesCamara()
 	}
 }
 
-void GameManager::controlLuces()
+void GameManager::controlLuces(GLuint deltaTime)
 {
 	glm::vec3 movLuz = { 0,0,0 };
 
@@ -174,6 +174,6 @@ void GameManager::controlLuces()
 	}
 
 	// Mover la luz
-	movLuz *= velLuz;
+	movLuz = movLuz * velLuz * (float)deltaTime;
 	scene->getLight()->setPosition(scene->getLight()->getPosition() + movLuz);
 }

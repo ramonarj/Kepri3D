@@ -28,7 +28,7 @@ public:
 			// Carga de textura y material por defecto
 			instance->loadTexture("default.bmp", "default");
 			instance->loadMaterial("default.material", "default");
-			instance->loadShader("default.vert", "default.frag", "default");
+			instance->loadShader("default.vert", "default.geom", "default.frag", "default");
 		}
 			
 		return instance;
@@ -45,7 +45,7 @@ public:
 	bool loadMaterial(std::string materialName, std::string id);
 
 	/* Carga un shader de archivo y le asigna el ID dado */
-	bool loadShader(std::string vertexName, std::string fragmentName, std::string id);
+	bool loadShader(std::string vertexName, std::string geometryName, std::string fragmentName, std::string id);
 
 	// Proporcionar los recursos
 	/* Devuelve una textura dada */
