@@ -3,6 +3,7 @@
 
 #include <glm.hpp>
 #include <iostream>
+#include <set>
 
 enum MOUSEBUTTON
 {
@@ -45,14 +46,14 @@ public:
 	void setCursor(int cursor);
 
 	// Todos los callbacks para GLUT
-	static void keyPressed(unsigned char key);
-	static void keyUp(unsigned char key);
+	void keyPressed(unsigned char key);
+	void keyUp(unsigned char key);
 
-	static void specialKeyPressed(int key);
-	static void specialKeyUp(int key);
+	void specialKeyPressed(int key);
+	void specialKeyUp(int key);
 
-	static void mouseMotion(int x, int y);
-	static void mouseKeyPressed(int button, int state, int x, int y);
+	void mouseMotion(int x, int y);
+	void mouseKeyPressed(int button, int state, int x, int y);
 
 	void Update();
 
@@ -61,23 +62,26 @@ public:
 
 private:
 	/* Instancia y constructora privada */
-	InputManager() {}
+	InputManager();
 	static InputManager* s_instance;
 
 	/* Posición del ratón en la pantalla (en píxeles) */
-	static glm::ivec2 m_mousePos;
+	glm::ivec2 m_mousePos;
 
 	/* Estado de los botones del ratón */
-	static bool botonesMouse[5];
+	bool botonesMouse[5];
 
-	/* Tecla pulsada en este frame (solo una con GLUT) */
-	static unsigned char m_pressedKey;
+	/* Estado del teclado, con 256 teclas */
+	bool m_keys[256];
 
-	/* Tecla especial pulsada en este frame (solo una con GLUT) */
-	static int m_specialKey;
+	/* Teclas especiales de GLUT */
+	bool m_specialKeys[256];
 
-	static bool thisFrameKey;
-	static bool thisFrameSpecialKey;
+	/* Lista de teclas pulsadas en el frame actual */
+	std::set<unsigned char> m_thisFrameKeys;
+
+	// Si se ha pulsado una tecla especial en el frame actual
+	std::set<int> m_thisFrameSpecialKeys;
 };
 
 #endif

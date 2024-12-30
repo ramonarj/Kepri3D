@@ -45,17 +45,7 @@ class Camera : public Entity
 {
 public:
 	/* Constructora */
-	Camera(Viewport* viewport) : vp(viewport), projMat(1.0), orto(true), nearW(0), nearH(0)
-	{
-		// IMPORTANTE, porque la "cámara" de OpenGL está puesta por defecto en 
-		// el (0,0,1) y mirando hacia el (0,0,0), entonces queremos que la 
-		// posición y rotación iniciales de nuestra cámara coincidan con esas
-
-		setPosition({ 0, 5, 8 });
-		//modelMat = glm::translate(modelMat, glm::dvec3(0, 0, -1));
-		//PrintMatrix(&modelMat);
-		//modelMat = glm::rotate(modelMat, PI, glm::dvec3(0, 1, 0));
-	}
+	Camera(Viewport* viewport);
 
 	// Heredados
 	void render(glm::dmat4 const& viewMat) override {}
@@ -74,13 +64,25 @@ public:
 	/* Devuelve el puerto de vista */
 	Viewport* getVP() { return vp; }
 
-	// Pitch, yaw y roll han sido eliminados (llamar en su lugar a "rotate" con el eje adecuado y refSys = LOCAL)
+	/* Devuelve la distancia al plano cercano */
+	inline GLdouble getNearPlane() const { return nearPlane; }
+	inline GLdouble getFarPlane() const { return farPlane; }
+	inline GLdouble getOrtoSize() const { return ortoSize; }
 
+	/* Devuelve 'true' si la cámara usa VV ortográfico (isométrico incluido), false e.o.c. */
+	inline bool isOrto() const { return orto; }
+
+	// Setters
 	/* Cambia la perspectiva entre ortogonal y frustrum */
 	void changePerspective();
 
 	/* Establece las dimensiones de la cámara */
 	void setSize(GLdouble aw, GLdouble ah);
+
+	/* Cambia la distancia al plano cercano */
+	void setNearPlane(GLdouble nearPlane);
+	void setFarPlane(GLdouble farPlane);
+	void setOrtoSize(GLdouble ortoSize);
 
 protected:
 	//Matriz de la cámara (eye, look, up) -> todavía no se usa
@@ -105,8 +107,13 @@ protected:
 	bool orto;
 
 	/* Dimensiones del volumen de vista (VV) */
+	GLdouble nearPlane;
+	GLdouble farPlane;
+
 	GLdouble nearW;
 	GLdouble nearH;
+
+	GLdouble ortoSize;
 
 	// Métodos auxiliares
 	/* Actualiza la proyección de la escena */

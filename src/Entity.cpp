@@ -197,7 +197,8 @@ Grid::Grid(GLuint filas, GLuint columnas, GLdouble tamFila, GLdouble tamColumna)
 void Grid::update(GLuint timeElapsed)
 {
 	// Pasarle el tiempo al fragment shader
-	timeLoc = glGetUniformLocation(m_shader->getId(), "tiempo");
+	if(m_shader != nullptr)
+		timeLoc = glGetUniformLocation(m_shader->getId(), "tiempo");
 	//glUniform1f(timeLoc, 1.0f);
 }
 

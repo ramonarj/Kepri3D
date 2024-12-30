@@ -4,18 +4,26 @@
 
 InputManager* InputManager::s_instance = nullptr;
 
-bool InputManager::thisFrameKey = false;
-bool InputManager::thisFrameSpecialKey = false;
 
-unsigned char InputManager::m_pressedKey = NULL;
-int InputManager::m_specialKey = 0;
-bool InputManager::botonesMouse[5];
-glm::ivec2 InputManager::m_mousePos;
+InputManager::InputManager()
+{
+	// Valores por defecto
+	for (int i = 0; i < 5; i++)
+		botonesMouse[i] = false;
+
+	for (int i = 0; i < 256; i++)
+		m_keys[i] = false;
+
+	for (int i = 0; i < 256; i++)
+		m_specialKeys[i] = false;
+
+	m_mousePos = { 0,0 };
+}
 
 void InputManager::Update()
 {
-	thisFrameKey = false;
-	thisFrameSpecialKey = false;
+	m_thisFrameKeys.clear();
+	m_thisFrameSpecialKeys.clear();
 	// Solo reseteamos la rueda
 	botonesMouse[3] = false;
 	botonesMouse[4] = false;
@@ -33,22 +41,22 @@ glm::ivec2 InputManager::getMousePos() const
 
 bool InputManager::getKey(unsigned char key) const
 {
-	return (m_pressedKey == key);
+	return m_keys[key];
 }
 
 bool InputManager::getKeyDown(unsigned char key) const
 {
-	return (thisFrameKey && m_pressedKey == key);
+	return (m_thisFrameKeys.find(key) != m_thisFrameKeys.end());
 }
 
 bool InputManager::getSpecialKey(int key) const
 {
-	return (m_specialKey == key);
+	return m_specialKeys[key];
 }
 
 bool InputManager::getSpecialKeyDown(int key) const
 {
-	return (thisFrameSpecialKey && m_specialKey == key);
+	return (m_thisFrameSpecialKeys.find(key) != m_thisFrameSpecialKeys.end());
 }
 
 void InputManager::setMousePos(int x, int y)
@@ -67,27 +75,28 @@ void InputManager::setCursor(int cursor)
 
 void InputManager::keyPressed(unsigned char key)
 {
-	m_pressedKey = key;
-	thisFrameKey = true;
+	m_keys[key] = true;
+	m_thisFrameKeys.insert(key);
 }
 
 
 void InputManager::keyUp(unsigned char key)
 {
-	if(m_pressedKey == key)
-		m_pressedKey = NULL;
+	m_keys[key] = false;
 }
 
 void InputManager::specialKeyPressed(int key)
 {
-	m_specialKey = key;
-	thisFrameSpecialKey = true;
+	// Asegurarnos de que key cabe en un byte
+	if (key > 0x00FF)
+		std::cout << "¡Ups! El valor de la tecla se pasa del byte" << std::endl;
+	m_specialKeys[key] = true;
+	m_thisFrameSpecialKeys.insert(key);
 }
 
 void InputManager::specialKeyUp(int key)
 {
-	if (m_specialKey == key)
-		m_specialKey = 0;
+	m_specialKeys[key] = false;
 }
 
 void InputManager::mouseKeyPressed(int button, int state, int x, int y)

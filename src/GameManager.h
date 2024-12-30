@@ -25,7 +25,8 @@ private:
 
 	// Métodos
 	void movimientoCamara(GLuint deltaTime);
-	void rotacionesCamara();
+	void rotacionesCamara(GLuint deltaTime);
+	void volumenVistaCamara(GLuint deltaTime);
 
 	void controlLuces(GLuint deltaTime);
 };

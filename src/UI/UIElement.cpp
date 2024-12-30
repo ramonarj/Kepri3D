@@ -8,7 +8,7 @@
 UIElement::UIElement() : x(0), y(0), width(0), height(0), canvas(nullptr)
 {
 	// Para estar siempre visible por la cámara (sobra)
-	setPosition({ 0, 0, -1 }); // tiene que coincir con -nearPlane
+	setPosition({ 0, 0, -1.0001}); // tiene que coincir con -nearPlane
 }
 
 void UIElement::setPositionUI(float x, float y, ALLIGNMENT_TYPE allignment)

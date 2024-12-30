@@ -21,6 +21,19 @@ void Viewport::setPosition(GLint x, GLint y)
 
 // - - - - - - - - - - - - -
 
+Camera::Camera(Viewport* viewport) : vp(viewport), projMat(1.0), orto(false)
+{
+	// Volumen de vista por defecto
+	nearW = 0;
+	nearH = 0;
+	nearPlane = 1.0;
+	farPlane = 100.0;
+	ortoSize = 15.0; // por ejemplo
+
+	setPosition({ 0, 5, 8 });
+	//updatePM(); // no es estrictamente necesario
+}
+
 void Camera::translate(glm::dvec3 transVector, ReferenceSystem refSys)
 {
 	transVector.z *= -1;
@@ -31,6 +44,24 @@ void Camera::setSize(GLdouble w, GLdouble h)
 {
 	nearW = w;
 	nearH = h;
+	updatePM();
+}
+
+void Camera::setNearPlane(GLdouble nearPlane)
+{
+	this->nearPlane = nearPlane;
+	updatePM();
+}
+
+void Camera::setFarPlane(GLdouble farPlane)
+{
+	this->farPlane = farPlane;
+	updatePM();
+}
+
+void Camera::setOrtoSize(GLdouble ortoSize)
+{
+	this->ortoSize = ortoSize;
 	updatePM();
 }
 
@@ -46,7 +77,8 @@ void Camera::updatePM()
 	// Ortogonal
 	if (orto)
 	{
-		projMat = glm::ortho(-nearW / maxSize, nearW / maxSize, -nearH / maxSize, nearH / maxSize, 0.0, 500.0);
+		projMat = glm::ortho(-nearW / maxSize * ortoSize, nearW / maxSize * ortoSize,
+			-nearH / maxSize * ortoSize, nearH / maxSize * ortoSize, nearPlane, farPlane);
 		//projMat = glm::ortho(-nearW / maxSize * 50, nearW / maxSize * 50, 
 		//	-nearH / maxSize * 50, nearH / maxSize * 50, 0.0, 500.0);
 	}
@@ -57,7 +89,7 @@ void Camera::updatePM()
 		//projMat = glm::frustum(-1.0, 1.0, -1.0, 1.0, 1.0, 500.0);
 		// Cuanto más cercano a 0 sea el valor 'near', más sensación de velocidad da
 		// Cuanto más grande (>1), mayor efecto zoom (de apuntado) da
-		projMat = glm::frustum(-nearW / maxSize, nearW / maxSize, -nearH / maxSize, nearH / maxSize, 1.0, 500.0);
+		projMat = glm::frustum(-nearW / maxSize, nearW / maxSize, -nearH / maxSize, nearH / maxSize, nearPlane, farPlane);
 		// Far > Near > 0
 	}
 
