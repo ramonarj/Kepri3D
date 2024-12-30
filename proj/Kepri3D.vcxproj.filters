@@ -14,6 +14,9 @@
     <Filter Include="Utils">
       <UniqueIdentifier>{382e8342-e976-4d36-a5f2-6fc86c857d7e}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Graficos">
+      <UniqueIdentifier>{1320ee1d-a25c-4561-85d1-7cbde431e3f4}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\src\Main.cpp">
@@ -34,16 +37,10 @@
     <ClCompile Include="..\src\Scene.cpp">
       <Filter>Core</Filter>
     </ClCompile>
-    <ClCompile Include="..\src\Texture.cpp">
-      <Filter>Core</Filter>
-    </ClCompile>
     <ClCompile Include="..\src\Pixmap32RGBA.cpp">
       <Filter>Utils</Filter>
     </ClCompile>
     <ClCompile Include="..\src\Light.cpp">
-      <Filter>Core</Filter>
-    </ClCompile>
-    <ClCompile Include="..\src\Material.cpp">
       <Filter>Core</Filter>
     </ClCompile>
     <ClCompile Include="..\src\ResourceManager.cpp">
@@ -61,14 +58,23 @@
     <ClCompile Include="..\src\InputManager.cpp">
       <Filter>Core</Filter>
     </ClCompile>
-    <ClCompile Include="..\src\Shader.cpp">
-      <Filter>Core</Filter>
-    </ClCompile>
     <ClCompile Include="..\src\GameManager.cpp">
       <Filter>Archivos de origen</Filter>
     </ClCompile>
     <ClCompile Include="..\src\Utils.cpp">
       <Filter>Utils</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\Game.cpp">
+      <Filter>Core</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\Texture.cpp">
+      <Filter>Graficos</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\Shader.cpp">
+      <Filter>Graficos</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\Material.cpp">
+      <Filter>Graficos</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -87,9 +93,6 @@
     <ClInclude Include="..\src\Scene.h">
       <Filter>Core</Filter>
     </ClInclude>
-    <ClInclude Include="..\src\Texture.h">
-      <Filter>Core</Filter>
-    </ClInclude>
     <ClInclude Include="..\src\Utils.h">
       <Filter>Utils</Filter>
     </ClInclude>
@@ -100,9 +103,6 @@
       <Filter>Utils</Filter>
     </ClInclude>
     <ClInclude Include="..\src\Light.h">
-      <Filter>Core</Filter>
-    </ClInclude>
-    <ClInclude Include="..\src\Material.h">
       <Filter>Core</Filter>
     </ClInclude>
     <ClInclude Include="..\src\ResourceManager.h">
@@ -120,11 +120,20 @@
     <ClInclude Include="..\src\InputManager.h">
       <Filter>Core</Filter>
     </ClInclude>
-    <ClInclude Include="..\src\Shader.h">
-      <Filter>Core</Filter>
-    </ClInclude>
     <ClInclude Include="..\src\GameManager.h">
       <Filter>Archivos de origen</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\Game.h">
+      <Filter>Core</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\Texture.h">
+      <Filter>Graficos</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\Shader.h">
+      <Filter>Graficos</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\Material.h">
+      <Filter>Graficos</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

@@ -32,70 +32,13 @@ void Scene::AddEntity(Entity* e, bool isTranslucid)
 	m_entities.push_back(e);
 }
 
-void Scene::initGLSubsystems()
-{
-	// Color de fondo (el predeterminado es negro)
-	glClearColor(1.0, 1.0, 1.0, 0);  // (alpha=1 -> opaque)
-
-	/* OpenGL basic settings */
-	// Activa el Z-buffer. Si no lo activáramos, se pintaría todo con el algoritmo
-	// del pintor (lo más reciente tapa lo antiguo)
-	glEnable(GL_DEPTH_TEST);
-
-	// Activa el uso de texturas 2D
-	glEnable(GL_TEXTURE_2D);
-
-	// Activa las transparencias, indicando qué canal usar para ello (SRC_ALPHA).
-	// Si no llamáramos a glBlendFunc, se usarían los parámetros por defecto (0, 1) y no
-	// habría transparencias
-	glEnable(GL_BLEND);
-	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA); //src, dest
-
-	// Activa el descarte de fragmentos cuyo alfa no cumpla una cierta condición dada
-	// NOTA: en el pipeline, va primero el alpha test y después el blend
-	glEnable(GL_ALPHA_TEST);
-	glAlphaFunc(GL_GREATER, 0.04);
-
-	/* Antialiasing; tanto para líneas, como para polígonos */
-	glDisable(GL_MULTISAMPLE); //desactivado por defecto
-	//glEnable(GL_LINE_SMOOTH);
-	//glEnable(GL_POLYGON_SMOOTH);
-	//glHint(GL_POLYGON_SMOOTH_HINT, GL_NICEST);
-	
-	/* Culling; descarta el dibujado de los polígonos traseros. 
-	Lo suyo sería tenerlo siempre activo, y las entidades que necesiten renderizar las 2 caras,
-	lo desactivan y vuelven a activar en su 'render' */
-	glEnable(GL_CULL_FACE); 
-
-	/* Iluminación, activa el uso de las luces y sombreado */
-	glEnable(GL_LIGHTING);
-	// Tipo de modelo de sombreado -> GL_FLAT (flat), GL_SMOOTH (gouraud)
-	glShadeModel(GL_SMOOTH);
-	Material::setShadingType(GL_SMOOTH); // importante especificarlo para materiales también
-
-	// Para no iluminar las caras traseras de las mallas. Por defecto está a false
-	glLightModeli(GL_LIGHT_MODEL_TWO_SIDE, GL_FALSE);
-	// Punto de vista para la reflexión especular de los materiales
-	glLightModeli(GL_LIGHT_MODEL_LOCAL_VIEWER, GL_TRUE);
-	// Establecer la luz ambiente de toda la escena. Por defecto es (0.2, 0.2, 0.2, 1).
-	GLfloat amb[4]{ 0.1, 0.1, 0.4, 1 };
-	//glLightModelfv(GL_LIGHT_MODEL_AMBIENT, amb);
-	// Normalizar los vectores normales. Si hacemos bien el cálculo de las normales en IndexMesh, no haría ni falta.
-	//glEnable(GL_NORMALIZE);
-	// Usar los colores de los vértices
-	//glEnable(GL_COLOR_MATERIAL);
-}
-
 void Scene::init()
 {
 	// Hacer que el cursor sea invisible y moverlo al centro de la ventana
 	glutSetCursor(GLUT_CURSOR_NONE);
 	glutWarpPointer(m_camera->getVP()->getW() / 2, m_camera->getVP()->getH() / 2);
 
-	// Activa el depth test, uso de texturas, iluminación, etc.
-	initGLSubsystems();
-
-	// CARGA DE RECURSOS
+	// CARGA DE RECURSOS PARA ESTA ESCENA
 	/* Mallas que vamos a usar */
 	ResourceManager::Instance()->loadMesh("Torre.obj", "torre");
 	ResourceManager::Instance()->loadMesh("Peon.obj", "peon");
@@ -583,12 +526,4 @@ Scene::~Scene()
 
 	// Borrar las mallas, texturas, materiales y shaders cargados a la escena
 	ResourceManager::Instance()->Clean();
-
-	// Desactivar los parámetros de OpenGL
-	glDisable(GL_LIGHTING);
-	glDisable(GL_CULL_FACE);
-	glDisable(GL_ALPHA_TEST);
-	glDisable(GL_BLEND);
-	glDisable(GL_TEXTURE_2D);
-	glDisable(GL_DEPTH_TEST);
 }

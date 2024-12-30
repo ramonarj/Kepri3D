@@ -67,6 +67,10 @@ void GameManager::update(GLuint deltaTime)
 			glutReshapeWindow(800, 600);
 		}
 	}
+
+	// Hacer una foto
+	if (InputManager::Instance()->getKeyDown('f'))
+		scene->takePhoto();
 }
 
 void GameManager::movimientoCamara(GLuint deltaTime)

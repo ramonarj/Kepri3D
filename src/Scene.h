@@ -56,7 +56,6 @@ protected:
 	static bool mipmapsActive;
 
 	// Métodos auxiliares
-	void initGLSubsystems();
 
 	void ViewportTest();
 
