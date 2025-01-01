@@ -67,6 +67,11 @@ public:
 	void setSpecularMap(const std::string& textureID);
 
 	// Getters
+	/* Devuelve la posición de la entidad */
+	const glm::dvec3& getPosition() const {
+		return glm::dvec3{ modelMat[3][0], modelMat[3][1], modelMat[3][2] };
+	}
+
 	/* Devuelve la matriz de modelado de la entidad */
 	const glm::dmat4& getModelMat() { return modelMat; }
 

@@ -7,6 +7,23 @@
 
 #include <freeglut.h>
 
+void GameManager::setLights(Light* dirLight, Light* circleLight, Light* spotLight)
+{
+	this->dirLight = dirLight;
+	this->circleLight = circleLight;
+	this->spotLight = spotLight;
+
+	
+	this->dirLight->setActive(false);
+
+	this->spotLight->setSpotlightDir({ 0, -1, 0 });
+	this->spotLight->setSpotlightAngle(60.0f);
+	this->spotLight->setSpotlightHardness(90);
+	this->spotLight->setAttenuationFactors(0, 0.07, 0.0002);
+
+	this->circleLight->setAttenuationFactors(1, 0, 0.05);
+}
+
 void GameManager::update(GLuint deltaTime)
 {
 	// Cambiar la perspectiva
@@ -107,16 +124,6 @@ void GameManager::movimientoCamara(GLuint deltaTime)
 		movCamara.y += -1;
 	}
 
-	// Input de ratón
-	if (InputManager::Instance()->getMouseKey(LEFT))
-	{
-		movCamara.z += 1;
-	}
-	else if (InputManager::Instance()->getMouseKey(RIGHT))
-	{
-		movCamara.z += -1;
-	}
-
 	// Moverla en los 3 ejes
 	movCamara = movCamara * (float)velCamara * (deltaTime / 1000.0f);
 	cam->translate({ movCamara.x, 0, movCamara.z }, LOCAL);
@@ -170,38 +177,59 @@ void GameManager::volumenVistaCamara(GLuint deltaTime)
 
 void GameManager::controlLuces(GLuint deltaTime)
 {
-	glm::vec3 movLuz = { 0,0,0 };
+	// 1) Luz de foco (linterna)
+	//glm::vec3 movLuz = { 0,0,0 };
 
 	// Eje X
-	if(InputManager::Instance()->getSpecialKey(GLUT_KEY_RIGHT))
-	{
-		movLuz.x += 1;
-	}
-	if (InputManager::Instance()->getSpecialKey(GLUT_KEY_LEFT))
-	{
-		movLuz.x += -1;
-	}
-	// Eje Z
-	if (InputManager::Instance()->getSpecialKey(GLUT_KEY_UP))
-	{
-		movLuz.z += -1;
-	}
-	if (InputManager::Instance()->getSpecialKey(GLUT_KEY_DOWN))
-	{
-		movLuz.z += 1;
-	}
+	//if(InputManager::Instance()->getSpecialKey(GLUT_KEY_RIGHT))
+	//{
+	//	movLuz.x += 1;
+	//}
+	//if (InputManager::Instance()->getSpecialKey(GLUT_KEY_LEFT))
+	//{
+	//	movLuz.x += -1;
+	//}
+	//// Eje Z
+	//if (InputManager::Instance()->getSpecialKey(GLUT_KEY_UP))
+	//{
+	//	movLuz.z += -1;
+	//}
+	//if (InputManager::Instance()->getSpecialKey(GLUT_KEY_DOWN))
+	//{
+	//	movLuz.z += 1;
+	//}
 
-	// Eje Y
-	if (InputManager::Instance()->getKey('9'))
-	{
-		movLuz.y += -1;
-	}
-	if (InputManager::Instance()->getKey('0'))
-	{
-		movLuz.y += 1;
-	}
+	//// Eje Y
+	//if (InputManager::Instance()->getKey('9'))
+	//{
+	//	movLuz.y += -1;
+	//}
+	//if (InputManager::Instance()->getKey('0'))
+	//{
+	//	movLuz.y += 1;
+	//}
 
 	// Mover la luz
-	movLuz = movLuz * velLuz * (deltaTime / 1000.0f);
-	scene->getLight()->setPosition(scene->getLight()->getPosition() + movLuz);
+	//movLuz = movLuz * velLuz * (deltaTime / 1000.0f);
+	//pointLight->setPosition(pointLight->getPosition() + movLuz);
+
+	// 1) Luz de foco (linterna)
+	spotLight->setPosition(cam->getPosition());
+	// Un poco feo pero funciona
+	spotLight->setSpotlightDir(glm::fvec3{ -cam->getModelMat()[2][0],
+		-cam->getModelMat()[2][1], -cam->getModelMat()[2][2] });
+	// Encenderla / apagarla
+	if (lockedMouse && InputManager::Instance()->getMouseKeyDown(LEFT))
+	{
+		spotLight->setActive(!spotLight->isActive());
+	}
+
+	// 2) Luz puntual (trayectoria circular)
+	circleLight->setPosition({ 15 * cos(totalTime * 0.002), 1, 5 * sin(totalTime * 0.002) });
+
+	// 3) Luz direccional
+	if (InputManager::Instance()->getKeyDown('l'))
+		dirLight->setActive(!dirLight->isActive());
+	dirLight->setDirection({ -cos(totalTime * 0.0001),-sin(totalTime * 0.0001), 0 });
+	totalTime += deltaTime;
 }

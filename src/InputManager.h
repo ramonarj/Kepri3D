@@ -27,6 +27,7 @@ public:
 	// GETTERS
 	/* Indica si el botón del ratón está pulsado */
 	bool getMouseKey(MOUSEBUTTON button) const;
+	bool getMouseKeyDown(MOUSEBUTTON button) const;
 
 	/* Devuelve la posición del ratón en la pantalla */
 	glm::ivec2 getMousePos() const;
@@ -70,6 +71,9 @@ private:
 
 	/* Estado de los botones del ratón */
 	bool botonesMouse[5];
+
+	/* Lista de botones del ratón pulsados este frame */
+	std::set<int> m_thisFrameMouse;
 
 	/* Estado del teclado, con 256 teclas */
 	bool m_keys[256];

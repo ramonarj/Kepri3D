@@ -22,6 +22,7 @@ InputManager::InputManager()
 
 void InputManager::Update()
 {
+	m_thisFrameMouse.clear();
 	m_thisFrameKeys.clear();
 	m_thisFrameSpecialKeys.clear();
 	// Solo reseteamos la rueda
@@ -32,6 +33,11 @@ void InputManager::Update()
 bool InputManager::getMouseKey(MOUSEBUTTON button) const
 {
 	return botonesMouse[button];
+}
+
+bool InputManager::getMouseKeyDown(MOUSEBUTTON button) const
+{
+	return (m_thisFrameMouse.find(button) != m_thisFrameMouse.end());
 }
 
 glm::ivec2 InputManager::getMousePos() const 
@@ -107,6 +113,9 @@ void InputManager::mouseKeyPressed(int button, int state, int x, int y)
 	// Rueda
 	else
 		botonesMouse[button] = true;
+
+	if (botonesMouse[button])
+		m_thisFrameMouse.insert(button);
 }
 
 void InputManager::mouseMotion(int x, int y)

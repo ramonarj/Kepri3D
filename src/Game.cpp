@@ -198,8 +198,8 @@ void Game::initGLSubsystems()
 	// Punto de vista para la reflexión especular de los materiales
 	glLightModeli(GL_LIGHT_MODEL_LOCAL_VIEWER, GL_TRUE);
 	// Establecer la luz ambiente de toda la escena. Por defecto es (0.2, 0.2, 0.2, 1).
-	GLfloat amb[4]{ 0.1, 0.1, 0.4, 1 };
-	//glLightModelfv(GL_LIGHT_MODEL_AMBIENT, amb);
+	GLfloat amb[4]{ 0.0, 0.0, 0.0, 1 };
+	glLightModelfv(GL_LIGHT_MODEL_AMBIENT, amb);
 	// Normalizar los vectores normales. Si hacemos bien el cálculo de las normales en IndexMesh, no haría ni falta.
 	//glEnable(GL_NORMALIZE);
 	// Usar los colores de los vértices

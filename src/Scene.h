@@ -24,9 +24,6 @@ public:
 	/* Actualiza todas las entidades */
 	void update(GLuint deltaTime);
 
-	/* Devuelve la luz puntual */
-	Light* getLight() { return m_lights[0]; }
-
 	/* Añade una entidad a la escena */
 	void AddEntity(Entity* e, bool isTranslucid = false);
 
@@ -73,10 +70,6 @@ protected:
 	static void multisamplingButtonPressed();
 	static void mipmapButtonPressed();
 	static void normalsButtonPressed();
-
-	//Camera* camera;
-	//Foto* foto;
-	//Light* dirLight, * spotLight, * sphereLight;
 };
 
 #endif

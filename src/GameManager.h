@@ -5,23 +5,32 @@
 
 class Camera;
 class Scene;
+class Light;
 
 class GameManager : public Entity
 {
 public:
-	GameManager(Scene* scene, Camera* cam) { this->scene = scene; this->cam = cam; }
+	GameManager(Scene* scene, Camera* cam) : dirLight(nullptr), circleLight(nullptr), spotLight(nullptr)
+	{ 
+		this->scene = scene;
+		this->cam = cam; 
+	}
 	~GameManager(){}
+
+	void setLights(Light* dirLight, Light* circleLight, Light* spotLight);
 
 	void update(GLuint deltaTime) override;
 private:
 	Camera* cam;
 	Scene* scene;
+	Light* dirLight, *circleLight, *spotLight;
 
 	glm::vec3 movCamara = { 0,0,0 };
 	double velCamara = 8.0f;
 	bool lockedMouse = true;
 	bool fullscreen = false;
 	float velLuz = 10.0f;
+	GLuint totalTime = 0;
 
 	// Métodos
 	void movimientoCamara(GLuint deltaTime);

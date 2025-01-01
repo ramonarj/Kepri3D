@@ -17,7 +17,6 @@
 //#include <glew.h>
 #include <freeglut.h>
 
-GLuint totalTime = 0;
 bool Scene::shadersActive = false;
 bool Scene::mipmapsActive = false;
 Shader* Scene::normalsShader = nullptr;
@@ -83,21 +82,22 @@ void Scene::init()
 
 	// LUCES
 	// Puntual
-	Light* m_pointLight = new Light({ 1, 1, 0, 1 });
-	m_pointLight->setPosition({ -2.5,0.5,-2.5 });
-	m_pointLight->setActive(true);
-	AddLight(m_pointLight);
+	Light* spotLight = new Light(SPOT_LIGHT, { 1, 1, 0.8, 1 });
+	spotLight->setPosition({ -2.5,0.5,-2.5 });
+	spotLight->setActive(true);
+	AddLight(spotLight);
 
-	Light* m_pointLight2 = new Light({ 0, 0, 1, 1 });
-	m_pointLight2->setPosition({ 3,3,-3 });
-	AddLight(m_pointLight2);
+	// Puntual (va en círculos)
+	Light* circleLight = new Light(POINT_LIGHT, { 0, 0, 1, 1 });
+	circleLight->setPosition({ 3,3,-3 });
+	AddLight(circleLight);
 
 	// Direccional
-	Light* m_dirLight = new Light();
-	m_dirLight->setDirection({ -1,0 , 0 });
+	Light* dirLight = new Light(DIRECTIONAL_LIGHT);
+	dirLight->setDirection({ -1,0 , 0 });
 	//m_dirLight->setAmbient({ 0.2, 0.2, 0.2 ,1 });
-	m_dirLight->setActive(true);
-	AddLight(m_dirLight);
+	dirLight->setActive(true);
+	AddLight(dirLight);
 
 	// ENTIDADES
 	// Ejes RGB
@@ -195,7 +195,9 @@ void Scene::init()
 	normalsButton->setCallback(normalsButtonPressed);
 
 	// GAMEMANAGER
-	AddEntity(new GameManager(this, m_camera));
+	GameManager* gm = new GameManager(this, m_camera);
+	gm->setLights(dirLight, circleLight, spotLight);
+	AddEntity(gm);
 }
 
 void Scene::render()
@@ -205,7 +207,11 @@ void Scene::render()
 
 	// 1) Cargar las luces; IMPORTANTE hacerlo antes de pintar los objetos a los que puedan iluminar
 	for (Light* l : m_lights)
-		l->load(m_camera->getViewMat());
+	{
+		if (l->isActive())
+			l->load(m_camera->getViewMat());
+	}
+
 
 	// 2) Pintar todas las entidades 
 	int mvpMatLoc;
@@ -275,12 +281,6 @@ void Scene::update(GLuint deltaTime)
 			e->update(deltaTime);
 	}
 	m_canvas->update(deltaTime);
-
-	// Animación para la luz
-	m_lights[1]->setPosition({15 * cos(totalTime * 0.002), 1, 5 * sin(totalTime * 0.002)});
-
-	m_lights[2]->setDirection({ -cos(totalTime * 0.0001),-sin(totalTime * 0.0001), 0});
-	totalTime += deltaTime;
 
 	// Limpiar el input para el siguiente frame
 	InputManager::Instance()->Update();
@@ -379,9 +379,9 @@ void Scene::PruebaMateriales()
 	// Rejilla (suelo)
 	Grid* grid = new Grid(80, 160, 0.25, 0.25);
 	grid->setTexture("agua");
-	//grid->setMaterial("cromo");
+	grid->setMaterial("cromo");
 	grid->setPosition({ 0,-1,0 });
-	grid->setShader("movimiento");
+	//grid->setShader("movimiento");
 	AddEntity(grid);
 
 	// "Cascada"
