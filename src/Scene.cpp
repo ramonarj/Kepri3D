@@ -139,63 +139,79 @@ void Scene::init()
 	m_canvas->setSize(800, 600);
 
 	// CANVAS
+	// Entidad vacía para que cuelguen los botones
+	UIElement* botonesMenu = new UIElement();
+	botonesMenu->setActive(false);
+	m_canvas->addElement(botonesMenu);
+	
+
 	// Culling
 	Button* cullButton = new Button("botonCulling", m_canvas);
 	cullButton->setPositionUI(0.12, 0.9);
 	cullButton->setScaleUI(0.3, 0.3);
 	//button->setPositionUI(50, 35);
 	cullButton->setCallback(cullingButtonPressed);
+	cullButton->setParent(botonesMenu);
 
 	// Blending
 	Button* blendButton = new Button("botonBlending", m_canvas);
 	blendButton->setPositionUI(0.12, 0.75);
 	blendButton->setScaleUI(0.3, 0.3);
 	blendButton->setCallback(blendingButtonPressed);
+	blendButton->setParent(botonesMenu);
 
 	// Lighting
 	Button* lightButton = new Button("botonLighting", m_canvas);
 	lightButton->setPositionUI(0.12, 0.6);
 	lightButton->setScaleUI(0.3, 0.3);
 	lightButton->setCallback(lightingButtonPressed);
+	lightButton->setParent(botonesMenu);
+	//lightButton->setActive(false);
 
 	// Textures
 	Button* texturesButton = new Button("botonTextures", m_canvas);
 	texturesButton->setPositionUI(0.12, 0.45);
 	texturesButton->setScaleUI(0.3, 0.3);
 	texturesButton->setCallback(texturesButtonPressed);
+	texturesButton->setParent(botonesMenu);
 
 	// Shading
 	Button* shadingButton = new Button("botonShading", m_canvas);
 	shadingButton->setPositionUI(0.12, 0.3);
 	shadingButton->setScaleUI(0.3, 0.3);
 	shadingButton->setCallback(shadingButtonPressed);
+	shadingButton->setParent(botonesMenu);
 
 	// Shaders
 	Button* shaderButton = new Button("botonShader", m_canvas);
 	shaderButton->setPositionUI(0.12, 0.15);
 	shaderButton->setScaleUI(0.3, 0.3);
 	shaderButton->setCallback(shaderButtonPressed);
+	shaderButton->setParent(botonesMenu);
 
 	// Multisampling
 	Button* multisamplingButton = new Button("botonMultisampling", m_canvas);
 	multisamplingButton->setPositionUI(0.88, 0.9);
 	multisamplingButton->setScaleUI(0.3, 0.3);
 	multisamplingButton->setCallback(multisamplingButtonPressed);
+	multisamplingButton->setParent(botonesMenu);
 
 	// Mipmaps
 	Button* mipmapsButton = new Button("botonMipmaps", m_canvas);
 	mipmapsButton->setPositionUI(0.88, 0.75);
 	mipmapsButton->setScaleUI(0.3, 0.3);
 	mipmapsButton->setCallback(mipmapButtonPressed);
+	mipmapsButton->setParent(botonesMenu);
 
 	// Visualización de normales
 	Button* normalsButton = new Button("botonNormales", m_canvas);
 	normalsButton->setPositionUI(0.88, 0.6);
 	normalsButton->setScaleUI(0.3, 0.3);
 	normalsButton->setCallback(normalsButtonPressed);
+	normalsButton->setParent(botonesMenu);
 
 	// GAMEMANAGER
-	GameManager* gm = new GameManager(this, m_camera);
+	GameManager* gm = new GameManager(this, m_camera, botonesMenu);
 	gm->setLights(dirLight, circleLight, spotLight);
 	AddEntity(gm);
 }
@@ -209,7 +225,9 @@ void Scene::render()
 	for (Light* l : m_lights)
 	{
 		if (l->isActive())
+		{
 			l->load(m_camera->getViewMat());
+		}
 	}
 
 
@@ -274,13 +292,17 @@ void Scene::render()
 
 void Scene::update(GLuint deltaTime)
 {
+	// Actualizar el canvas. Importante hacerlo antes que el resto de entidades
+	m_canvas->update(deltaTime);
+
 	// Actualizar las entidades
 	for (Entity* e : m_entities)
 	{
 		if(e->isActive())
+		{
 			e->update(deltaTime);
+		}
 	}
-	m_canvas->update(deltaTime);
 
 	// Limpiar el input para el siguiente frame
 	InputManager::Instance()->Update();

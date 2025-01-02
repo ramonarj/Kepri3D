@@ -8,7 +8,6 @@ class Shader;
 
 #include <glm.hpp>
 
-
 #include <iostream>
 #include "Utils.h"
 
@@ -17,7 +16,8 @@ class Entity
 {
 public:
 	/* Constructora por defecto */
-	Entity() : m_active(true), m_mesh(nullptr), m_texture(nullptr), modelMat(1.0), m_shader(nullptr), m_specMap(nullptr)
+	Entity() : m_parent(nullptr), m_active(true), m_mesh(nullptr), m_texture(nullptr), 
+		modelMat(1.0), m_shader(nullptr), m_specMap(nullptr)
 		// Pone la matriz de modelado a la matriz identidad de grado 4 (1 0 0 0 / 0 1 0 0 ...)
 	{
 		//PrintMatrix<double, 4>(&modelMat);
@@ -51,6 +51,9 @@ public:
 	/* Mueve la entidad a la posición dada */
 	void setPosition(glm::dvec3 pos);
 
+	/* Establece el padre de la entidad */
+	void setParent(Entity* e);
+
 	/* Establece la malla (ya creada) que usará la entidad */
 	void setMesh(const std::string& meshID);
 
@@ -68,9 +71,7 @@ public:
 
 	// Getters
 	/* Devuelve la posición de la entidad */
-	const glm::dvec3& getPosition() const {
-		return glm::dvec3{ modelMat[3][0], modelMat[3][1], modelMat[3][2] };
-	}
+	const glm::dvec3& getPosition() const { return modelMat[3]; }
 
 	/* Devuelve la matriz de modelado de la entidad */
 	const glm::dmat4& getModelMat() { return modelMat; }
@@ -81,9 +82,16 @@ public:
 	/* Devuelve 'true' si la entidad debe pintarse, false e.o.c. */
 	inline bool isActive() const { return m_active; }
 
+
 protected:
 	/* Indica si la entidad debe actualizarse y pintarse */
 	bool m_active;
+
+	/* Hijos de la entidad */
+	std::vector<Entity*> m_children;
+
+	/* Padre de la entidad */
+	Entity* m_parent;
 
 	/* Malla/s que usará la entidad para pintarse */
 	Mesh* m_mesh;

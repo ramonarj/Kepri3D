@@ -16,14 +16,14 @@ Button::Button(std::string textureName, Canvas* canvas) : m_callback(nullptr)
 	m_mesh = Mesh::generateButton((double)width / canvas->getWidth() * 2,
 		(double)height / canvas->getHeight() * 2 / aspectRatio);
 
-	// Añadirlo al canvas
-	canvas->addElement(this);
+	// Referencia al canvas
+	setCanvas(canvas);
 }
 
 void Button::update(GLuint deltaTime)
 {
 	// Clic izquierdo del ratón
-	if(InputManager::Instance()->getMouseKey(LEFT))
+	if(InputManager::Instance()->getMouseKeyDown(LEFT))
 	{
 		glm::ivec2 mousePos = InputManager::Instance()->getMousePos();
 		mousePos.y = canvas->getHeight() - mousePos.y;

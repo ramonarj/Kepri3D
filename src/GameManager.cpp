@@ -4,6 +4,7 @@
 #include "Camera.h"
 #include "Scene.h"
 #include "Light.h"
+#include "UI/UIElement.h"
 
 #include <freeglut.h>
 
@@ -41,6 +42,9 @@ void GameManager::update(GLuint deltaTime)
 			lockedMouse = false;
 			// Podemos seleccionar el cursor que más nos guste!!
 			InputManager::Instance()->setCursor(GLUT_CURSOR_RIGHT_ARROW);
+
+			// Mostrar el panel de botones
+			botonesMenu->setActive(true);
 		}
 		// Salir de la aplicación
 		else
@@ -50,8 +54,24 @@ void GameManager::update(GLuint deltaTime)
 	// Controlar las luces
 	controlLuces(deltaTime);
 
+
+	// Desbloquear el ratón con el clic izquierdo
+	if (InputManager::Instance()->getMouseKey(LEFT))
+	{
+		if (!lockedMouse)
+		{
+			lockedMouse = true;
+			InputManager::Instance()->setCursor(GLUT_CURSOR_NONE);
+			InputManager::Instance()->setMousePos(cam->getVP()->getW() / 2, cam->getVP()->getH() / 2);
+
+			// Esconder el panel de botones
+			botonesMenu->setActive(false);
+		}	
+	}
+
+
 	// Movimiento y rotaciones de la cámara
-	if(lockedMouse)
+	if (lockedMouse)
 	{
 		movimientoCamara(deltaTime);
 		rotacionesCamara(deltaTime);
@@ -60,16 +80,6 @@ void GameManager::update(GLuint deltaTime)
 		InputManager::Instance()->setMousePos(cam->getVP()->getW() / 2, cam->getVP()->getH() / 2);
 	}
 
-
-	// Bloquear/desbloquear el ratón
-	if (InputManager::Instance()->getMouseKey(LEFT))
-	{
-		if (!lockedMouse)
-		{
-			lockedMouse = true;
-			InputManager::Instance()->setCursor(GLUT_CURSOR_NONE);
-		}	
-	}
 
 	// Modo pantalla completa (entrar / salir)
 	if(InputManager::Instance()->getSpecialKeyDown(GLUT_KEY_F11))

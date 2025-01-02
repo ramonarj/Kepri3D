@@ -6,14 +6,17 @@
 class Camera;
 class Scene;
 class Light;
+class UIElement;
 
 class GameManager : public Entity
 {
 public:
-	GameManager(Scene* scene, Camera* cam) : dirLight(nullptr), circleLight(nullptr), spotLight(nullptr)
+	GameManager(Scene* scene, Camera* cam, UIElement* botonesMenu) : 
+		dirLight(nullptr), circleLight(nullptr), spotLight(nullptr)
 	{ 
 		this->scene = scene;
 		this->cam = cam; 
+		this->botonesMenu = botonesMenu;
 	}
 	~GameManager(){}
 
@@ -24,6 +27,8 @@ private:
 	Camera* cam;
 	Scene* scene;
 	Light* dirLight, *circleLight, *spotLight;
+
+	UIElement* botonesMenu;
 
 	glm::vec3 movCamara = { 0,0,0 };
 	double velCamara = 8.0f;

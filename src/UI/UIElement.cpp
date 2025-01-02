@@ -7,7 +7,7 @@
 
 UIElement::UIElement() : x(0), y(0), width(0), height(0), canvas(nullptr)
 {
-	// Para estar siempre visible por la cámara (sobra)
+	// Para estar siempre visible por la cámara
 	setPosition({ 0, 0, -1.0001}); // tiene que coincir con -nearPlane
 }
 
@@ -32,7 +32,9 @@ void UIElement::setScaleUI(float x, float y)
 
 void UIElement::render(glm::dmat4 const& viewMat)
 {
-	m_texture->bind(GL_REPLACE); // a los elementos del canvas NO les afecta la iluminación (no usamos MODULATE)
+	// 1) Renderizarme yo mismo
+	if(m_texture != nullptr)
+		m_texture->bind(GL_REPLACE); // a los elementos del canvas NO les afecta la iluminación (no usamos MODULATE)
 
 	// Cargar la matriz de modelado
 	glMatrixMode(GL_MODELVIEW);
@@ -42,10 +44,27 @@ void UIElement::render(glm::dmat4 const& viewMat)
 	if (m_mesh != nullptr)
 		m_mesh->draw();
 
-	m_texture->unbind();
+	if (m_texture != nullptr)
+		m_texture->unbind();
+
+	// 2) Renderizar mis hijos
+	for (Entity* e : m_children)
+	{
+		if(e->isActive())
+		{
+			e->render(viewMat);
+		}	
+	}
 }
 
 void UIElement::update(GLuint deltaTime)
 {
-
+	// Actualizar a los hijos
+	for (Entity* e : m_children)
+	{
+		if (e->isActive())
+		{
+			e->update(deltaTime);
+		}
+	}
 }

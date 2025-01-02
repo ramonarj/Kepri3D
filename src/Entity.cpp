@@ -18,6 +18,10 @@ using namespace glm;
 Entity::~Entity()
 {
 	delete m_mesh;
+
+	// Destruir los hijos
+	for (Entity* e : m_children)
+		delete e;
 }
 
 void Entity::render(glm::dmat4 const& viewMat)
@@ -115,6 +119,14 @@ void Entity::rotate(GLdouble alpha, glm::dvec3 axis, ReferenceSystem refSys)
 void Entity::scale(glm::dvec3 scale)
 {
 	modelMat = glm::scale(modelMat, scale);
+}
+
+void Entity::setParent(Entity* e)
+{
+	// Actualizar referencia al padre
+	m_parent = e;
+	// Añadirnos a sus hijos
+	e->m_children.push_back(this);
 }
 
 void Entity::setMesh(const std::string& meshID)
