@@ -54,6 +54,9 @@ void GameManager::update(GLuint deltaTime)
 	// Controlar las luces
 	controlLuces(deltaTime);
 
+	// Controlar la torre
+	controlTorre(deltaTime);
+
 
 	// Desbloquear el ratón con el clic izquierdo
 	if (InputManager::Instance()->getMouseKey(LEFT))
@@ -188,46 +191,10 @@ void GameManager::volumenVistaCamara(GLuint deltaTime)
 void GameManager::controlLuces(GLuint deltaTime)
 {
 	// 1) Luz de foco (linterna)
-	//glm::vec3 movLuz = { 0,0,0 };
-
-	// Eje X
-	//if(InputManager::Instance()->getSpecialKey(GLUT_KEY_RIGHT))
-	//{
-	//	movLuz.x += 1;
-	//}
-	//if (InputManager::Instance()->getSpecialKey(GLUT_KEY_LEFT))
-	//{
-	//	movLuz.x += -1;
-	//}
-	//// Eje Z
-	//if (InputManager::Instance()->getSpecialKey(GLUT_KEY_UP))
-	//{
-	//	movLuz.z += -1;
-	//}
-	//if (InputManager::Instance()->getSpecialKey(GLUT_KEY_DOWN))
-	//{
-	//	movLuz.z += 1;
-	//}
-
-	//// Eje Y
-	//if (InputManager::Instance()->getKey('9'))
-	//{
-	//	movLuz.y += -1;
-	//}
-	//if (InputManager::Instance()->getKey('0'))
-	//{
-	//	movLuz.y += 1;
-	//}
-
-	// Mover la luz
-	//movLuz = movLuz * velLuz * (deltaTime / 1000.0f);
-	//pointLight->setPosition(pointLight->getPosition() + movLuz);
-
-	// 1) Luz de foco (linterna)
+	// Posición y dirección
 	spotLight->setPosition(cam->getPosition());
 	// Un poco feo pero funciona
-	spotLight->setSpotlightDir(glm::fvec3{ -cam->getModelMat()[2][0],
-		-cam->getModelMat()[2][1], -cam->getModelMat()[2][2] });
+	spotLight->setSpotlightDir(-cam->forward());
 	// Encenderla / apagarla
 	if (lockedMouse && InputManager::Instance()->getMouseKeyDown(LEFT))
 	{
@@ -242,4 +209,42 @@ void GameManager::controlLuces(GLuint deltaTime)
 		dirLight->setActive(!dirLight->isActive());
 	dirLight->setDirection({ -cos(totalTime * 0.0001),-sin(totalTime * 0.0001), 0 });
 	totalTime += deltaTime;
+}
+
+void GameManager::controlTorre(GLuint deltaTime)
+{
+	glm::dvec3 movTorre = { 0,0,0 };
+
+	// Girar a los lados
+	if(InputManager::Instance()->getSpecialKey(GLUT_KEY_RIGHT))
+	{
+		torre->rotate(3.5 * deltaTime / -1000.0, { 0,1,0 });
+	}
+	if (InputManager::Instance()->getSpecialKey(GLUT_KEY_LEFT))
+	{
+		torre->rotate(3.5 * deltaTime / 1000.0, { 0,1,0 });
+	}
+	// Moverse adelante / atrás
+	if (InputManager::Instance()->getSpecialKey(GLUT_KEY_UP))
+	{
+		movTorre.z += -1;
+	}
+	if (InputManager::Instance()->getSpecialKey(GLUT_KEY_DOWN))
+	{
+		movTorre.z += 1;
+	}
+
+	// Moverse arriba / abajo
+	if (InputManager::Instance()->getKey('9'))
+	{
+		movTorre.y += -1;
+	}
+	if (InputManager::Instance()->getKey('0'))
+	{
+		movTorre.y += 1;
+	}
+
+	// Mover la torre
+	movTorre = movTorre * velTorre * (deltaTime / 1000.0);
+	torre->translate(movTorre, LOCAL);
 }

@@ -128,10 +128,17 @@ void Scene::init()
 	torre->setMesh("torre");
 	//torre->setTexture("cobre");
 	torre->setMaterial("ruby");
-	torre->setPosition({ 0,0,-2 });
+	torre->setPosition({ 0,-1,-2 });
 	AddEntity(torre);
 	// Para que el blending del rubí funcione bien (de momento), 
 	// tiene que estar la última de las entidades
+
+	// Esferita hija de la torre
+	Esfera* esferita = new Esfera(0.5, 10, true);
+	//esferita->setTexture("earth");
+	esferita->setPosition({ 0,3.5,-2 });
+	esferita->setParent(torre);
+	//AddEntity(esferita);
 
 
 	/* Canvas */
@@ -211,7 +218,7 @@ void Scene::init()
 	normalsButton->setParent(botonesMenu);
 
 	// GAMEMANAGER
-	GameManager* gm = new GameManager(this, m_camera, botonesMenu);
+	GameManager* gm = new GameManager(this, m_camera, botonesMenu, torre);
 	gm->setLights(dirLight, circleLight, spotLight);
 	AddEntity(gm);
 }
@@ -379,7 +386,7 @@ void Scene::PruebaMateriales()
 	// Esfera
 	Esfera* esfera = new Esfera(1, 8, true);
 	esfera->setTexture("earth");
-	esfera->setPosition({ 0,2,-3 });
+	esfera->setPosition({ -15,2,-3 });
 	esfera->setShader("bigFog");
 	AddEntity(esfera);
 

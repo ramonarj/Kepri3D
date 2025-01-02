@@ -11,12 +11,13 @@ class UIElement;
 class GameManager : public Entity
 {
 public:
-	GameManager(Scene* scene, Camera* cam, UIElement* botonesMenu) : 
+	GameManager(Scene* scene, Camera* cam, UIElement* botonesMenu, Entity* torre) : 
 		dirLight(nullptr), circleLight(nullptr), spotLight(nullptr)
 	{ 
 		this->scene = scene;
 		this->cam = cam; 
 		this->botonesMenu = botonesMenu;
+		this->torre = torre;
 	}
 	~GameManager(){}
 
@@ -27,14 +28,14 @@ private:
 	Camera* cam;
 	Scene* scene;
 	Light* dirLight, *circleLight, *spotLight;
-
+	Entity* torre;
 	UIElement* botonesMenu;
 
 	glm::vec3 movCamara = { 0,0,0 };
 	double velCamara = 8.0f;
 	bool lockedMouse = true;
 	bool fullscreen = false;
-	float velLuz = 10.0f;
+	GLdouble velTorre = 10.0f;
 	GLuint totalTime = 0;
 
 	// Métodos
@@ -42,7 +43,9 @@ private:
 	void rotacionesCamara(GLuint deltaTime);
 	void volumenVistaCamara(GLuint deltaTime);
 
+
 	void controlLuces(GLuint deltaTime);
+	void controlTorre(GLuint deltaTime);
 };
 
 #endif

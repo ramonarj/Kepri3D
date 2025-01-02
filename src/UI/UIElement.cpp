@@ -56,15 +56,3 @@ void UIElement::render(glm::dmat4 const& viewMat)
 		}	
 	}
 }
-
-void UIElement::update(GLuint deltaTime)
-{
-	// Actualizar a los hijos
-	for (Entity* e : m_children)
-	{
-		if (e->isActive())
-		{
-			e->update(deltaTime);
-		}
-	}
-}

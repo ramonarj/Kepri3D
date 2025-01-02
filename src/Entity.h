@@ -32,7 +32,7 @@ public:
 	virtual void render(glm::dmat4 const& viewMat);
 
 	// Actualizar
-	virtual void update(GLuint timeElapsed) { }
+	virtual void update(GLuint deltaTime);
 
 	// Transformaciones afines
 	/* Suma el vector de tralación dado a la entidad, usando un sistema de referencia dado */
@@ -81,6 +81,11 @@ public:
 
 	/* Devuelve 'true' si la entidad debe pintarse, false e.o.c. */
 	inline bool isActive() const { return m_active; }
+
+	// Ejes locales de la entidad
+	inline glm::dvec3 right() { return modelMat[0]; }
+	inline glm::dvec3 up() { return modelMat[1]; }
+	inline glm::dvec3 forward() { return modelMat[2]; }
 
 
 protected:

@@ -33,7 +33,6 @@ public:
 	void setScaleUI(float x, float y);
 
 	void render(glm::dmat4 const& viewMat) override;
-	virtual void update(GLuint deltaTime);
 protected:
 	/* Referencia al canvas que pertenece */
 	Canvas* canvas;

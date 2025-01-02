@@ -26,6 +26,8 @@ Entity::~Entity()
 
 void Entity::render(glm::dmat4 const& viewMat)
 {
+	// 1) Renderizar la propia entidad
+	
 	// Para materiales translúcidos
 	if (m_material.isTranslucid())
 	{
@@ -66,6 +68,27 @@ void Entity::render(glm::dmat4 const& viewMat)
 	if (m_material.isTranslucid())
 	{
 		//glDepthMask(GL_TRUE);
+	}
+
+	// 2) Renderizar sus hijos
+	for(Entity* e : m_children)
+	{
+		if(e->isActive())
+		{
+			e->render(modelViewMat);
+		}
+	}
+}
+
+void Entity::update(GLuint deltaTime)
+{
+	// Actualizar los hijos
+	for(Entity* e : m_children)
+	{
+		if(e->isActive())
+		{
+			e->update(deltaTime);
+		}
 	}
 }
 
