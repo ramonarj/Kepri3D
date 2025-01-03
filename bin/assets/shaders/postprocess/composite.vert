@@ -1,6 +1,9 @@
 #version 430 core
 
-// Variables que nos llegan de los vértices
+// Un vertex shader muy sencillo para usarlo en cualquier efecto 
+// de post-processing, ya que no solemos necesitar más que la 
+// posición del fragmento y la coordenada de textura correspondiente
+
 in vec4 vertex;
 layout(location = 2) in vec2 uv0;
 

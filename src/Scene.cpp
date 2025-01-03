@@ -81,7 +81,10 @@ void Scene::init()
 	ResourceManager::Instance()->loadShader("maximize.vert", "", "fog.frag", "bigFog");
 	ResourceManager::Instance()->loadShader("normals.vert", "normals.geom", "normals.frag", "normals");
 	ResourceManager::Instance()->loadShader("default.vert", "", "movimiento.frag", "movimiento");
-	ResourceManager::Instance()->loadShader("interference.vert", "", "interference.frag", "composite");
+
+	/* Efectos de postprocesado (también son shaders) */
+	ResourceManager::Instance()->loadShader("postprocess/composite.vert", "", "postprocess/interference.frag", "interference");
+	ResourceManager::Instance()->loadShader("postprocess/composite.vert", "", "postprocess/waves.frag", "waves");
 	//compositeShader = (Shader*)&ResourceManager::Instance()->getShader("composite");
 	// (2, 2) para que ocupe la pantalla entera
 	m_effectsMesh = Mesh::generateRectangle(2, 2);
@@ -573,7 +576,7 @@ void Scene::compositeButtonPressed()
 {
 	// Activar / desactivar la visualización de vectores normales a cada vértice
 	if (compositeShader == nullptr)
-		compositeShader = (Shader*)&ResourceManager::Instance()->getShader("composite");
+		compositeShader = (Shader*)&ResourceManager::Instance()->getShader("waves");
 	else
 		compositeShader = nullptr;
 
