@@ -28,8 +28,8 @@ public:
 	// Cubo con caras opacas
 	static Mesh* generateCubeSides(GLdouble size);
 
-	// Rectángulo usado para botones
-	static Mesh* generateButton(GLdouble width, GLdouble height);
+	// Rectángulo usado para botones y RenderTargets (no tiene colores ni normales)
+	static Mesh* generateRectangle(GLdouble width, GLdouble height);
 
 protected:
 	/* Número total de vértices */

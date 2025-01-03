@@ -15,6 +15,9 @@ public:
 	/* Carga la textura */
 	bool load(const std::string& filePath, GLubyte alpha = 255);
 
+	/* Carga el contenido del color buffer en esta textura */
+	bool loadRTT(GLsizei width, GLsizei height, GLenum buf = GL_BACK);
+
 	// Activar/desactivar la textura
 	/* Activa la textura y mezcla la luz de la escena con el mix dado
 	->REPLACE: no se tienen en cuenta las luces

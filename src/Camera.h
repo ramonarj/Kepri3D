@@ -22,10 +22,10 @@ public:
 	void setPosition(GLint x, GLint y);
 
 	// Getters
-	GLsizei getX() { return x; };
-	GLsizei getY() { return y; };
-	GLsizei getW() { return w; };
-	GLsizei getH() { return h; };
+	inline GLsizei getX() { return x; };
+	inline GLsizei getY() { return y; };
+	inline GLsizei getW() { return w; };
+	inline GLsizei getH() { return h; };
 
 protected:
 	/* Posición del puerto de vista */
@@ -62,7 +62,7 @@ public:
 	inline glm::dmat4 getProjMat() { return projMat; }
 
 	/* Devuelve el puerto de vista */
-	Viewport* getVP() { return vp; }
+	inline Viewport* getVP() { return vp; }
 
 	/* Devuelve la distancia al plano cercano */
 	inline GLdouble getNearPlane() const { return nearPlane; }

@@ -13,7 +13,7 @@ Button::Button(std::string textureName, Canvas* canvas) : m_callback(nullptr)
 
 	// 
 	double aspectRatio = (double)canvas->getWidth() / canvas->getHeight();
-	m_mesh = Mesh::generateButton((double)width / canvas->getWidth() * 2,
+	m_mesh = Mesh::generateRectangle((double)width / canvas->getWidth() * 2,
 		(double)height / canvas->getHeight() * 2 / aspectRatio);
 
 	// Referencia al canvas

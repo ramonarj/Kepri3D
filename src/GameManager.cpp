@@ -15,7 +15,7 @@ void GameManager::setLights(Light* dirLight, Light* circleLight, Light* spotLigh
 	this->spotLight = spotLight;
 
 	
-	this->dirLight->setActive(false);
+	//this->dirLight->setActive(false);
 
 	this->spotLight->setSpotlightDir({ 0, -1, 0 });
 	this->spotLight->setSpotlightAngle(60.0f);

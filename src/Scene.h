@@ -9,6 +9,7 @@ class Camera;
 class Light;
 class Canvas;
 class Shader;
+class Mesh;
 
 class Scene
 {
@@ -45,10 +46,11 @@ protected:
 	/* Canvas de la escena */
 	Canvas* m_canvas;
 
-	/* Programa de shaders que se usará */
-	//Shader* activeShader;
+	/* Malla para pintar los efectos */
+	Mesh* m_effectsMesh;
 
 	static Shader* normalsShader;
+	static Shader* compositeShader;
 	static bool shadersActive;
 	static bool mipmapsActive;
 
@@ -70,6 +72,7 @@ protected:
 	static void multisamplingButtonPressed();
 	static void mipmapButtonPressed();
 	static void normalsButtonPressed();
+	static void compositeButtonPressed();
 };
 
 #endif

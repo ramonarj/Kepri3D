@@ -50,6 +50,36 @@ bool Texture::load(const std::string& filePath, GLubyte alpha)
 	return true;
 }
 
+bool Texture::loadRTT(GLsizei width, GLsizei height, GLenum buf)
+{
+	// 1) Leer la información del color buffer
+	glReadBuffer(buf);
+	glCopyTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, 0, 0, width, height, 0);
+
+	// Crea el mapa de píxeles con las dimensiones de la pantalla
+	PixMap32RGBA pixMap;
+	pixMap.create_pixmap(width, height); // width, height
+
+	// Lo rellena con la info obtenida del color buffer
+	glGetTexImage(GL_TEXTURE_2D, 0, GL_RGBA, GL_UNSIGNED_BYTE, pixMap.data());
+
+	// 2) Crear la textura y establecer los filtros
+	if (id == 0)
+		Init();
+
+	// Dimensiones
+	this->w = width;
+	this->h = height;
+
+	// Rellena la ya creada textura con el array de colores del BMP
+	glBindTexture(GL_TEXTURE_2D, id);
+	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, w, h, 0, GL_RGBA, GL_UNSIGNED_BYTE, pixMap.data());
+
+	// No generamos mipmap
+
+	return true;
+}
+
 void Texture::bind(GLuint mix)
 {
 	glBindTexture(GL_TEXTURE_2D, id);
@@ -78,6 +108,7 @@ void Texture::loadColorBuffer(GLsizei width, GLsizei height, GLenum buf)
 	glCopyTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, 0, 0, width, height, 0);
 }
 
+
 void Texture::save(const std::string& BMP_Name)
 {
 	// Crea el mapa de píxeles con las dimensiones de la pantalla
@@ -86,5 +117,12 @@ void Texture::save(const std::string& BMP_Name)
 
 	// Lo rellena con la info obtenida del color buffer y lo guarda en formato BMP
 	glGetTexImage(GL_TEXTURE_2D, 0, GL_RGBA, GL_UNSIGNED_BYTE, pixMap.data());
-	pixMap.save_bmp24BGR("..\\bin\\assets\\" + BMP_Name);
+	try
+	{
+		pixMap.save_bmp24BGR("..\\bin\\assets\\textures\\" + BMP_Name);
+	}
+	catch (const std::exception& e)
+	{
+		std::cout << e.what() << std::endl;
+	}
 }

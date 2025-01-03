@@ -216,7 +216,7 @@ Mesh* Mesh::generateCubeSides(GLdouble size)
 	return m;
 }
 
-Mesh* Mesh::generateButton(GLdouble width, GLdouble height)
+Mesh* Mesh::generateRectangle(GLdouble width, GLdouble height)
 {
 	Mesh* m = new Mesh();
 	m->type = GL_TRIANGLE_STRIP;

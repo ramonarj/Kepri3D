@@ -2,6 +2,8 @@
 
 #include <glm.hpp>
 
+
+#include "Mesh.h"
 #include "Texture.h"
 #include "Entity.h"
 #include "Camera.h"
@@ -20,6 +22,7 @@
 bool Scene::shadersActive = false;
 bool Scene::mipmapsActive = false;
 Shader* Scene::normalsShader = nullptr;
+Shader* Scene::compositeShader = nullptr;
 
 
 void Scene::AddEntity(Entity* e, bool isTranslucid)
@@ -62,6 +65,7 @@ void Scene::init()
 	ResourceManager::Instance()->loadTexture("botonMultisampling.bmp", "botonMultisampling");
 	ResourceManager::Instance()->loadTexture("botonMipmaps.bmp", "botonMipmaps");
 	ResourceManager::Instance()->loadTexture("botonNormales.bmp", "botonNormales");
+	ResourceManager::Instance()->loadTexture("botonPostprocess.bmp", "botonPostprocess");
 
 	/* Materiales que vamos a usar */
 	ResourceManager::Instance()->loadMaterial("copper.material", "cobre");
@@ -77,6 +81,10 @@ void Scene::init()
 	ResourceManager::Instance()->loadShader("maximize.vert", "", "fog.frag", "bigFog");
 	ResourceManager::Instance()->loadShader("normals.vert", "normals.geom", "normals.frag", "normals");
 	ResourceManager::Instance()->loadShader("default.vert", "", "movimiento.frag", "movimiento");
+	ResourceManager::Instance()->loadShader("interference.vert", "", "interference.frag", "composite");
+	//compositeShader = (Shader*)&ResourceManager::Instance()->getShader("composite");
+	// (2, 2) para que ocupe la pantalla entera
+	m_effectsMesh = Mesh::generateRectangle(2, 2);
 	//ResourceManager::Instance()->loadShader("default.vert", "default.frag", "specularMap.frag", "specMapShader");
 
 
@@ -217,6 +225,13 @@ void Scene::init()
 	normalsButton->setCallback(normalsButtonPressed);
 	normalsButton->setParent(botonesMenu);
 
+	// Efectos composite
+	Button* compositeButton = new Button("botonPostprocess", m_canvas);
+	compositeButton->setPositionUI(0.88, 0.45);
+	compositeButton->setScaleUI(0.3, 0.3);
+	compositeButton->setCallback(compositeButtonPressed);
+	compositeButton->setParent(botonesMenu);
+
 	// GAMEMANAGER
 	GameManager* gm = new GameManager(this, m_camera, botonesMenu, torre);
 	gm->setLights(dirLight, circleLight, spotLight);
@@ -284,9 +299,24 @@ void Scene::render()
 	// Desactivamos los shaders para el canvas
 	glUseProgram(0);
 
-	// 4) Pintar el canvas, limpiando antes el Z-buffer para que se pinte encima de tod
+	// 4) Pintar el canvas, limpiando antes el Z-buffer para que se pinte encima de todo
 	glClear(GL_DEPTH_BUFFER_BIT);
 	m_canvas->render(m_camera->getViewMat());
+
+	// 5) Post-procesar la imagen del color buffer
+	if (compositeShader != nullptr)
+	{
+		// 'glClear' es una operación costosa, podría buscarse una alternativa
+		glClear(GL_DEPTH_BUFFER_BIT);
+		glUseProgram(compositeShader->getId());
+
+		// Crear textura con los píxeles del color buffer (tiene que ser GL_BACK para que funcione)
+		Texture t;
+		t.loadRTT(m_camera->getVP()->getW(), m_camera->getVP()->getH(), GL_BACK);
+
+		// "Re"dibujar la escena usando el shader
+		m_effectsMesh->draw();
+	}
 
 	//ViewportTest();
 
@@ -539,6 +569,17 @@ void Scene::normalsButtonPressed()
 	InputManager::Instance()->setMousePos(400, 300);
 }
 
+void Scene::compositeButtonPressed()
+{
+	// Activar / desactivar la visualización de vectores normales a cada vértice
+	if (compositeShader == nullptr)
+		compositeShader = (Shader*)&ResourceManager::Instance()->getShader("composite");
+	else
+		compositeShader = nullptr;
+
+	InputManager::Instance()->setMousePos(400, 300);
+}
+
 Scene::~Scene()
 {
 	// Borrar el canvas
@@ -555,4 +596,7 @@ Scene::~Scene()
 
 	// Borrar las mallas, texturas, materiales y shaders cargados a la escena
 	ResourceManager::Instance()->Clean();
+
+	// Malla para el postprocesado
+	delete m_effectsMesh;
 }
