@@ -68,12 +68,13 @@ protected:
 	static void lightingButtonPressed();
 	static void texturesButtonPressed();
 	static void shadingButtonPressed();
-	static void shaderButtonPressed();
+	static void alphaButtonPressed();
 	static void multisamplingButtonPressed();
 	static void mipmapButtonPressed();
 	static void normalsButtonPressed();
 	static void compositeButtonPressed();
-	static void alphaButtonPressed();
+	static void scissorButtonPressed();
+	static void shaderButtonPressed();
 };
 
 #endif

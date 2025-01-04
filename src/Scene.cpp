@@ -61,12 +61,13 @@ void Scene::init()
 	ResourceManager::Instance()->loadTexture("botonLighting.bmp", "botonLighting");
 	ResourceManager::Instance()->loadTexture("botonTextures.bmp", "botonTextures");
 	ResourceManager::Instance()->loadTexture("botonShading.bmp", "botonShading");
-	ResourceManager::Instance()->loadTexture("botonShaders.bmp", "botonShader");
+	ResourceManager::Instance()->loadTexture("botonAlpha.bmp", "botonAlpha");
 	ResourceManager::Instance()->loadTexture("botonMultisampling.bmp", "botonMultisampling");
 	ResourceManager::Instance()->loadTexture("botonMipmaps.bmp", "botonMipmaps");
 	ResourceManager::Instance()->loadTexture("botonNormales.bmp", "botonNormales");
 	ResourceManager::Instance()->loadTexture("botonPostprocess.bmp", "botonPostprocess");
-	ResourceManager::Instance()->loadTexture("botonAlpha.bmp", "botonAlpha");
+	ResourceManager::Instance()->loadTexture("botonShaders.bmp", "botonShader");
+	ResourceManager::Instance()->loadTexture("botonScissor.bmp", "botonScissor");
 
 	/* Materiales que vamos a usar */
 	ResourceManager::Instance()->loadMaterial("copper.material", "cobre");
@@ -202,12 +203,12 @@ void Scene::init()
 	shadingButton->setCallback(shadingButtonPressed);
 	shadingButton->setParent(botonesMenu);
 
-	// Shaders
-	Button* shaderButton = new Button("botonShader", m_canvas);
-	shaderButton->setPositionUI(0.12, 0.15);
-	shaderButton->setScaleUI(0.3, 0.3);
-	shaderButton->setCallback(shaderButtonPressed);
-	shaderButton->setParent(botonesMenu);
+	// Alfa test
+	Button* alphaButton = new Button("botonAlpha", m_canvas);
+	alphaButton->setPositionUI(0.12, 0.15);
+	alphaButton->setScaleUI(0.3, 0.3);
+	alphaButton->setCallback(alphaButtonPressed);
+	alphaButton->setParent(botonesMenu);
 
 	// Multisampling
 	Button* multisamplingButton = new Button("botonMultisampling", m_canvas);
@@ -237,12 +238,21 @@ void Scene::init()
 	compositeButton->setCallback(compositeButtonPressed);
 	compositeButton->setParent(botonesMenu);
 
-	// Alfa test
-	Button* alphaButton = new Button("botonAlpha", m_canvas);
-	alphaButton->setPositionUI(0.88, 0.3);
-	alphaButton->setScaleUI(0.3, 0.3);
-	alphaButton->setCallback(alphaButtonPressed);
-	alphaButton->setParent(botonesMenu);
+	// Scissor test
+	Button* scissorButton = new Button("botonScissor", m_canvas);
+	scissorButton->setPositionUI(0.88, 0.3);
+	scissorButton->setScaleUI(0.3, 0.3);
+	scissorButton->setCallback(scissorButtonPressed);
+	scissorButton->setParent(botonesMenu);
+
+	// Shaders
+	Button* shaderButton = new Button("botonShader", m_canvas);
+	shaderButton->setPositionUI(0.88, 0.15);
+	shaderButton->setScaleUI(0.3, 0.3);
+	shaderButton->setCallback(shaderButtonPressed);
+	shaderButton->setParent(botonesMenu);
+
+
 
 	// GAMEMANAGER
 	GameManager* gm = new GameManager(this, m_camera, botonesMenu, torre);
@@ -545,9 +555,10 @@ void Scene::shadingButtonPressed()
 	InputManager::Instance()->setMousePos(400, 300);
 }
 
-void Scene::shaderButtonPressed()
+void Scene::alphaButtonPressed()
 {
-	shadersActive = !shadersActive;
+	// Activar / desactivar el alpha test
+	switchBoolParam(GL_ALPHA_TEST);
 
 	InputManager::Instance()->setMousePos(400, 300);
 }
@@ -592,14 +603,39 @@ void Scene::compositeButtonPressed()
 	InputManager::Instance()->setMousePos(400, 300);
 }
 
-void Scene::alphaButtonPressed()
+
+void Scene::scissorButtonPressed()
 {
-	// Activar / desactivar el alpha test
-	switchBoolParam(GL_ALPHA_TEST);
+	// Bandas cinemáticas negras. Como tenemos 2 buffers, hay que ponerlos los 2 a negro antes de
+	// activar el scissor test (para que los bordes no se queden con imágenes residuales y parpadeen)
+	glClearColor(0, 0, 0, 0);
+	glClear(GL_COLOR_BUFFER_BIT);
+	// Segundo buffer
+	if(glutGet(GLUT_WINDOW_DOUBLEBUFFER) == 1)
+	{
+		glutSwapBuffers();
+		glClear(GL_COLOR_BUFFER_BIT);
+	}
+	
+	// Establecer la zona visible (en píxeles) del scissor box
+	float proporcionBarra = glutGet(GLUT_WINDOW_HEIGHT) / 6.0f;
+	glScissor(0, proporcionBarra, glutGet(GLUT_WINDOW_WIDTH), glutGet(GLUT_WINDOW_HEIGHT) - proporcionBarra * 2);
+
+	// Activar/desactivar el scissor test
+	switchBoolParam(GL_SCISSOR_TEST);
+
+	// Volver a dejar el color de fondo a blanco
+	glClearColor(1, 1, 1, 0);
 
 	InputManager::Instance()->setMousePos(400, 300);
 }
 
+void Scene::shaderButtonPressed()
+{
+	shadersActive = !shadersActive;
+
+	InputManager::Instance()->setMousePos(400, 300);
+}
 
 Scene::~Scene()
 {
