@@ -73,6 +73,7 @@ protected:
 	static void mipmapButtonPressed();
 	static void normalsButtonPressed();
 	static void compositeButtonPressed();
+	static void alphaButtonPressed();
 };
 
 #endif

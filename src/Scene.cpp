@@ -66,11 +66,13 @@ void Scene::init()
 	ResourceManager::Instance()->loadTexture("botonMipmaps.bmp", "botonMipmaps");
 	ResourceManager::Instance()->loadTexture("botonNormales.bmp", "botonNormales");
 	ResourceManager::Instance()->loadTexture("botonPostprocess.bmp", "botonPostprocess");
+	ResourceManager::Instance()->loadTexture("botonAlpha.bmp", "botonAlpha");
 
 	/* Materiales que vamos a usar */
 	ResourceManager::Instance()->loadMaterial("copper.material", "cobre");
 	ResourceManager::Instance()->loadMaterial("crome.material", "cromo");
 	ResourceManager::Instance()->loadMaterial("ruby.material", "ruby");
+	ResourceManager::Instance()->loadMaterial("cristal.material", "cristal");
 	
 	// Prueba excepciones
 	ResourceManager::Instance()->loadTexture("ladrillo.bmp", "ladrillo");
@@ -129,7 +131,7 @@ void Scene::init()
 	// Peon de ajedrez
 	Entity* peon = new Entity();
 	peon->setMesh("peon");
-	peon->setMaterial("cromo");
+	peon->setMaterial("cristal");
 	peon->setPosition({ 0,0,-2 });
 	AddEntity(peon);
 
@@ -234,6 +236,13 @@ void Scene::init()
 	compositeButton->setScaleUI(0.3, 0.3);
 	compositeButton->setCallback(compositeButtonPressed);
 	compositeButton->setParent(botonesMenu);
+
+	// Alfa test
+	Button* alphaButton = new Button("botonAlpha", m_canvas);
+	alphaButton->setPositionUI(0.88, 0.3);
+	alphaButton->setScaleUI(0.3, 0.3);
+	alphaButton->setCallback(alphaButtonPressed);
+	alphaButton->setParent(botonesMenu);
 
 	// GAMEMANAGER
 	GameManager* gm = new GameManager(this, m_camera, botonesMenu, torre);
@@ -582,6 +591,15 @@ void Scene::compositeButtonPressed()
 
 	InputManager::Instance()->setMousePos(400, 300);
 }
+
+void Scene::alphaButtonPressed()
+{
+	// Activar / desactivar el alpha test
+	switchBoolParam(GL_ALPHA_TEST);
+
+	InputManager::Instance()->setMousePos(400, 300);
+}
+
 
 Scene::~Scene()
 {
