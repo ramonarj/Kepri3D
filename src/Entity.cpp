@@ -10,6 +10,7 @@
 #include "Texture.h"
 #include "MeshLoader.h"
 #include "Shader.h"
+#include "Pixmap32RGBA.h"
 
 #include <freeglut.h>
 
@@ -43,7 +44,7 @@ void Entity::render(glm::dmat4 const& viewMat)
 	if (m_texture != nullptr)
 		m_texture->bind();
 
-	// 1) Cargar la matriz V*M
+	// 1) Cargar la matriz V*M (esto NO hace falta cuando se usan shaders)
 	// Decirle a OpenGL que la siguiente matriz que cargaremos es de modelado/vista (no de proyección)
 	glMatrixMode(GL_MODELVIEW);
 	// Calcular la matriz VM (vista * modelado)
@@ -252,6 +253,70 @@ void Grid::render(glm::dmat4 const& viewMat)
 Terrain::Terrain(std::string filename, GLdouble scale)
 {
 	m_mesh = IndexMesh::generateTerrain(filename, scale);
+}
+
+// - - - - - - - - - - - - - - - - - 
+
+Skybox::Skybox(std::vector<std::string> faces)
+{
+	// Generar la malla
+	m_mesh = IndexMesh::generateCubemap(4.0);
+
+	// Crear la textura de tipo CubeMap
+	glGenTextures(1, &texId);
+	glBindTexture(GL_TEXTURE_CUBE_MAP, texId);
+
+	// Cargar las 6 texturas de los lados
+	for (unsigned int i = 0; i < faces.size(); i++)
+	{
+		// Cargamos la información del BMP
+		PixMap32RGBA pixMap;
+		pixMap.load_bmp24BGR(TEXTURES_PATH + "skyboxes/" + faces[i]);
+		if (pixMap.is_null())
+			std::cout << "No se encontró la textura " << faces[i] << std::endl;
+
+		// Dimensiones
+		GLuint w = pixMap.width();
+		GLuint h = pixMap.height();
+
+		// Crear la textura (tiene que ser RGBA por el formato del PixMap)
+		glTexImage2D(GL_TEXTURE_CUBE_MAP_POSITIVE_X + i, 0, GL_RGBA, 
+			w, h, 0, GL_RGBA, GL_UNSIGNED_BYTE, pixMap.data());
+		
+		// Parámetros de escalado y repetición
+		glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+		glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+		glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+		glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+		// IMPORTANTE: la tercera dimensión
+		glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_R, GL_CLAMP_TO_EDGE);
+	}
+	
+}
+
+void Skybox::render()
+{
+	// No escribimos nada en el Z-buffer para que se pinte todo al fondo
+	glDepthMask(GL_FALSE);
+
+	// Definir la forma de pintar la malla
+	glPolygonMode(GL_BACK, GL_FILL);
+
+	// Activar la textura de tipo CUBE_MAP
+	glBindTexture(GL_TEXTURE_CUBE_MAP, texId);
+	glTexEnvi(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_REPLACE); //REPLACE sería lo correcto
+
+	// 2) Dibujar la/s malla/s
+	m_material.load();
+	if (m_mesh != nullptr)
+		m_mesh->draw();
+
+	// Desactivar la textura
+	glBindTexture(GL_TEXTURE_CUBE_MAP, 0);
+
+	// Dejarlo todo como estaba
+	glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+	glDepthMask(GL_TRUE);
 }
 
 // - - - - - - - - - - - - - - - - - 

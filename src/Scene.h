@@ -10,12 +10,13 @@ class Light;
 class Canvas;
 class Shader;
 class Mesh;
+class Skybox;
 
 class Scene
 {
 public:
 	/* Constructora por defecto*/
-	Scene(Camera* cam) : m_camera(cam), m_canvas(nullptr) { };
+	Scene(Camera* cam) : m_camera(cam), m_canvas(nullptr), m_effectsMesh(nullptr), m_skybox(nullptr) { };
 	~Scene();
 
 	/* Inicia los subsistemas de openGL y crea texturas y entidades */
@@ -43,6 +44,9 @@ protected:
 	/* Cámara activa */
 	Camera* m_camera;
 
+	/* Skybox */
+	Skybox* m_skybox;
+
 	/* Canvas de la escena */
 	Canvas* m_canvas;
 
@@ -51,7 +55,7 @@ protected:
 
 	static Shader* normalsShader;
 	static Shader* compositeShader;
-	static bool shadersActive;
+	static bool skyboxActive;
 	static bool mipmapsActive;
 
 	// Métodos auxiliares
@@ -61,6 +65,7 @@ protected:
 	void PruebaMateriales();
 
 	static void switchBoolParam(GLenum param);
+
 	
 	// Callbacks para los botones
 	static void cullingButtonPressed();
@@ -74,7 +79,7 @@ protected:
 	static void normalsButtonPressed();
 	static void compositeButtonPressed();
 	static void scissorButtonPressed();
-	static void shaderButtonPressed();
+	static void skyboxButtonPressed();
 };
 
 #endif

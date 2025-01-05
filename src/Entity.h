@@ -192,4 +192,18 @@ public:
 	~Terrain() { };
 };
 
+// - - - - - - - - - - - - 
+
+class Skybox : public Entity
+{
+public:
+	/* Crea un skybox */
+	Skybox(std::vector<std::string> faces);
+	~Skybox() { };
+
+	void render();
+private:
+	GLuint texId;
+};
+
 #endif

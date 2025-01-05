@@ -206,11 +206,17 @@ Mesh* Mesh::generateCubeSides(GLdouble size)
 
 	/* Colores para cada vértice */
 	m->colores = new dvec4[m->numVertices];
-	m->colores[0] = dvec4(1.0, 0.0, 0.0, 1.0);
-	for (int i = 1; i < m->numVertices; i++)
+	for (int i = 0; i < m->numVertices; i++)
 	{
-		m->colores[i] = dvec4(0.2, 0.1, 0.2, 1);
+		m->colores[i] = dvec4(0.8, 0.8, 0.8, 1);
 	}
+
+	/* Coordenadas de textura */
+	m->texCoords = new dvec2[m->numVertices]
+	{
+		{ 0, 1 }, { 0, 0 }, { 1, 1 }, { 1, 0 }
+	};
+
 
 	// devuelve la malla
 	return m;
@@ -666,6 +672,98 @@ IndexMesh* IndexMesh::generateTerrain(std::string filename, GLdouble scale)
 
 	/* Generar normales */
 	m->SetNormals();
+
+	return m;
+}
+
+IndexMesh* IndexMesh::generateCubemap(GLdouble size)
+{
+	IndexMesh* m = new IndexMesh();
+	m->type = GL_TRIANGLES; // irrelevante, porque no se usa
+	m->numVertices = 6 * 4; //para poder texturizar cada cara
+	m->numIndices = 36; // 6 caras x 2 triángulos/cara x 3 vértices/triángulo
+
+	/* Array de vértices */
+	size /= 2.0;
+	m->vertices = new dvec3[m->numVertices]
+	{
+		// Cara derecha
+		{size, size, -size},
+		{size, -size, -size},
+		{size, size, size},
+		{size, -size, size},
+
+		// Cara izquierda
+		{-size, size, size},
+		{-size, -size, size},
+		{-size, size, -size},
+		{-size, -size, -size},
+
+		// Cara superior
+		{size, size, -size},
+		{size, size, size},
+		{-size, size, -size},
+		{-size, size, size},
+
+
+		// Cara inferior
+		{size, -size, size},
+		{size, -size, -size},
+		{-size, -size, size},
+		{-size, -size, -size},
+
+		// Cara trasera
+		{-size, size, -size},
+		{-size, -size, -size},
+		{size, size, -size},
+		{size, -size, -size},
+
+		// Cara frontal
+		{size, size, size},
+		{size, -size, size},
+		{-size, size, size},
+		{-size, -size, size},
+	};
+
+	/* Colores para cada vértice (no hace falta) */
+	//m->colores = new dvec4[m->numVertices];
+	//for (int i = 0; i < m->numVertices; i++)
+	//{
+	//	m->colores[i] = dvec4(1, 1, 1, 1);
+	//}
+
+	/* Especificar los triángulos */
+	m->indices = new GLuint[m->numIndices]
+	{
+		// Derecha
+		0, 1, 2,
+		2, 1, 3,
+
+		// Izquierda
+		4, 5, 6,
+		6, 5, 7,
+
+		// Arriba
+		8, 9, 10,
+		10, 9, 11,
+
+		// Abajo
+		12, 13, 14,
+		14, 13, 15,
+
+		// Fondo
+		16, 17, 18,
+		18, 17, 19,
+
+		// Frente
+		20, 21, 22,
+		22, 21, 23,
+	};
+
+	/* Coordenadas de textura (no hacen falta) */
+
+	/* Generar las normales (no necesita) */
+	//m->SetNormals();
 
 	return m;
 }

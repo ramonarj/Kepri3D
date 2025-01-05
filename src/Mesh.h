@@ -84,6 +84,9 @@ public:
 	// Terreno
 	static IndexMesh* generateTerrain(std::string filename, GLdouble scale);
 
+	// Cubemap
+	static IndexMesh* generateCubemap(GLdouble size = 4.0);
+
 private:
 	friend class MeshLoader;
 

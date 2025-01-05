@@ -19,10 +19,15 @@
 //#include <glew.h>
 #include <freeglut.h>
 
-bool Scene::shadersActive = false;
+bool Scene::skyboxActive = true;
 bool Scene::mipmapsActive = false;
 Shader* Scene::normalsShader = nullptr;
 Shader* Scene::compositeShader = nullptr;
+
+const float buttonScale = 0.3f;
+
+std::vector<std::string> buttonNames = { "botonCulling", "botonBlending", "botonLighting", "botonTextures", "botonShading",
+"botonAlpha", "botonMultisampling", "botonMipmaps", "botonNormales", "botonPostprocess", "botonScissor", "botonSkybox" };
 
 
 void Scene::AddEntity(Entity* e, bool isTranslucid)
@@ -56,18 +61,11 @@ void Scene::init()
 	ResourceManager::Instance()->loadTexture("cobre.bmp", "cobre");
 	ResourceManager::Instance()->loadTexture("agua.bmp", "agua");
 
-	ResourceManager::Instance()->loadTexture("botonCulling.bmp", "botonCulling");
-	ResourceManager::Instance()->loadTexture("botonBlending.bmp", "botonBlending");
-	ResourceManager::Instance()->loadTexture("botonLighting.bmp", "botonLighting");
-	ResourceManager::Instance()->loadTexture("botonTextures.bmp", "botonTextures");
-	ResourceManager::Instance()->loadTexture("botonShading.bmp", "botonShading");
-	ResourceManager::Instance()->loadTexture("botonAlpha.bmp", "botonAlpha");
-	ResourceManager::Instance()->loadTexture("botonMultisampling.bmp", "botonMultisampling");
-	ResourceManager::Instance()->loadTexture("botonMipmaps.bmp", "botonMipmaps");
-	ResourceManager::Instance()->loadTexture("botonNormales.bmp", "botonNormales");
-	ResourceManager::Instance()->loadTexture("botonPostprocess.bmp", "botonPostprocess");
-	ResourceManager::Instance()->loadTexture("botonShaders.bmp", "botonShader");
-	ResourceManager::Instance()->loadTexture("botonScissor.bmp", "botonScissor");
+	// Botones
+	for(int i = 0; i < buttonNames.size(); i++)
+	{
+		ResourceManager::Instance()->loadTexture(buttonNames[i] + ".bmp", buttonNames[i]);
+	}
 
 	/* Materiales que vamos a usar */
 	ResourceManager::Instance()->loadMaterial("copper.material", "cobre");
@@ -81,6 +79,7 @@ void Scene::init()
 
 	/* Shaders que vamos a usar */
 	ResourceManager::Instance()->loadShader("default.vert", "cruces.geom", "default.frag", "cruces");
+	ResourceManager::Instance()->loadShader("skybox.vert", "", "skybox.frag", "skybox");
 	ResourceManager::Instance()->loadShader("maximize.vert", "", "fog.frag", "bigFog");
 	ResourceManager::Instance()->loadShader("normals.vert", "normals.geom", "normals.frag", "normals");
 	ResourceManager::Instance()->loadShader("default.vert", "", "movimiento.frag", "movimiento");
@@ -164,12 +163,22 @@ void Scene::init()
 	UIElement* botonesMenu = new UIElement();
 	botonesMenu->setActive(false);
 	m_canvas->addElement(botonesMenu);
+
+	// Botones
+	//for(int i = 0; i < buttonNames.size(); i++)
+	//{
+	//	Button* b = new Button(buttonNames[i], m_canvas);
+	//	b->setPositionUI(0.12, 1 - i * 0.1);
+	//	b->setScaleUI(buttonScale, buttonScale);
+	//	//b->setCallback(cullingButtonPressed);
+	//	b->setParent(botonesMenu);
+	//}
 	
 
 	// Culling
 	Button* cullButton = new Button("botonCulling", m_canvas);
 	cullButton->setPositionUI(0.12, 0.9);
-	cullButton->setScaleUI(0.3, 0.3);
+	cullButton->setScaleUI(buttonScale, buttonScale);
 	//button->setPositionUI(50, 35);
 	cullButton->setCallback(cullingButtonPressed);
 	cullButton->setParent(botonesMenu);
@@ -177,14 +186,14 @@ void Scene::init()
 	// Blending
 	Button* blendButton = new Button("botonBlending", m_canvas);
 	blendButton->setPositionUI(0.12, 0.75);
-	blendButton->setScaleUI(0.3, 0.3);
+	blendButton->setScaleUI(buttonScale, buttonScale);
 	blendButton->setCallback(blendingButtonPressed);
 	blendButton->setParent(botonesMenu);
 
 	// Lighting
 	Button* lightButton = new Button("botonLighting", m_canvas);
 	lightButton->setPositionUI(0.12, 0.6);
-	lightButton->setScaleUI(0.3, 0.3);
+	lightButton->setScaleUI(buttonScale, buttonScale);
 	lightButton->setCallback(lightingButtonPressed);
 	lightButton->setParent(botonesMenu);
 	//lightButton->setActive(false);
@@ -192,67 +201,73 @@ void Scene::init()
 	// Textures
 	Button* texturesButton = new Button("botonTextures", m_canvas);
 	texturesButton->setPositionUI(0.12, 0.45);
-	texturesButton->setScaleUI(0.3, 0.3);
+	texturesButton->setScaleUI(buttonScale, buttonScale);
 	texturesButton->setCallback(texturesButtonPressed);
 	texturesButton->setParent(botonesMenu);
 
 	// Shading
 	Button* shadingButton = new Button("botonShading", m_canvas);
 	shadingButton->setPositionUI(0.12, 0.3);
-	shadingButton->setScaleUI(0.3, 0.3);
+	shadingButton->setScaleUI(buttonScale, buttonScale);
 	shadingButton->setCallback(shadingButtonPressed);
 	shadingButton->setParent(botonesMenu);
 
 	// Alfa test
 	Button* alphaButton = new Button("botonAlpha", m_canvas);
 	alphaButton->setPositionUI(0.12, 0.15);
-	alphaButton->setScaleUI(0.3, 0.3);
+	alphaButton->setScaleUI(buttonScale, buttonScale);
 	alphaButton->setCallback(alphaButtonPressed);
 	alphaButton->setParent(botonesMenu);
 
 	// Multisampling
 	Button* multisamplingButton = new Button("botonMultisampling", m_canvas);
 	multisamplingButton->setPositionUI(0.88, 0.9);
-	multisamplingButton->setScaleUI(0.3, 0.3);
+	multisamplingButton->setScaleUI(buttonScale, buttonScale);
 	multisamplingButton->setCallback(multisamplingButtonPressed);
 	multisamplingButton->setParent(botonesMenu);
 
 	// Mipmaps
 	Button* mipmapsButton = new Button("botonMipmaps", m_canvas);
 	mipmapsButton->setPositionUI(0.88, 0.75);
-	mipmapsButton->setScaleUI(0.3, 0.3);
+	mipmapsButton->setScaleUI(buttonScale, buttonScale);
 	mipmapsButton->setCallback(mipmapButtonPressed);
 	mipmapsButton->setParent(botonesMenu);
 
 	// Visualización de normales
 	Button* normalsButton = new Button("botonNormales", m_canvas);
 	normalsButton->setPositionUI(0.88, 0.6);
-	normalsButton->setScaleUI(0.3, 0.3);
+	normalsButton->setScaleUI(buttonScale, buttonScale);
 	normalsButton->setCallback(normalsButtonPressed);
 	normalsButton->setParent(botonesMenu);
 
 	// Efectos composite
 	Button* compositeButton = new Button("botonPostprocess", m_canvas);
 	compositeButton->setPositionUI(0.88, 0.45);
-	compositeButton->setScaleUI(0.3, 0.3);
+	compositeButton->setScaleUI(buttonScale, buttonScale);
 	compositeButton->setCallback(compositeButtonPressed);
 	compositeButton->setParent(botonesMenu);
 
 	// Scissor test
 	Button* scissorButton = new Button("botonScissor", m_canvas);
 	scissorButton->setPositionUI(0.88, 0.3);
-	scissorButton->setScaleUI(0.3, 0.3);
+	scissorButton->setScaleUI(buttonScale, buttonScale);
 	scissorButton->setCallback(scissorButtonPressed);
 	scissorButton->setParent(botonesMenu);
 
 	// Shaders
-	Button* shaderButton = new Button("botonShader", m_canvas);
-	shaderButton->setPositionUI(0.88, 0.15);
-	shaderButton->setScaleUI(0.3, 0.3);
-	shaderButton->setCallback(shaderButtonPressed);
-	shaderButton->setParent(botonesMenu);
+	Button* skyboxButton = new Button("botonSkybox", m_canvas);
+	skyboxButton->setPositionUI(0.88, 0.15);
+	skyboxButton->setScaleUI(buttonScale, buttonScale);
+	skyboxButton->setCallback(skyboxButtonPressed);
+	skyboxButton->setParent(botonesMenu);
 
-
+	/* - - Skybox - - */ 
+	// El orden tiene que ser este (top y bottom están invertidos por alguna razón)
+	std::vector<std::string> lakeFaces = { "right.bmp", "left.bmp", "bottom.bmp", "top.bmp", "front.bmp", "back.bmp" };
+	std::vector<std::string> yokohamaFaces = { "city/right.bmp", "city/left.bmp", "city/bottom.bmp", 
+		"city/top.bmp", "city/front.bmp", "city/back.bmp" };
+	m_skybox = new Skybox(yokohamaFaces);
+	m_skybox->setShader("skybox");
 
 	// GAMEMANAGER
 	GameManager* gm = new GameManager(this, m_camera, botonesMenu, torre);
@@ -262,7 +277,7 @@ void Scene::init()
 
 void Scene::render()
 {
-	// 0) Limpia el color y el depth buffer
+	// 0) Limpiar el color y depth buffer
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
 	// 1) Cargar las luces; IMPORTANTE hacerlo antes de pintar los objetos a los que puedan iluminar
@@ -274,12 +289,23 @@ void Scene::render()
 		}
 	}
 
-
-	// 2) Pintar todas las entidades 
+	// 2) Pintar el skybox, si lo hay
 	int mvpMatLoc;
+	const glm::dmat4 projViewMat = m_camera->getProjMat() * m_camera->getViewMat();
+	if(skyboxActive && m_skybox != nullptr)
+	{
+		// Debería haber una mejor forma de hacer esto
+		m_skybox->setPosition(m_camera->getPosition());
+		// Activar el shader y pasarle la MVP
+		glUseProgram(m_skybox->getShader()->getId());
+		mvpMatLoc = glGetUniformLocation(m_skybox->getShader()->getId(), "mvpMat");
+		glUniformMatrix4dv(mvpMatLoc, 1, GL_FALSE, glm::value_ptr(projViewMat * m_skybox->getModelMat()));
+		// Pintar el skybox
+		m_skybox->render();
+	}
+
+	// 3) Pintar todas las entidades activas
 	const Shader* activeShader = nullptr;
-	glm::dmat4 projViewMat = m_camera->getProjMat() * m_camera->getViewMat();
-	// pintamos todas las entidades activas
 	for (Entity* e : m_entities)
 	{
 		if(e->isActive())
@@ -305,7 +331,7 @@ void Scene::render()
 		}
 	}
 
-	// 3) Pintar los vectores normales, si están activos
+	// 4) Pintar los vectores normales, si están activos
 	if(normalsShader != nullptr)
 	{
 		glUseProgram(normalsShader->getId());
@@ -317,15 +343,14 @@ void Scene::render()
 			e->render(m_camera->getViewMat());
 		}
 	}
-	
 	// Desactivamos los shaders para el canvas
 	glUseProgram(0);
 
-	// 4) Pintar el canvas, limpiando antes el Z-buffer para que se pinte encima de todo
+	// 5) Pintar el canvas, limpiando antes el Z-buffer para que se pinte encima de todo
 	glClear(GL_DEPTH_BUFFER_BIT);
 	m_canvas->render(m_camera->getViewMat());
 
-	// 5) Post-procesar la imagen del color buffer
+	// 6) Post-procesar la imagen del color buffer
 	if (compositeShader != nullptr)
 	{
 		// 'glClear' es una operación costosa, podría buscarse una alternativa
@@ -342,7 +367,7 @@ void Scene::render()
 
 	//ViewportTest();
 
-	// 5) Hacer swap de buffers
+	// 7) Hacer swap de buffers
 	// Hay 2 buffers; uno se está mostrando por ventana, y el otro es el que usamos
 	// para dibujar con la GPU. Cuando se ha terminado de dibujar y llega el siguiente 
 	// frame, se intercambian las referencias y se repite el proceso
@@ -630,9 +655,9 @@ void Scene::scissorButtonPressed()
 	InputManager::Instance()->setMousePos(400, 300);
 }
 
-void Scene::shaderButtonPressed()
+void Scene::skyboxButtonPressed()
 {
-	shadersActive = !shadersActive;
+	skyboxActive = !skyboxActive;
 
 	InputManager::Instance()->setMousePos(400, 300);
 }
@@ -653,6 +678,9 @@ Scene::~Scene()
 
 	// Borrar las mallas, texturas, materiales y shaders cargados a la escena
 	ResourceManager::Instance()->Clean();
+
+	// Skybox
+	delete m_skybox;
 
 	// Malla para el postprocesado
 	delete m_effectsMesh;
