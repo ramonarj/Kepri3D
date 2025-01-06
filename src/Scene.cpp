@@ -24,11 +24,15 @@ bool Scene::mipmapsActive = false;
 Shader* Scene::normalsShader = nullptr;
 Shader* Scene::compositeShader = nullptr;
 
-const float buttonScale = 0.3f;
+const float buttonScale = 0.28f;
+const float buttonSep = 0.13f;
 
 std::vector<std::string> buttonNames = { "botonCulling", "botonBlending", "botonLighting", "botonTextures", "botonShading",
-"botonAlpha", "botonMultisampling", "botonMipmaps", "botonNormales", "botonPostprocess", "botonScissor", "botonSkybox" };
+"botonAlpha", "botonMultisampling", "botonMipmaps", "botonNormales", "botonPostprocess", "botonScissor", "botonSkybox", "botonGamma" };
 
+std::vector<void(*)()> Scene::callbacks = { cullingButtonPressed, blendingButtonPressed, lightingButtonPressed,
+texturesButtonPressed, shadingButtonPressed, alphaButtonPressed, multisamplingButtonPressed, mipmapButtonPressed, 
+normalsButtonPressed, compositeButtonPressed, scissorButtonPressed, skyboxButtonPressed, gammaButtonPressed };
 
 void Scene::AddEntity(Entity* e, bool isTranslucid)
 {
@@ -158,108 +162,26 @@ void Scene::init()
 	m_canvas = new Canvas();
 	m_canvas->setSize(800, 600);
 
-	// CANVAS
+	/* - - Canvas - - */
 	// Entidad vacía para que cuelguen los botones
 	UIElement* botonesMenu = new UIElement();
 	botonesMenu->setActive(false);
 	m_canvas->addElement(botonesMenu);
 
 	// Botones
-	//for(int i = 0; i < buttonNames.size(); i++)
-	//{
-	//	Button* b = new Button(buttonNames[i], m_canvas);
-	//	b->setPositionUI(0.12, 1 - i * 0.1);
-	//	b->setScaleUI(buttonScale, buttonScale);
-	//	//b->setCallback(cullingButtonPressed);
-	//	b->setParent(botonesMenu);
-	//}
+	for(int i = 0; i < buttonNames.size(); i++)
+	{
+		// Su textura, posición, escala y callback
+		Button* b = new Button(buttonNames[i], m_canvas);
+		if(i < 7)
+			b->setPositionUI(buttonSep, 0.89 - i * buttonSep);
+		else
+			b->setPositionUI(1 - buttonSep, 0.89 - (i - 7) * buttonSep);
+		b->setScaleUI(buttonScale, buttonScale);
+		b->setCallback(callbacks[i]);
+		b->setParent(botonesMenu); // hijos del nodo vacío
+	}
 	
-
-	// Culling
-	Button* cullButton = new Button("botonCulling", m_canvas);
-	cullButton->setPositionUI(0.12, 0.9);
-	cullButton->setScaleUI(buttonScale, buttonScale);
-	//button->setPositionUI(50, 35);
-	cullButton->setCallback(cullingButtonPressed);
-	cullButton->setParent(botonesMenu);
-
-	// Blending
-	Button* blendButton = new Button("botonBlending", m_canvas);
-	blendButton->setPositionUI(0.12, 0.75);
-	blendButton->setScaleUI(buttonScale, buttonScale);
-	blendButton->setCallback(blendingButtonPressed);
-	blendButton->setParent(botonesMenu);
-
-	// Lighting
-	Button* lightButton = new Button("botonLighting", m_canvas);
-	lightButton->setPositionUI(0.12, 0.6);
-	lightButton->setScaleUI(buttonScale, buttonScale);
-	lightButton->setCallback(lightingButtonPressed);
-	lightButton->setParent(botonesMenu);
-	//lightButton->setActive(false);
-
-	// Textures
-	Button* texturesButton = new Button("botonTextures", m_canvas);
-	texturesButton->setPositionUI(0.12, 0.45);
-	texturesButton->setScaleUI(buttonScale, buttonScale);
-	texturesButton->setCallback(texturesButtonPressed);
-	texturesButton->setParent(botonesMenu);
-
-	// Shading
-	Button* shadingButton = new Button("botonShading", m_canvas);
-	shadingButton->setPositionUI(0.12, 0.3);
-	shadingButton->setScaleUI(buttonScale, buttonScale);
-	shadingButton->setCallback(shadingButtonPressed);
-	shadingButton->setParent(botonesMenu);
-
-	// Alfa test
-	Button* alphaButton = new Button("botonAlpha", m_canvas);
-	alphaButton->setPositionUI(0.12, 0.15);
-	alphaButton->setScaleUI(buttonScale, buttonScale);
-	alphaButton->setCallback(alphaButtonPressed);
-	alphaButton->setParent(botonesMenu);
-
-	// Multisampling
-	Button* multisamplingButton = new Button("botonMultisampling", m_canvas);
-	multisamplingButton->setPositionUI(0.88, 0.9);
-	multisamplingButton->setScaleUI(buttonScale, buttonScale);
-	multisamplingButton->setCallback(multisamplingButtonPressed);
-	multisamplingButton->setParent(botonesMenu);
-
-	// Mipmaps
-	Button* mipmapsButton = new Button("botonMipmaps", m_canvas);
-	mipmapsButton->setPositionUI(0.88, 0.75);
-	mipmapsButton->setScaleUI(buttonScale, buttonScale);
-	mipmapsButton->setCallback(mipmapButtonPressed);
-	mipmapsButton->setParent(botonesMenu);
-
-	// Visualización de normales
-	Button* normalsButton = new Button("botonNormales", m_canvas);
-	normalsButton->setPositionUI(0.88, 0.6);
-	normalsButton->setScaleUI(buttonScale, buttonScale);
-	normalsButton->setCallback(normalsButtonPressed);
-	normalsButton->setParent(botonesMenu);
-
-	// Efectos composite
-	Button* compositeButton = new Button("botonPostprocess", m_canvas);
-	compositeButton->setPositionUI(0.88, 0.45);
-	compositeButton->setScaleUI(buttonScale, buttonScale);
-	compositeButton->setCallback(compositeButtonPressed);
-	compositeButton->setParent(botonesMenu);
-
-	// Scissor test
-	Button* scissorButton = new Button("botonScissor", m_canvas);
-	scissorButton->setPositionUI(0.88, 0.3);
-	scissorButton->setScaleUI(buttonScale, buttonScale);
-	scissorButton->setCallback(scissorButtonPressed);
-	scissorButton->setParent(botonesMenu);
-
-	// Shaders
-	Button* skyboxButton = new Button("botonSkybox", m_canvas);
-	skyboxButton->setPositionUI(0.88, 0.15);
-	skyboxButton->setScaleUI(buttonScale, buttonScale);
-	skyboxButton->setCallback(skyboxButtonPressed);
-	skyboxButton->setParent(botonesMenu);
 
 	/* - - Skybox - - */ 
 	// El orden tiene que ser este (top y bottom están invertidos por alguna razón)
@@ -281,6 +203,35 @@ void Scene::render()
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
 	// 1) Cargar las luces; IMPORTANTE hacerlo antes de pintar los objetos a los que puedan iluminar
+	loadLights();
+
+	// 2) Pintar el skybox, si lo hay
+	const glm::dmat4 projViewMat = m_camera->getProjMat() * m_camera->getViewMat();
+	renderSkybox(projViewMat);
+
+	// 3) Pintar todas las entidades activas
+	renderEntities(projViewMat);
+
+	// 4) Pintar los vectores normales, si están activos
+	renderNormals(projViewMat);
+
+	// 5) Pintar el canvas
+	renderCanvas();
+
+	// 6) Post-procesar la imagen del color buffer
+	renderEffects();
+
+	//ViewportTest();
+
+	// 7) Hacer swap de buffers
+	// Hay 2 buffers; uno se está mostrando por ventana, y el otro es el que usamos
+	// para dibujar con la GPU. Cuando se ha terminado de dibujar y llega el siguiente 
+	// frame, se intercambian las referencias y se repite el proceso
+	glutSwapBuffers();
+}
+
+void Scene::loadLights()
+{
 	for (Light* l : m_lights)
 	{
 		if (l->isActive())
@@ -288,27 +239,33 @@ void Scene::render()
 			l->load(m_camera->getViewMat());
 		}
 	}
+}
 
-	// 2) Pintar el skybox, si lo hay
-	int mvpMatLoc;
-	const glm::dmat4 projViewMat = m_camera->getProjMat() * m_camera->getViewMat();
-	if(skyboxActive && m_skybox != nullptr)
+void Scene::renderSkybox(const glm::dmat4& projViewMat)
+{
+	// Comprobar que haya un skybox activo
+	if (skyboxActive && m_skybox != nullptr)
 	{
 		// Debería haber una mejor forma de hacer esto
 		m_skybox->setPosition(m_camera->getPosition());
+
 		// Activar el shader y pasarle la MVP
 		glUseProgram(m_skybox->getShader()->getId());
-		mvpMatLoc = glGetUniformLocation(m_skybox->getShader()->getId(), "mvpMat");
+		int mvpMatLoc = glGetUniformLocation(m_skybox->getShader()->getId(), "mvpMat");
 		glUniformMatrix4dv(mvpMatLoc, 1, GL_FALSE, glm::value_ptr(projViewMat * m_skybox->getModelMat()));
+
 		// Pintar el skybox
 		m_skybox->render();
 	}
+}
 
-	// 3) Pintar todas las entidades activas
+void Scene::renderEntities(const glm::dmat4& projViewMat)
+{
+	// Pintar todas las entidades activas
 	const Shader* activeShader = nullptr;
 	for (Entity* e : m_entities)
 	{
-		if(e->isActive())
+		if (e->isActive())
 		{
 			// la entidad no usa shaders; desactivamos
 			if (e->getShader() == nullptr)
@@ -316,6 +273,7 @@ void Scene::render()
 			// la entidad usa shaders
 			else
 			{
+				int mvpMatLoc;
 				// hay que cambiar el shader que usó la entidad anterior
 				if (e->getShader() != activeShader)
 				{
@@ -330,12 +288,14 @@ void Scene::render()
 			e->render(m_camera->getViewMat());
 		}
 	}
+}
 
-	// 4) Pintar los vectores normales, si están activos
-	if(normalsShader != nullptr)
+void Scene::renderNormals(const glm::dmat4& projViewMat)
+{
+	if (normalsShader != nullptr)
 	{
 		glUseProgram(normalsShader->getId());
-		mvpMatLoc = glGetUniformLocation(normalsShader->getId(), "mvpMat");
+		int mvpMatLoc = glGetUniformLocation(normalsShader->getId(), "mvpMat");
 		for (Entity* e : m_entities)
 		{
 			// Pasar la matriz MVP al vertex shader
@@ -343,14 +303,24 @@ void Scene::render()
 			e->render(m_camera->getViewMat());
 		}
 	}
-	// Desactivamos los shaders para el canvas
+}
+
+void Scene::renderCanvas()
+{
+	// Desactivamos cualquier shader que hubiera
 	glUseProgram(0);
 
-	// 5) Pintar el canvas, limpiando antes el Z-buffer para que se pinte encima de todo
-	glClear(GL_DEPTH_BUFFER_BIT);
+	//glClear(GL_DEPTH_BUFFER_BIT); // esto es más costoso que cambiar la función del Z-test
+	// Cambiar la función del Z-test para pasarlo siempre
+	glDepthFunc(GL_ALWAYS);
+	// Pintar el canvas
 	m_canvas->render(m_camera->getViewMat());
 
-	// 6) Post-procesar la imagen del color buffer
+	glDepthFunc(GL_LESS); // valor predet.
+}
+
+void Scene::renderEffects()
+{
 	if (compositeShader != nullptr)
 	{
 		// 'glClear' es una operación costosa, podría buscarse una alternativa
@@ -364,14 +334,6 @@ void Scene::render()
 		// "Re"dibujar la escena usando el shader
 		m_effectsMesh->draw();
 	}
-
-	//ViewportTest();
-
-	// 7) Hacer swap de buffers
-	// Hay 2 buffers; uno se está mostrando por ventana, y el otro es el que usamos
-	// para dibujar con la GPU. Cuando se ha terminado de dibujar y llega el siguiente 
-	// frame, se intercambian las referencias y se repite el proceso
-	glutSwapBuffers();
 }
 
 void Scene::update(GLuint deltaTime)
@@ -658,6 +620,13 @@ void Scene::scissorButtonPressed()
 void Scene::skyboxButtonPressed()
 {
 	skyboxActive = !skyboxActive;
+
+	InputManager::Instance()->setMousePos(400, 300);
+}
+
+void Scene::gammaButtonPressed()
+{
+	switchBoolParam(GL_FRAMEBUFFER_SRGB);
 
 	InputManager::Instance()->setMousePos(400, 300);
 }

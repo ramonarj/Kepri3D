@@ -22,17 +22,21 @@ Mesh::~Mesh()
 void Mesh::enableArrays()
 {
 	// Vértices
-	glEnableClientState(GL_VERTEX_ARRAY);
-	glVertexPointer(3, GL_DOUBLE, 0, vertices);
+	if(vertices != nullptr)
+	{
+		glEnableClientState(GL_VERTEX_ARRAY);
+		glVertexPointer(3, GL_DOUBLE, 0, vertices);
+	}
 
-	//Colores
+	// Colores
 	if (colores != nullptr)
 	{
 		glEnableClientState(GL_COLOR_ARRAY);
 		// (coordenadas por vértice [2/3/4], tipo de dato, espacio entre cada dato, puntero al array)
 		glColorPointer(4, GL_DOUBLE, 0, colores);
 	}
-	//Texturas
+
+	// Coordenadas de textura
 	if (texCoords != nullptr)
 	{
 		glEnableClientState(GL_TEXTURE_COORD_ARRAY);
@@ -42,6 +46,7 @@ void Mesh::enableArrays()
 		glVertexAttribPointer(2, 2, GL_DOUBLE, GL_FALSE, 0, texCoords);
 		glEnableVertexAttribArray(2);
 	}
+
 	// Normales 
 	if(normales != nullptr)
 	{

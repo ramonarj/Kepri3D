@@ -3,6 +3,7 @@
 
 #include <vector>
 #include <glew.h>
+#include <glm.hpp>
 
 class Entity;
 class Camera;
@@ -66,6 +67,14 @@ protected:
 
 	static void switchBoolParam(GLenum param);
 
+	// Sub-métodos del render() para que sea más legible
+	void loadLights();
+	void renderSkybox(const glm::dmat4& projViewMat);
+	void renderEntities(const glm::dmat4& projViewMat);
+	void renderNormals(const glm::dmat4& projViewMat);
+	void renderCanvas();
+	void renderEffects();
+
 	
 	// Callbacks para los botones
 	static void cullingButtonPressed();
@@ -80,6 +89,10 @@ protected:
 	static void compositeButtonPressed();
 	static void scissorButtonPressed();
 	static void skyboxButtonPressed();
+	static void gammaButtonPressed();
+
+	// Vector de callbacks
+	static std::vector<void(*)()> callbacks;
 };
 
 #endif
