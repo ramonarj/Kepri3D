@@ -3,6 +3,7 @@
 
 #include <glew.h>
 #include <string>
+#include <vector>
 
 class Texture
 {
@@ -10,7 +11,7 @@ public:
 	/* Constructora por defecto */
 	Texture() : w(0), h(0), id(0) {}
 	/* Borra la textura asociada si tenía alguna */
-	~Texture() { if (id != 0) glDeleteTextures(1, &id); };
+	virtual ~Texture() { if (id != 0) glDeleteTextures(1, &id); };
 
 	/* Carga la textura */
 	bool load(const std::string& filePath, GLubyte alpha = 255);
@@ -23,8 +24,8 @@ public:
 	->REPLACE: no se tienen en cuenta las luces
 	->MODULATE: luz * textura
 	->ADD: luz + textura (efecto quemado) */
-	void bind(GLuint mix = GL_MODULATE);
-	void unbind();
+	virtual void bind(GLuint mix = GL_MODULATE);
+	virtual void unbind();
 
 	/* Carga un rectángulo de píxeles RGBA de tamaño 'width * height' desde el buffer 'buf' para su posterior lectura */
 	static void loadColorBuffer(GLsizei width, GLsizei height, GLenum buf = GL_BACK);
@@ -43,7 +44,7 @@ public:
 	/* Activa o desactiva el uso de mipmaps */
 	void useMipmaps(bool b);
 
-private:
+protected:
 	// Dimensiones de la textura (en píxeles)
 	GLuint w;
 	GLuint h;
@@ -54,6 +55,19 @@ private:
 	// Métodos privados
 	/* Inicializa la textura si no se había creado ya */
 	void Init();
+};
+
+// - - - - - - - - - - - - -
+
+// Clase específica para cubemaps
+class CubemapTexture : public Texture
+{
+public:
+	bool load(std::vector<std::string> faces);
+
+	// Activar/desactivar la textura
+	void bind(GLuint mix = GL_REPLACE) override;
+	void unbind() override;
 };
 
 #endif

@@ -211,6 +211,30 @@ const Shader& ResourceManager::getComposite(const std::string& id)
 
 // - - - - - - - - - - - - - - - - - - 
 
+bool ResourceManager::loadCubemapTexture(std::vector<std::string> facesNames, const std::string& id)
+{
+	CubemapTexture* tex = new CubemapTexture();
+	try
+	{
+		// Añadirle la ruta adecuada
+		for (int i = 0; i < facesNames.size(); i++)
+			facesNames[i] = TEXTURES_PATH + facesNames[i];
+		// Cargarlo de archivo
+		tex->load(facesNames);
+		textures[id] = tex;
+		return true;
+	}
+
+	catch (const std::ios_base::failure& f)
+	{
+		std::cout << "No se pudo cargar la textura cubemap " << "\"" << id << "\"" << std::endl;
+		//std::cout << f.what() << std::endl;
+		// Como no se ha podido cargar la imagen, borramos la textura creada
+		delete tex;
+		return false;
+	}
+}
+
 void ResourceManager::enableMipmaps(bool b)
 {
 	// Actualizar los parámetros de todas las texturas para que usen/no mipmaps

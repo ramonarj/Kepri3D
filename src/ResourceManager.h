@@ -3,6 +3,7 @@
 
 #include <map>
 #include <string>
+#include <vector>
 
 class Mesh;
 class Texture;
@@ -51,6 +52,9 @@ public:
 
 	/* Carga un composite de archivo y le asigna el ID dado */
 	bool loadComposite(const std::string& compositeName, const std::string& id);
+
+	/* Carga una textura de tipo Cubemap con los archivos dados, y le asigna el ID dado */
+	bool loadCubemapTexture(std::vector<std::string> facesNames, const std::string& id);
 
 	// Proporcionar los recursos
 	/* Devuelve una textura dada */

@@ -257,41 +257,13 @@ Terrain::Terrain(std::string filename, GLdouble scale)
 
 // - - - - - - - - - - - - - - - - - 
 
-Skybox::Skybox(std::vector<std::string> faces)
+Skybox::Skybox(const std::string& cubemapTextureID)
 {
-	// Generar la malla
+	// Generar la malla y cargar la textura y el shader
 	m_mesh = IndexMesh::generateCubemap(4.0);
 
-	// Crear la textura de tipo CubeMap
-	glGenTextures(1, &texId);
-	glBindTexture(GL_TEXTURE_CUBE_MAP, texId);
-
-	// Cargar las 6 texturas de los lados
-	for (unsigned int i = 0; i < faces.size(); i++)
-	{
-		// Cargamos la información del BMP
-		PixMap32RGBA pixMap;
-		pixMap.load_bmp24BGR(TEXTURES_PATH + "skyboxes/" + faces[i]);
-		if (pixMap.is_null())
-			std::cout << "No se encontró la textura " << faces[i] << std::endl;
-
-		// Dimensiones
-		GLuint w = pixMap.width();
-		GLuint h = pixMap.height();
-
-		// Crear la textura (tiene que ser RGBA por el formato del PixMap)
-		glTexImage2D(GL_TEXTURE_CUBE_MAP_POSITIVE_X + i, 0, GL_RGBA, 
-			w, h, 0, GL_RGBA, GL_UNSIGNED_BYTE, pixMap.data());
-		
-		// Parámetros de escalado y repetición
-		glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-		glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-		glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
-		glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
-		// IMPORTANTE: la tercera dimensión
-		glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_R, GL_CLAMP_TO_EDGE);
-	}
-	
+	setTexture(cubemapTextureID);
+	setShader("skybox");
 }
 
 void Skybox::render()
@@ -303,8 +275,7 @@ void Skybox::render()
 	glPolygonMode(GL_BACK, GL_FILL);
 
 	// Activar la textura de tipo CUBE_MAP
-	glBindTexture(GL_TEXTURE_CUBE_MAP, texId);
-	glTexEnvi(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_REPLACE); //REPLACE sería lo correcto
+	m_texture->bind();
 
 	// 2) Dibujar la/s malla/s
 	m_material.load();
@@ -312,7 +283,7 @@ void Skybox::render()
 		m_mesh->draw();
 
 	// Desactivar la textura
-	glBindTexture(GL_TEXTURE_CUBE_MAP, 0);
+	m_texture->unbind();
 
 	// Dejarlo todo como estaba
 	glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);

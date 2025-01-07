@@ -126,3 +126,55 @@ void Texture::save(const std::string& BMP_Name)
 		std::cout << e.what() << std::endl;
 	}
 }
+
+
+// - - - - - - - - - - - - - - - - - - -
+
+
+bool CubemapTexture::load(std::vector<std::string> faces)
+{
+	// Crear la textura de tipo CubeMap
+	glGenTextures(1, &id);
+	glBindTexture(GL_TEXTURE_CUBE_MAP, id);
+
+	// Cargar las 6 texturas de los lados
+	for (unsigned int i = 0; i < faces.size(); i++)
+	{
+		// Cargamos la información del BMP
+		PixMap32RGBA pixMap;
+		pixMap.load_bmp24BGR(faces[i]);
+		if (pixMap.is_null())
+			return false; //Nunca se llega a esta parte porque lanza excepción
+
+		// Dimensiones
+		GLuint w = pixMap.width();
+		GLuint h = pixMap.height();
+
+		// Crear la textura (tiene que ser RGBA por el formato del PixMap)
+		glTexImage2D(GL_TEXTURE_CUBE_MAP_POSITIVE_X + i, 0, GL_RGBA,
+			w, h, 0, GL_RGBA, GL_UNSIGNED_BYTE, pixMap.data());
+
+		// Parámetros de escalado y repetición
+		glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+		glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+		glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+		glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+		// IMPORTANTE: la tercera dimensión
+		glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_R, GL_CLAMP_TO_EDGE);
+	}
+
+	// No generamos mipmap
+
+	return true;
+}
+
+void CubemapTexture::bind(GLuint mix)
+{
+	glBindTexture(GL_TEXTURE_CUBE_MAP, id);
+	glTexEnvi(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, mix); //REPLACE sería lo correcto
+}
+
+void CubemapTexture::unbind()
+{
+	glBindTexture(GL_TEXTURE_CUBE_MAP, 0);
+}

@@ -37,6 +37,9 @@ public:
 	/* Añade una luz a la escena */
 	inline void AddLight(Light* l) { m_lights.push_back(l); }
 
+	/* Establece el skybox de la escena */
+	inline void SetSkybox(Skybox* skybox) { m_skybox = skybox; }
+
 	/* Hace una foto */
 	void takePhoto();
 

@@ -197,8 +197,8 @@ public:
 class Skybox : public Entity
 {
 public:
-	/* Crea un skybox */
-	Skybox(std::vector<std::string> faces);
+	/* Crea un skybox con la textura tipo Cubemap previamente cargada */
+	Skybox(const std::string& cubemapTextureID);
 	~Skybox() { };
 
 	void render();

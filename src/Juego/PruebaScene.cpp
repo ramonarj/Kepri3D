@@ -42,6 +42,12 @@ void PruebaScene::init()
 		ResourceManager::Instance()->loadTexture(buttonNames[i] + ".bmp", buttonNames[i]);
 	}
 
+	// Skyboxes - el orden tiene que ser este (top y bottom están invertidos por alguna razón)
+	ResourceManager::Instance()->loadCubemapTexture({ "skyboxes/right.bmp", "skyboxes/left.bmp", "skyboxes/bottom.bmp", 
+		"skyboxes/top.bmp", "skyboxes/front.bmp", "skyboxes/back.bmp" }, "lakeSkybox");
+	ResourceManager::Instance()->loadCubemapTexture({ "skyboxes/city/right.bmp", "skyboxes/city/left.bmp", "skyboxes/city/bottom.bmp",
+		"skyboxes/city/top.bmp", "skyboxes/city/front.bmp", "skyboxes/city/back.bmp" }, "citySkybox");
+
 	/* Materiales que vamos a usar */
 	ResourceManager::Instance()->loadMaterial("copper.material", "cobre");
 	ResourceManager::Instance()->loadMaterial("crome.material", "cromo");
@@ -154,12 +160,9 @@ void PruebaScene::init()
 
 
 	/* - - Skybox - - */
-	// El orden tiene que ser este (top y bottom están invertidos por alguna razón)
-	std::vector<std::string> lakeFaces = { "right.bmp", "left.bmp", "bottom.bmp", "top.bmp", "front.bmp", "back.bmp" };
-	std::vector<std::string> yokohamaFaces = { "city/right.bmp", "city/left.bmp", "city/bottom.bmp",
-		"city/top.bmp", "city/front.bmp", "city/back.bmp" };
-	m_skybox = new Skybox(yokohamaFaces);
-	m_skybox->setShader("skybox");
+	Skybox* sky = new Skybox("citySkybox");
+	SetSkybox(sky);
+	
 
 	// GAMEMANAGER
 	GameManager* gm = new GameManager(this, m_camera, botonesMenu, torre);
