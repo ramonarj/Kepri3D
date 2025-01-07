@@ -34,6 +34,10 @@ void Mesh::enableArrays()
 		glEnableClientState(GL_COLOR_ARRAY);
 		// (coordenadas por vértice [2/3/4], tipo de dato, espacio entre cada dato, puntero al array)
 		glColorPointer(4, GL_DOUBLE, 0, colores);
+
+		// Para el vertex shader
+		glVertexAttribPointer(1, 4, GL_DOUBLE, GL_FALSE, 0, colores);
+		glEnableVertexAttribArray(1);
 	}
 
 	// Coordenadas de textura
@@ -79,6 +83,20 @@ void Mesh::draw()
 	// 3) Volver a dejarlo todo como estaba
 	disableArrays();
 }
+
+void Mesh::drawInstanced(GLuint numInstances)
+{
+	// 1) Activar los arrays que vamos a usar y pasarlos a la GPU
+	enableArrays();
+
+	// 2) Dibuja los arrays pasados a la GPU con la primitiva dada (type)
+	glDrawArraysInstanced(type, 0, numVertices, numInstances);
+
+	// 3) Volver a dejarlo todo como estaba
+	disableArrays();
+}
+
+// - - - - - - - - - - - -
 
 Mesh* Mesh::generateAxesRGB(GLdouble l)
 {
@@ -249,6 +267,11 @@ Mesh* Mesh::generateRectangle(GLdouble width, GLdouble height)
 		{0,1}, {0, 0}, {1, 1}, {1, 0}
 	};
 
+	/* Coordenadas de textura*/
+	m->colores = new dvec4[m->numVertices];
+	for (int i = 0; i < m->numVertices; i++)
+		m->colores[i] = { 1.0,0.0, 0.0, 1.0 };
+
 	return m;
 }
 
@@ -270,6 +293,19 @@ void IndexMesh::draw()
 	// Dejarlo todo como estaba
 	glDisableClientState(GL_INDEX_ARRAY);
 	Mesh::disableArrays();
+}
+
+
+void IndexMesh::drawInstanced(GLuint numInstances)
+{
+	// 1) Activar los arrays que vamos a usar y pasarlos a la GPU
+	enableArrays();
+
+	// 2) Dibuja los arrays pasados a la GPU con la primitiva dada (type)
+	glDrawElementsInstanced(GL_TRIANGLES, numIndices, GL_UNSIGNED_INT, indices, numInstances);
+
+	// 3) Volver a dejarlo todo como estaba
+	disableArrays();
 }
 
 void IndexMesh::SetNormals()

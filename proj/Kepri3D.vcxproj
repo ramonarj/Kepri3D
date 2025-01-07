@@ -167,6 +167,7 @@
     <ClCompile Include="..\src\Material.cpp" />
     <ClCompile Include="..\src\Mesh.cpp" />
     <ClCompile Include="..\src\MeshLoader.cpp" />
+    <ClCompile Include="..\src\ParticleSystem.cpp" />
     <ClCompile Include="..\src\Pixmap32RGBA.cpp" />
     <ClCompile Include="..\src\Scene.cpp" />
     <ClCompile Include="..\src\Shader.cpp" />
@@ -191,6 +192,7 @@
     <ClInclude Include="..\src\Material.h" />
     <ClInclude Include="..\src\Mesh.h" />
     <ClInclude Include="..\src\MeshLoader.h" />
+    <ClInclude Include="..\src\ParticleSystem.h" />
     <ClInclude Include="..\src\Pixmap32RGBA.h" />
     <ClInclude Include="..\src\Scene.h" />
     <ClInclude Include="..\src\Shader.h" />

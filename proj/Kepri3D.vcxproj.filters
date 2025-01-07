@@ -82,6 +82,9 @@
     <ClCompile Include="..\src\Juego\PruebaScene.cpp">
       <Filter>Archivos de origen</Filter>
     </ClCompile>
+    <ClCompile Include="..\src\ParticleSystem.cpp">
+      <Filter>Core</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\src\UI\Button.h">
@@ -148,6 +151,9 @@
       <Filter>Archivos de origen</Filter>
     </ClInclude>
     <ClInclude Include="..\src\Kepri3D.h">
+      <Filter>Core</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\ParticleSystem.h">
       <Filter>Core</Filter>
     </ClInclude>
   </ItemGroup>

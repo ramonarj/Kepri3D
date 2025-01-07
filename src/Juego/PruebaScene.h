@@ -3,6 +3,8 @@
 
 #include "../Scene.h"
 
+class ParticleSystem;
+
 class PruebaScene : public Scene
 {
 public:
@@ -18,6 +20,11 @@ private:
 	// Métodos auxiliares
 	void ViewportTest();
 	void PruebaMateriales();
+
+	static ParticleSystem* particleSys;
+
+	// Callbacks
+	static void instancingButtonPressed();
 };
 
 #endif

@@ -6,6 +6,7 @@
 #include <string>
 #include "checkML.h"
 
+
 class Mesh
 {
 public:
@@ -17,6 +18,7 @@ public:
 
 
 	virtual void draw();
+	virtual void drawInstanced(GLuint numInstances);
 
 	/* Creación de mallas de los distintos objetos */
 	// Ejes RGB
@@ -71,6 +73,7 @@ public:
 
 	/* Pinta la malla pero usando la tabla de índices, y no otras primitivas */
 	void draw() override;
+	void drawInstanced(GLuint numInstances) override;
 
 	/* Creación de mallas con triángulos indexados */
 	// Cubo cerrado

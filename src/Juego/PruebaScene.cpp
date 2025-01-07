@@ -8,11 +8,15 @@ const float buttonScale = 0.28f;
 const float buttonSep = 0.13f;
 
 std::vector<std::string> buttonNames = { "botonCulling", "botonBlending", "botonLighting", "botonTextures", "botonShading",
-"botonAlpha", "botonMultisampling", "botonMipmaps", "botonNormales", "botonPostprocess", "botonScissor", "botonSkybox", "botonGamma" };
+"botonAlpha", "botonMultisampling", "botonMipmaps", "botonNormales", "botonPostprocess", "botonScissor", 
+"botonSkybox", "botonGamma", "botonInstancing"};
 
 std::vector<void(*)()> PruebaScene::callbacks = { cullingButtonPressed, blendingButtonPressed, lightingButtonPressed,
 texturesButtonPressed, shadingButtonPressed, alphaButtonPressed, multisamplingButtonPressed, mipmapButtonPressed,
-normalsButtonPressed, compositeButtonPressed, scissorButtonPressed, skyboxButtonPressed, gammaButtonPressed };
+normalsButtonPressed, compositeButtonPressed, scissorButtonPressed, skyboxButtonPressed, gammaButtonPressed, 
+instancingButtonPressed };
+
+ParticleSystem* PruebaScene::particleSys = nullptr;
 
 void PruebaScene::init()
 {
@@ -64,6 +68,7 @@ void PruebaScene::init()
 	ResourceManager::Instance()->loadShader("maximize.vert", "", "fog.frag", "bigFog");
 	ResourceManager::Instance()->loadShader("normals.vert", "normals.geom", "normals.frag", "normals");
 	ResourceManager::Instance()->loadShader("default.vert", "", "movimiento.frag", "movimiento");
+	ResourceManager::Instance()->loadShader("particle.vert", "", "particle.frag", "particle");
 	//ResourceManager::Instance()->loadShader("default.vert", "default.frag", "specularMap.frag", "specMapShader");
 
 	/* Efectos de postprocesado ('composites') */
@@ -162,6 +167,29 @@ void PruebaScene::init()
 	/* - - Skybox - - */
 	Skybox* sky = new Skybox("citySkybox");
 	SetSkybox(sky);
+
+	/* Sistema de partículas */
+	// Con 10.000, empieza a ir demasiado lento
+	particleSys = new ParticleSystem("cobre", 2000);
+	particleSys->setActive(false);
+	AddEntity(particleSys);
+
+	// Comparación de rendimiento VS el sistema de partículas
+	//int count = 0;
+	//for(int i = 0; i < 12; i++)
+	//{
+	//	for (int j = 0; j < 12; j++)
+	//	{
+	//		for (int k = 0; k < 12; k++)
+	//		{
+	//			Entity* e = new Esfera(0.25, 20, false);
+	//			e->setPosition({ i, j, k });
+	//			AddEntity(e);
+	//			count++;
+	//		}
+	//	}
+	//}
+		
 	
 
 	// GAMEMANAGER
@@ -284,3 +312,10 @@ void PruebaScene::ViewportTest()
 	view->setSize(w, h); //Volvemos a dejar el viewPort como estaba
 }
 
+// - - - - - - - - - - - - Callbacks - - - - - - - - - - - - - - - //
+
+
+void PruebaScene::instancingButtonPressed() 
+{
+	particleSys->setActive(!particleSys->isActive());
+}
