@@ -1,8 +1,5 @@
 #include "Scene.h"
 
-#include <glm.hpp>
-
-
 #include "Mesh.h"
 #include "Texture.h"
 #include "Entity.h"
@@ -11,8 +8,6 @@
 #include "Shader.h"
 #include "ResourceManager.h"
 #include "InputManager.h"
-#include "Juego/GameManager.h"
-#include "UI/Button.h"
 #include "UI/Canvas.h"
 
 
@@ -23,10 +18,6 @@ bool Scene::skyboxActive = true;
 bool Scene::mipmapsActive = false;
 Shader* Scene::normalsShader = nullptr;
 Shader* Scene::compositeShader = nullptr;
-
-const float buttonScale = 0.28f;
-const float buttonSep = 0.13f;
-
 
 void Scene::AddEntity(Entity* e, bool isTranslucid)
 {
@@ -318,7 +309,7 @@ void Scene::compositeButtonPressed()
 {
 	// Activar / desactivar la visualización de vectores normales a cada vértice
 	if (compositeShader == nullptr)
-		compositeShader = (Shader*)&ResourceManager::Instance()->getShader("waves");
+		compositeShader = (Shader*)&ResourceManager::Instance()->getComposite("waves");
 	else
 		compositeShader = nullptr;
 

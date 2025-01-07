@@ -36,20 +36,20 @@ public:
 
 	// Transformaciones afines
 	/* Suma el vector de tralación dado a la entidad, usando un sistema de referencia dado */
-	void translate(glm::dvec3 transVector, ReferenceSystem refSys = GLOBAL);
+	void translate(const glm::dvec3& transVector, ReferenceSystem refSys = GLOBAL);
 
 	/* Rota la entidad en el eje dado, la cantidad de grados especificada (en radianes) */
-	void rotate(GLdouble alpha, glm::dvec3 axis, ReferenceSystem refSys = GLOBAL);
+	void rotate(GLdouble alpha, const glm::dvec3& axis, ReferenceSystem refSys = GLOBAL);
 
 	/* Escala la entidad la cantidad dada en cada eje */
-	void scale(glm::dvec3 scale);
+	void scale(const glm::dvec3& scale);
 
 	// Setters
 	/* Activa / desactiva la entidad */
 	inline void setActive(bool b) { m_active = b; }
 
 	/* Mueve la entidad a la posición dada */
-	void setPosition(glm::dvec3 pos);
+	void setPosition(const glm::dvec3& pos);
 
 	/* Establece el padre de la entidad */
 	void setParent(Entity* e);
@@ -74,7 +74,7 @@ public:
 	const glm::dvec3& getPosition() const { return modelMat[3]; }
 
 	/* Devuelve la matriz de modelado de la entidad */
-	const glm::dmat4& getModelMat() { return modelMat; }
+	const glm::dmat4& getModelMat() const { return modelMat; }
 
 	/* Devuelve el shader que usa la entidad */
 	const Shader* getShader() const { return m_shader; }

@@ -58,14 +58,13 @@ void PruebaScene::init()
 	ResourceManager::Instance()->loadShader("maximize.vert", "", "fog.frag", "bigFog");
 	ResourceManager::Instance()->loadShader("normals.vert", "normals.geom", "normals.frag", "normals");
 	ResourceManager::Instance()->loadShader("default.vert", "", "movimiento.frag", "movimiento");
+	//ResourceManager::Instance()->loadShader("default.vert", "default.frag", "specularMap.frag", "specMapShader");
 
-	/* Efectos de postprocesado (también son shaders) */
-	ResourceManager::Instance()->loadShader("postprocess/composite.vert", "", "postprocess/interference.frag", "interference");
-	ResourceManager::Instance()->loadShader("postprocess/composite.vert", "", "postprocess/waves.frag", "waves");
-	//compositeShader = (Shader*)&ResourceManager::Instance()->getShader("composite");
+	/* Efectos de postprocesado ('composites') */
+	ResourceManager::Instance()->loadComposite("interference.frag", "interference");
+	ResourceManager::Instance()->loadComposite("waves.frag", "waves");
 	// (2, 2) para que ocupe la pantalla entera
 	m_effectsMesh = Mesh::generateRectangle(2, 2);
-	//ResourceManager::Instance()->loadShader("default.vert", "default.frag", "specularMap.frag", "specMapShader");
 
 
 	// LUCES
@@ -216,7 +215,6 @@ void PruebaScene::PruebaMateriales()
 	Esfera* tierra = new Esfera(3, 20, true);
 	tierra->setTexture("earth");
 	tierra->setPosition({ 6,15,0 });
-	//tierra->rotate(-PI / 2, { 1, 0, 0 }, LOCAL); // 90º horario en eje X local
 	tierra->rotate(-PI / 8, { 0, 0, 1 }, GLOBAL);
 	tierra->setShader("cruces");
 	AddEntity(tierra);

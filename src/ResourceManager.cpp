@@ -12,7 +12,7 @@
 
 ResourceManager* ResourceManager::instance = nullptr;
 
-bool ResourceManager::loadMesh(std::string meshName, std::string id)
+bool ResourceManager::loadMesh(const std::string& meshName, const std::string& id)
 {
 	try
 	{
@@ -33,7 +33,7 @@ bool ResourceManager::loadMesh(std::string meshName, std::string id)
 	}
 }
 
-const Mesh& ResourceManager::getMesh(std::string id)
+const Mesh& ResourceManager::getMesh(const std::string& id)
 {
 	// Si no se encuentra la malla dada, se devuelve por defecto... TODO
 	if (meshes.find(id) != meshes.end())
@@ -44,7 +44,7 @@ const Mesh& ResourceManager::getMesh(std::string id)
 
 // - - - - - - - - - - - - 
 
-bool ResourceManager::loadTexture(std::string textureName, std::string id)
+bool ResourceManager::loadTexture(const std::string& textureName, const std::string& id)
 {
 	Texture* tex = new Texture();
 	try
@@ -64,7 +64,7 @@ bool ResourceManager::loadTexture(std::string textureName, std::string id)
 	}
 }
 
-const Texture& ResourceManager::getTexture(std::string id)
+const Texture& ResourceManager::getTexture(const std::string& id)
 {
 	// Si no se encuentra la textura dada, se devuelve por defecto una magenta chillón
 	if (textures.find(id) != textures.end())
@@ -75,7 +75,7 @@ const Texture& ResourceManager::getTexture(std::string id)
 
 // - - - - - - - - - - - - 
 
-bool ResourceManager::loadMaterial(std::string materialName, std::string id)
+bool ResourceManager::loadMaterial(const std::string& materialName, const std::string& id)
 {
 	try
 	{
@@ -114,7 +114,7 @@ bool ResourceManager::loadMaterial(std::string materialName, std::string id)
 	}
 }
 
-const Material& ResourceManager::getMaterial(std::string id)
+const Material& ResourceManager::getMaterial(const std::string& id)
 {
 	// Si no se encuentra el material dado, se devuelve el predeterminado
 	if (materials.find(id) != materials.end())
@@ -125,7 +125,8 @@ const Material& ResourceManager::getMaterial(std::string id)
 
 // - - - - - - - - - - - - 
 
-bool ResourceManager::loadShader(std::string vertexName, std::string geometryName, std::string fragmentName, std::string id)
+bool ResourceManager::loadShader(const std::string& vertexName, const std::string& geometryName, 
+	const std::string& fragmentName, const std::string& id)
 {
 	try
 	{
@@ -161,7 +162,7 @@ bool ResourceManager::loadShader(std::string vertexName, std::string geometryNam
 	}
 }
 
-const Shader& ResourceManager::getShader(std::string id)
+const Shader& ResourceManager::getShader(const std::string& id)
 {
 	// Si no se encuentra el shader especificado, se devuelve el predeterminado
 	if (shaders.find(id) != shaders.end())
@@ -170,7 +171,45 @@ const Shader& ResourceManager::getShader(std::string id)
 		return *shaders["default"];
 }
 
-// 
+// - - - - - - - - - - - - 
+
+// Muy parecido a 'loadShader'
+bool ResourceManager::loadComposite(const std::string& compositeName, const std::string& id)
+{
+	try
+	{
+		Shader* sh = new Shader();
+
+		// Vertex shader único para todos los efectos composite
+		std::string VSprogram = FileToString((COMPOSITES_PATH + "composite.vert").c_str());
+		sh->load(GL_VERTEX_SHADER, VSprogram.c_str());
+
+		// Fragment shader especificado
+		if (compositeName != "")
+		{
+			std::string FSprogram = FileToString((COMPOSITES_PATH + compositeName).c_str());
+			sh->load(GL_FRAGMENT_SHADER, FSprogram.c_str());
+		}
+
+		// Compilarlo y añadirlo al diccionario
+		sh->link();
+		shaders[id] = sh;
+		return true;
+	}
+
+	catch (const std::ios_base::failure& f)
+	{
+		std::cout << f.what();
+		return false;
+	}
+}
+
+const Shader& ResourceManager::getComposite(const std::string& id)
+{
+	return getShader(id);
+}
+
+// - - - - - - - - - - - - - - - - - - 
 
 void ResourceManager::enableMipmaps(bool b)
 {

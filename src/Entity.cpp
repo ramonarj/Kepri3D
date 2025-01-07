@@ -93,7 +93,7 @@ void Entity::update(GLuint deltaTime)
 	}
 }
 
-void Entity::setPosition(glm::dvec3 pos)
+void Entity::setPosition(const glm::dvec3& pos)
 {
 	// Cambiamos la última columna, que contiene la posición
 	modelMat[3][0] = pos.x;
@@ -101,7 +101,7 @@ void Entity::setPosition(glm::dvec3 pos)
 	modelMat[3][2] = pos.z;
 }
 
-void Entity::translate(glm::dvec3 transVector, ReferenceSystem refSys)
+void Entity::translate(const glm::dvec3& transVector, ReferenceSystem refSys)
 {
 	dmat4 transMat = glm::translate({ 1.0 }, transVector);
 
@@ -117,7 +117,7 @@ void Entity::translate(glm::dvec3 transVector, ReferenceSystem refSys)
 	}
 }
 
-void Entity::rotate(GLdouble alpha, glm::dvec3 axis, ReferenceSystem refSys)
+void Entity::rotate(GLdouble alpha, const glm::dvec3& axis, ReferenceSystem refSys)
 {
 	// Rotación local: postmultiplicamos la matriz de rotación
 	if(refSys == LOCAL)
@@ -140,7 +140,7 @@ void Entity::rotate(GLdouble alpha, glm::dvec3 axis, ReferenceSystem refSys)
 	}
 }
 
-void Entity::scale(glm::dvec3 scale)
+void Entity::scale(const glm::dvec3& scale)
 {
 	modelMat = glm::scale(modelMat, scale);
 }

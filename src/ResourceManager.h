@@ -14,6 +14,7 @@ const std::string MESHES_PATH = "..\\bin\\assets\\meshes\\";
 const std::string TEXTURES_PATH = "..\\bin\\assets\\textures\\";
 const std::string MATERIALS_PATH = "..\\bin\\assets\\materials\\";
 const std::string SHADERS_PATH = "..\\bin\\assets\\shaders\\";
+const std::string COMPOSITES_PATH = "..\\bin\\assets\\shaders\\postprocess\\";
 
 class ResourceManager
 {
@@ -36,29 +37,37 @@ public:
 
 	// Carga de recursos
 	/* Carga una malla de archivo y le asigna el ID dado */
-	bool loadMesh(std::string meshName, std::string id);
+	bool loadMesh(const std::string& meshName, const std::string& id);
 
 	/* Carga una textura de archivo y le asigna el ID dado */
-	bool loadTexture(std::string textureName, std::string id);
+	bool loadTexture(const std::string& textureName, const std::string& id);
 
 	/* Carga un material de archivo y le asigna el ID dado */
-	bool loadMaterial(std::string materialName, std::string id);
+	bool loadMaterial(const std::string& materialName, const std::string& id);
 
 	/* Carga un shader de archivo y le asigna el ID dado */
-	bool loadShader(std::string vertexName, std::string geometryName, std::string fragmentName, std::string id);
+	bool loadShader(const std::string& vertexName, const std::string& geometryName, 
+		const std::string& fragmentName, const std::string& id);
+
+	/* Carga un composite de archivo y le asigna el ID dado */
+	bool loadComposite(const std::string& compositeName, const std::string& id);
 
 	// Proporcionar los recursos
 	/* Devuelve una textura dada */
-	const Mesh& getMesh(std::string id);
+	const Mesh& getMesh(const std::string& id);
 
 	/* Devuelve una textura dada */
-	const Texture& getTexture(std::string id);
+	const Texture& getTexture(const std::string& id);
 
 	/* Devuelve un material dado */
-	const Material& getMaterial(std::string id);
+	const Material& getMaterial(const std::string& id);
 
 	/* Devuelve un shader dado */
-	const Shader& getShader(std::string id);
+	const Shader& getShader(const std::string& id);
+
+	/* Devuelve un composite dado */
+	const Shader& getComposite(const std::string& id);
+
 
 	// Otros métodos
 	void enableMipmaps(bool b);

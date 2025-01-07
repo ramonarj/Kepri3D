@@ -56,11 +56,15 @@ protected:
 	/* Canvas de la escena */
 	Canvas* m_canvas;
 
+	/* Efecto de postprocesado que se aplicará a la escena */
+	static Shader* compositeShader;
+
 	/* Malla para pintar los efectos */
 	Mesh* m_effectsMesh;
 
+
+	// Extra
 	static Shader* normalsShader;
-	static Shader* compositeShader;
 	static bool skyboxActive;
 	static bool mipmapsActive;
 
