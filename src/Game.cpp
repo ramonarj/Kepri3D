@@ -4,6 +4,8 @@
 #include "Camera.h"
 #include "Material.h"
 #include "InputManager.h"
+#include "Juego/PruebaScene.h"
+#include "Juego/SpaceScene.h"
 
 #include <freeglut.h>
 #include <glew.h>
@@ -40,7 +42,7 @@ void Game::init(int argc, char* argv[], int windowWidth, int windowHeight, const
 	// 2) Crear el puerto de vista, la cámara y la escena
 	viewport = new Viewport(windowWidth, windowHeight);
 	camera = new Camera(viewport);
-	scene = new Scene(camera);
+	scene = new PruebaScene(camera);
 
 	// 3) Registrar los distintos callbacks de teclado, ratón y ventana
 	registerGlutCallbacks();

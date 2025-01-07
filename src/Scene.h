@@ -13,15 +13,19 @@ class Shader;
 class Mesh;
 class Skybox;
 
+// Clase abstracta que representa una escena de juego, con sus entidades, luces, etc.
 class Scene
 {
 public:
 	/* Constructora por defecto*/
+	Scene(){}
 	Scene(Camera* cam) : m_camera(cam), m_canvas(nullptr), m_effectsMesh(nullptr), m_skybox(nullptr) { };
+
+	/* Destructora */
 	~Scene();
 
 	/* Inicia los subsistemas de openGL y crea texturas y entidades */
-	void init();
+	virtual void init() = 0;
 	/* Pinta todas las entidades */
 	void render();
 	/* Actualiza todas las entidades */
@@ -39,6 +43,7 @@ public:
 protected:
 	/* Lista de entidades */
 	std::vector<Entity*> m_entities;
+
 	/* Lista de luces */
 	std::vector<Light*> m_lights;
 
@@ -61,21 +66,9 @@ protected:
 
 	// Métodos auxiliares
 
-	void ViewportTest();
-
-	void PruebaMateriales();
-
 	static void switchBoolParam(GLenum param);
 
-	// Sub-métodos del render() para que sea más legible
-	void loadLights();
-	void renderSkybox(const glm::dmat4& projViewMat);
-	void renderEntities(const glm::dmat4& projViewMat);
-	void renderNormals(const glm::dmat4& projViewMat);
-	void renderCanvas();
-	void renderEffects();
 
-	
 	// Callbacks para los botones
 	static void cullingButtonPressed();
 	static void blendingButtonPressed();
@@ -91,8 +84,14 @@ protected:
 	static void skyboxButtonPressed();
 	static void gammaButtonPressed();
 
-	// Vector de callbacks
-	static std::vector<void(*)()> callbacks;
+private:
+	// Sub-métodos del render() para que sea más legible
+	void loadLights();
+	void renderSkybox(const glm::dmat4& projViewMat);
+	void renderEntities(const glm::dmat4& projViewMat);
+	void renderNormals(const glm::dmat4& projViewMat);
+	void renderCanvas();
+	void renderEffects();
 };
 
 #endif

@@ -1,10 +1,8 @@
 #include "GameManager.h"
 
-#include "InputManager.h"
-#include "Camera.h"
-#include "Scene.h"
-#include "Light.h"
-#include "UI/UIElement.h"
+#include "../Kepri3D.h"
+
+#include "../Scene.h"
 
 #include <freeglut.h>
 

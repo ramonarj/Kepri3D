@@ -1,7 +1,7 @@
 #ifndef __GAMEMANAGER__
 #define __GAMEMANAGER__
 
-#include "Entity.h"
+#include "../Entity.h"
 
 class Camera;
 class Scene;

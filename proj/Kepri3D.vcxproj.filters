@@ -58,9 +58,6 @@
     <ClCompile Include="..\src\InputManager.cpp">
       <Filter>Core</Filter>
     </ClCompile>
-    <ClCompile Include="..\src\GameManager.cpp">
-      <Filter>Archivos de origen</Filter>
-    </ClCompile>
     <ClCompile Include="..\src\Utils.cpp">
       <Filter>Utils</Filter>
     </ClCompile>
@@ -75,6 +72,15 @@
     </ClCompile>
     <ClCompile Include="..\src\Material.cpp">
       <Filter>Graficos</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\Juego\GameManager.cpp">
+      <Filter>Archivos de origen</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\Juego\SpaceScene.cpp">
+      <Filter>Archivos de origen</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\Juego\PruebaScene.cpp">
+      <Filter>Archivos de origen</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -120,9 +126,6 @@
     <ClInclude Include="..\src\InputManager.h">
       <Filter>Core</Filter>
     </ClInclude>
-    <ClInclude Include="..\src\GameManager.h">
-      <Filter>Archivos de origen</Filter>
-    </ClInclude>
     <ClInclude Include="..\src\Game.h">
       <Filter>Core</Filter>
     </ClInclude>
@@ -134,6 +137,18 @@
     </ClInclude>
     <ClInclude Include="..\src\Material.h">
       <Filter>Graficos</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\Juego\GameManager.h">
+      <Filter>Archivos de origen</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\Juego\SpaceScene.h">
+      <Filter>Archivos de origen</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\Juego\PruebaScene.h">
+      <Filter>Archivos de origen</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\Kepri3D.h">
+      <Filter>Core</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

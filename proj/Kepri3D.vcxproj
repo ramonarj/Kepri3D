@@ -158,8 +158,10 @@
     <ClCompile Include="..\src\Camera.cpp" />
     <ClCompile Include="..\src\Entity.cpp" />
     <ClCompile Include="..\src\Game.cpp" />
-    <ClCompile Include="..\src\GameManager.cpp" />
     <ClCompile Include="..\src\InputManager.cpp" />
+    <ClCompile Include="..\src\Juego\GameManager.cpp" />
+    <ClCompile Include="..\src\Juego\PruebaScene.cpp" />
+    <ClCompile Include="..\src\Juego\SpaceScene.cpp" />
     <ClCompile Include="..\src\Light.cpp" />
     <ClCompile Include="..\src\Main.cpp" />
     <ClCompile Include="..\src\Material.cpp" />
@@ -180,8 +182,11 @@
     <ClInclude Include="..\src\checkML.h" />
     <ClInclude Include="..\src\Entity.h" />
     <ClInclude Include="..\src\Game.h" />
-    <ClInclude Include="..\src\GameManager.h" />
     <ClInclude Include="..\src\InputManager.h" />
+    <ClInclude Include="..\src\Juego\GameManager.h" />
+    <ClInclude Include="..\src\Juego\PruebaScene.h" />
+    <ClInclude Include="..\src\Juego\SpaceScene.h" />
+    <ClInclude Include="..\src\Kepri3D.h" />
     <ClInclude Include="..\src\Light.h" />
     <ClInclude Include="..\src\Material.h" />
     <ClInclude Include="..\src\Mesh.h" />
