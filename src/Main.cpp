@@ -7,7 +7,7 @@ int main(int argc, char*argv[])
 	_CrtSetDbgFlag ( _CRTDBG_ALLOC_MEM_DF | _CRTDBG_LEAK_CHECK_DF ); 
 
 	// 1) Crear e inicializar el juego con las dimensiones dadas
-	Game::Instance()->init(argc, argv, 800, 600);
+	Game::Instance()->init(argc, argv, 800, 600, "Mi juego");
 
 	// 2) Bucle de 'juego' (lo maneja glut)
 	Game::Instance()->run();

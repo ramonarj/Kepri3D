@@ -23,12 +23,16 @@ void motion(int x, int y);
 void mouse(int button, int state, int x, int y);
 void clickedMotion(int x, int y);
 
+unsigned int currentSec = 0;
+unsigned int fps = 0;
 
-void Game::init(int argc, char* argv[], int windowWidth, int windowHeight)
+
+void Game::init(int argc, char* argv[], int windowWidth, int windowHeight, const std::string& windowName)
 {
 	// 1) Iniciar GLUT y GLEW
 	iniciarGlut(argc, argv, windowWidth, windowHeight);
 	iniciarGLEW();
+	this->windowName = windowName;
 
 	// Para que se inicialicen las variables estáticas
 	InputManager::Instance();
@@ -66,6 +70,16 @@ void Game::update()
 	//Llamamos al update y al render
 	scene->update(deltaTime); 
 	render();
+
+	// Conteo de FPS
+	currentSec += deltaTime;
+	fps++;
+	if(currentSec > 1000)
+	{
+		glutSetWindowTitle((windowName + " - " + std::to_string(fps) + " fps").c_str());
+		currentSec = 0;
+		fps = 0;
+	}
 }
 
 void Game::clean()
@@ -107,7 +121,7 @@ void Game::iniciarGlut(int argc, char* argv[], int windowW, int windowH)
 
 	glutInitDisplayMode(GLUT_RGBA | GLUT_DOUBLE | GLUT_DEPTH | GLUT_MULTISAMPLE); // | GLUT_STENCIL
 
-	glutWindow = glutCreateWindow("Kepri3D");  // nombre de la ventana
+	glutWindow = glutCreateWindow(windowName.c_str());  // nombre de la ventana
 	glutIgnoreKeyRepeat(true);
 	//glutFullScreen();
 }

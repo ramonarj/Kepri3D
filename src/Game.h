@@ -15,6 +15,7 @@
 
 #include "InputManager.h"
 #include "checkML.h"
+#include <string>
 
 class Scene;
 class Camera;
@@ -36,7 +37,7 @@ public:
 	~Game();
 
 	/* Activa los subsistemas de OpenGL */
-	void init(int argc, char* argv[], int windowWidth, int windowHeight);
+	void init(int argc, char* argv[], int windowWidth, int windowHeight, const std::string& windowName);
 
 	/* Ejecuta el bucle principal del juego (hasta que se cierre la ventana) */
 	void run();
@@ -55,7 +56,8 @@ public:
 	void resize(int newWidth, int newHeight);
 
 private:
-	Game(){}
+	Game() : camera(nullptr), scene(nullptr), viewport(nullptr){}
+
 	/* Instancia del singleton */
 	static Game* instance;
 
@@ -68,6 +70,9 @@ private:
 
 	/* ID de la ventana de GLUT */
 	int glutWindow = 0;
+
+	/* Nombre de la ventana, dado por el usuario */
+	std::string windowName;
 
 	/* Instante del último update */
 	GLuint last_update_tick = 0;
