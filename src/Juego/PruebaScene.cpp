@@ -4,17 +4,18 @@
 
 #include "GameManager.h"
 
-const float buttonScale = 0.28f;
-const float buttonSep = 0.13f;
+const float buttonScale = 0.27f;
+const float buttonMargin = 0.1f;
+const float buttonSep = 0.12f;
 
 std::vector<std::string> buttonNames = { "botonCulling", "botonBlending", "botonLighting", "botonTextures", "botonShading",
-"botonAlpha", "botonMultisampling", "botonMipmaps", "botonNormales", "botonPostprocess", "botonScissor", 
-"botonSkybox", "botonGamma", "botonInstancing"};
+"botonAlpha", "botonMultisampling", "botonMipmaps", "botonNormales", "botonPostprocess", "botonScissor",
+"botonSkybox", "botonGamma", "botonInstancing", "botonStencil", "botonLogicOp"};
 
 std::vector<void(*)()> PruebaScene::callbacks = { cullingButtonPressed, blendingButtonPressed, lightingButtonPressed,
 texturesButtonPressed, shadingButtonPressed, alphaButtonPressed, multisamplingButtonPressed, mipmapButtonPressed,
 normalsButtonPressed, compositeButtonPressed, scissorButtonPressed, skyboxButtonPressed, gammaButtonPressed, 
-instancingButtonPressed };
+instancingButtonPressed, stencilButtonPressed, logicOpButtonPressed };
 
 ParticleSystem* PruebaScene::particleSys = nullptr;
 
@@ -154,10 +155,10 @@ void PruebaScene::init()
 	{
 		// Su textura, posición, escala y callback
 		Button* b = new Button(buttonNames[i], m_canvas);
-		if (i < 7)
-			b->setPositionUI(buttonSep, 0.89 - i * buttonSep);
+		if (i < 8)
+			b->setPositionUI(buttonMargin, 0.92 - i * buttonSep);
 		else
-			b->setPositionUI(1 - buttonSep, 0.89 - (i - 7) * buttonSep);
+			b->setPositionUI(1 - buttonMargin, 0.92 - (i - 8) * buttonSep);
 		b->setScaleUI(buttonScale, buttonScale);
 		b->setCallback(callbacks[i]);
 		b->setParent(botonesMenu); // hijos del nodo vacío
@@ -170,9 +171,9 @@ void PruebaScene::init()
 
 	/* Sistema de partículas */
 	// Con 10.000, empieza a ir demasiado lento
-	particleSys = new ParticleSystem("cobre", 2000);
-	particleSys->setActive(false);
-	AddEntity(particleSys);
+	//particleSys = new ParticleSystem("cobre", 2000);
+	//particleSys->setActive(false);
+	//AddEntity(particleSys);
 
 	// Comparación de rendimiento VS el sistema de partículas
 	//int count = 0;
@@ -317,5 +318,8 @@ void PruebaScene::ViewportTest()
 
 void PruebaScene::instancingButtonPressed() 
 {
-	particleSys->setActive(!particleSys->isActive());
+	if(particleSys != nullptr)
+	{
+		particleSys->setActive(!particleSys->isActive());
+	}
 }

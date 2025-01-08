@@ -121,7 +121,7 @@ void Game::iniciarGlut(int argc, char* argv[], int windowW, int windowH)
 	glutInitWindowSize(windowW, windowH);   // window size
 	//glutInitWindowPosition (140, 140);
 
-	glutInitDisplayMode(GLUT_RGBA | GLUT_DOUBLE | GLUT_DEPTH | GLUT_MULTISAMPLE); // | GLUT_STENCIL
+	glutInitDisplayMode(GLUT_RGBA | GLUT_DOUBLE | GLUT_DEPTH | GLUT_MULTISAMPLE | GLUT_STENCIL ); // | GLUT_STENCIL
 
 	glutWindow = glutCreateWindow(windowName.c_str());  // nombre de la ventana
 	glutIgnoreKeyRepeat(true);
@@ -220,6 +220,18 @@ void Game::initGLSubsystems()
 	//glEnable(GL_NORMALIZE);
 	// Usar los colores de los vértices
 	//glEnable(GL_COLOR_MATERIAL);
+
+	/* Stencil Test */
+	//glEnable(GL_STENCIL_TEST);
+	// Indica si al dibujar algo se actualiza el Stencil Buffer (0xFF) o no (0x00)
+	glStencilMask(0xFF);
+	// Indica el valor que debe tener un fragmento para pasar el Stencil Test
+	glStencilFunc(GL_ALWAYS, 0, 0xFF);
+	// Indica qué hacer con el fragmento una vez pasa/falla los test (Stencil y Depth)
+	glStencilOp(GL_KEEP, GL_KEEP, GL_REPLACE);
+
+	// Orden de los tests//
+	// SCISSOR - - > ALPHA - - > STENCIL - - > DEPTH - - > BLENDING - - > DITHERING - - > LOGIC OPERATIONS //
 }
 
 void Game::resize(int newWidth, int newHeight)

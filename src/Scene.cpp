@@ -163,7 +163,8 @@ void Scene::renderEffects()
 	if (compositeShader != nullptr)
 	{
 		// 'glClear' es una operación costosa, podría buscarse una alternativa
-		glClear(GL_DEPTH_BUFFER_BIT);
+		//glClear(GL_DEPTH_BUFFER_BIT);
+		glDepthFunc(GL_ALWAYS);
 		glUseProgram(compositeShader->getId());
 
 		// Crear textura con los píxeles del color buffer (tiene que ser GL_BACK para que funcione)
@@ -172,6 +173,8 @@ void Scene::renderEffects()
 
 		// "Re"dibujar la escena usando el shader
 		m_effectsMesh->draw();
+
+		glDepthFunc(GL_LESS);
 	}
 }
 
@@ -353,6 +356,25 @@ void Scene::skyboxButtonPressed()
 void Scene::gammaButtonPressed()
 {
 	switchBoolParam(GL_FRAMEBUFFER_SRGB);
+
+	InputManager::Instance()->setMousePos(400, 300);
+}
+
+void Scene::stencilButtonPressed()
+{
+	switchBoolParam(GL_STENCIL_TEST);
+	std::cout << "Stencil" << std::endl;
+	InputManager::Instance()->setMousePos(400, 300);
+}
+
+void Scene::logicOpButtonPressed()
+{
+	// Activar las operaciones lógicas implica desactivar totalmente el 'Blending'
+	switchBoolParam(GL_COLOR_LOGIC_OP);
+
+	// Tipo de operación que se hace sobre cada píxel
+	// Curiosas : GL_COPY (predet.), GL_COPY_INVERTED (negativo), GL_INVERT (b/n)
+	glLogicOp(GL_COPY_INVERTED);
 
 	InputManager::Instance()->setMousePos(400, 300);
 }

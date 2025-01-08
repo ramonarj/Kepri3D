@@ -90,6 +90,8 @@ protected:
 	static void scissorButtonPressed();
 	static void skyboxButtonPressed();
 	static void gammaButtonPressed();
+	static void stencilButtonPressed();
+	static void logicOpButtonPressed();
 
 private:
 	// Sub-métodos del render() para que sea más legible
