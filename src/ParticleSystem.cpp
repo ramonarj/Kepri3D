@@ -2,15 +2,18 @@
 
 #include "Mesh.h"
 #include "Texture.h"
+#include "Camera.h"
+#include "Shader.h"
 #include <gtc/type_ptr.hpp>
 
-ParticleSystem::ParticleSystem(const std::string& particleTextureId, GLuint maxParticles, PARTICLE_TYPE partType)
+ParticleSystem::ParticleSystem(const std::string& particleTextureId, GLdouble size, GLuint maxParticles, PARTICLE_TYPE partType)
 {
+	//m_mesh = IndexMesh::generateRectangle(1, 1);
 	// Generar la malla
-	if(partType == PARTICLE_2D)
-		m_mesh = IndexMesh::generateRectangle(0.5, 0.5);
-	else
-		m_mesh = IndexMesh::generateSphere(0.25, 15, true);
+	if (partType == PARTICLE_2D) // 'círculo'
+		m_mesh = Mesh::generateFilledPolygon(10, size);
+	else // esfera
+		m_mesh = IndexMesh::generateSphere(size, 12, true);
 
 	// Asignar la textura y el shader específico
 	setTexture(particleTextureId);
@@ -33,7 +36,7 @@ ParticleSystem::ParticleSystem(const std::string& particleTextureId, GLuint maxP
 	// Valores iniciales
 	for (int i = 0; i < maxParticles; i++)
 	{
-		m_life[i] = (m_maxLifetime / maxParticles) * i;
+		m_life[i] = ((double)m_maxLifetime / maxParticles) * i;
 		m_positions[i] = getPosition();
 
 		// Velocidad aleatoria, la cual conserva durante toda la simulación
@@ -41,6 +44,15 @@ ParticleSystem::ParticleSystem(const std::string& particleTextureId, GLuint maxP
 		float dirY = rand() % 1000 / 500.0 - 1;
 		float dirZ = rand() % 1000 / 500.0 - 1;
 		m_velocities[i] = glm::normalize(glm::dvec3({ dirX, dirY, dirZ }));
+	}
+}
+
+void ParticleSystem::setLifetime(double time)
+{
+	this->m_maxLifetime = time * 1000;
+	for (int i = 0; i < maxParticles; i++)
+	{
+		m_life[i] = ((double)m_maxLifetime / maxParticles) * i;
 	}
 }
 
@@ -69,6 +81,10 @@ void ParticleSystem::render(const glm::dmat4& viewMat)
 	// 2) Dibujar las mallas de todas las partículas a la vez
 	if (m_mesh != nullptr)
 	{
+		// Uniform (P * V)
+		int viewProjLoc = glGetUniformLocation(m_shader->getId(), "viewProjMat");
+		glUniformMatrix4dv(viewProjLoc, 1, GL_FALSE, glm::value_ptr(m_cam->getProjMat() * viewMat));
+
 		// Para el vertex shader; posición de cada partícula
 		glVertexAttribPointer(10, 3, GL_DOUBLE, GL_FALSE, 0, m_positions);
 		glEnableVertexAttribArray(10);

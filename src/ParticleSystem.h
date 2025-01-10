@@ -4,6 +4,8 @@
 #include "Entity.h"
 #include <string>
 
+class Camera;
+
 enum PARTICLE_TYPE
 {
 	PARTICLE_2D = 0,
@@ -14,7 +16,7 @@ enum PARTICLE_TYPE
 class ParticleSystem : public Entity
 {
 public:
-	ParticleSystem(const std::string& particleTextureId, GLuint maxParticles, PARTICLE_TYPE partType = PARTICLE_2D); 
+	ParticleSystem(const std::string& particleTextureId, GLdouble size, GLuint maxParticles, PARTICLE_TYPE partType = PARTICLE_2D); 
 	~ParticleSystem();
 
 	void render(const glm::dmat4& viewMat) override;
@@ -25,7 +27,10 @@ public:
 	/* Establece la rapidez de las partículas */
 	inline void setParticleSpeed(float speed) { this->m_particleSpeed = speed; }
 	/* Establece el tiempo de vida (en segundos) de las partículas */
-	inline void setLifetime(double time) { this->m_maxLifetime = time * 1000; }
+	void setLifetime(double time);
+
+	// Temporal
+	inline void setCamera(Camera* cam) { m_cam = cam; }
 
 private:
 	/* Número actual de partículas activas */
@@ -36,6 +41,9 @@ private:
 
 	/* Rapidez de las partículas */
 	float m_particleSpeed;
+
+	/* Tamaño de las partículas */
+
 
 	/* Tiempo de vida de las partículas */
 	GLuint m_maxLifetime;
@@ -52,6 +60,9 @@ private:
 
 	/* Tiempo que lleva viva cada partícula */
 	GLuint* m_life;
+
+	// Referencia a la cámara; es algo temporal
+	Camera* m_cam;
 };
 
 // - - - - - - - - - - 

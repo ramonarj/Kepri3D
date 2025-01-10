@@ -171,9 +171,10 @@ void PruebaScene::init()
 
 	/* Sistema de partículas */
 	// Con 10.000, empieza a ir demasiado lento
-	particleSys = new ParticleSystem("agua", 2000, PARTICLE_2D);
-	particleSys->setParticleSpeed(5.0);
-	particleSys->setLifetime(2);
+	particleSys = new ParticleSystem("agua", 0.2, 500, PARTICLE_2D);
+	particleSys->setParticleSpeed(2.0);
+	particleSys->setLifetime(1);
+	particleSys->setCamera(m_camera);
 	particleSys->setActive(false);
 	AddEntity(particleSys);
 

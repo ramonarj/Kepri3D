@@ -23,10 +23,12 @@ public:
 	/* Creación de mallas de los distintos objetos */
 	// Ejes RGB
 	static Mesh* generateAxesRGB(GLdouble l);
-	// Polígono regular de n lados, dibujado con triángulos (TRIANGLE_FAN)
-	static Mesh* generatePolygon(GLint sides, GLdouble size);
+
 	// Polígono regular de n lados, dibujado con líneas (LINE_LOOP)
-	static Mesh* generateFilledPolygon(GLint sides, GLint size);
+	static Mesh* generatePolygon(GLint sides, GLdouble size);
+	// Polígono regular de n lados, dibujado con triángulos rellenos (TRIANGLE_FAN)
+	static Mesh* generateFilledPolygon(GLint sides, GLdouble size);
+
 	// Cubo con caras opacas
 	static Mesh* generateCubeSides(GLdouble size);
 

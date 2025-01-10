@@ -162,7 +162,7 @@ Mesh* Mesh::generatePolygon(GLint sides, GLdouble size)
 	return m;
 }
 
-Mesh* Mesh::generateFilledPolygon(GLint sides, GLint size)
+Mesh* Mesh::generateFilledPolygon(GLint sides, GLdouble size)
 {
 	Mesh* m = new Mesh();
 	m->type = GL_TRIANGLE_FAN;
@@ -183,7 +183,7 @@ Mesh* Mesh::generateFilledPolygon(GLint sides, GLint size)
 	m->colores = new dvec4[m->numVertices];
 	for (int i = 0; i < m->numVertices; i++)
 	{
-		m->colores[i] = dvec4(0.8, 0.8, 0.8, 1);
+		m->colores[i] = dvec4(0.8, 0.8, 0, 1);
 	}
 
 	/* Coordenadas de textura (suponiendo un cuadrado) */
