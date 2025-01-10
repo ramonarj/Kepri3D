@@ -216,11 +216,13 @@ void GameManager::controlTorre(GLuint deltaTime)
 	// Girar a los lados
 	if(InputManager::Instance()->getSpecialKey(GLUT_KEY_RIGHT))
 	{
-		torre->rotate(3.5 * deltaTime / -1000.0, { 0,1,0 });
+		movTorre.x += 1;
+		//pSystem->rotate(3.5 * deltaTime / -1000.0, { 0,1,0 });
 	}
 	if (InputManager::Instance()->getSpecialKey(GLUT_KEY_LEFT))
 	{
-		torre->rotate(3.5 * deltaTime / 1000.0, { 0,1,0 });
+		movTorre.x -= 1;
+		//pSystem->rotate(3.5 * deltaTime / 1000.0, { 0,1,0 });
 	}
 	// Moverse adelante / atrás
 	if (InputManager::Instance()->getSpecialKey(GLUT_KEY_UP))
@@ -244,5 +246,5 @@ void GameManager::controlTorre(GLuint deltaTime)
 
 	// Mover la torre
 	movTorre = movTorre * velTorre * (deltaTime / 1000.0);
-	torre->translate(movTorre, LOCAL);
+	pSystem->translate(movTorre, GLOBAL);
 }

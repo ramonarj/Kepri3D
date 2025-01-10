@@ -11,13 +11,13 @@ class UIElement;
 class GameManager : public Entity
 {
 public:
-	GameManager(Scene* scene, Camera* cam, UIElement* botonesMenu, Entity* torre) : 
+	GameManager(Scene* scene, Camera* cam, UIElement* botonesMenu, Entity* particleSystem) :
 		dirLight(nullptr), circleLight(nullptr), spotLight(nullptr)
 	{ 
 		this->scene = scene;
 		this->cam = cam; 
 		this->botonesMenu = botonesMenu;
-		this->torre = torre;
+		this->pSystem = particleSystem;
 	}
 	~GameManager(){}
 
@@ -28,7 +28,7 @@ private:
 	Camera* cam;
 	Scene* scene;
 	Light* dirLight, *circleLight, *spotLight;
-	Entity* torre;
+	Entity* pSystem;
 	UIElement* botonesMenu;
 
 	glm::vec3 movCamara = { 0,0,0 };

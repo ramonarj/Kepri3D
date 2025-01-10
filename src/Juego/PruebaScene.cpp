@@ -171,9 +171,11 @@ void PruebaScene::init()
 
 	/* Sistema de partículas */
 	// Con 10.000, empieza a ir demasiado lento
-	//particleSys = new ParticleSystem("cobre", 2000);
-	//particleSys->setActive(false);
-	//AddEntity(particleSys);
+	particleSys = new ParticleSystem("agua", 2000, PARTICLE_2D);
+	particleSys->setParticleSpeed(5.0);
+	particleSys->setLifetime(2);
+	particleSys->setActive(false);
+	AddEntity(particleSys);
 
 	// Comparación de rendimiento VS el sistema de partículas
 	//int count = 0;
@@ -194,7 +196,7 @@ void PruebaScene::init()
 	
 
 	// GAMEMANAGER
-	GameManager* gm = new GameManager(this, m_camera, botonesMenu, torre);
+	GameManager* gm = new GameManager(this, m_camera, botonesMenu, particleSys);
 	gm->setLights(dirLight, circleLight, spotLight);
 	AddEntity(gm);
 }
