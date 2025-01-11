@@ -19,6 +19,13 @@ bool Scene::mipmapsActive = false;
 Shader* Scene::normalsShader = nullptr;
 Shader* Scene::compositeShader = nullptr;
 
+Scene::Scene() : m_camera(nullptr), m_canvas(nullptr), m_skybox(nullptr)
+{
+	// Crear la malla de rectángulo para el postprocesado
+	// (2, 2) para que ocupe la pantalla entera
+	m_effectsMesh = Mesh::generateRectangle(2, 2);
+}
+
 void Scene::AddEntity(Entity* e, bool isTranslucid)
 {
 	//if (!isTranslucid)
@@ -26,11 +33,6 @@ void Scene::AddEntity(Entity* e, bool isTranslucid)
 	//else
 	//	m_translucentEntities.push_back(e);
 	m_entities.push_back(e);
-}
-
-void Scene::init()
-{
-
 }
 
 void Scene::render()
@@ -217,166 +219,6 @@ void Scene::switchBoolParam(GLenum param)
 		glDisable(param);
 	else
 		glEnable(param);
-}
-
-void Scene::cullingButtonPressed()
-{
-	// Activar / desactivar el culling de polígonos traseros
-	switchBoolParam(GL_CULL_FACE);
-
-	InputManager::Instance()->setMousePos(400, 300);
-}
-
-void Scene::blendingButtonPressed()
-{
-	// Activar / desactivar las transparencias en texturas y materiales
-	switchBoolParam(GL_BLEND);
-
-	InputManager::Instance()->setMousePos(400, 300);
-}
-
-void Scene::lightingButtonPressed()
-{
-	// Activar / desactivar la iluminación
-	switchBoolParam(GL_LIGHTING);
-
-	InputManager::Instance()->setMousePos(400, 300);
-}
-
-void Scene::texturesButtonPressed()
-{
-	// Activar / desactivar el uso de texturas
-	switchBoolParam(GL_TEXTURE_2D);
-
-	InputManager::Instance()->setMousePos(400, 300);
-}
-
-void Scene::shadingButtonPressed()
-{
-	// Cambiar entre sombreado FLAT y SMOOTH
-	GLint shadeType;
-	glGetIntegerv(GL_SHADE_MODEL, &shadeType);
-	if (shadeType == GL_FLAT)
-	{
-		glShadeModel(GL_SMOOTH);
-		Material::setShadingType(GL_SMOOTH);
-	}
-
-	else
-	{
-		glShadeModel(GL_FLAT);
-		Material::setShadingType(GL_FLAT);
-	}
-
-	InputManager::Instance()->setMousePos(400, 300);
-}
-
-void Scene::alphaButtonPressed()
-{
-	// Activar / desactivar el alpha test
-	switchBoolParam(GL_ALPHA_TEST);
-
-	InputManager::Instance()->setMousePos(400, 300);
-}
-
-void Scene::multisamplingButtonPressed()
-{
-	// Activar / desactivar el multisampling
-	switchBoolParam(GL_MULTISAMPLE);
-
-	InputManager::Instance()->setMousePos(400, 300);
-}
-
-void Scene::mipmapButtonPressed()
-{
-	// Activar / desactivar el uso de mipmaps
-	mipmapsActive = !mipmapsActive;
-	ResourceManager::Instance()->enableMipmaps(mipmapsActive);
-
-
-	InputManager::Instance()->setMousePos(400, 300);
-}
-
-void Scene::normalsButtonPressed()
-{
-	// Activar / desactivar la visualización de vectores normales a cada vértice
-	if (normalsShader == nullptr)
-		normalsShader = (Shader*)&ResourceManager::Instance()->getShader("normals");
-	else
-		normalsShader = nullptr;
-
-	InputManager::Instance()->setMousePos(400, 300);
-}
-
-void Scene::compositeButtonPressed()
-{
-	// Activar / desactivar la visualización de vectores normales a cada vértice
-	if (compositeShader == nullptr)
-		compositeShader = (Shader*)&ResourceManager::Instance()->getComposite("waves");
-	else
-		compositeShader = nullptr;
-
-	InputManager::Instance()->setMousePos(400, 300);
-}
-
-
-void Scene::scissorButtonPressed()
-{
-	// Bandas cinemáticas negras. Como tenemos 2 buffers, hay que ponerlos los 2 a negro antes de
-	// activar el scissor test (para que los bordes no se queden con imágenes residuales y parpadeen)
-	glClearColor(0, 0, 0, 0);
-	glClear(GL_COLOR_BUFFER_BIT);
-	// Segundo buffer
-	if(glutGet(GLUT_WINDOW_DOUBLEBUFFER) == 1)
-	{
-		glutSwapBuffers();
-		glClear(GL_COLOR_BUFFER_BIT);
-	}
-	
-	// Establecer la zona visible (en píxeles) del scissor box
-	float proporcionBarra = glutGet(GLUT_WINDOW_HEIGHT) / 6.0f;
-	glScissor(0, proporcionBarra, glutGet(GLUT_WINDOW_WIDTH), glutGet(GLUT_WINDOW_HEIGHT) - proporcionBarra * 2);
-
-	// Activar/desactivar el scissor test
-	switchBoolParam(GL_SCISSOR_TEST);
-
-	// Volver a dejar el color de fondo a blanco
-	glClearColor(1, 1, 1, 0);
-
-	InputManager::Instance()->setMousePos(400, 300);
-}
-
-void Scene::skyboxButtonPressed()
-{
-	skyboxActive = !skyboxActive;
-
-	InputManager::Instance()->setMousePos(400, 300);
-}
-
-void Scene::gammaButtonPressed()
-{
-	switchBoolParam(GL_FRAMEBUFFER_SRGB);
-
-	InputManager::Instance()->setMousePos(400, 300);
-}
-
-void Scene::stencilButtonPressed()
-{
-	switchBoolParam(GL_STENCIL_TEST);
-	std::cout << "Stencil" << std::endl;
-	InputManager::Instance()->setMousePos(400, 300);
-}
-
-void Scene::logicOpButtonPressed()
-{
-	// Activar las operaciones lógicas implica desactivar totalmente el 'Blending'
-	switchBoolParam(GL_COLOR_LOGIC_OP);
-
-	// Tipo de operación que se hace sobre cada píxel
-	// Curiosas : GL_COPY (predet.), GL_COPY_INVERTED (negativo), GL_INVERT (b/n)
-	glLogicOp(GL_COPY_INVERTED);
-
-	InputManager::Instance()->setMousePos(400, 300);
 }
 
 Scene::~Scene()

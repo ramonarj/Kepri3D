@@ -22,62 +22,12 @@ ParticleSystem* PruebaScene::particleSys = nullptr;
 void PruebaScene::init()
 {
 	// Hacer que el cursor sea invisible y moverlo al centro de la ventana
-	glutSetCursor(GLUT_CURSOR_NONE);
-	glutWarpPointer(m_camera->getVP()->getW() / 2, m_camera->getVP()->getH() / 2);
+	InputManager::Instance()->setCursor(GLUT_CURSOR_NONE);
+	InputManager::Instance()->setMousePos(m_camera->getVP()->getW() / 2, m_camera->getVP()->getH() / 2);
+	//glutWarpPointer(m_camera->getVP()->getW() / 2, m_camera->getVP()->getH() / 2);
 
 	// CARGA DE RECURSOS PARA ESTA ESCENA
-	/* Mallas que vamos a usar */
-	ResourceManager::Instance()->loadMesh("Torre.obj", "torre");
-	ResourceManager::Instance()->loadMesh("Peon.obj", "peon");
-
-	/* Texturas que vamos a usar */
-	ResourceManager::Instance()->loadTexture("earth24.bmp", "earth");
-	ResourceManager::Instance()->loadTexture("venus.bmp", "venus");
-	ResourceManager::Instance()->loadTexture("orientacion.bmp", "orientacion");
-	ResourceManager::Instance()->loadTexture("Zelda.bmp", "zelda");
-	ResourceManager::Instance()->loadTexture("terrenoTex.bmp", "terreno");
-	ResourceManager::Instance()->loadTexture("caja.bmp", "caja");
-	ResourceManager::Instance()->loadTexture("caja_specular.bmp", "caja_spec");
-	ResourceManager::Instance()->loadTexture("cobre.bmp", "cobre");
-	ResourceManager::Instance()->loadTexture("agua.bmp", "agua");
-
-	// Botones
-	for (int i = 0; i < buttonNames.size(); i++)
-	{
-		ResourceManager::Instance()->loadTexture(buttonNames[i] + ".bmp", buttonNames[i]);
-	}
-
-	// Skyboxes - el orden tiene que ser este (top y bottom están invertidos por alguna razón)
-	ResourceManager::Instance()->loadCubemapTexture({ "skyboxes/right.bmp", "skyboxes/left.bmp", "skyboxes/bottom.bmp", 
-		"skyboxes/top.bmp", "skyboxes/front.bmp", "skyboxes/back.bmp" }, "lakeSkybox");
-	ResourceManager::Instance()->loadCubemapTexture({ "skyboxes/city/right.bmp", "skyboxes/city/left.bmp", "skyboxes/city/bottom.bmp",
-		"skyboxes/city/top.bmp", "skyboxes/city/front.bmp", "skyboxes/city/back.bmp" }, "citySkybox");
-
-	/* Materiales que vamos a usar */
-	ResourceManager::Instance()->loadMaterial("copper.material", "cobre");
-	ResourceManager::Instance()->loadMaterial("crome.material", "cromo");
-	ResourceManager::Instance()->loadMaterial("ruby.material", "ruby");
-	ResourceManager::Instance()->loadMaterial("cristal.material", "cristal");
-
-	// Prueba excepciones
-	ResourceManager::Instance()->loadTexture("ladrillo.bmp", "ladrillo");
-	ResourceManager::Instance()->loadMaterial("plata.material", "plata");
-
-	/* Shaders que vamos a usar */
-	ResourceManager::Instance()->loadShader("default.vert", "cruces.geom", "default.frag", "cruces");
-	ResourceManager::Instance()->loadShader("skybox.vert", "", "skybox.frag", "skybox");
-	ResourceManager::Instance()->loadShader("maximize.vert", "", "fog.frag", "bigFog");
-	ResourceManager::Instance()->loadShader("normals.vert", "normals.geom", "normals.frag", "normals");
-	ResourceManager::Instance()->loadShader("default.vert", "", "movimiento.frag", "movimiento");
-	ResourceManager::Instance()->loadShader("particle.vert", "", "particle.frag", "particle");
-	//ResourceManager::Instance()->loadShader("default.vert", "default.frag", "specularMap.frag", "specMapShader");
-
-	/* Efectos de postprocesado ('composites') */
-	ResourceManager::Instance()->loadComposite("interference.frag", "interference");
-	ResourceManager::Instance()->loadComposite("waves.frag", "waves");
-	// (2, 2) para que ocupe la pantalla entera
-	m_effectsMesh = Mesh::generateRectangle(2, 2);
-
+	loadResources();
 
 	// LUCES
 	// Puntual
@@ -140,11 +90,11 @@ void PruebaScene::init()
 	//AddEntity(esferita);
 
 
-	/* Canvas */
+	/* - - Canvas - - */
 	m_canvas = new Canvas();
 	m_canvas->setSize(800, 600);
 
-	/* - - Canvas - - */
+	
 	// Entidad vacía para que cuelguen los botones
 	UIElement* botonesMenu = new UIElement();
 	botonesMenu->setActive(false);
@@ -169,7 +119,7 @@ void PruebaScene::init()
 	Skybox* sky = new Skybox("citySkybox");
 	SetSkybox(sky);
 
-	/* Sistema de partículas */
+	/* - - Sistema de partículas - - */
 	// Con 10.000, empieza a ir demasiado lento
 	particleSys = new ParticleSystem("agua", 0.2, 500, PARTICLE_2D);
 	particleSys->setParticleSpeed(2.0);
@@ -178,28 +128,60 @@ void PruebaScene::init()
 	particleSys->setActive(false);
 	AddEntity(particleSys);
 
-	// Comparación de rendimiento VS el sistema de partículas
-	//int count = 0;
-	//for(int i = 0; i < 12; i++)
-	//{
-	//	for (int j = 0; j < 12; j++)
-	//	{
-	//		for (int k = 0; k < 12; k++)
-	//		{
-	//			Entity* e = new Esfera(0.25, 20, false);
-	//			e->setPosition({ i, j, k });
-	//			AddEntity(e);
-	//			count++;
-	//		}
-	//	}
-	//}
-		
-	
-
-	// GAMEMANAGER
+	/* - - GameManager - - */
 	GameManager* gm = new GameManager(this, m_camera, botonesMenu, particleSys);
 	gm->setLights(dirLight, circleLight, spotLight);
 	AddEntity(gm);
+}
+
+void PruebaScene::loadResources()
+{
+	/* Mallas */
+	ResourceManager::Instance()->loadMesh("Torre.obj", "torre");
+	ResourceManager::Instance()->loadMesh("Peon.obj", "peon");
+
+	/* Texturas */
+	ResourceManager::Instance()->loadTexture("earth24.bmp", "earth");
+	ResourceManager::Instance()->loadTexture("venus.bmp", "venus");
+	ResourceManager::Instance()->loadTexture("orientacion.bmp", "orientacion");
+	ResourceManager::Instance()->loadTexture("Zelda.bmp", "zelda");
+	ResourceManager::Instance()->loadTexture("terrenoTex.bmp", "terreno");
+	ResourceManager::Instance()->loadTexture("caja.bmp", "caja");
+	ResourceManager::Instance()->loadTexture("caja_specular.bmp", "caja_spec");
+	ResourceManager::Instance()->loadTexture("cobre.bmp", "cobre");
+	ResourceManager::Instance()->loadTexture("agua.bmp", "agua");
+
+	// Botones
+	for (int i = 0; i < buttonNames.size(); i++)
+	{
+		ResourceManager::Instance()->loadTexture(buttonNames[i] + ".bmp", buttonNames[i]);
+	}
+
+	// Skyboxes - el orden tiene que ser este (top y bottom están invertidos por alguna razón)
+	ResourceManager::Instance()->loadCubemapTexture({ "skyboxes/right.bmp", "skyboxes/left.bmp", "skyboxes/bottom.bmp",
+		"skyboxes/top.bmp", "skyboxes/front.bmp", "skyboxes/back.bmp" }, "lakeSkybox");
+	ResourceManager::Instance()->loadCubemapTexture({ "skyboxes/city/right.bmp", "skyboxes/city/left.bmp", "skyboxes/city/bottom.bmp",
+		"skyboxes/city/top.bmp", "skyboxes/city/front.bmp", "skyboxes/city/back.bmp" }, "citySkybox");
+
+	/* Materiales */
+	ResourceManager::Instance()->loadMaterial("copper.material", "cobre");
+	ResourceManager::Instance()->loadMaterial("crome.material", "cromo");
+	ResourceManager::Instance()->loadMaterial("ruby.material", "ruby");
+	ResourceManager::Instance()->loadMaterial("cristal.material", "cristal");
+
+	// Prueba excepciones
+	ResourceManager::Instance()->loadTexture("ladrillo.bmp", "ladrillo");
+	ResourceManager::Instance()->loadMaterial("plata.material", "plata");
+
+	/* Shaders */
+	ResourceManager::Instance()->loadShader("default.vert", "cruces.geom", "default.frag", "cruces");
+	ResourceManager::Instance()->loadShader("maximize.vert", "", "fog.frag", "bigFog");
+	ResourceManager::Instance()->loadShader("default.vert", "", "movimiento.frag", "movimiento");
+	//ResourceManager::Instance()->loadShader("default.vert", "default.frag", "specularMap.frag", "specMapShader");
+
+	/* Efectos de postprocesado ('composites') */
+	ResourceManager::Instance()->loadComposite("interference.frag", "interference");
+	ResourceManager::Instance()->loadComposite("waves.frag", "waves");
 }
 
 
@@ -316,7 +298,162 @@ void PruebaScene::ViewportTest()
 	view->setSize(w, h); //Volvemos a dejar el viewPort como estaba
 }
 
+void PruebaScene::centerMouse()
+{
+	InputManager::Instance()->setMousePos(400, 300);
+}
+
 // - - - - - - - - - - - - Callbacks - - - - - - - - - - - - - - - //
+
+void PruebaScene::cullingButtonPressed()
+{
+	// Activar / desactivar el culling de polígonos traseros
+	switchBoolParam(GL_CULL_FACE);
+	centerMouse();
+}
+
+void PruebaScene::blendingButtonPressed()
+{
+	// Activar / desactivar las transparencias en texturas y materiales
+	switchBoolParam(GL_BLEND);
+	centerMouse();
+}
+
+void PruebaScene::lightingButtonPressed()
+{
+	// Activar / desactivar la iluminación
+	switchBoolParam(GL_LIGHTING);
+	centerMouse();
+}
+
+void PruebaScene::texturesButtonPressed()
+{
+	// Activar / desactivar el uso de texturas
+	switchBoolParam(GL_TEXTURE_2D);
+	centerMouse();
+}
+
+void PruebaScene::shadingButtonPressed()
+{
+	// Cambiar entre sombreado FLAT y SMOOTH
+	GLint shadeType;
+	glGetIntegerv(GL_SHADE_MODEL, &shadeType);
+	if (shadeType == GL_FLAT)
+	{
+		glShadeModel(GL_SMOOTH);
+		Material::setShadingType(GL_SMOOTH);
+	}
+
+	else
+	{
+		glShadeModel(GL_FLAT);
+		Material::setShadingType(GL_FLAT);
+	}
+
+	centerMouse();
+}
+
+void PruebaScene::alphaButtonPressed()
+{
+	// Activar / desactivar el alpha test
+	switchBoolParam(GL_ALPHA_TEST);
+	centerMouse();
+}
+
+void PruebaScene::multisamplingButtonPressed()
+{
+	// Activar / desactivar el multisampling
+	switchBoolParam(GL_MULTISAMPLE);
+	centerMouse();
+}
+
+void PruebaScene::mipmapButtonPressed()
+{
+	// Activar / desactivar el uso de mipmaps
+	mipmapsActive = !mipmapsActive;
+	ResourceManager::Instance()->enableMipmaps(mipmapsActive);
+
+	centerMouse();
+}
+
+void PruebaScene::normalsButtonPressed()
+{
+	// Activar / desactivar la visualización de vectores normales a cada vértice
+	if (normalsShader == nullptr)
+		normalsShader = (Shader*)&ResourceManager::Instance()->getShader("normals");
+	else
+		normalsShader = nullptr;
+
+	centerMouse();
+}
+
+void PruebaScene::compositeButtonPressed()
+{
+	// Activar / desactivar la visualización de vectores normales a cada vértice
+	if (compositeShader == nullptr)
+		compositeShader = (Shader*)&ResourceManager::Instance()->getComposite("waves");
+	else
+		compositeShader = nullptr;
+
+	centerMouse();
+}
+
+
+void PruebaScene::scissorButtonPressed()
+{
+	// Bandas cinemáticas negras. Como tenemos 2 buffers, hay que ponerlos los 2 a negro antes de
+	// activar el scissor test (para que los bordes no se queden con imágenes residuales y parpadeen)
+	glClearColor(0, 0, 0, 0);
+	glClear(GL_COLOR_BUFFER_BIT);
+	// Segundo buffer
+	if (glutGet(GLUT_WINDOW_DOUBLEBUFFER) == 1)
+	{
+		glutSwapBuffers();
+		glClear(GL_COLOR_BUFFER_BIT);
+	}
+
+	// Establecer la zona visible (en píxeles) del scissor box
+	float proporcionBarra = glutGet(GLUT_WINDOW_HEIGHT) / 6.0f;
+	glScissor(0, proporcionBarra, glutGet(GLUT_WINDOW_WIDTH), glutGet(GLUT_WINDOW_HEIGHT) - proporcionBarra * 2);
+
+	// Activar/desactivar el scissor test
+	switchBoolParam(GL_SCISSOR_TEST);
+
+	// Volver a dejar el color de fondo a blanco
+	glClearColor(1, 1, 1, 0);
+
+	centerMouse();
+}
+
+void PruebaScene::skyboxButtonPressed()
+{
+	skyboxActive = !skyboxActive;
+	centerMouse();
+}
+
+void PruebaScene::gammaButtonPressed()
+{
+	switchBoolParam(GL_FRAMEBUFFER_SRGB);
+	centerMouse();
+}
+
+void PruebaScene::stencilButtonPressed()
+{
+	switchBoolParam(GL_STENCIL_TEST);
+	centerMouse();
+}
+
+void PruebaScene::logicOpButtonPressed()
+{
+	// Activar las operaciones lógicas implica desactivar totalmente el 'Blending'
+	switchBoolParam(GL_COLOR_LOGIC_OP);
+
+	// Tipo de operación que se hace sobre cada píxel
+	// Curiosas : GL_COPY (predet.), GL_COPY_INVERTED (negativo), GL_INVERT (b/n)
+	glLogicOp(GL_COPY_INVERTED);
+
+	centerMouse();
+}
 
 
 void PruebaScene::instancingButtonPressed() 
@@ -325,4 +462,5 @@ void PruebaScene::instancingButtonPressed()
 	{
 		particleSys->setActive(!particleSys->isActive());
 	}
+	centerMouse();
 }

@@ -31,6 +31,11 @@ public:
 			instance->loadTexture("default.bmp", "default");
 			instance->loadMaterial("default.material", "default");
 			instance->loadShader("default.vert", "default.geom", "default.frag", "default");
+
+			// Otros shaders necesarios (skybox, partículas, normales)
+			instance->loadShader("skybox.vert", "", "skybox.frag", "skybox");
+			instance->loadShader("particle.vert", "", "particle.frag", "particle");
+			instance->loadShader("normals.vert", "normals.geom", "normals.frag", "normals");
 		}
 			
 		return instance;

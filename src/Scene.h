@@ -18,7 +18,7 @@ class Scene
 {
 public:
 	/* Constructora por defecto*/
-	Scene(){}
+	Scene();
 	Scene(Camera* cam) : m_camera(cam), m_canvas(nullptr), m_effectsMesh(nullptr), m_skybox(nullptr) { };
 
 	/* Destructora */
@@ -72,26 +72,7 @@ protected:
 	static bool mipmapsActive;
 
 	// Métodos auxiliares
-
 	static void switchBoolParam(GLenum param);
-
-
-	// Callbacks para los botones
-	static void cullingButtonPressed();
-	static void blendingButtonPressed();
-	static void lightingButtonPressed();
-	static void texturesButtonPressed();
-	static void shadingButtonPressed();
-	static void alphaButtonPressed();
-	static void multisamplingButtonPressed();
-	static void mipmapButtonPressed();
-	static void normalsButtonPressed();
-	static void compositeButtonPressed();
-	static void scissorButtonPressed();
-	static void skyboxButtonPressed();
-	static void gammaButtonPressed();
-	static void stencilButtonPressed();
-	static void logicOpButtonPressed();
 
 private:
 	// Sub-métodos del render() para que sea más legible
