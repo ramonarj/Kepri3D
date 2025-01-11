@@ -486,6 +486,8 @@ IndexMesh* IndexMesh::generateCube(GLdouble size, bool textured, bool equalFaces
 	return m;
 }
 
+// - - - - - - - - - -
+
 IndexMesh* IndexMesh::generateSphere(GLdouble size, GLuint subdivisions, bool textured)
 {
 	IndexMesh* m = new IndexMesh();
@@ -610,6 +612,80 @@ IndexMesh* IndexMesh::generateSphere(GLdouble size, GLuint subdivisions, bool te
 		m->texCoords[0] = { 0.5, 1 };
 		m->texCoords[m->numVertices - 1] = { 0.5, 0 };
 	}
+
+	/* Normales */
+	m->SetNormals();
+
+	return m;
+}
+
+
+// - - - - - - - - - -
+
+IndexMesh* IndexMesh::generateToro(GLdouble radExt, GLdouble radInt, GLuint anillos, GLuint lineas)
+{
+	IndexMesh* m = new IndexMesh();
+	m->type = GL_TRIANGLES;
+	GLuint verticesSeccion = (lineas - 2) * 2 + 2;
+	m->numVertices = anillos * verticesSeccion;
+
+	/* Array de  vértices */
+	m->vertices = new dvec3[m->numVertices];
+	// Cortes cenitales
+	GLuint count = 0;
+	GLdouble angleIncrInt = 2.0 * PI / verticesSeccion;
+	GLdouble angleIncrExt = 2.0 * PI / anillos;
+	for (int i = 0; i < verticesSeccion; i++)
+	{
+		GLdouble posY = radInt * sin(PI / 2 - i * angleIncrInt); //hacia fuera
+		// Dibujar un polígono de "anillos" lados
+		for (int j = 0; j < anillos; j++)
+		{
+			GLdouble posX = (radExt + radInt * cos(PI / 2 - i * angleIncrInt))
+				* cos(3 * PI / 2 + j * angleIncrExt);
+			GLdouble posZ = (radExt + radInt * sin(i * angleIncrInt))
+				* sin(3 * PI / 2 + j * angleIncrExt);
+			m->vertices[count] = dvec3(posX, posY, posZ);
+			count++;
+		}
+	}
+
+	/* Colores */
+	m->colores = new dvec4[m->numVertices];
+	for (int i = 0; i < m->numVertices; i++)
+		m->colores[i] = { 0.8,0.8, 0.8, 1.0 };
+
+	/* Índices */
+	// Se da el caso de que nºvertices = nºquads. (indices = quads * 2 * 3)
+	m->numIndices = m->numVertices * 6;
+	m->indices = new GLuint[m->numIndices];
+	count = 0;
+	// Iterar las lineas
+	for (int i = 0; i < verticesSeccion; i++) 
+	{
+		// Iterar cada anillo
+		for (int j = 0; j < anillos; j++)
+		{
+			// Los 4 vértices del 'quad' (el 2, 3 y 4 son los que pueden salirse de rango)
+			GLuint v1, v2, v3, v4;
+			v1 = i * anillos + j;
+			v2 = i * anillos + ((j + 1) % anillos);
+			v3 = ((i + 1) % verticesSeccion) * anillos + j;
+			v4 = ((i + 1) % verticesSeccion) * anillos + ((j + 1) % anillos);
+
+			// Primer triángulo
+			m->indices[count] = v1;
+			m->indices[count + 1] = v2;
+			m->indices[count + 2] = v3;
+			// Segundo triángulo
+			m->indices[count + 3] = v3;
+			m->indices[count + 4] = v2;
+			m->indices[count + 5] = v4;
+
+			count+=6;
+		}
+	}
+	m->indices[m->numIndices - 1] = 0;
 
 	/* Normales */
 	m->SetNormals();

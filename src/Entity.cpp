@@ -225,6 +225,13 @@ void Esfera::update(GLuint timeElapsed)
 
 // - - - - - - - - - - - - - - - - - 
 
+Toro::Toro(GLdouble radExt, GLdouble radInt, GLuint anillos, GLuint lineas)
+{
+	m_mesh = IndexMesh::generateToro(radExt, radInt, anillos, lineas);
+}
+
+// - - - - - - - - - - - - - - - - - 
+
 Grid::Grid(GLuint filas, GLuint columnas, GLdouble tamFila, GLdouble tamColumna)
 {
 	m_mesh = IndexMesh::generateGrid(filas, columnas, tamFila, tamColumna);

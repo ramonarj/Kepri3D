@@ -171,6 +171,15 @@ public:
 
 // - - - - - - - - - - - - 
 
+class Toro : public Entity
+{
+public:
+	Toro(GLdouble radioExterior, GLdouble radioInterior, GLuint anillos, GLuint lineas);
+	~Toro() { };
+};
+
+// - - - - - - - - - - - - 
+
 class Grid : public Entity
 {
 public:

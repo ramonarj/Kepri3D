@@ -69,7 +69,7 @@ class IndexMesh : public Mesh
 {
 public:
 	/* Constructora por defecto */
-	IndexMesh() : indices (nullptr), numIndices(0) {}
+	IndexMesh() : indices(nullptr), numIndices(0) {}
 	/* Destructora */
 	virtual ~IndexMesh() { delete[] indices; }
 
@@ -77,19 +77,24 @@ public:
 	void draw() override;
 	void drawInstanced(GLuint numInstances) override;
 
-	/* Creación de mallas con triángulos indexados */
-	// Cubo cerrado
+	// Creación de mallas con triángulos indexados
+
+	/* - - Cubo - - */
 	static IndexMesh* generateCube(GLdouble size, bool textured, bool equalFaces = true);
 
-	// Esfera
+	/* - - Esfera - - */
 	static IndexMesh* generateSphere(GLdouble size, GLuint subdivisions, bool textured = false);
 
-	// Rejilla
+	/* - - Toro - - */
+	static IndexMesh* generateToro(GLdouble radioExterior, GLdouble radioInterior, GLuint anillos, GLuint lineas);
+
+	/* - - Grid - - */
 	static IndexMesh* generateGrid(GLint filas, GLint columnas, GLdouble tamFila, GLdouble tamColumna);
-	// Terreno
+
+	/* - - Terreno - - */
 	static IndexMesh* generateTerrain(std::string filename, GLdouble scale);
 
-	// Cubemap
+	/* - - Cubemap - - */
 	static IndexMesh* generateCubemap(GLdouble size = 4.0);
 
 private:

@@ -9,11 +9,12 @@
 ParticleSystem::ParticleSystem(const std::string& particleTextureId, GLdouble size, GLuint maxParticles, PARTICLE_TYPE partType)
 {
 	//m_mesh = IndexMesh::generateRectangle(1, 1);
+	// m_mesh = IndexMesh::generateSphere(size, 12, true);
 	// Generar la malla
 	if (partType == PARTICLE_2D) // 'círculo'
 		m_mesh = Mesh::generateFilledPolygon(10, size);
 	else // esfera
-		m_mesh = IndexMesh::generateSphere(size, 12, true);
+		m_mesh = IndexMesh::generateToro(size, size / 3.0, 15, 5);
 
 	// Asignar la textura y el shader específico
 	setTexture(particleTextureId);

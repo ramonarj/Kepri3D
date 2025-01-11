@@ -89,6 +89,11 @@ void PruebaScene::init()
 	esferita->setParent(torre);
 	//AddEntity(esferita);
 
+	// Un toro
+	Toro* toro = new Toro(2, 1.5, 30, 10);
+	toro->setPosition({ 0,2,6 });
+	AddEntity(toro);
+
 
 	/* - - Canvas - - */
 	m_canvas = new Canvas();
@@ -121,9 +126,9 @@ void PruebaScene::init()
 
 	/* - - Sistema de partículas - - */
 	// Con 10.000, empieza a ir demasiado lento
-	particleSys = new ParticleSystem("agua", 0.2, 500, PARTICLE_2D);
-	particleSys->setParticleSpeed(2.0);
-	particleSys->setLifetime(1);
+	particleSys = new ParticleSystem("agua", 0.5, 150, PARTICLE_3D);
+	particleSys->setParticleSpeed(3.0);
+	particleSys->setLifetime(0.5);
 	particleSys->setCamera(m_camera);
 	particleSys->setActive(false);
 	AddEntity(particleSys);
