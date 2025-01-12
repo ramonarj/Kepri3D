@@ -88,9 +88,8 @@ void Scene::renderSkybox(const glm::dmat4& projViewMat)
 		m_skybox->setPosition(m_camera->getPosition());
 
 		// Activar el shader y pasarle la MVP
-		glUseProgram(m_skybox->getShader()->getId());
-		int mvpMatLoc = glGetUniformLocation(m_skybox->getShader()->getId(), "mvpMat");
-		glUniformMatrix4dv(mvpMatLoc, 1, GL_FALSE, glm::value_ptr(projViewMat * m_skybox->getModelMat()));
+		m_skybox->getShader()->use();
+		m_skybox->getShader()->setMat4d("mvpMat", projViewMat * m_skybox->getModelMat());
 
 		// Pintar el skybox
 		m_skybox->render();
@@ -106,21 +105,23 @@ void Scene::renderEntities(const glm::dmat4& projViewMat)
 		if (e->isActive())
 		{
 			// la entidad no usa shaders; desactivamos
-			if (e->getShader() == nullptr)
-				glUseProgram(0);
+			if (e->getShader() == nullptr) // && activeShader != nullptr
+			{
+				Shader::turnOff();
+				//activeShader = nullptr;
+			}
+				
 			// la entidad usa shaders
 			else
 			{
-				int mvpMatLoc;
 				// hay que cambiar el shader que usó la entidad anterior
 				if (e->getShader() != activeShader)
 				{
 					activeShader = e->getShader();
-					mvpMatLoc = glGetUniformLocation(activeShader->getId(), "mvpMat");
-					glUseProgram(activeShader->getId());
+					activeShader->use();
 				}
 				// pasar la matriz MVP al vertex shader
-				glUniformMatrix4dv(mvpMatLoc, 1, GL_FALSE, glm::value_ptr(projViewMat * e->getModelMat()));
+				activeShader->setMat4d("mvpMat", projViewMat * e->getModelMat());
 			}
 			// en cualquier caso, mandamos la info de los vértices
 			e->render(m_camera->getViewMat());
@@ -132,12 +133,11 @@ void Scene::renderNormals(const glm::dmat4& projViewMat)
 {
 	if (normalsShader != nullptr)
 	{
-		glUseProgram(normalsShader->getId());
-		int mvpMatLoc = glGetUniformLocation(normalsShader->getId(), "mvpMat");
+		normalsShader->use();
 		for (Entity* e : m_entities)
 		{
-			// Pasar la matriz MVP al vertex shader
-			glUniformMatrix4dv(mvpMatLoc, 1, GL_FALSE, glm::value_ptr(projViewMat * e->getModelMat()));
+			// Pasar la matriz MVP al vertex shader y pintar
+			normalsShader->setMat4d("mvpMat", projViewMat * e->getModelMat());
 			e->render(m_camera->getViewMat());
 		}
 	}
@@ -149,7 +149,7 @@ void Scene::renderCanvas()
 		return;
 
 	// Desactivamos cualquier shader que hubiera
-	glUseProgram(0);
+	Shader::turnOff();
 
 	//glClear(GL_DEPTH_BUFFER_BIT); // esto es más costoso que cambiar la función del Z-test
 	// Cambiar la función del Z-test para pasarlo siempre
@@ -167,7 +167,7 @@ void Scene::renderEffects()
 		// 'glClear' es una operación costosa, podría buscarse una alternativa
 		//glClear(GL_DEPTH_BUFFER_BIT);
 		glDepthFunc(GL_ALWAYS);
-		glUseProgram(compositeShader->getId());
+		compositeShader->use();
 
 		// Crear textura con los píxeles del color buffer (tiene que ser GL_BACK para que funcione)
 		Texture t;

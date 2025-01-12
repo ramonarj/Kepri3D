@@ -65,7 +65,7 @@ void PruebaScene::init()
 	PruebaMateriales();
 
 	// Peon de ajedrez
-	Entity* peon = new Entity();
+	Entity* peon = new Entity("Peon");
 	peon->setMesh("peon");
 	peon->setMaterial("cristal");
 	peon->setPosition({ 0,0,-2 });
@@ -73,7 +73,7 @@ void PruebaScene::init()
 
 
 	// Torre de ajedrez
-	Entity* torre = new Entity();
+	Entity* torre = new Entity("Torre");
 	torre->setMesh("torre");
 	//torre->setTexture("cobre");
 	torre->setMaterial("ruby");
@@ -273,7 +273,7 @@ void PruebaScene::PruebaMateriales()
 
 void PruebaScene::ViewportTest()
 {
-	glUseProgram(0);
+	Shader::turnOff();
 
 	//Algunas variables locales para facilitar la puesta en escena
 	Viewport* view = m_camera->getVP();

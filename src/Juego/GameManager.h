@@ -18,6 +18,8 @@ public:
 		this->cam = cam; 
 		this->botonesMenu = botonesMenu;
 		this->pSystem = particleSystem;
+
+		this->m_name = "GameManager";
 	}
 	~GameManager(){}
 

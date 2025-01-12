@@ -16,6 +16,8 @@ ParticleSystem::ParticleSystem(const std::string& particleTextureId, GLdouble si
 	else // esfera
 		m_mesh = IndexMesh::generateToro(size, size / 3.0, 15, 5);
 
+	m_name = "ParticleSystem";
+
 	// Asignar la textura y el shader específico
 	setTexture(particleTextureId);
 	setShader("particle");
@@ -82,9 +84,8 @@ void ParticleSystem::render(const glm::dmat4& viewMat)
 	// 2) Dibujar las mallas de todas las partículas a la vez
 	if (m_mesh != nullptr)
 	{
-		// Uniform (P * V)
-		int viewProjLoc = glGetUniformLocation(m_shader->getId(), "viewProjMat");
-		glUniformMatrix4dv(viewProjLoc, 1, GL_FALSE, glm::value_ptr(m_cam->getProjMat() * viewMat));
+		// Uniform (P * V). Si cambio la definición de 'setMat4d' a "const mat&", no funciona
+		m_shader->setMat4d("viewProjMat", m_cam->getProjMat() * viewMat);
 
 		// Para el vertex shader; posición de cada partícula
 		glVertexAttribPointer(10, 3, GL_DOUBLE, GL_FALSE, 0, m_positions);
@@ -98,12 +99,10 @@ void ParticleSystem::render(const glm::dmat4& viewMat)
 
 		glDisableVertexAttribArray(10);
 	}
-		
 
 	// Desactivar la textura si la tiene
 	if (m_texture != nullptr)
 		m_texture->unbind();
-
 
 	// Dejarlo como estaba
 	glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);

@@ -3,12 +3,15 @@
 #include <glew.h>
 #include <iostream>
 
+#include <gtc/type_ptr.hpp>
+
 Shader::Shader() : programId(0)
 {
+	// Por si no están disponibles los shaders
 	if (!GLEW_ARB_shading_language_100 || !GLEW_ARB_vertex_shader ||
 		!GLEW_ARB_fragment_shader || !GLEW_ARB_shader_objects)
 	{
-		std::cerr << "Shaders not available" << std::endl;
+		std::cerr << "ERROR: Shaders not available" << std::endl;
 	}
 
 	// Inicializar los IDs a un valor erróneo (0)
@@ -82,4 +85,19 @@ void Shader::link()
 		if (shadersIds[i] != 0)
 			glDeleteShader(shadersIds[i]);
 	}
+}
+
+
+// - - - - - - - - - - - - - - - - - 
+
+void Shader::setFloat(const std::string& name, float value) const
+{
+	GLint loc = glGetUniformLocation(programId, name.c_str());
+	glUniform1f(loc, value);
+}
+
+void Shader::setMat4d(const std::string& name, const glm::dmat4 matValue) const
+{
+	GLint loc = glGetUniformLocation(programId, name.c_str());
+	glUniformMatrix4dv(loc, 1, GL_FALSE, glm::value_ptr(matValue));
 }

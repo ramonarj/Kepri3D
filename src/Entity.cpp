@@ -16,6 +16,23 @@
 
 using namespace glm;
 
+Entity::Entity()
+{
+	// Valores por defecto de la entidad
+	defaultValues();
+
+	m_name = "- Entidad s/n - ";
+	
+	//PrintMatrix<double, 4>(&modelMat);
+	//NOMBRE(modelMat);
+}
+
+Entity::Entity(const std::string& name)
+{
+	defaultValues();
+	m_name = name;
+}
+
 Entity::~Entity()
 {
 	delete m_mesh;
@@ -23,6 +40,18 @@ Entity::~Entity()
 	// Destruir los hijos
 	for (Entity* e : m_children)
 		delete e;
+}
+
+void Entity::defaultValues()
+{
+	m_active = true;
+	m_parent = nullptr;
+	m_mesh = nullptr;
+	m_texture = nullptr;
+	// Pone la matriz de modelado a la matriz identidad de grado 4 (1 0 0 0 / 0 1 0 0 ...)
+	modelMat = (1.0);
+	m_shader = nullptr;
+	m_specMap = nullptr;
 }
 
 void Entity::render(glm::dmat4 const& viewMat)
@@ -184,6 +213,7 @@ void Entity::setSpecularMap(const std::string& textureID)
 EjesRGB::EjesRGB(GLdouble l)
 {
 	m_mesh = Mesh::generateAxesRGB(l);
+	m_name = "EjesRGB";
 }
 
 // - - - - - - - - - - - - - - - - - 
@@ -194,6 +224,7 @@ Poligono::Poligono(GLint sides, GLdouble size, bool relleno)
 		m_mesh = Mesh::generateFilledPolygon(sides, size);
 	else
 		m_mesh = Mesh::generatePolygon(sides, size);
+	m_name = "Poligono";
 }
 
 
@@ -202,6 +233,7 @@ Poligono::Poligono(GLint sides, GLdouble size, bool relleno)
 Cubo::Cubo(GLdouble size, bool textured, bool equalFaces)
 {
 	m_mesh = IndexMesh::generateCube(size, textured, equalFaces);
+	m_name = "Cubo";
 }
 
 
@@ -216,6 +248,7 @@ void Cubo::update(GLuint deltaTime)
 Esfera::Esfera(GLdouble size, GLuint subdivisions, bool textured)
 {
 	m_mesh = IndexMesh::generateSphere(size, subdivisions, textured);
+	m_name = "Esfera";
 }
 
 void Esfera::update(GLuint timeElapsed)
@@ -228,6 +261,7 @@ void Esfera::update(GLuint timeElapsed)
 Toro::Toro(GLdouble radExt, GLdouble radInt, GLuint anillos, GLuint lineas)
 {
 	m_mesh = IndexMesh::generateToro(radExt, radInt, anillos, lineas);
+	m_name = "Toro";
 }
 
 // - - - - - - - - - - - - - - - - - 
@@ -235,22 +269,22 @@ Toro::Toro(GLdouble radExt, GLdouble radInt, GLuint anillos, GLuint lineas)
 Grid::Grid(GLuint filas, GLuint columnas, GLdouble tamFila, GLdouble tamColumna)
 {
 	m_mesh = IndexMesh::generateGrid(filas, columnas, tamFila, tamColumna);
+	m_name = "Grid";
 }
 
 void Grid::update(GLuint timeElapsed)
 {
-	// Pasarle el tiempo al fragment shader
-	if(m_shader != nullptr)
-		timeLoc = glGetUniformLocation(m_shader->getId(), "tiempo");
-	//glUniform1f(timeLoc, 1.0f);
+
 }
 
 void Grid::render(glm::dmat4 const& viewMat)
 {
 	// Pasarle el tiempo al fragment shader
-	//timeLoc = glGetUniformLocation(m_shader->getId(), "tiempo");
-	float t = glutGet(GLUT_ELAPSED_TIME);
-	glUniform1f(timeLoc, t / 10000.0f);
+	if (m_shader != nullptr)
+	{
+		float t = glutGet(GLUT_ELAPSED_TIME);
+		m_shader->setFloat("tiempo", t / 10000.0f);
+	}
 
 	Entity::render(viewMat);
 }
@@ -260,6 +294,7 @@ void Grid::render(glm::dmat4 const& viewMat)
 Terrain::Terrain(std::string filename, GLdouble scale)
 {
 	m_mesh = IndexMesh::generateTerrain(filename, scale);
+	m_name = "Terrain";
 }
 
 // - - - - - - - - - - - - - - - - - 
@@ -268,6 +303,7 @@ Skybox::Skybox(const std::string& cubemapTextureID)
 {
 	// Generar la malla y cargar la textura y el shader
 	m_mesh = IndexMesh::generateCubemap(4.0);
+	m_name = "Skybox_" + cubemapTextureID;
 
 	setTexture(cubemapTextureID);
 	setShader("skybox");

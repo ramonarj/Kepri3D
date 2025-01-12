@@ -16,13 +16,8 @@ class Entity
 {
 public:
 	/* Constructora por defecto */
-	Entity() : m_parent(nullptr), m_active(true), m_mesh(nullptr), m_texture(nullptr), 
-		modelMat(1.0), m_shader(nullptr), m_specMap(nullptr)
-		// Pone la matriz de modelado a la matriz identidad de grado 4 (1 0 0 0 / 0 1 0 0 ...)
-	{
-		//PrintMatrix<double, 4>(&modelMat);
-		//NOMBRE(modelMat);
-	}
+	Entity();
+	Entity(const std::string& name);
 	
 	/* Destructora virtual */
 	virtual ~Entity();
@@ -70,6 +65,9 @@ public:
 	void setSpecularMap(const std::string& textureID);
 
 	// Getters
+	/* Devuelve el nombre de la entidad */
+	const std::string& getName() const { return m_name; }
+
 	/* Devuelve la posición de la entidad */
 	const glm::dvec3& getPosition() const { return modelMat[3]; }
 
@@ -87,10 +85,16 @@ public:
 	inline glm::dvec3 up() { return modelMat[1]; }
 	inline glm::dvec3 forward() { return modelMat[2]; }
 
+private:
+	/* Establece los valores por defecto de la entidad */
+	void defaultValues();
 
 protected:
 	/* Indica si la entidad debe actualizarse y pintarse */
 	bool m_active;
+
+	/* Nombre de la entidad */
+	std::string m_name;
 
 	/* Hijos de la entidad */
 	std::vector<Entity*> m_children;

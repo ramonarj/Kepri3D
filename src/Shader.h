@@ -2,6 +2,8 @@
 #define __KEPRI_SHADER__
 
 #include <glew.h>
+#include <string>
+#include <glm.hpp>
 
 class Shader
 {
@@ -14,7 +16,18 @@ public:
 	/* Enlaza el shader program usando todos los shaders cargados */
 	void link();
 
-	inline unsigned int getId() const { return programId; }
+	/* Activa/carga este shader */
+	inline void use() const { glUseProgram(programId); }
+
+	/* Desactiva el uso de shaders, eliminando el programa que hubiera cargado (si lo había) */
+	static void turnOff() { glUseProgram(0); }
+
+	// - - - Paso de uniforms - - - // 
+	/* Pasa un uniform de tipo FLOAT al shader */
+	void setFloat(const std::string& name, float value) const;
+
+	/* Pasa un uniform de tipo DMAT4 al shader */
+	void setMat4d(const std::string& name, const glm::dmat4 value) const; // TODO
 
 private:
 	/* IDs del Vertex, geometry y fragment shader (de momento) */
