@@ -74,6 +74,9 @@ public:
 	/* Devuelve la matriz de modelado de la entidad */
 	const glm::dmat4& getModelMat() const { return modelMat; }
 
+	/* Devuelve el material que usa la entidad */
+	const Material* getMaterial() const { return &m_material; }
+
 	/* Devuelve el shader que usa la entidad */
 	const Shader* getShader() const { return m_shader; }
 

@@ -130,6 +130,10 @@ void Scene::renderEntities(const glm::dmat4& projViewMat)
 				{
 					activeShader->setVec3("lightDir", m_lights[2]->getPosition());
 					activeShader->setVec3("lightColor", m_lights[2]->getDiffuse());
+					// para el brillo especular
+					activeShader->setVec3("viewPos", m_camera->getPosition());
+					activeShader->setVec3("specStrength", e->getMaterial()->getSpecular());
+					activeShader->setFloat("brillo", e->getMaterial()->getBrillo());
 				}
 				else
 				{

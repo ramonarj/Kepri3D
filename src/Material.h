@@ -14,10 +14,19 @@ public:
 	/* Carga el material */
 	virtual void load();
 
+	// Setters
+	/* Indica el tipo de sombreado que se usará para TODOS los materiales */
 	static inline void setShadingType(GLuint sh) { m_shading = sh; }
 
+	// Getters
 	/* Indica si el material es translúcido o no */
 	inline bool isTranslucid() const { return m_translucent; }
+
+	/* Devuelve la componente especular del material */
+	inline const glm::vec3& getSpecular() const { return m_specular; }
+
+	/* Devuelve el brillo especular del material (0 - 128)*/
+	inline GLfloat getBrillo() const { return m_brillo; }
 private:
 	/* Componente ambiente del material */
 	glm::fvec4 m_ambient;

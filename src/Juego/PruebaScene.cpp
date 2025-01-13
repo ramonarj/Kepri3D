@@ -44,7 +44,7 @@ void PruebaScene::init()
 	// Direccional
 	Light* dirLight = new Light(DIRECTIONAL_LIGHT);
 	dirLight->setDirection({ -1,0 , 0 });
-	dirLight->setDiffuse({ 0, 0.8, 0, 1.0 });
+	//dirLight->setDiffuse({ 0, 0.8, 0, 1.0 });
 	dirLight->setActive(true);
 	AddLight(dirLight);
 
@@ -253,7 +253,7 @@ void PruebaScene::PruebaMateriales()
 	grid->setTexture("agua");
 	grid->setMaterial("cromo");
 	grid->setPosition({ 0,-1,0 });
-	//grid->setShader("movimiento");
+	grid->setShader("lights");
 	AddEntity(grid);
 
 	// "Cascada"
