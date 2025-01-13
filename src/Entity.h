@@ -218,8 +218,22 @@ public:
 	~Skybox() { };
 
 	void render();
+};
+
+// - - - - - - - - - - - - 
+
+class CuboMultitex : public Entity
+{
+public:
+	CuboMultitex(GLdouble size);
+	~CuboMultitex() { };
+
+	void update(GLuint timeElapsed) override;
+	void render(glm::dmat4 const& viewMat) override;
+
+	void setSecondTex(const std::string& textureID);
 private:
-	GLuint texId;
+	Texture* secondTex;
 };
 
 #endif

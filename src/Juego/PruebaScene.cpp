@@ -90,9 +90,17 @@ void PruebaScene::init()
 	//AddEntity(esferita);
 
 	// Un toro
-	Toro* toro = new Toro(2, 1.5, 30, 10);
-	toro->setPosition({ 0,2,6 });
+	Toro* toro = new Toro(0.75, 0.4, 30, 10);
+	toro->setPosition({ 15,-0.4,6 });
 	AddEntity(toro);
+
+
+	// Un cubo multitextura
+	CuboMultitex* cuboMT = new CuboMultitex(2);
+	cuboMT->setPosition({ -15, 0, 6 });
+	cuboMT->setTexture("lego");
+	cuboMT->setSecondTex("emoji");
+	AddEntity(cuboMT);
 
 
 	/* - - Canvas - - */
@@ -155,6 +163,8 @@ void PruebaScene::loadResources()
 	ResourceManager::Instance()->loadTexture("caja_specular.bmp", "caja_spec");
 	ResourceManager::Instance()->loadTexture("cobre.bmp", "cobre");
 	ResourceManager::Instance()->loadTexture("agua.bmp", "agua");
+	ResourceManager::Instance()->loadTexture("emoji.bmp", "emoji");
+	ResourceManager::Instance()->loadTexture("lego.bmp", "lego");
 
 	// Botones
 	for (int i = 0; i < buttonNames.size(); i++)
@@ -183,6 +193,7 @@ void PruebaScene::loadResources()
 	ResourceManager::Instance()->loadShader("default.vert", "cruces.geom", "default.frag", "cruces");
 	ResourceManager::Instance()->loadShader("maximize.vert", "", "fog.frag", "bigFog");
 	ResourceManager::Instance()->loadShader("default.vert", "", "movimiento.frag", "movimiento");
+	ResourceManager::Instance()->loadShader("default.vert", "", "multitexture.frag", "multitexture");
 	//ResourceManager::Instance()->loadShader("default.vert", "default.frag", "specularMap.frag", "specMapShader");
 
 	/* Efectos de postprocesado ('composites') */

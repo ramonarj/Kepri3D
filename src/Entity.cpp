@@ -65,10 +65,6 @@ void Entity::render(glm::dmat4 const& viewMat)
 		//glDepthMask(GL_FALSE);
 	}
 
-	// Definir la forma de pintar la malla
-	glPolygonMode(GL_FRONT, GL_FILL);
-	glPolygonMode(GL_BACK, GL_LINE);
-
 	// Activar la textura si la tiene
 	if (m_texture != nullptr)
 		m_texture->bind();
@@ -92,9 +88,7 @@ void Entity::render(glm::dmat4 const& viewMat)
 	if (m_texture != nullptr)
 		m_texture->unbind();
 
-
-	// Dejarlo como estaba
-	glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+	//
 	if (m_material.isTranslucid())
 	{
 		//glDepthMask(GL_TRUE);
@@ -334,3 +328,45 @@ void Skybox::render()
 }
 
 // - - - - - - - - - - - - - - - - - 
+
+CuboMultitex::CuboMultitex(GLdouble size) : secondTex(nullptr)
+{
+	m_mesh = IndexMesh::generateCube(size, true, true);
+	m_name = "CuboMT";
+
+	setShader("multitexture");
+}
+
+void CuboMultitex::update(GLuint timeElapsed)
+{
+	//m_shader->setFloat("mix", sin(glutGet(GLUT_ELAPSED_TIME)));
+}
+
+
+void CuboMultitex::render(glm::dmat4 const& viewMat)
+{
+	glActiveTexture(GL_TEXTURE0);
+	m_texture->bind();
+	glActiveTexture(GL_TEXTURE1);
+	secondTex->bind();
+
+	// Pasar las texturas al shader
+	m_shader->setInt("texture1", 0); //este incluso sobraría, porque se manda automático
+	m_shader->setInt("texture2", 1);
+	m_shader->setFloat("mix", (sin(glutGet(GLUT_ELAPSED_TIME) * 0.001) + 1) / 2.0f);
+
+	// Dibujar la entidad
+	m_material.load();
+	if (m_mesh != nullptr)
+		m_mesh->draw();
+
+	secondTex->unbind();
+	glActiveTexture(GL_TEXTURE0);
+
+	m_texture->unbind();
+}
+
+void CuboMultitex::setSecondTex(const std::string& textureID)
+{
+	this->secondTex = (Texture*)&ResourceManager::Instance()->getTexture(textureID);
+}

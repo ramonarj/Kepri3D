@@ -90,6 +90,12 @@ void Shader::link()
 
 // - - - - - - - - - - - - - - - - - 
 
+void Shader::setInt(const std::string& name, int value) const
+{
+	GLint loc = glGetUniformLocation(programId, name.c_str());
+	glUniform1i(loc, value);
+}
+
 void Shader::setFloat(const std::string& name, float value) const
 {
 	GLint loc = glGetUniformLocation(programId, name.c_str());

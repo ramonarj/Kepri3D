@@ -23,6 +23,9 @@ public:
 	static void turnOff() { glUseProgram(0); }
 
 	// - - - Paso de uniforms - - - // 
+	/* Pasa un uniform de tipo INT al shader */
+	void setInt(const std::string& name, int value) const;
+
 	/* Pasa un uniform de tipo FLOAT al shader */
 	void setFloat(const std::string& name, float value) const;
 
