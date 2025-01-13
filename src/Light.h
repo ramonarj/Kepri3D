@@ -29,11 +29,17 @@ public:
 	inline bool isActive() const { return m_active; }
 
 	/* Devuelve la posición */
-	inline glm::fvec3 getPosition() const { return posDir; }
+	inline const glm::fvec3& getPosition() const { return posDir; }
+
+	/* Devuelve la componente difusa */
+	inline const glm::fvec3& getDiffuse() const { return diffuse; }
 
 	// Setters
 	/* Enciende/apaga la luz */
 	void setActive(bool active);
+
+	/* Cambia la luz difusa */
+	inline void setDiffuse(glm::fvec4 diffuse) { this->diffuse = diffuse; }
 
 	/* Cambia la luz ambiente */
 	inline void setAmbient(glm::fvec4 ambient) { this->ambient = ambient; }

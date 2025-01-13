@@ -203,6 +203,28 @@
     <ClInclude Include="..\src\UI\UIElement.h" />
     <ClInclude Include="..\src\Utils.h" />
   </ItemGroup>
+  <ItemGroup>
+    <None Include="..\bin\assets\shaders\cruces.geom" />
+    <None Include="..\bin\assets\shaders\default.frag" />
+    <None Include="..\bin\assets\shaders\default.geom" />
+    <None Include="..\bin\assets\shaders\default.vert" />
+    <None Include="..\bin\assets\shaders\lights.vert" />
+    <None Include="..\bin\assets\shaders\fog.frag" />
+    <None Include="..\bin\assets\shaders\lights.frag" />
+    <None Include="..\bin\assets\shaders\maximize.vert" />
+    <None Include="..\bin\assets\shaders\movimiento.frag" />
+    <None Include="..\bin\assets\shaders\normals.frag" />
+    <None Include="..\bin\assets\shaders\normals.geom" />
+    <None Include="..\bin\assets\shaders\normals.vert" />
+    <None Include="..\bin\assets\shaders\particle.frag" />
+    <None Include="..\bin\assets\shaders\particle.vert" />
+    <None Include="..\bin\assets\shaders\postprocess\composite.vert" />
+    <None Include="..\bin\assets\shaders\postprocess\interference.frag" />
+    <None Include="..\bin\assets\shaders\postprocess\waves.frag" />
+    <None Include="..\bin\assets\shaders\skybox.frag" />
+    <None Include="..\bin\assets\shaders\skybox.vert" />
+    <None Include="..\bin\assets\shaders\specularMap.frag" />
+  </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
   </ImportGroup>

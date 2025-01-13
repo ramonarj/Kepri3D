@@ -44,7 +44,7 @@ void PruebaScene::init()
 	// Direccional
 	Light* dirLight = new Light(DIRECTIONAL_LIGHT);
 	dirLight->setDirection({ -1,0 , 0 });
-	//m_dirLight->setAmbient({ 0.2, 0.2, 0.2 ,1 });
+	dirLight->setDiffuse({ 0, 0.8, 0, 1.0 });
 	dirLight->setActive(true);
 	AddLight(dirLight);
 
@@ -179,6 +179,7 @@ void PruebaScene::loadResources()
 	ResourceManager::Instance()->loadMaterial("plata.material", "plata");
 
 	/* Shaders */
+	ResourceManager::Instance()->loadShader("lights.vert", "", "lights.frag", "lights");
 	ResourceManager::Instance()->loadShader("default.vert", "cruces.geom", "default.frag", "cruces");
 	ResourceManager::Instance()->loadShader("maximize.vert", "", "fog.frag", "bigFog");
 	ResourceManager::Instance()->loadShader("default.vert", "", "movimiento.frag", "movimiento");
@@ -197,7 +198,7 @@ void PruebaScene::PruebaMateriales()
 	c->setTexture("caja");
 	c->setSpecularMap("caja_spec");
 	c->setPosition({ -10,0,0 });
-	c->setShader("default");
+	c->setShader("lights");
 	AddEntity(c);
 
 	// Cubo de orientación (distintas texturas)

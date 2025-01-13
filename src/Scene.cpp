@@ -120,7 +120,23 @@ void Scene::renderEntities(const glm::dmat4& projViewMat)
 					activeShader = e->getShader();
 					activeShader->use();
 				}
-				// pasar la matriz MVP al vertex shader
+				// pasar las matrices necesarias al vertex shader
+				activeShader->setMat4d("model", e->getModelMat());
+				activeShader->setMat4d("view", m_camera->getViewMat());
+				activeShader->setMat4d("projection", m_camera->getProjMat());
+
+				// pasar la información de las luces al fragment shader (por ahora solo la direccional)
+				if(m_lights[2]->isActive())
+				{
+					activeShader->setVec3("lightDir", m_lights[2]->getPosition());
+					activeShader->setVec3("lightColor", m_lights[2]->getDiffuse());
+				}
+				else
+				{
+					activeShader->setVec3("lightColor", {0, 0, 0});
+				}
+
+				// provisional
 				activeShader->setMat4d("mvpMat", projViewMat * e->getModelMat());
 			}
 			// en cualquier caso, mandamos la info de los vértices
