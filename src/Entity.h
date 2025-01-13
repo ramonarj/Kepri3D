@@ -228,12 +228,22 @@ public:
 	CuboMultitex(GLdouble size);
 	~CuboMultitex() { };
 
-	void update(GLuint timeElapsed) override;
 	void render(glm::dmat4 const& viewMat) override;
 
 	void setSecondTex(const std::string& textureID);
 private:
 	Texture* secondTex;
+};
+
+// - - - - - - - - - - - - 
+
+class CuboSpecmap : public Entity
+{
+public:
+	CuboSpecmap(GLdouble size);
+	~CuboSpecmap() { };
+
+	void render(glm::dmat4 const& viewMat) override;
 };
 
 #endif

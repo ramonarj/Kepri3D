@@ -337,11 +337,6 @@ CuboMultitex::CuboMultitex(GLdouble size) : secondTex(nullptr)
 	setShader("multitexture");
 }
 
-void CuboMultitex::update(GLuint timeElapsed)
-{
-	//m_shader->setFloat("mix", sin(glutGet(GLUT_ELAPSED_TIME)));
-}
-
 
 void CuboMultitex::render(glm::dmat4 const& viewMat)
 {
@@ -369,4 +364,36 @@ void CuboMultitex::render(glm::dmat4 const& viewMat)
 void CuboMultitex::setSecondTex(const std::string& textureID)
 {
 	this->secondTex = (Texture*)&ResourceManager::Instance()->getTexture(textureID);
+}
+
+// - - - - - - - - - - - - - - - - - 
+
+CuboSpecmap::CuboSpecmap(GLdouble size) 
+{
+	m_mesh = IndexMesh::generateCube(size, true, true);
+	m_name = "CuboSpecmap";
+
+	setShader("specMap");
+}
+
+
+void CuboSpecmap::render(glm::dmat4 const& viewMat)
+{
+	glActiveTexture(GL_TEXTURE0);
+	m_texture->bind();
+	glActiveTexture(GL_TEXTURE1);
+	m_specMap->bind();
+
+	// Pasar las texturas al shader
+	m_shader->setInt("textura", 0); //este incluso sobraría, porque se manda automático
+	m_shader->setInt("specMap", 1);
+
+	// Dibujar la entidad
+	if (m_mesh != nullptr)
+		m_mesh->draw();
+
+	m_specMap->unbind();
+	glActiveTexture(GL_TEXTURE0);
+
+	m_texture->unbind();
 }

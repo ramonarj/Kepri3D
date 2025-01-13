@@ -26,11 +26,9 @@ Light::Light(LightType type, glm::fvec4 diffuse) : id(GL_MAX_LIGHTS), m_active(t
 		glEnable(id); // es como hacer glEnable(GL_LIGHTid)
 		cont++;
 
-		ambient = { 0.1,0.1,0.1,1 };
-		//ambient = { 0.5,0.5,0.5,1 };
+		this->ambient = { 0.2,0.2,0.2,1 };
 		this->diffuse = diffuse;
-		specular = { 0.5,0.5,0.5,1 };
-		//specular = { 0,0,0,1 };
+		this->specular = { 1,1,1,1 };
 	}
 }
 

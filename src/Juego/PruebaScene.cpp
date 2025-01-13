@@ -44,7 +44,7 @@ void PruebaScene::init()
 	// Direccional
 	Light* dirLight = new Light(DIRECTIONAL_LIGHT);
 	dirLight->setDirection({ -1,0 , 0 });
-	//dirLight->setDiffuse({ 0, 0.8, 0, 1.0 });
+	dirLight->setDiffuse({ 1, 1, 1, 1.0 });
 	dirLight->setActive(true);
 	AddLight(dirLight);
 
@@ -94,7 +94,6 @@ void PruebaScene::init()
 	toro->setPosition({ 15,-0.4,6 });
 	AddEntity(toro);
 
-
 	// Un cubo multitextura
 	CuboMultitex* cuboMT = new CuboMultitex(2);
 	cuboMT->setPosition({ -15, 0, 6 });
@@ -102,6 +101,13 @@ void PruebaScene::init()
 	cuboMT->setSecondTex("emoji");
 	AddEntity(cuboMT);
 
+	// Una caja con mapa especular
+	CuboSpecmap* cuboSpec = new CuboSpecmap(2);
+	cuboSpec->setPosition({ 0, 0, 5 });
+	cuboSpec->setTexture("caja");
+	cuboSpec->setSpecularMap("caja_spec");
+	//cuboSpec->setMaterial("cromo");
+	AddEntity(cuboSpec);
 
 	/* - - Canvas - - */
 	m_canvas = new Canvas();
@@ -194,7 +200,7 @@ void PruebaScene::loadResources()
 	ResourceManager::Instance()->loadShader("maximize.vert", "", "fog.frag", "bigFog");
 	ResourceManager::Instance()->loadShader("default.vert", "", "movimiento.frag", "movimiento");
 	ResourceManager::Instance()->loadShader("default.vert", "", "multitexture.frag", "multitexture");
-	//ResourceManager::Instance()->loadShader("default.vert", "default.frag", "specularMap.frag", "specMapShader");
+	ResourceManager::Instance()->loadShader("lights.vert", "", "specularMap.frag", "specMap");
 
 	/* Efectos de postprocesado ('composites') */
 	ResourceManager::Instance()->loadComposite("interference.frag", "interference");
@@ -207,8 +213,7 @@ void PruebaScene::PruebaMateriales()
 	// Cubo con la misma textura en todas las caras
 	Cubo* c = new Cubo(2, true);
 	c->setTexture("caja");
-	c->setSpecularMap("caja_spec");
-	c->setPosition({ -10,0,0 });
+	c->setPosition({ 0,0,7 });
 	c->setShader("lights");
 	AddEntity(c);
 
@@ -225,11 +230,11 @@ void PruebaScene::PruebaMateriales()
 	//cuboDef->setPosition({ 0,0,0 });
 	//AddEntity(cuboDef);
 
-	// Cubo de rubi
-	Cubo* cuboRubi = new Cubo(2, false);
-	cuboRubi->setMaterial("cromo");
-	cuboRubi->setPosition({ 5,0,0 });
-	AddEntity(cuboRubi);
+	// Cubo de cromo
+	Cubo* cuboCromo = new Cubo(2, false);
+	cuboCromo->setMaterial("cromo");
+	cuboCromo->setPosition({ 5,0,0 });
+	AddEntity(cuboCromo);
 
 	// Cubo de cobre
 	Cubo* cuboCobre = new Cubo(2, true);

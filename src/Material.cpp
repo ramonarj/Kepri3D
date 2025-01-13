@@ -8,8 +8,8 @@ Material::Material()
 	// Valores por defecto
 	m_ambient = { 0.2, 0.2, 0.2, 1.0 };
 	m_diffuse = { 0.8, 0.8, 0.8, 1.0 };
-	m_specular = { 0.4, 0.4, 0.4, 1.0 };
-	m_brillo = 40;
+	m_specular = { 0.0, 0.0, 0.0, 1.0 };
+	m_brillo = 50;
 	m_face = GL_FRONT;
 	m_translucent = false;
 }

@@ -37,17 +37,11 @@
     <ClCompile Include="..\src\Entity.cpp">
       <Filter>Core</Filter>
     </ClCompile>
-    <ClCompile Include="..\src\Mesh.cpp">
-      <Filter>Core</Filter>
-    </ClCompile>
     <ClCompile Include="..\src\Scene.cpp">
       <Filter>Core</Filter>
     </ClCompile>
     <ClCompile Include="..\src\Pixmap32RGBA.cpp">
       <Filter>Utils</Filter>
-    </ClCompile>
-    <ClCompile Include="..\src\Light.cpp">
-      <Filter>Core</Filter>
     </ClCompile>
     <ClCompile Include="..\src\ResourceManager.cpp">
       <Filter>Core</Filter>
@@ -91,6 +85,12 @@
     <ClCompile Include="..\src\ParticleSystem.cpp">
       <Filter>Core</Filter>
     </ClCompile>
+    <ClCompile Include="..\src\Mesh.cpp">
+      <Filter>Graficos</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\Light.cpp">
+      <Filter>Graficos</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\src\UI\Button.h">
@@ -100,9 +100,6 @@
       <Filter>Core</Filter>
     </ClInclude>
     <ClInclude Include="..\src\Entity.h">
-      <Filter>Core</Filter>
-    </ClInclude>
-    <ClInclude Include="..\src\Mesh.h">
       <Filter>Core</Filter>
     </ClInclude>
     <ClInclude Include="..\src\Scene.h">
@@ -116,9 +113,6 @@
     </ClInclude>
     <ClInclude Include="..\src\checkML.h">
       <Filter>Utils</Filter>
-    </ClInclude>
-    <ClInclude Include="..\src\Light.h">
-      <Filter>Core</Filter>
     </ClInclude>
     <ClInclude Include="..\src\ResourceManager.h">
       <Filter>Core</Filter>
@@ -161,6 +155,12 @@
     </ClInclude>
     <ClInclude Include="..\src\ParticleSystem.h">
       <Filter>Core</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\Mesh.h">
+      <Filter>Graficos</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\Light.h">
+      <Filter>Graficos</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

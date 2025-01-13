@@ -40,6 +40,7 @@ private:
 	GLdouble velTorre = 10.0f;
 	GLuint totalTime = 0;
 	float sunVel = 0.1;
+	bool movingSun = true;
 
 	// Métodos
 	void movimientoCamara(GLuint deltaTime);
