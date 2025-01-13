@@ -39,6 +39,7 @@ private:
 	bool fullscreen = false;
 	GLdouble velTorre = 10.0f;
 	GLuint totalTime = 0;
+	float sunVel = 0.1;
 
 	// Métodos
 	void movimientoCamara(GLuint deltaTime);

@@ -4,7 +4,7 @@
 
 void SpaceScene::init()
 {
-	glClearColor(0, 0, 0, 0);
+	Camera::setBackgroundColor(0, 0, 0);
 
 	// Carga de recursos
 	ResourceManager::Instance()->loadTexture("venus.bmp", "venus");

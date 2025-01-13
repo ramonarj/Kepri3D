@@ -205,7 +205,18 @@ void GameManager::controlLuces(GLuint deltaTime)
 	// 3) Luz direccional
 	if (InputManager::Instance()->getKeyDown('l'))
 		dirLight->setActive(!dirLight->isActive());
-	dirLight->setDirection({ -cos(totalTime * 0.0001),-sin(totalTime * 0.0001), 0 });
+	dirLight->setDirection({ -cos(totalTime / 1000.0 * sunVel),
+		-sin(totalTime / 1000.0 * sunVel), 0 });
+	// Cambiar el color del cielo y de la luz
+	float luminosidad = (dirLight->getPosition().y + 1) / 2.0f;
+	Camera::setBackgroundColor(luminosidad, luminosidad, luminosidad);
+	dirLight->setDiffuse({ luminosidad, luminosidad, luminosidad, 1.0 });
+	//if (luminosidad < 0.75 && luminosidad > 0.01) //amanecer y atardecer (hay que pulirlo)
+	//{
+	//	dirLight->setDiffuse({ luminosidad + 0.2f, luminosidad + 0.05f, luminosidad - 0.25f, 1.0 });
+	//	Camera::setBackgroundColor(luminosidad + 0.2f, luminosidad + 0.05f, luminosidad - 0.25f);
+	//}
+
 	totalTime += deltaTime;
 }
 

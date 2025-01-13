@@ -84,6 +84,10 @@ public:
 	void setFarPlane(GLdouble farPlane);
 	void setOrtoSize(GLdouble ortoSize);
 
+	// Estáticos
+	/* Cambia el color de fondo de la cámara */
+	inline static void setBackgroundColor(float r, float g, float b) { glClearColor(r, g, b, 1.0); }
+
 protected:
 	//Matriz de la cámara (eye, look, up) -> todavía no se usa
 	/* 'Ojo': posición de la cámara */

@@ -128,16 +128,16 @@ void Scene::renderEntities(const glm::dmat4& projViewMat)
 				// pasar la información de las luces al fragment shader (por ahora solo la direccional)
 				if(m_lights[2]->isActive())
 				{
-					activeShader->setVec3("lightDir", m_lights[2]->getPosition());
-					activeShader->setVec3("lightColor", m_lights[2]->getDiffuse());
+					activeShader->setVec3("luzSol.dir", m_lights[2]->getPosition());
+					activeShader->setVec3("luzSol.color", m_lights[2]->getDiffuse());
 					// para el brillo especular
 					activeShader->setVec3("viewPos", m_camera->getPosition());
-					activeShader->setVec3("specStrength", e->getMaterial()->getSpecular());
-					activeShader->setFloat("brillo", e->getMaterial()->getBrillo());
+					activeShader->setVec3("material.specStrength", e->getMaterial()->getSpecular());
+					activeShader->setFloat("material.brillo", e->getMaterial()->getBrillo());
 				}
 				else
 				{
-					activeShader->setVec3("lightColor", {0, 0, 0});
+					activeShader->setVec3("luzSol.color", {0, 0, 0});
 				}
 
 				// provisional
