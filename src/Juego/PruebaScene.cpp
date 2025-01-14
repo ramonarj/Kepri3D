@@ -38,13 +38,13 @@ void PruebaScene::init()
 	AddLight(dirLight);
 
 	// Puntual (va en círculos)
-	Light* circleLight = new Light(POINT_LIGHT, { 0, 0, 1, 1 });
+	Light* circleLight = new Light(POINT_LIGHT, { 1, 1, 0, 1 });
 	circleLight->setPosition({ 3,3,-3 });
 	circleLight->setSpecular({ 0, 0, 1, 1.0 });
 	AddLight(circleLight);
 
 	// Foco (linterna)
-	Light* spotLight = new Light(SPOT_LIGHT, { 1, 1, 0.8, 1 });
+	Light* spotLight = new Light(SPOT_LIGHT, { 0.6, 0.6, 0.6, 1 });
 	spotLight->setPosition({ -2.5,0.5,-2.5 });
 	//spotLight->setSpecular({ 1, 0, 0, 1.0 });
 	spotLight->setActive(true);

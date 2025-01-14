@@ -135,30 +135,32 @@ void Scene::renderEntities(const glm::dmat4& projViewMat)
 				activeShader->setFloat("material.brillo", e->getMaterial()->getBrillo());
 
 				// por cada luz activa, pasamos sus propiedades al fragment shader
-				for(int i = 0; i < 2; i++)
+				for(int i = 0; i < m_lights.size(); i++)
 				{
 					Light* l = m_lights[i];
+					std::string str = "luces[" + std::to_string(i) + "]";
 					if (l->isActive())
 					{
 						//tipo de luz
-						activeShader->setInt("luzSol.type", l->getType()); 
+						activeShader->setInt(str + ".type", l->getType()); 
 
 						// pasar la información de las luces al fragment shader
-						activeShader->setVec3("luzSol.dir", l->getPosition());
-						activeShader->setVec3("luzSol.diffuse", l->getDiffuse());
-						activeShader->setVec3("luzSol.specular", l->getSpecular());
+						activeShader->setVec3(str + ".dir", l->getPosition());
+						activeShader->setVec3(str + ".diffuse", l->getDiffuse());
+						activeShader->setVec3(str + ".specular", l->getSpecular());
 
 						// para luces NO direccionales exclusivamente (factores de atenuación)
 						if (l->getType() != DIRECTIONAL_LIGHT)
 						{
-							activeShader->setFloat("luzSol.constant", l->getAttenuation(0));
-							activeShader->setFloat("luzSol.linear", l->getAttenuation(1));
-							activeShader->setFloat("luzSol.quadratic", l->getAttenuation(2));
+							activeShader->setFloat(str + ".constant", l->getAttenuation(0));
+							activeShader->setFloat(str + ".linear", l->getAttenuation(1));
+							activeShader->setFloat(str + ".quadratic", l->getAttenuation(2));
 						}
 					}
-					else
+					else // 
 					{
-						activeShader->setVec3("luzSol.diffuse", { 0, 0, 0 });
+						activeShader->setVec3(str + ".diffuse", { 0, 0, 0 });
+						activeShader->setVec3(str + ".specular", { 0, 0, 0 });
 					}
 				}
 				// provisional

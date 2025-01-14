@@ -45,7 +45,8 @@ vec3 globalAmbient = { 0.2, 0.2, 0.2 };
 
 /* Diffuse */
 // Permitiremos un máximo de 5 luces por el momento
-uniform Light luzSol;
+const int MAX_LIGHTS = 5;
+uniform Light luces[MAX_LIGHTS];
 
 /* Specular */
 uniform Material material;
@@ -60,20 +61,28 @@ void main()
 	// Cogemos el color de la textura correspondiente al fragmento actual
 	vec4 texColor = texture(textura, data_in.TexCoords);
 
-	// Por ahora solo usamos una luz para el cálculo
+	// Iteramos todas las luces para conocer la iluminación del fragmento
 	vec3 luzTotal = vec3(0.0);
-	// a) Luces direccionales
-	if(luzSol.type == 0)
+	for(int i = 0; i < MAX_LIGHTS; i++)
 	{
-		luzTotal += CalcDirLight(luzSol);
-	}
-	// b) Luces puntuales
-	else
-	{
-		luzTotal += CalcPointLight(luzSol);
+		// a) Luces direccionales
+		if(luces[i].type == 0)
+		{
+			luzTotal += CalcDirLight(luces[i]);
+		}
+		// b) Luces puntuales
+		else if(luces[i].type == 1)
+		{
+			luzTotal += CalcPointLight(luces[i]);
+		}
+		// c) Focos
+		else if(luces[i].type == 2)
+		{
+			luzTotal += CalcPointLight(luces[i]);
+		}
 	}
 	
-	// Aplicamos las luces al color de la textura (* = MODULATE, + = ADD, ...)
+	// Aplicamos la iluminación al color de la textura (* = MODULATE, + = ADD, ...)
 	vec3 result = (globalAmbient + luzTotal) * vec3(texColor);
 
 	FragColor = vec4(result, 1.0);
