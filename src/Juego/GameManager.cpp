@@ -200,13 +200,14 @@ void GameManager::controlLuces(GLuint deltaTime)
 	}
 
 	// 2) Luz puntual (trayectoria circular)
-	circleLight->setPosition({ 15 * cos(totalTime * 0.002), 1, 5 * sin(totalTime * 0.002) });
+	if (movingLights)
+		circleLight->setPosition({ 15 * cos(totalTime / 1000.0f * 1.5), 1, 5 * sin(totalTime / 1000.0f * 1.5) });
 
 	// 3) Luz direccional
-	// Parar el Sol
+	// Parar el movimiento de luces
 	if (InputManager::Instance()->getKeyDown('t'))
 	{
-		movingSun = !movingSun;
+		movingLights = !movingLights;
 	}
 	// Apagarlo
 	if (InputManager::Instance()->getKeyDown('l'))
@@ -215,7 +216,7 @@ void GameManager::controlLuces(GLuint deltaTime)
 	}
 
 	// Moverlo
-	if (movingSun)
+	if (movingLights)
 	{
 		dirLight->setDirection({ -cos(totalTime / 1000.0 * sunVel),
 			-sin(totalTime / 1000.0 * sunVel), 0 });

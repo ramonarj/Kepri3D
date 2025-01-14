@@ -6,9 +6,9 @@
 
 enum LightType
 {
-	POINT_LIGHT = 0, // luz puntual; emite en todas direcciones
-	SPOT_LIGHT = 1, // foco; tiene un ángulo concreto de emisión
-	DIRECTIONAL_LIGHT = 2 // direccional; simula una luz remota uniforme (Sol/Luna)
+	DIRECTIONAL_LIGHT = 0, // direccional; simula una luz remota uniforme (Sol/Luna)
+	POINT_LIGHT = 1, // luz puntual; emite en todas direcciones
+	SPOT_LIGHT = 2 // foco; tiene un ángulo concreto de emisión
 };
 
 class Light
@@ -28,11 +28,20 @@ public:
 	/* Devuelve 'true' si la luz está encendida, false e.o.c. */
 	inline bool isActive() const { return m_active; }
 
+	/* Devuelve el tipo de luz que es */
+	inline LightType getType() const { return type; }
+
 	/* Devuelve la posición */
 	inline const glm::fvec3& getPosition() const { return posDir; }
 
-	/* Devuelve la componente difusa */
+	/* Devuelve la componente difusa de la luz*/
 	inline const glm::fvec3& getDiffuse() const { return diffuse; }
+
+	/* Devuelve la componente especular de la luz */
+	inline const glm::fvec3& getSpecular() const { return specular; }
+
+	/* Devuelve el factor de atenuación de la luz (0 = constante, 1 = lineal, 2 = cuadrático) */
+	float getAttenuation(GLuint i) const;
 
 	// Setters
 	/* Enciende/apaga la luz */
@@ -43,6 +52,9 @@ public:
 
 	/* Cambia la luz ambiente */
 	inline void setAmbient(glm::fvec4 ambient) { this->ambient = ambient; }
+
+	/* Cambia la luz difusa */
+	inline void setSpecular(glm::fvec4 specular) { this->specular = specular; }
 
 	/* Cambia la posición de la luz, y la convierte en puntual */
 	inline void setPosition(glm::fvec3 pos) { posDir = glm::fvec4(pos, 1.0f); }
@@ -67,7 +79,7 @@ protected:
 	/* Número de luces totales en la escena */
 	static GLuint cont;
 
-	/* Tipo de luz que es (puntual / foco / direccional) */
+	/* Tipo de luz que es (direccional / puntual / foco) */
 	LightType type;
 
 	/* Identificador de OpengGL asociado a esta luz */

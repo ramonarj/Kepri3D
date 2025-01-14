@@ -70,6 +70,16 @@ void Light::load(glm::dmat4 viewMat)
 	}
 }
 
+float Light::getAttenuation(GLuint i) const
+{
+	if (i == 0)
+		return constantAtt;
+	else if (i == 1)
+		return linearAtt;
+	else if (i == 2)
+		return quadraticAtt;
+}
+
 void Light::setActive(bool active)
 {
 	m_active = active;

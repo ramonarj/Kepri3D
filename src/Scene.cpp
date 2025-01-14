@@ -129,21 +129,38 @@ void Scene::renderEntities(const glm::dmat4& projViewMat)
 				activeShader->setMat4d("view", m_camera->getViewMat());
 				activeShader->setMat4d("projection", m_camera->getProjMat());
 
-				// pasar la información de las luces al fragment shader (por ahora solo la direccional)
-				if(m_lights[2]->isActive())
-				{
-					activeShader->setVec3("luzSol.dir", m_lights[2]->getPosition());
-					activeShader->setVec3("luzSol.color", m_lights[2]->getDiffuse());
-					// para el brillo especular
-					activeShader->setVec3("viewPos", m_camera->getPosition());
-					activeShader->setVec3("material.specStrength", e->getMaterial()->getSpecular());
-					activeShader->setFloat("material.brillo", e->getMaterial()->getBrillo());
-				}
-				else
-				{
-					activeShader->setVec3("luzSol.color", {0, 0, 0});
-				}
+				// pasar las propiedades del material de la entidad al FS
+				activeShader->setVec3("viewPos", m_camera->getPosition());
+				activeShader->setVec3("material.specular", e->getMaterial()->getSpecular());
+				activeShader->setFloat("material.brillo", e->getMaterial()->getBrillo());
 
+				// por cada luz activa, pasamos sus propiedades al fragment shader
+				for(int i = 0; i < 2; i++)
+				{
+					Light* l = m_lights[i];
+					if (l->isActive())
+					{
+						//tipo de luz
+						activeShader->setInt("luzSol.type", l->getType()); 
+
+						// pasar la información de las luces al fragment shader
+						activeShader->setVec3("luzSol.dir", l->getPosition());
+						activeShader->setVec3("luzSol.diffuse", l->getDiffuse());
+						activeShader->setVec3("luzSol.specular", l->getSpecular());
+
+						// para luces NO direccionales exclusivamente (factores de atenuación)
+						if (l->getType() != DIRECTIONAL_LIGHT)
+						{
+							activeShader->setFloat("luzSol.constant", l->getAttenuation(0));
+							activeShader->setFloat("luzSol.linear", l->getAttenuation(1));
+							activeShader->setFloat("luzSol.quadratic", l->getAttenuation(2));
+						}
+					}
+					else
+					{
+						activeShader->setVec3("luzSol.diffuse", { 0, 0, 0 });
+					}
+				}
 				// provisional
 				activeShader->setMat4d("mvpMat", projViewMat * e->getModelMat());
 			}
