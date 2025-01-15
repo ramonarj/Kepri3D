@@ -93,6 +93,8 @@ void Scene::renderSkybox(const glm::dmat4& projViewMat)
 
 		// Pintar el skybox
 		m_skybox->render();
+
+		Shader::turnOff();
 	}
 }
 
@@ -108,63 +110,16 @@ void Scene::renderEntities(const glm::dmat4& projViewMat)
 	{
 		if (e->isActive())
 		{
-			// la entidad no usa shaders; desactivamos
-			if (e->getShader() == nullptr) // && activeShader != nullptr
+			// No usa shaders; los 'apagamos'
+			if (e->getShader() == nullptr) 
 			{
 				Shader::turnOff();
-				//activeShader = nullptr;
 			}
-				
-			// la entidad usa shaders
+			// Usa shaders; lo activamos y pasamos los valores uniform necesarios
 			else
 			{
-				// hay que cambiar el shader que usó la entidad anterior
-				if (e->getShader() != activeShader)
-				{
-					activeShader = e->getShader();
-					activeShader->use();
-				}
-				// pasar las matrices necesarias al vertex shader
-				activeShader->setMat4d("model", e->getModelMat());
-				activeShader->setMat4d("view", m_camera->getViewMat());
-				activeShader->setMat4d("projection", m_camera->getProjMat());
-
-				// pasar las propiedades del material de la entidad al FS
-				activeShader->setVec3("viewPos", m_camera->getPosition());
-				activeShader->setVec3("material.specular", e->getMaterial()->getSpecular());
-				activeShader->setFloat("material.brillo", e->getMaterial()->getBrillo());
-
-				// por cada luz activa, pasamos sus propiedades al fragment shader
-				for(int i = 0; i < m_lights.size(); i++)
-				{
-					Light* l = m_lights[i];
-					std::string str = "luces[" + std::to_string(i) + "]";
-					if (l->isActive())
-					{
-						//tipo de luz
-						activeShader->setInt(str + ".type", l->getType()); 
-
-						// pasar la información de las luces al fragment shader
-						activeShader->setVec3(str + ".dir", l->getPosition());
-						activeShader->setVec3(str + ".diffuse", l->getDiffuse());
-						activeShader->setVec3(str + ".specular", l->getSpecular());
-
-						// para luces NO direccionales exclusivamente (factores de atenuación)
-						if (l->getType() != DIRECTIONAL_LIGHT)
-						{
-							activeShader->setFloat(str + ".constant", l->getAttenuation(0));
-							activeShader->setFloat(str + ".linear", l->getAttenuation(1));
-							activeShader->setFloat(str + ".quadratic", l->getAttenuation(2));
-						}
-					}
-					else // 
-					{
-						activeShader->setVec3(str + ".diffuse", { 0, 0, 0 });
-						activeShader->setVec3(str + ".specular", { 0, 0, 0 });
-					}
-				}
-				// provisional
-				activeShader->setMat4d("mvpMat", projViewMat * e->getModelMat());
+				e->getShader()->use();
+				sendUniforms(e);
 			}
 			// en cualquier caso, mandamos la info de los vértices
 			e->render(m_camera->getViewMat());
@@ -242,6 +197,55 @@ void Scene::update(GLuint deltaTime)
 
 	// Limpiar el input para el siguiente frame
 	InputManager::Instance()->Update();
+}
+
+void Scene::sendUniforms(Entity* e)
+{
+	const Shader* sh = e->getShader();
+
+	// pasar las matrices necesarias al VS
+	sh->setMat4d("model", e->getModelMat());
+	sh->setMat4d("view", m_camera->getViewMat());
+	sh->setMat4d("projection", m_camera->getProjMat());
+
+	// pasar las propiedades del material al FS
+	sh->setVec3("viewPos", m_camera->getPosition());
+	sh->setVec3("material.specular", e->getMaterial()->getSpecular());
+	sh->setFloat("material.brillo", e->getMaterial()->getBrillo());
+
+	// por cada luz activa, pasamos sus propiedades al fragment shader
+	for (int i = 0; i < m_lights.size(); i++)
+	{
+		Light* l = m_lights[i];
+		std::string str = "luces[" + std::to_string(i) + "]";
+		if (l->isActive())
+		{
+			//tipo de luz
+			sh->setInt(str + ".type", l->getType());
+
+			// pasar la información de las luces al fragment shader
+			sh->setVec3(str + ".dir", l->getPosition());
+			sh->setVec3(str + ".diffuse", l->getDiffuse());
+			sh->setVec3(str + ".specular", l->getSpecular());
+
+			// para luces NO direccionales exclusivamente (factores de atenuación)
+			if (l->getType() != DIRECTIONAL_LIGHT)
+			{
+				sh->setFloat(str + ".constant", l->getAttenuation(0));
+				sh->setFloat(str + ".linear", l->getAttenuation(1));
+				sh->setFloat(str + ".quadratic", l->getAttenuation(2));
+			}
+		}
+		else // 
+		{
+			sh->setVec3(str + ".diffuse", { 0, 0, 0 });
+			sh->setVec3(str + ".specular", { 0, 0, 0 });
+		}
+	}
+
+
+	// provisional
+	sh->setMat4d("mvpMat", m_camera->getProjMat() * m_camera->getViewMat() * e->getModelMat());
 }
 
 void Scene::takePhoto()

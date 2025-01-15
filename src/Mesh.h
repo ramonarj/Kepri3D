@@ -92,7 +92,7 @@ public:
 	static IndexMesh* generateGrid(GLint filas, GLint columnas, GLdouble tamFila, GLdouble tamColumna);
 
 	/* - - Terreno - - */
-	static IndexMesh* generateTerrain(std::string filename, GLdouble scale);
+	static IndexMesh* generateTerrain(const std::string& filename, GLdouble scale, bool rawFile);
 
 	/* - - Cubemap - - */
 	static IndexMesh* generateCubemap(GLdouble size = 4.0);

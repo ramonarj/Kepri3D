@@ -4,7 +4,7 @@
 #include "../InputManager.h"
 
 
-Button::Button(std::string textureName, Canvas* canvas) : m_callback(nullptr)
+Button::Button(const std::string& textureName, Canvas* canvas) : m_callback(nullptr)
 {
 	// Coger el tamaño en píxeles de la textura
 	setTexture(textureName);

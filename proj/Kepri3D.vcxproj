@@ -160,10 +160,10 @@
     <ClCompile Include="..\src\Game.cpp" />
     <ClCompile Include="..\src\InputManager.cpp" />
     <ClCompile Include="..\src\Juego\GameManager.cpp" />
+    <ClCompile Include="..\src\Juego\Main.cpp" />
     <ClCompile Include="..\src\Juego\PruebaScene.cpp" />
     <ClCompile Include="..\src\Juego\SpaceScene.cpp" />
     <ClCompile Include="..\src\Light.cpp" />
-    <ClCompile Include="..\src\Main.cpp" />
     <ClCompile Include="..\src\Material.cpp" />
     <ClCompile Include="..\src\Mesh.cpp" />
     <ClCompile Include="..\src\MeshLoader.cpp" />

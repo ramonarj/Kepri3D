@@ -203,8 +203,15 @@ private:
 class Terrain : public Entity
 {
 public:
-	/* Crea un terreno con la información de 'filename' y la textura de 'textureName' */
-	Terrain(std::string filename, GLdouble scale);
+	/* Crea un terreno vacío */
+	Terrain();
+
+	/* Crea el terreno con un archivo RAW de alturas (256 x 256) */
+	void loadRAW(const std::string& rawFile, GLdouble scale = 1.0);
+
+	/* Crea el terreno con un mapa de alturas BMP (tendrá tantos vértices como píxeles la imagen) */
+	void loadHeightMap(const std::string& heightFile, GLdouble scale = 1.0);
+
 	~Terrain() { };
 };
 

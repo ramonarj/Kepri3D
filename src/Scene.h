@@ -82,6 +82,9 @@ private:
 	void renderNormals(const glm::dmat4& projViewMat);
 	void renderCanvas();
 	void renderEffects();
+
+	/* Manda todos los uniforms necesarios al shader de la entidad dada */
+	void sendUniforms(Entity* e);
 };
 
 #endif

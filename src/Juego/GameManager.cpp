@@ -104,7 +104,7 @@ void GameManager::update(GLuint deltaTime)
 
 void GameManager::movimientoCamara(GLuint deltaTime)
 {
-	movCamara = { 0,0,0 };
+	glm::vec3 movCamara = { 0,0,0 };
 
 	// INPUT DE TECLADO
 	// Adelante / atrás
@@ -149,8 +149,8 @@ void GameManager::rotacionesCamara(GLuint deltaTime)
 		(double)mousePos.y - cam->getVP()->getH() / 2);
 
 	// Cámara tipo FPS; las rotaciones en Y son globales y en X son locales.
-	cam->rotate(-diff.x * 0.002, { 0,1,0 }, GLOBAL);
-	cam->rotate(-diff.y * 0.002, { 1,0,0 }, LOCAL); // lo mismo que hacer pitch
+	cam->rotate(-diff.x / 1000.0 * sensibilidad, { 0,1,0 }, GLOBAL);
+	cam->rotate(-diff.y / 1000.0 * sensibilidad, { 1,0,0 }, LOCAL); // lo mismo que hacer pitch
 }
 
 void GameManager::volumenVistaCamara(GLuint deltaTime)

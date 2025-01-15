@@ -10,7 +10,7 @@ class Button : public UIElement
 {
 public:
 	/* Constructora por defecto */
-	Button(std::string textureName, Canvas* canvas);
+	Button(const std::string& textureName, Canvas* canvas);
 
 	/* Establece el callback del botón */
 	inline void setCallback(void(*callback)()) { m_callback = callback; }

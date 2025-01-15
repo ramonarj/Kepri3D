@@ -3,6 +3,7 @@
 #include <iostream>
 #include <fstream>
 #include "Utils.h"
+#include "Pixmap32RGBA.h"
 
 using namespace glm;
 
@@ -766,26 +767,59 @@ IndexMesh* IndexMesh::generateGrid(GLint filas, GLint columnas, GLdouble tamFila
 }
 
 
-IndexMesh* IndexMesh::generateTerrain(std::string filename, GLdouble scale)
+IndexMesh* IndexMesh::generateTerrain(const std::string& filename, GLdouble scale, bool rawFile)
 {
-	// Abrimos el archivo binario
-	std::ifstream file(filename, std::ios::binary); // "terrain.raw": 257*257 unsigned chars
-	if (!file.is_open()) 
-		return nullptr; 
+	IndexMesh* m;
 
-	// Crear la malla y leer los datos del archivo
-	IndexMesh* m = generateGrid(256, 256, scale, scale);
-	unsigned char* data = new unsigned char[m->numVertices];
-	// char = byte -> leer en data un bloque de numVertices bytes
-	file.read((char*)data, m->numVertices * sizeof(char));
-	file.close();
-
-	// modificar la coordenada Y de los vértices con los datos de data (*0.5)
-	for (int i = 0; i < m->numVertices; i++)
+	/* a) Es un archivo RAW*/
+	if(rawFile)
 	{
-		m->vertices[i].y = int(data[i]) * 0.05 * scale;
+		// Crear la malla y leer los datos del archivo
+		m = generateGrid(256, 256, scale, scale);
+
+		// Abrimos el archivo binario
+		std::ifstream file(filename, std::ios::binary); // "terrain.raw": 257*257 unsigned chars
+		if (!file.is_open())
+			return nullptr;
+
+		unsigned char* data = new unsigned char[m->numVertices];
+		// char = byte -> leer en data un bloque de numVertices bytes
+		file.read((char*)data, m->numVertices * sizeof(char));
+		file.close();
+
+		// modificar la coordenada Y de los vértices con los datos de data (*0.05)
+		for (int i = 0; i < m->numVertices; i++)
+		{
+			m->vertices[i].y = int(data[i]) * 0.05 * scale;// *scale;
+		}
+		delete[]data;
 	}
-	delete []data;
+	/* b) Es un mapa de alturas en escala B/N */
+	else
+	{
+		// Crea el mapa de píxeles con los píxeles del mapa de alturas
+		PixMap32RGBA pixMap;
+		pixMap.load_bmp24BGR(filename);
+		if (pixMap.is_null())
+			std::cout << "No se pudo cargar el mapa de alturas " << filename << std::endl;
+
+		// Dimensiones
+		int w = pixMap.width();
+		int h = pixMap.height();
+
+		// Crear la malla
+		m = generateGrid(h - 1, w - 1, scale, scale);
+
+		// modificar la coordenada Y de los vértices con los datos de la imagen(*0.05)
+		for (int i = 0; i < h; i++)
+		{
+			for (int j = 0; j < w; j++)
+			{
+				// La imagen empieza a leerse por abajo a la izquierda, mientras que el Grid empieza por arriba izda.
+				m->vertices[w * i + j].y = int(pixMap.data()[w * (h - 1 - i) + j].r) * 0.05 * scale;
+			}
+		}
+	}
 
 	/* Generar normales */
 	m->SetNormals();

@@ -138,7 +138,7 @@ void PruebaScene::init()
 
 
 	/* - - Skybox - - */
-	Skybox* sky = new Skybox("citySkybox");
+	Skybox* sky = new Skybox("lakeSkybox");
 	SetSkybox(sky);
 
 	/* - - Sistema de partículas - - */
@@ -168,6 +168,7 @@ void PruebaScene::loadResources()
 	ResourceManager::Instance()->loadTexture("orientacion.bmp", "orientacion");
 	ResourceManager::Instance()->loadTexture("Zelda.bmp", "zelda");
 	ResourceManager::Instance()->loadTexture("terrenoTex.bmp", "terreno");
+	ResourceManager::Instance()->loadTexture("iceland.bmp", "iceland");
 	ResourceManager::Instance()->loadTexture("caja.bmp", "caja");
 	ResourceManager::Instance()->loadTexture("caja_specular.bmp", "caja_spec");
 	ResourceManager::Instance()->loadTexture("cobre.bmp", "cobre");
@@ -178,7 +179,7 @@ void PruebaScene::loadResources()
 	// Botones
 	for (int i = 0; i < buttonNames.size(); i++)
 	{
-		ResourceManager::Instance()->loadTexture(buttonNames[i] + ".bmp", buttonNames[i]);
+		ResourceManager::Instance()->loadTexture("UI/" + buttonNames[i] + ".bmp", buttonNames[i]);
 	}
 
 	// Skyboxes - el orden tiene que ser este (top y bottom están invertidos por alguna razón)
@@ -283,12 +284,28 @@ void PruebaScene::PruebaMateriales()
 	vGrid->setShader("movimiento");
 	AddEntity(vGrid);
 
+	// Terreno antiguo
+	Terrain* oldTer = new Terrain();
+	oldTer->loadRAW("../bin/assets/terrain.raw", 0.05);
+	oldTer->setTexture("terreno");
+	oldTer->setPosition({ -30,0, 0 });
+	AddEntity(oldTer);
 
-	// Terreno
-	Terrain* terrain = new Terrain("../bin/assets/terrain.raw", 0.5);
-	terrain->setTexture("terreno");
+	// Terreno Islandia
+	Terrain* terrain = new Terrain();
+	terrain->loadHeightMap("../bin/assets/icelandHeight.bmp", 1);
+	terrain->setTexture("iceland");
 	terrain->setPosition({ 0,-10,0 });
 	AddEntity(terrain);
+
+	// Minimap
+	Terrain* miniTer = new Terrain();
+	miniTer->loadHeightMap("../bin/assets/icelandHeight.bmp", 0.01);
+	miniTer->setTexture("iceland");
+	miniTer->scale({ 1,1.5,1 });
+	miniTer->setPosition({ -6,-0.99,6 });
+	miniTer->rotate(PI / 2, { 0,1,0 }, GLOBAL);
+	AddEntity(miniTer);
 }
 
 void PruebaScene::ViewportTest()

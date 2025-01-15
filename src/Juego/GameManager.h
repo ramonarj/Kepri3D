@@ -27,20 +27,25 @@ public:
 
 	void update(GLuint deltaTime) override;
 private:
+	// Referencias a los GameObjects
 	Camera* cam;
 	Scene* scene;
 	Light* dirLight, *circleLight, *spotLight;
 	Entity* pSystem;
 	UIElement* botonesMenu;
 
-	glm::vec3 movCamara = { 0,0,0 };
-	double velCamara = 8.0f;
+	// Camara
+	double velCamara = 16.0f;
+	float sensibilidad = 1.5;
+	// Cursor y pantalla
 	bool lockedMouse = true;
 	bool fullscreen = false;
-	GLdouble velTorre = 10.0f;
+	// Luces
 	GLuint totalTime = 0;
 	float sunVel = 0.1;
 	bool movingLights = true;
+	// Partículas
+	GLdouble velTorre = 10.0f;
 
 	// Métodos
 	void movimientoCamara(GLuint deltaTime);

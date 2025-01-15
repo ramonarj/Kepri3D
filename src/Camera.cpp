@@ -27,7 +27,7 @@ Camera::Camera(Viewport* viewport) : vp(viewport), projMat(1.0), orto(false)
 	nearW = 0;
 	nearH = 0;
 	nearPlane = 1.0;
-	farPlane = 100.0;
+	farPlane = 200.0;
 	ortoSize = 15.0; // por ejemplo
 
 	setPosition({ 0, 5, 8 });

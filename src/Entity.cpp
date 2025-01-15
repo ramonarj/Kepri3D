@@ -285,10 +285,19 @@ void Grid::render(glm::dmat4 const& viewMat)
 
 // - - - - - - - - - - - - - - - - - 
 
-Terrain::Terrain(std::string filename, GLdouble scale)
+Terrain::Terrain()
 {
-	m_mesh = IndexMesh::generateTerrain(filename, scale);
 	m_name = "Terrain";
+}
+
+void Terrain::loadRAW(const std::string& rawFile, GLdouble scale)
+{
+	m_mesh = IndexMesh::generateTerrain(rawFile, scale, true);
+}
+
+void Terrain::loadHeightMap(const std::string& heightMap, GLdouble scale)
+{
+	m_mesh = IndexMesh::generateTerrain(heightMap, scale, false);
 }
 
 // - - - - - - - - - - - - - - - - - 
