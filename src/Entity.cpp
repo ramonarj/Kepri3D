@@ -406,3 +406,57 @@ void CuboSpecmap::render(glm::dmat4 const& viewMat)
 
 	m_texture->unbind();
 }
+
+// - - - - - - - - - - - - - - - - - 
+
+Hierba::Hierba(GLdouble width, GLdouble height)
+{
+	m_mesh = IndexMesh::generateRectangle(width, height);
+	m_name = "Hierba";
+}
+
+void Hierba::render(glm::dmat4 const& viewMat)
+{
+	// Quitar el culling
+	GLboolean cullActivado;
+	glGetBooleanv(GL_CULL_FACE, &cullActivado);
+	if(cullActivado)
+		glDisable(GL_CULL_FACE);
+
+	glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+
+	// Activar la textura si la tiene
+	if (m_texture != nullptr)
+		m_texture->bind();
+
+	// Pintar los haces
+	if (m_mesh != nullptr)
+	{
+		// En una dirección
+		glMatrixMode(GL_MODELVIEW);
+		glm::dmat4 modelViewMat = viewMat * modelMat;
+		glLoadMatrixd(value_ptr(modelViewMat));
+
+		m_material.load();
+		m_mesh->draw();
+
+		// En la otra
+		glMatrixMode(GL_MODELVIEW);
+		modelViewMat = glm::rotate(modelViewMat, PI/2, { 0, 1, 0 });
+		glLoadMatrixd(value_ptr(modelViewMat));
+
+		m_material.load();
+		m_mesh->draw();
+	}
+
+	// Desactivar la textura si la tiene
+	if (m_texture != nullptr)
+		m_texture->unbind();
+
+	// Dejarlo como estaba
+	glPolygonMode(GL_FRONT, GL_FILL);
+	glPolygonMode(GL_BACK, GL_LINE);
+
+	if(cullActivado)
+		glEnable(GL_CULL_FACE);
+}

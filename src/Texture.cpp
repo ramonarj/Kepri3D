@@ -46,8 +46,39 @@ bool Texture::load(const std::string& filePath, GLubyte alpha)
 
 	// Genera un mipmap para la textura
 	glGenerateMipmap(GL_TEXTURE_2D);
+	hasMipmap = true;
 
 	return true;
+}
+
+bool Texture::load(const std::string& filePath, const glm::ivec3& colorTrans)
+{
+	if (id == 0)
+		Init();
+
+	PixMap32RGBA::rgba_color colorPix = { colorTrans.r, colorTrans.g, colorTrans.b, 0 };
+	PixMap32RGBA pixMap; // var. local para cargar la imagen del archivo
+	pixMap.load_bmp24BGR(filePath); // carga y añade alpha=255
+	// carga correcta?
+	if (!pixMap.is_null())
+	{
+		//glAlphaFunc(GL_GREATER, 0.0); // no haría falta si lo establece Game
+		pixMap.set_colorkey_alpha(colorPix, 0);
+
+		w = pixMap.width();
+		h = pixMap.height();
+
+		glBindTexture(GL_TEXTURE_2D, id);
+		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, w, h, 0, GL_RGBA, GL_UNSIGNED_BYTE, pixMap.data());
+
+		// No es recomendable usar mipmap con este modelo (se pierde la transparencia al alejarnos)
+		hasMipmap = false;
+		//glGenerateMipmap(GL_TEXTURE_2D);
+
+		return true;
+	}
+	else
+		return false;
 }
 
 bool Texture::loadRTT(GLsizei width, GLsizei height, GLenum buf)
@@ -96,7 +127,7 @@ void Texture::useMipmaps(bool b)
 	glBindTexture(GL_TEXTURE_2D, id);
 
 	// Se activa/desactiva el filtro de minificación que cambia entre texturas de distintos tamaños (mipmaps)
-	if(b)
+	if(b && hasMipmap)
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
 	else
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
@@ -164,6 +195,7 @@ bool CubemapTexture::load(std::vector<std::string> faces)
 	}
 
 	// No generamos mipmap
+	hasMipmap = false;
 
 	return true;
 }

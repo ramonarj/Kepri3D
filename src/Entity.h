@@ -43,6 +43,9 @@ public:
 	/* Activa / desactiva la entidad */
 	inline void setActive(bool b) { m_active = b; }
 
+	/* Establece el nombre de la entidad */
+	inline void setName(const std::string& name) { m_name = name; }
+
 	/* Mueve la entidad a la posición dada */
 	void setPosition(const glm::dvec3& pos);
 
@@ -249,6 +252,17 @@ class CuboSpecmap : public Entity
 public:
 	CuboSpecmap(GLdouble size);
 	~CuboSpecmap() { };
+
+	void render(glm::dmat4 const& viewMat) override;
+};
+
+// - - - - - - - - - - - - 
+
+class Hierba : public Entity
+{
+public:
+	Hierba(GLdouble widh, GLdouble height);
+	~Hierba() { };
 
 	void render(glm::dmat4 const& viewMat) override;
 };

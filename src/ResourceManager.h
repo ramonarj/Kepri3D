@@ -4,6 +4,8 @@
 #include <map>
 #include <string>
 #include <vector>
+#include <glew.h>
+#include <glm.hpp>
 
 class Mesh;
 class Texture;
@@ -46,7 +48,8 @@ public:
 	bool loadMesh(const std::string& meshName, const std::string& id);
 
 	/* Carga una textura de archivo y le asigna el ID dado */
-	bool loadTexture(const std::string& textureName, const std::string& id);
+	bool loadTexture(const std::string& textureName, const std::string& id, GLubyte alpha = 255);
+	bool loadTexture(const std::string& textureName, const std::string& id, const glm::ivec3& colorTrans);
 
 	/* Carga un material de archivo y le asigna el ID dado */
 	bool loadMaterial(const std::string& materialName, const std::string& id);

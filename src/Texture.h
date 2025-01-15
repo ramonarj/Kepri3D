@@ -4,6 +4,7 @@
 #include <glew.h>
 #include <string>
 #include <vector>
+#include <glm.hpp>
 
 class Texture
 {
@@ -15,6 +16,7 @@ public:
 
 	/* Carga la textura */
 	bool load(const std::string& filePath, GLubyte alpha = 255);
+	bool load(const std::string& filePath, const glm::ivec3& colorTrans);
 
 	/* Carga el contenido del color buffer en esta textura */
 	bool loadRTT(GLsizei width, GLsizei height, GLenum buf = GL_BACK);
@@ -51,6 +53,9 @@ protected:
 
 	/* Identificador interno (GPU) de la textura */
 	GLuint id;
+
+	/* Indica si la textura puede usar mipmaps o no */
+	bool hasMipmap;
 
 	// Métodos privados
 	/* Inicializa la textura si no se había creado ya */

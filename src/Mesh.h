@@ -11,13 +11,14 @@ class Mesh
 {
 public:
 	/* Constructora */
-	Mesh() : numVertices (0), type(GL_POINTS), 
-		vertices(nullptr), colores(nullptr), texCoords(nullptr), normales(nullptr) {}
+	Mesh();
+
 	/* Destructora */
 	virtual ~Mesh();
 
-
+	/* Dibuja la malla mandando la información desde los arrays correspondientes */
 	virtual void draw();
+	/* Dibuja la malla tantas veces como se indique, con una sola llamada a la GPU */
 	virtual void drawInstanced(GLuint numInstances);
 
 	/* Creación de mallas de los distintos objetos */
@@ -105,7 +106,6 @@ private:
 
 	/* Variable auxiliar para ahorrar cálculos (= numTriangulos * 3) */
 	GLuint numIndices;
-
 
 	// Métodos auxiliares
 	/* Rellena el vector de normales usando los triángulos indexados */

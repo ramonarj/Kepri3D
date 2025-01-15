@@ -44,17 +44,37 @@ const Mesh& ResourceManager::getMesh(const std::string& id)
 
 // - - - - - - - - - - - - 
 
-bool ResourceManager::loadTexture(const std::string& textureName, const std::string& id)
+bool ResourceManager::loadTexture(const std::string& textureName, const std::string& id, GLubyte alpha)
 {
 	Texture* tex = new Texture();
 	try
 	{
-		tex->load(TEXTURES_PATH + textureName);
+		tex->load(TEXTURES_PATH + textureName, alpha);
 		textures[id] = tex;
 		return true;
 	}
 
 	catch(const std::ios_base::failure& f)
+	{
+		std::cout << "No se pudo cargar la textura " << "\"" << textureName << "\"" << std::endl;
+		//std::cout << f.what() << std::endl;
+		// Como no se ha podido cargar la imagen, borramos la textura creada
+		delete tex;
+		return false;
+	}
+}
+
+bool ResourceManager::loadTexture(const std::string& textureName, const std::string& id, const glm::ivec3& colorTrans)
+{
+	Texture* tex = new Texture();
+	try
+	{
+		tex->load(TEXTURES_PATH + textureName, colorTrans);
+		textures[id] = tex;
+		return true;
+	}
+
+	catch (const std::ios_base::failure& f)
 	{
 		std::cout << "No se pudo cargar la textura " << "\"" << textureName << "\"" << std::endl;
 		//std::cout << f.what() << std::endl;

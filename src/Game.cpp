@@ -189,8 +189,8 @@ void Game::initGLSubsystems()
 
 	// Activa el descarte de fragmentos cuyo alfa no cumpla una cierta condición dada
 	// NOTA: en el pipeline, va primero el alpha test y después el blend
-	//glEnable(GL_ALPHA_TEST);
-	glAlphaFunc(GL_GREATER, 0.15);
+	glEnable(GL_ALPHA_TEST);
+	glAlphaFunc(GL_GREATER, 0.0);
 
 	/* Antialiasing; tanto para líneas, como para polígonos */
 	glDisable(GL_MULTISAMPLE); //desactivado por defecto

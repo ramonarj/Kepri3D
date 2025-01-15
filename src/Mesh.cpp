@@ -7,6 +7,11 @@
 
 using namespace glm;
 
+Mesh::Mesh() : numVertices(0), type(GL_POINTS), vertices(nullptr), colores(nullptr), 
+	texCoords(nullptr), normales(nullptr)
+{
+
+}
 
 Mesh::~Mesh()
 {
@@ -27,6 +32,9 @@ void Mesh::enableArrays()
 	{
 		glEnableClientState(GL_VERTEX_ARRAY);
 		glVertexPointer(3, GL_DOUBLE, 0, vertices);
+		// Para el vertex shader
+		glVertexAttribPointer(0, 3, GL_DOUBLE, GL_FALSE, 0, vertices);
+		glEnableVertexAttribArray(0);
 	}
 
 	// Colores
@@ -70,6 +78,11 @@ void Mesh::disableArrays()
 	glDisableClientState(GL_TEXTURE_COORD_ARRAY);
 	glDisableClientState(GL_COLOR_ARRAY);
 	glDisableClientState(GL_VERTEX_ARRAY);
+
+	glDisableVertexAttribArray(3);
+	glDisableVertexAttribArray(2);
+	glDisableVertexAttribArray(1);
+	glDisableVertexAttribArray(0);
 }
 
 void Mesh::draw()
@@ -97,7 +110,70 @@ void Mesh::drawInstanced(GLuint numInstances)
 	disableArrays();
 }
 
-// - - - - - - - - - - - -
+// - - - - - - - - - - - - - - - - - - -
+
+void IndexMesh::draw()
+{
+	// Activa los arrays de vértices, colores, texturas... y el de índices
+	Mesh::enableArrays();
+	if (indices != nullptr)
+	{
+		glEnableClientState(GL_INDEX_ARRAY);
+		glIndexPointer(GL_UNSIGNED_INT, 0, indices);
+	}
+
+	// Dibuja los triángulos definidos por la tabla de índices
+	glDrawElements(GL_TRIANGLES, numIndices, GL_UNSIGNED_INT, indices);
+
+	// Dejarlo todo como estaba
+	glDisableClientState(GL_INDEX_ARRAY);
+	Mesh::disableArrays();
+}
+
+void IndexMesh::drawInstanced(GLuint numInstances)
+{
+	// 1) Activar los arrays que vamos a usar y pasarlos a la GPU
+	enableArrays();
+
+	// 2) Dibuja los arrays pasados a la GPU con la primitiva dada (type)
+	glDrawElementsInstanced(GL_TRIANGLES, numIndices, GL_UNSIGNED_INT, indices, numInstances);
+
+	// 3) Volver a dejarlo todo como estaba
+	disableArrays();
+}
+
+void IndexMesh::SetNormals()
+{
+	if (normales == nullptr)
+		normales = new dvec3[numVertices];
+
+	// Se inicializan todas a 0
+	for (int i = 0; i < numVertices; i++)
+		normales[i] = { 0,0,0 };
+
+	// Recorrido de los triángulos
+	for (int i = 0; i < numIndices; i += 3)
+	{
+		// Los 3 vértices del triángulo
+		glm::dvec3 a = vertices[indices[i]];
+		glm::dvec3 b = vertices[indices[i + 1]];
+		glm::dvec3 c = vertices[indices[i + 2]];
+
+		// Vector normal al triángulo
+		dvec3 n = glm::normalize(glm::cross(c - b, a - b));
+
+		// Sumárselo a sus vértices
+		normales[indices[i]] += n;
+		normales[indices[i + 1]] += n;
+		normales[indices[i + 2]] += n;
+	}
+
+	// Normalizar las normales
+	for (int i = 0; i < numVertices; i++)
+		normales[i] = glm::normalize(normales[i]);
+}
+
+// - - - - - - - - - Mallas - - - - - - - - - - //
 
 Mesh* Mesh::generateAxesRGB(GLdouble l)
 {
@@ -200,8 +276,6 @@ Mesh* Mesh::generateFilledPolygon(GLint sides, GLdouble size)
 	return m;
 }
 
-
-
 Mesh* Mesh::generateCubeSides(GLdouble size)
 {
 	Mesh* m = new Mesh();
@@ -276,69 +350,7 @@ Mesh* Mesh::generateRectangle(GLdouble width, GLdouble height)
 	return m;
 }
 
-// - - - - - - - - - - - - - - - - - - -
-
-void IndexMesh::draw()
-{
-	// Activa los arrays de vértices, colores, texturas... y el de índices
-	Mesh::enableArrays();
-	if (indices != nullptr)
-	{
-		glEnableClientState(GL_INDEX_ARRAY);
-		glIndexPointer(GL_UNSIGNED_INT, 0, indices);
-	}
-
-	// Dibuja los triángulos definidos por la tabla de índices
-	glDrawElements(GL_TRIANGLES, numIndices, GL_UNSIGNED_INT, indices);
-
-	// Dejarlo todo como estaba
-	glDisableClientState(GL_INDEX_ARRAY);
-	Mesh::disableArrays();
-}
-
-
-void IndexMesh::drawInstanced(GLuint numInstances)
-{
-	// 1) Activar los arrays que vamos a usar y pasarlos a la GPU
-	enableArrays();
-
-	// 2) Dibuja los arrays pasados a la GPU con la primitiva dada (type)
-	glDrawElementsInstanced(GL_TRIANGLES, numIndices, GL_UNSIGNED_INT, indices, numInstances);
-
-	// 3) Volver a dejarlo todo como estaba
-	disableArrays();
-}
-
-void IndexMesh::SetNormals()
-{
-	if(normales == nullptr)
-		normales = new dvec3[numVertices];
-
-	// Se inicializan todas a 0
-	for (int i = 0; i < numVertices; i++)
-		normales[i] = { 0,0,0 };
-
-	// Recorrido de los triángulos
-	for (int i = 0; i < numIndices; i += 3)
-	{
-		// Los 3 vértices del triángulo
-		glm::dvec3 a = vertices[indices[i]];
-		glm::dvec3 b = vertices[indices[i + 1]];
-		glm::dvec3 c = vertices[indices[i + 2]];
-
-		// Vector normal al triángulo
-		dvec3 n = glm::normalize(glm::cross(c - b, a - b));
-
-		// Sumárselo a sus vértices
-		normales[indices[i]] += n;
-		normales[indices[i + 1]] += n;
-		normales[indices[i + 2]] += n;
-	}
-
-	// Normalizar las normales
-	for (int i = 0; i < numVertices; i++)
-		normales[i] = glm::normalize(normales[i]);
-}
+// - - - - - - - - Mallas indexadas - - - - - - - - - //
 
 IndexMesh* IndexMesh::generateCube(GLdouble size, bool textured, bool equalFaces)
 {
@@ -487,8 +499,6 @@ IndexMesh* IndexMesh::generateCube(GLdouble size, bool textured, bool equalFaces
 	return m;
 }
 
-// - - - - - - - - - -
-
 IndexMesh* IndexMesh::generateSphere(GLdouble size, GLuint subdivisions, bool textured)
 {
 	IndexMesh* m = new IndexMesh();
@@ -620,9 +630,6 @@ IndexMesh* IndexMesh::generateSphere(GLdouble size, GLuint subdivisions, bool te
 	return m;
 }
 
-
-// - - - - - - - - - -
-
 IndexMesh* IndexMesh::generateToro(GLdouble radExt, GLdouble radInt, GLuint anillos, GLuint lineas)
 {
 	IndexMesh* m = new IndexMesh();
@@ -694,7 +701,6 @@ IndexMesh* IndexMesh::generateToro(GLdouble radExt, GLdouble radInt, GLuint anil
 	return m;
 }
 
-
 IndexMesh* IndexMesh::generateGrid(GLint filas, GLint columnas, GLdouble tamFila, GLdouble tamColumna)
 {
 	IndexMesh* m = new IndexMesh();
@@ -765,7 +771,6 @@ IndexMesh* IndexMesh::generateGrid(GLint filas, GLint columnas, GLdouble tamFila
 
 	return m;
 }
-
 
 IndexMesh* IndexMesh::generateTerrain(const std::string& filename, GLdouble scale, bool rawFile)
 {

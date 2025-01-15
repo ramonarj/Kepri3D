@@ -112,6 +112,14 @@ void PruebaScene::init()
 	//cuboSpec->setMaterial("cromo");
 	AddEntity(cuboSpec);
 
+	// Hierba
+	Hierba* hierba = new Hierba(2.5, 3);
+	hierba->setPosition({ 10, 0.5, 5 });
+	hierba->rotate(-PI / 2, { 0, 1, 0 }, GLOBAL);
+	hierba->setTexture("hierba");
+	//hierba->setShader("lights");
+	AddEntity(hierba);
+
 	/* - - Canvas - - */
 	m_canvas = new Canvas();
 	m_canvas->setSize(800, 600);
@@ -168,13 +176,14 @@ void PruebaScene::loadResources()
 	ResourceManager::Instance()->loadTexture("orientacion.bmp", "orientacion");
 	ResourceManager::Instance()->loadTexture("Zelda.bmp", "zelda");
 	ResourceManager::Instance()->loadTexture("terrenoTex.bmp", "terreno");
-	ResourceManager::Instance()->loadTexture("iceland.bmp", "iceland");
+	ResourceManager::Instance()->loadTexture("iceland.bmp", "iceland", {4, 65, 137});
 	ResourceManager::Instance()->loadTexture("caja.bmp", "caja");
 	ResourceManager::Instance()->loadTexture("caja_specular.bmp", "caja_spec");
 	ResourceManager::Instance()->loadTexture("cobre.bmp", "cobre");
-	ResourceManager::Instance()->loadTexture("agua.bmp", "agua");
+	ResourceManager::Instance()->loadTexture("agua.bmp", "agua", 200);
 	ResourceManager::Instance()->loadTexture("emoji.bmp", "emoji");
 	ResourceManager::Instance()->loadTexture("lego.bmp", "lego");
+	ResourceManager::Instance()->loadTexture("grass.bmp", "hierba", { 0,0,0 });
 
 	// Botones
 	for (int i = 0; i < buttonNames.size(); i++)
@@ -242,7 +251,7 @@ void PruebaScene::PruebaMateriales()
 
 	// Cubo de cobre
 	Cubo* cuboCobre = new Cubo(2, true);
-	//cuboCobre->setTexture("cobre");
+	cuboCobre->setTexture("cobre");
 	cuboCobre->setMaterial("cobre");
 	cuboCobre->setPosition({ 10,0,0 });
 	AddEntity(cuboCobre);
@@ -273,7 +282,7 @@ void PruebaScene::PruebaMateriales()
 	grid->setTexture("agua");
 	grid->setMaterial("cromo");
 	grid->setPosition({ 0,-1,0 });
-	grid->setShader("lights");
+	//grid->setShader("lights");
 	AddEntity(grid);
 
 	// "Cascada"
