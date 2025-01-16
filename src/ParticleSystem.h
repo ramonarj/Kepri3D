@@ -16,7 +16,7 @@ enum PARTICLE_TYPE
 class ParticleSystem : public Entity
 {
 public:
-	ParticleSystem(const std::string& particleTextureId, GLdouble size, GLuint maxParticles, PARTICLE_TYPE partType = PARTICLE_2D); 
+	ParticleSystem(GLdouble size, GLuint maxParticles, PARTICLE_TYPE partType = PARTICLE_2D); 
 	~ParticleSystem();
 
 	void render(const glm::dmat4& viewMat) override;
@@ -28,9 +28,6 @@ public:
 	inline void setParticleSpeed(float speed) { this->m_particleSpeed = speed; }
 	/* Establece el tiempo de vida (en segundos) de las partículas */
 	void setLifetime(double time);
-
-	// Temporal
-	inline void setCamera(Camera* cam) { m_cam = cam; }
 
 private:
 	/* Número actual de partículas activas */
@@ -60,9 +57,6 @@ private:
 
 	/* Tiempo que lleva viva cada partícula */
 	GLuint* m_life;
-
-	// Referencia a la cámara; es algo temporal
-	Camera* m_cam;
 };
 
 // - - - - - - - - - - 

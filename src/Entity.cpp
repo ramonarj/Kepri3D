@@ -460,3 +460,9 @@ void Hierba::render(glm::dmat4 const& viewMat)
 	if(cullActivado)
 		glEnable(GL_CULL_FACE);
 }
+
+void Hierba::update(GLuint timeElapsed)
+{
+	rotate(timeElapsed / 1000.0f * 0.5, { 0, 1, 0 });
+}
+

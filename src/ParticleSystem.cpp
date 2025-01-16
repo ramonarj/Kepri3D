@@ -6,20 +6,20 @@
 #include "Shader.h"
 #include <gtc/type_ptr.hpp>
 
-ParticleSystem::ParticleSystem(const std::string& particleTextureId, GLdouble size, GLuint maxParticles, PARTICLE_TYPE partType)
+ParticleSystem::ParticleSystem(GLdouble size, GLuint maxParticles, PARTICLE_TYPE partType)
 {
+	//m_mesh = Mesh::generateFilledPolygon(10, size);
 	//m_mesh = IndexMesh::generateRectangle(1, 1);
 	// m_mesh = IndexMesh::generateSphere(size, 12, true);
 	// Generar la malla
 	if (partType == PARTICLE_2D) // 'círculo'
-		m_mesh = Mesh::generateFilledPolygon(10, size);
+		m_mesh = IndexMesh::generateRectangle(size, size);
 	else // esfera
 		m_mesh = IndexMesh::generateToro(size, size / 3.0, 15, 5);
 
 	m_name = "ParticleSystem";
 
-	// Asignar la textura y el shader específico
-	setTexture(particleTextureId);
+	// Asignar el shader específico
 	setShader("particle");
 
 	// Valores por defecto
@@ -84,9 +84,6 @@ void ParticleSystem::render(const glm::dmat4& viewMat)
 	// 2) Dibujar las mallas de todas las partículas a la vez
 	if (m_mesh != nullptr)
 	{
-		// Uniform (P * V). Si cambio la definición de 'setMat4d' a "const mat&", no funciona
-		m_shader->setMat4d("viewProjMat", m_cam->getProjMat() * viewMat);
-
 		// Para el vertex shader; posición de cada partícula
 		glVertexAttribPointer(10, 3, GL_DOUBLE, GL_FALSE, 0, m_positions);
 		glEnableVertexAttribArray(10);

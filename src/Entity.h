@@ -265,6 +265,7 @@ public:
 	~Hierba() { };
 
 	void render(glm::dmat4 const& viewMat) override;
+	void update(GLuint timeElapsed) override;
 };
 
 #endif

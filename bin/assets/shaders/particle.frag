@@ -15,9 +15,9 @@ out vec4 FragColor;
 
 void main()
 {
-	//Cogemos el color de la textura correspondiente al fragmento actual
-	//vec4 color = texture(textura, data_in.TexCoords);
-
-	//FragColor = data_in.colores;
-	FragColor = vec4(data_in.colores.rgb, 0.2);
+	//Cogemos o bien el color o bien la textura dada
+	vec4 texColor = texture(textura, data_in.TexCoords);
+	FragColor = texColor;
+		
+	//FragColor = vec4(data_in.colores.rgb, 0.2);
 }

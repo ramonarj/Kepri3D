@@ -151,10 +151,10 @@ void PruebaScene::init()
 
 	/* - - Sistema de partículas - - */
 	// Con 10.000, empieza a ir demasiado lento
-	particleSys = new ParticleSystem("agua", 0.5, 150, PARTICLE_3D);
+	particleSys = new ParticleSystem(0.4, 1000, PARTICLE_2D);
+	particleSys->setTexture("emoji");
 	particleSys->setParticleSpeed(3.0);
-	particleSys->setLifetime(0.5);
-	particleSys->setCamera(m_camera);
+	particleSys->setLifetime(2);
 	particleSys->setActive(false);
 	AddEntity(particleSys);
 
@@ -181,7 +181,7 @@ void PruebaScene::loadResources()
 	ResourceManager::Instance()->loadTexture("caja_specular.bmp", "caja_spec");
 	ResourceManager::Instance()->loadTexture("cobre.bmp", "cobre");
 	ResourceManager::Instance()->loadTexture("agua.bmp", "agua", 200);
-	ResourceManager::Instance()->loadTexture("emoji.bmp", "emoji");
+	ResourceManager::Instance()->loadTexture("emoji.bmp", "emoji", { 0, 0, 0 });
 	ResourceManager::Instance()->loadTexture("lego.bmp", "lego");
 	ResourceManager::Instance()->loadTexture("grass.bmp", "hierba", { 0,0,0 });
 
