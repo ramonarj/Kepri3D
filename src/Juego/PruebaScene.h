@@ -8,7 +8,7 @@ class ParticleSystem;
 class PruebaScene : public Scene
 {
 public:
-	PruebaScene(Camera* cam) { this->m_camera = cam; }
+	PruebaScene() { m_name = "Prueba"; }
 	~PruebaScene() {}
 
 	void init() override;

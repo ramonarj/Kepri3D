@@ -6,7 +6,7 @@
 class SpaceScene : public Scene
 {
 public:
-	SpaceScene(Camera* cam) : Scene(cam){}
+	SpaceScene() { m_name = "Espacio"; }
 	~SpaceScene() {}
 
 	void init() override;

@@ -2,6 +2,7 @@
 #define __SCENE__
 
 #include <vector>
+#include <string>
 #include <glew.h>
 #include <glm.hpp>
 
@@ -19,15 +20,16 @@ class Scene
 public:
 	/* Constructora por defecto*/
 	Scene();
-	Scene(Camera* cam) : m_camera(cam), m_canvas(nullptr), m_effectsMesh(nullptr), m_skybox(nullptr) { };
 
 	/* Destructora */
 	~Scene();
 
 	/* Inicia los subsistemas de openGL y crea texturas y entidades */
 	virtual void init() = 0;
+
 	/* Pinta todas las entidades */
 	void render();
+
 	/* Actualiza todas las entidades */
 	void update(GLuint deltaTime);
 
@@ -40,10 +42,19 @@ public:
 	/* Establece el skybox de la escena */
 	inline void SetSkybox(Skybox* skybox) { m_skybox = skybox; }
 
+	/* Establece la cámara de la escena */
+	inline void setCamera(Camera* cam) { this->m_camera = cam; }
+
+	/* Devuelve el nombre de la escena */
+	inline const std::string& getName() const { return m_name; }
+
 	/* Hace una foto */
 	void takePhoto();
 
 protected:
+	/* Nombre de la escena */
+	std::string m_name;
+
 	/* Lista de entidades */
 	std::vector<Entity*> m_entities;
 

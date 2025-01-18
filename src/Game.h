@@ -36,7 +36,10 @@ public:
 	/* Destructora */
 	~Game();
 
-	/* Activa los subsistemas de OpenGL */
+	/* Carga la escena inicial del juego*/
+	void loadScene(Scene* scene);
+
+	/* Crea la ventana, inicializa OpenGL y inicializa la primera escena */
 	void init(int argc, char* argv[], int windowWidth, int windowHeight, const std::string& windowName);
 
 	/* Ejecuta el bucle principal del juego (hasta que se cierre la ventana) */

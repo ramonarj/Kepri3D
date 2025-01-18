@@ -4,8 +4,6 @@
 #include "Camera.h"
 #include "Material.h"
 #include "InputManager.h"
-#include "Juego/PruebaScene.h"
-#include "Juego/SpaceScene.h"
 
 #include <freeglut.h>
 #include <glew.h>
@@ -28,6 +26,12 @@ void clickedMotion(int x, int y);
 unsigned int currentSec = 0;
 unsigned int fps = 0;
 
+void Game::loadScene(Scene* scene)
+{
+	this->scene = scene;
+	std::cout << "Cargada escena '" << scene->getName() << "'" << std::endl;
+}
+
 
 void Game::init(int argc, char* argv[], int windowWidth, int windowHeight, const std::string& windowName)
 {
@@ -42,7 +46,7 @@ void Game::init(int argc, char* argv[], int windowWidth, int windowHeight, const
 	// 2) Crear el puerto de vista, la cámara y la escena
 	viewport = new Viewport(windowWidth, windowHeight);
 	camera = new Camera(viewport);
-	scene = new PruebaScene(camera);
+	scene->setCamera(camera);
 
 	// 3) Registrar los distintos callbacks de teclado, ratón y ventana
 	registerGlutCallbacks();
