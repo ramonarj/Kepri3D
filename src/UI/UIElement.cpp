@@ -1,7 +1,7 @@
 #include "UIElement.h"
 
-#include "../Mesh.h"
-#include "../Texture.h"
+#include "Mesh.h"
+#include "Texture.h"
 
 #include <gtc/type_ptr.hpp>
 

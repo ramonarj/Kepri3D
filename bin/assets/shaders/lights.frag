@@ -85,7 +85,7 @@ void main()
 	// Aplicamos la iluminación al color de la textura (* = MODULATE, + = ADD, ...)
 	vec3 result = (globalAmbient + luzTotal) * vec3(texColor);
 
-	FragColor = vec4(result, 1.0);
+	FragColor = vec4(result, texColor.a);
 }
 
 /* Calcula la cantidad de luz que recibe el fragmento de una luz direccional */

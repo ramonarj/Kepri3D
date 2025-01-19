@@ -1,7 +1,7 @@
 #ifndef __UI_ELEMENT__
 #define __UI_ELEMENT__
 
-#include "../Entity.h"
+#include "Entity.h"
 #include "Canvas.h"
 #include <glm.hpp>
 

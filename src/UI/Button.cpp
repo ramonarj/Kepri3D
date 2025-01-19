@@ -1,7 +1,7 @@
 #include "Button.h"
-#include "../Texture.h"
+#include "Texture.h"
 
-#include "../InputManager.h"
+#include "InputManager.h"
 
 
 Button::Button(const std::string& textureName, Canvas* canvas) : m_callback(nullptr)

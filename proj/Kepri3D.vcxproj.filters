@@ -28,23 +28,14 @@
     <ClCompile Include="..\src\UI\Button.cpp">
       <Filter>UI</Filter>
     </ClCompile>
-    <ClCompile Include="..\src\Camera.cpp">
-      <Filter>Core</Filter>
-    </ClCompile>
     <ClCompile Include="..\src\Entity.cpp">
       <Filter>Core</Filter>
     </ClCompile>
     <ClCompile Include="..\src\Scene.cpp">
       <Filter>Core</Filter>
     </ClCompile>
-    <ClCompile Include="..\src\Pixmap32RGBA.cpp">
-      <Filter>Utils</Filter>
-    </ClCompile>
     <ClCompile Include="..\src\ResourceManager.cpp">
       <Filter>Core</Filter>
-    </ClCompile>
-    <ClCompile Include="..\src\MeshLoader.cpp">
-      <Filter>Utils</Filter>
     </ClCompile>
     <ClCompile Include="..\src\UI\Canvas.cpp">
       <Filter>UI</Filter>
@@ -55,20 +46,8 @@
     <ClCompile Include="..\src\InputManager.cpp">
       <Filter>Core</Filter>
     </ClCompile>
-    <ClCompile Include="..\src\Utils.cpp">
-      <Filter>Utils</Filter>
-    </ClCompile>
     <ClCompile Include="..\src\Game.cpp">
       <Filter>Core</Filter>
-    </ClCompile>
-    <ClCompile Include="..\src\Texture.cpp">
-      <Filter>Graficos</Filter>
-    </ClCompile>
-    <ClCompile Include="..\src\Shader.cpp">
-      <Filter>Graficos</Filter>
-    </ClCompile>
-    <ClCompile Include="..\src\Material.cpp">
-      <Filter>Graficos</Filter>
     </ClCompile>
     <ClCompile Include="..\src\Juego\GameManager.cpp">
       <Filter>Archivos de origen</Filter>
@@ -82,22 +61,40 @@
     <ClCompile Include="..\src\ParticleSystem.cpp">
       <Filter>Core</Filter>
     </ClCompile>
-    <ClCompile Include="..\src\Mesh.cpp">
-      <Filter>Graficos</Filter>
-    </ClCompile>
-    <ClCompile Include="..\src\Light.cpp">
-      <Filter>Graficos</Filter>
-    </ClCompile>
     <ClCompile Include="..\src\Juego\Main.cpp">
       <Filter>Archivos de origen</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\Utils\MeshLoader.cpp">
+      <Filter>Utils</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\Utils\Pixmap32RGBA.cpp">
+      <Filter>Utils</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\Utils\Utils.cpp">
+      <Filter>Utils</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\Graficos\Camera.cpp">
+      <Filter>Graficos</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\Graficos\Light.cpp">
+      <Filter>Graficos</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\Graficos\Material.cpp">
+      <Filter>Graficos</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\Graficos\Mesh.cpp">
+      <Filter>Graficos</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\Graficos\Shader.cpp">
+      <Filter>Graficos</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\Graficos\Texture.cpp">
+      <Filter>Graficos</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\src\UI\Button.h">
       <Filter>UI</Filter>
-    </ClInclude>
-    <ClInclude Include="..\src\Camera.h">
-      <Filter>Core</Filter>
     </ClInclude>
     <ClInclude Include="..\src\Entity.h">
       <Filter>Core</Filter>
@@ -105,20 +102,8 @@
     <ClInclude Include="..\src\Scene.h">
       <Filter>Core</Filter>
     </ClInclude>
-    <ClInclude Include="..\src\Utils.h">
-      <Filter>Utils</Filter>
-    </ClInclude>
-    <ClInclude Include="..\src\Pixmap32RGBA.h">
-      <Filter>Utils</Filter>
-    </ClInclude>
-    <ClInclude Include="..\src\checkML.h">
-      <Filter>Utils</Filter>
-    </ClInclude>
     <ClInclude Include="..\src\ResourceManager.h">
       <Filter>Core</Filter>
-    </ClInclude>
-    <ClInclude Include="..\src\MeshLoader.h">
-      <Filter>Utils</Filter>
     </ClInclude>
     <ClInclude Include="..\src\UI\Canvas.h">
       <Filter>UI</Filter>
@@ -131,15 +116,6 @@
     </ClInclude>
     <ClInclude Include="..\src\Game.h">
       <Filter>Core</Filter>
-    </ClInclude>
-    <ClInclude Include="..\src\Texture.h">
-      <Filter>Graficos</Filter>
-    </ClInclude>
-    <ClInclude Include="..\src\Shader.h">
-      <Filter>Graficos</Filter>
-    </ClInclude>
-    <ClInclude Include="..\src\Material.h">
-      <Filter>Graficos</Filter>
     </ClInclude>
     <ClInclude Include="..\src\Juego\GameManager.h">
       <Filter>Archivos de origen</Filter>
@@ -156,11 +132,38 @@
     <ClInclude Include="..\src\ParticleSystem.h">
       <Filter>Core</Filter>
     </ClInclude>
-    <ClInclude Include="..\src\Mesh.h">
+    <ClInclude Include="..\src\Utils\checkML.h">
+      <Filter>Utils</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\Utils\MeshLoader.h">
+      <Filter>Utils</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\Utils\Pixmap32RGBA.h">
+      <Filter>Utils</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\Utils\Utils.h">
+      <Filter>Utils</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\Graficos\Camera.h">
       <Filter>Graficos</Filter>
     </ClInclude>
-    <ClInclude Include="..\src\Light.h">
+    <ClInclude Include="..\src\Graficos\Light.h">
       <Filter>Graficos</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\Graficos\Material.h">
+      <Filter>Graficos</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\Graficos\Mesh.h">
+      <Filter>Graficos</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\Graficos\Shader.h">
+      <Filter>Graficos</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\Graficos\Texture.h">
+      <Filter>Graficos</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\Utils\stb_image.h">
+      <Filter>Utils</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

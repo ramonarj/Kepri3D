@@ -176,8 +176,9 @@ void PruebaScene::loadResources()
 	ResourceManager::Instance()->loadTexture("orientacion.bmp", "orientacion");
 	ResourceManager::Instance()->loadTexture("Zelda.bmp", "zelda");
 	ResourceManager::Instance()->loadTexture("terrenoTex.bmp", "terreno");
-	ResourceManager::Instance()->loadTexture("iceland.bmp", "iceland", {4, 65, 137});
-	ResourceManager::Instance()->loadTexture("caja.bmp", "caja");
+	ResourceManager::Instance()->loadTexture("iceland.bmp", "iceland", { 4, 65, 137 });
+	ResourceManager::Instance()->loadTexture("Caja.bmp", "caja");
+	ResourceManager::Instance()->loadTexture("cajaPrueba.png", "cajaPrueba");
 	ResourceManager::Instance()->loadTexture("caja_specular.bmp", "caja_spec");
 	ResourceManager::Instance()->loadTexture("cobre.bmp", "cobre");
 	ResourceManager::Instance()->loadTexture("agua.bmp", "agua", 200);
@@ -188,12 +189,12 @@ void PruebaScene::loadResources()
 	// Botones
 	for (int i = 0; i < buttonNames.size(); i++)
 	{
-		ResourceManager::Instance()->loadTexture("UI/" + buttonNames[i] + ".bmp", buttonNames[i]);
+		ResourceManager::Instance()->loadTexture("UI\\" + buttonNames[i] + ".bmp", buttonNames[i]);
 	}
 
 	// Skyboxes - el orden tiene que ser este (top y bottom están invertidos por alguna razón)
-	ResourceManager::Instance()->loadCubemapTexture({ "skyboxes/right.bmp", "skyboxes/left.bmp", "skyboxes/bottom.bmp",
-		"skyboxes/top.bmp", "skyboxes/front.bmp", "skyboxes/back.bmp" }, "lakeSkybox");
+	ResourceManager::Instance()->loadCubemapTexture({ "skyboxes/right.jpg", "skyboxes/left.jpg", "skyboxes/bottom.jpg",
+		"skyboxes/top.jpg", "skyboxes/front.jpg", "skyboxes/back.jpg" }, "lakeSkybox");
 	ResourceManager::Instance()->loadCubemapTexture({ "skyboxes/city/right.bmp", "skyboxes/city/left.bmp", "skyboxes/city/bottom.bmp",
 		"skyboxes/city/top.bmp", "skyboxes/city/front.bmp", "skyboxes/city/back.bmp" }, "citySkybox");
 
@@ -225,7 +226,7 @@ void PruebaScene::PruebaMateriales()
 {
 	// Cubo con la misma textura en todas las caras
 	Cubo* c = new Cubo(2, true);
-	c->setTexture("caja");
+	c->setTexture("cajaPrueba");
 	c->setPosition({ -10,0,0 });
 	c->setShader("lights");
 	AddEntity(c);

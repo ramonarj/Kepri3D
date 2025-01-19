@@ -102,6 +102,7 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>WIN32;_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
+      <AdditionalIncludeDirectories>$(SolutionDir)src\;$(SolutionDir)src\Graficos\;$(SolutionDir)src\Utils\;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -116,6 +117,7 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>WIN32;NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
+      <AdditionalIncludeDirectories>$(SolutionDir)src\;$(SolutionDir)src\Graficos\;$(SolutionDir)src\Utils\;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -130,6 +132,7 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
+      <AdditionalIncludeDirectories>$(SolutionDir)src\;$(SolutionDir)src\Graficos\;$(SolutionDir)src\Utils\;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -145,6 +148,7 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
+      <AdditionalIncludeDirectories>$(SolutionDir)src\;$(SolutionDir)src\Graficos\;$(SolutionDir)src\Utils\;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -155,53 +159,54 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="..\src\Camera.cpp" />
     <ClCompile Include="..\src\Entity.cpp" />
     <ClCompile Include="..\src\Game.cpp" />
+    <ClCompile Include="..\src\Graficos\Camera.cpp" />
+    <ClCompile Include="..\src\Graficos\Light.cpp" />
+    <ClCompile Include="..\src\Graficos\Material.cpp" />
+    <ClCompile Include="..\src\Graficos\Mesh.cpp" />
+    <ClCompile Include="..\src\Graficos\Shader.cpp" />
+    <ClCompile Include="..\src\Graficos\Texture.cpp" />
     <ClCompile Include="..\src\InputManager.cpp" />
     <ClCompile Include="..\src\Juego\GameManager.cpp" />
     <ClCompile Include="..\src\Juego\Main.cpp" />
     <ClCompile Include="..\src\Juego\PruebaScene.cpp" />
     <ClCompile Include="..\src\Juego\SpaceScene.cpp" />
-    <ClCompile Include="..\src\Light.cpp" />
-    <ClCompile Include="..\src\Material.cpp" />
-    <ClCompile Include="..\src\Mesh.cpp" />
-    <ClCompile Include="..\src\MeshLoader.cpp" />
     <ClCompile Include="..\src\ParticleSystem.cpp" />
-    <ClCompile Include="..\src\Pixmap32RGBA.cpp" />
     <ClCompile Include="..\src\Scene.cpp" />
-    <ClCompile Include="..\src\Shader.cpp" />
-    <ClCompile Include="..\src\Texture.cpp" />
     <ClCompile Include="..\src\ResourceManager.cpp" />
     <ClCompile Include="..\src\UI\Button.cpp" />
     <ClCompile Include="..\src\UI\Canvas.cpp" />
     <ClCompile Include="..\src\UI\UIElement.cpp" />
-    <ClCompile Include="..\src\Utils.cpp" />
+    <ClCompile Include="..\src\Utils\MeshLoader.cpp" />
+    <ClCompile Include="..\src\Utils\Pixmap32RGBA.cpp" />
+    <ClCompile Include="..\src\Utils\Utils.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="..\src\Camera.h" />
-    <ClInclude Include="..\src\checkML.h" />
     <ClInclude Include="..\src\Entity.h" />
     <ClInclude Include="..\src\Game.h" />
+    <ClInclude Include="..\src\Graficos\Camera.h" />
+    <ClInclude Include="..\src\Graficos\Light.h" />
+    <ClInclude Include="..\src\Graficos\Material.h" />
+    <ClInclude Include="..\src\Graficos\Mesh.h" />
+    <ClInclude Include="..\src\Graficos\Shader.h" />
+    <ClInclude Include="..\src\Graficos\Texture.h" />
     <ClInclude Include="..\src\InputManager.h" />
     <ClInclude Include="..\src\Juego\GameManager.h" />
     <ClInclude Include="..\src\Juego\PruebaScene.h" />
     <ClInclude Include="..\src\Juego\SpaceScene.h" />
     <ClInclude Include="..\src\Kepri3D.h" />
-    <ClInclude Include="..\src\Light.h" />
-    <ClInclude Include="..\src\Material.h" />
-    <ClInclude Include="..\src\Mesh.h" />
-    <ClInclude Include="..\src\MeshLoader.h" />
     <ClInclude Include="..\src\ParticleSystem.h" />
-    <ClInclude Include="..\src\Pixmap32RGBA.h" />
     <ClInclude Include="..\src\Scene.h" />
-    <ClInclude Include="..\src\Shader.h" />
-    <ClInclude Include="..\src\Texture.h" />
     <ClInclude Include="..\src\ResourceManager.h" />
     <ClInclude Include="..\src\UI\Button.h" />
     <ClInclude Include="..\src\UI\Canvas.h" />
     <ClInclude Include="..\src\UI\UIElement.h" />
-    <ClInclude Include="..\src\Utils.h" />
+    <ClInclude Include="..\src\Utils\checkML.h" />
+    <ClInclude Include="..\src\Utils\MeshLoader.h" />
+    <ClInclude Include="..\src\Utils\Pixmap32RGBA.h" />
+    <ClInclude Include="..\src\Utils\stb_image.h" />
+    <ClInclude Include="..\src\Utils\Utils.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="..\bin\assets\shaders\cruces.geom" />

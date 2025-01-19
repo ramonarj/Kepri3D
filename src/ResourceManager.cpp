@@ -49,7 +49,8 @@ bool ResourceManager::loadTexture(const std::string& textureName, const std::str
 	Texture* tex = new Texture();
 	try
 	{
-		tex->load(TEXTURES_PATH + textureName, alpha);
+		tex->loadSTBI(TEXTURES_PATH + textureName);
+		//tex->load(TEXTURES_PATH + textureName, alpha);
 		textures[id] = tex;
 		return true;
 	}

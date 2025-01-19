@@ -1,8 +1,8 @@
 #ifndef __BUTTON__
 #define __BUTTON__
 
-#include "../Mesh.h"
-#include "../Camera.h"
+#include "Mesh.h"
+#include "Camera.h"
 
 #include "UIElement.h"
 

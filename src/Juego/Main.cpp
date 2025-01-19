@@ -1,5 +1,5 @@
-#include "../checkML.h"
-#include "../Game.h"
+#include "checkML.h"
+#include "Game.h"
 
 #include "PruebaScene.h"
 #include "SpaceScene.h"
