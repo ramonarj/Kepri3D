@@ -11,6 +11,7 @@
 #include "MeshLoader.h"
 #include "Shader.h"
 #include "Pixmap32RGBA.h"
+#include "Component.h"
 
 #include <freeglut.h>
 
@@ -40,6 +41,10 @@ Entity::~Entity()
 	// Destruir los hijos
 	for (Entity* e : m_children)
 		delete e;
+
+	// Destruir los componentes
+	for (Component* c : m_componentes)
+		delete c;
 }
 
 void Entity::defaultValues()
@@ -52,6 +57,17 @@ void Entity::defaultValues()
 	modelMat = (1.0);
 	m_shader = nullptr;
 	m_specMap = nullptr;
+}
+
+void Entity::addComponent(Component* c)
+{
+	// Comprobar que no lo tenga ya
+	for (Component* it : m_componentes)
+		if (it == c)
+			return;
+	// Añadirlo a la lista y darle nuestra referencia
+	m_componentes.push_back(c);
+	c->setEntity(this);
 }
 
 void Entity::render(glm::dmat4 const& viewMat)
@@ -132,7 +148,14 @@ void Entity::render()
 
 void Entity::update(GLuint deltaTime)
 {
-	// Actualizar los hijos
+	// Actualiza cada uno de sus componentes
+	for(Component* c : m_componentes)
+	{
+		if (c->isActive())
+			c->update(deltaTime);
+	}
+
+	// Actualiza los hijos
 	for(Entity* e : m_children)
 	{
 		if(e->isActive())
@@ -271,10 +294,6 @@ Esfera::Esfera(GLdouble size, GLuint subdivisions, bool textured)
 	m_name = "Esfera";
 }
 
-void Esfera::update(GLuint timeElapsed)
-{
-	rotate(timeElapsed * 0.0005, { 0,1,0 }, LOCAL);
-}
 
 // - - - - - - - - - - - - - - - - - 
 
@@ -292,12 +311,14 @@ Grid::Grid(GLuint filas, GLuint columnas, GLdouble tamFila, GLdouble tamColumna)
 	m_name = "Grid";
 }
 
-void Grid::update(GLuint timeElapsed)
+MovingGrid::MovingGrid(GLuint filas, GLuint columnas, GLdouble tamFila, GLdouble tamColumna) : 
+	Grid(filas, columnas, tamFila, tamColumna)
 {
-
+	m_name = "MovingGrid";
 }
 
-void Grid::render(glm::dmat4 const& viewMat)
+
+void MovingGrid::render()
 {
 	// Pasarle el tiempo al fragment shader
 	if (m_shader != nullptr)
@@ -305,8 +326,7 @@ void Grid::render(glm::dmat4 const& viewMat)
 		float t = glutGet(GLUT_ELAPSED_TIME);
 		m_shader->setFloat("tiempo", t / 10000.0f);
 	}
-
-	Entity::render(viewMat);
+	Entity::render();
 }
 
 // - - - - - - - - - - - - - - - - - 

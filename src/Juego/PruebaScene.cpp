@@ -3,6 +3,8 @@
 #include "../Kepri3D.h"
 
 #include "GameManager.h"
+#include "RotationComp.h"
+#include "CameraController.h"
 
 const float buttonScale = 0.27f;
 const float buttonMargin = 0.1f;
@@ -159,8 +161,15 @@ void PruebaScene::init()
 	AddEntity(particleSys);
 
 	/* - - GameManager - - */
-	GameManager* gm = new GameManager(this, m_camera, botonesMenu, particleSys);
-	gm->setLights(dirLight, circleLight, spotLight);
+	Entity* gm = new Entity();
+	// Componente GM
+	GameManager* gmComponent = new GameManager(this, m_camera, botonesMenu, particleSys);
+	gmComponent->setLights(dirLight, circleLight, spotLight);
+	gm->addComponent(gmComponent);
+	// Componente CameraController
+	CameraController* camComp = new CameraController(m_camera);
+	gm->addComponent(camComp);
+
 	AddEntity(gm);
 }
 
@@ -266,6 +275,7 @@ void PruebaScene::PruebaMateriales()
 
 	// Tierra
 	Esfera* tierra = new Esfera(3, 20, true);
+	tierra->addComponent(new RotationComp(1.0));
 	tierra->setTexture("earth");
 	tierra->setPosition({ 6,15,0 });
 	tierra->rotate(-PI / 8, { 0, 0, 1 }, GLOBAL);
@@ -287,12 +297,12 @@ void PruebaScene::PruebaMateriales()
 	AddEntity(grid);
 
 	// "Cascada"
-	Grid* vGrid = new Grid(80, 80, 0.25, 0.25);
-	vGrid->setTexture("agua");
-	vGrid->setPosition({ 20,-11,0 });
-	vGrid->rotate(-PI / 2, { 0, 0, 1 }, GLOBAL);
-	vGrid->setShader("movimiento");
-	AddEntity(vGrid);
+	MovingGrid* movGrid = new MovingGrid(80, 80, 0.25, 0.25);
+	movGrid->setTexture("agua");
+	movGrid->setPosition({ 20,-11,0 });
+	movGrid->rotate(-PI / 2, { 0, 0, 1 }, GLOBAL);
+	movGrid->setShader("movimiento");
+	AddEntity(movGrid);
 
 	// Terreno antiguo
 	Terrain* oldTer = new Terrain();

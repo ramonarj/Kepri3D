@@ -4,6 +4,8 @@
 class Mesh;
 class Texture;
 class Shader;
+class Component;
+
 #include "Material.h"
 
 #include <glm.hpp>
@@ -21,6 +23,9 @@ public:
 	
 	/* Destructora virtual */
 	virtual ~Entity();
+
+	/* Añade un componente a la entidad */
+	void addComponent(Component* c);
 
 	/* Método render que usa el fixed pipeline; pinta su malla en función de la matriz de vista, cargando antes su textura y 
 	material correspondiente */
@@ -95,6 +100,10 @@ public:
 	inline glm::dvec3 up() { return modelMat[1]; }
 	inline glm::dvec3 forward() { return modelMat[2]; }
 
+	/* Devuelve un componente del tipo requerido */
+	template<typename T>
+	T* getComponent();
+
 private:
 	/* Establece los valores por defecto de la entidad */
 	void defaultValues();
@@ -105,6 +114,9 @@ protected:
 
 	/* Nombre de la entidad */
 	std::string m_name;
+
+	/* Lista de componentes */
+	std::vector<Component*> m_componentes;
 
 	/* Hijos de la entidad */
 	std::vector<Entity*> m_children;
@@ -144,6 +156,17 @@ protected:
 	//virtual void drawTexture(GLenum face, Mesh* meshUsed, Texture* textureUsed);
 };
 
+template<typename T>
+T* Entity::getComponent()
+{
+	for(Component* c: m_componentes)
+	{
+		if (dynamic_cast<T*>(c) != nullptr)
+			return dynamic_cast<T*>(c);
+	}
+	return nullptr;
+}
+
 // - - - - - - - - - - - -
 
 class EjesRGB : public Entity
@@ -180,7 +203,6 @@ class Esfera : public Entity
 public:
 	Esfera(GLdouble size, GLuint subdivisions = 20, bool textured = false);
 	~Esfera() { };
-	void update(GLuint timeElapsed) override;
 };
 
 // - - - - - - - - - - - - 
@@ -199,8 +221,14 @@ class Grid : public Entity
 public:
 	Grid(GLuint filas, GLuint columnas, GLdouble tamFila, GLdouble tamColumna);
 	~Grid() { };
-	void update(GLuint timeElapsed) override;
-	void render(glm::dmat4 const& viewMat) override;
+};
+
+class MovingGrid : public Grid
+{
+public:
+	MovingGrid(GLuint filas, GLuint columnas, GLdouble tamFila, GLdouble tamColumna);
+	~MovingGrid() { };
+	void render() override;
 private:
 	int timeLoc;
 };

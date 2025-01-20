@@ -91,6 +91,12 @@
     <ClCompile Include="..\src\Graficos\Texture.cpp">
       <Filter>Graficos</Filter>
     </ClCompile>
+    <ClCompile Include="..\src\Component.cpp">
+      <Filter>Core</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\Juego\RotationComp.cpp">
+      <Filter>Archivos de origen</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\src\UI\Button.h">
@@ -164,6 +170,12 @@
     </ClInclude>
     <ClInclude Include="..\src\Utils\stb_image.h">
       <Filter>Utils</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\Component.h">
+      <Filter>Core</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\Juego\RotationComp.h">
+      <Filter>Archivos de origen</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

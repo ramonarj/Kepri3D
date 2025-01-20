@@ -159,6 +159,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="..\src\Component.cpp" />
     <ClCompile Include="..\src\Entity.cpp" />
     <ClCompile Include="..\src\Game.cpp" />
     <ClCompile Include="..\src\Graficos\Camera.cpp" />
@@ -168,9 +169,11 @@
     <ClCompile Include="..\src\Graficos\Shader.cpp" />
     <ClCompile Include="..\src\Graficos\Texture.cpp" />
     <ClCompile Include="..\src\InputManager.cpp" />
+    <ClCompile Include="..\src\Juego\CameraController.cpp" />
     <ClCompile Include="..\src\Juego\GameManager.cpp" />
     <ClCompile Include="..\src\Juego\Main.cpp" />
     <ClCompile Include="..\src\Juego\PruebaScene.cpp" />
+    <ClCompile Include="..\src\Juego\RotationComp.cpp" />
     <ClCompile Include="..\src\Juego\SpaceScene.cpp" />
     <ClCompile Include="..\src\ParticleSystem.cpp" />
     <ClCompile Include="..\src\Scene.cpp" />
@@ -183,6 +186,7 @@
     <ClCompile Include="..\src\Utils\Utils.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="..\src\Component.h" />
     <ClInclude Include="..\src\Entity.h" />
     <ClInclude Include="..\src\Game.h" />
     <ClInclude Include="..\src\Graficos\Camera.h" />
@@ -192,8 +196,10 @@
     <ClInclude Include="..\src\Graficos\Shader.h" />
     <ClInclude Include="..\src\Graficos\Texture.h" />
     <ClInclude Include="..\src\InputManager.h" />
+    <ClInclude Include="..\src\Juego\CameraController.h" />
     <ClInclude Include="..\src\Juego\GameManager.h" />
     <ClInclude Include="..\src\Juego\PruebaScene.h" />
+    <ClInclude Include="..\src\Juego\RotationComp.h" />
     <ClInclude Include="..\src\Juego\SpaceScene.h" />
     <ClInclude Include="..\src\Kepri3D.h" />
     <ClInclude Include="..\src\ParticleSystem.h" />

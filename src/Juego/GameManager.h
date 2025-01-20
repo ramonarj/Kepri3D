@@ -1,14 +1,14 @@
 #ifndef __GAMEMANAGER__
 #define __GAMEMANAGER__
 
-#include "../Entity.h"
+#include "../Component.h"
 
 class Camera;
 class Scene;
 class Light;
 class UIElement;
 
-class GameManager : public Entity
+class GameManager : public Component
 {
 public:
 	GameManager(Scene* scene, Camera* cam, UIElement* botonesMenu, Entity* particleSystem) :
@@ -19,7 +19,7 @@ public:
 		this->botonesMenu = botonesMenu;
 		this->pSystem = particleSystem;
 
-		this->m_name = "GameManager";
+		//this->m_name = "GameManager";
 	}
 	~GameManager(){}
 
@@ -34,9 +34,6 @@ private:
 	Entity* pSystem;
 	UIElement* botonesMenu;
 
-	// Camara
-	double velCamara = 16.0f;
-	float sensibilidad = 1.5;
 	// Cursor y pantalla
 	bool lockedMouse = true;
 	bool fullscreen = false;
@@ -48,11 +45,6 @@ private:
 	GLdouble velTorre = 10.0f;
 
 	// Métodos
-	void movimientoCamara(GLuint deltaTime);
-	void rotacionesCamara(GLuint deltaTime);
-	void volumenVistaCamara(GLuint deltaTime);
-
-
 	void controlLuces(GLuint deltaTime);
 	void controlTorre(GLuint deltaTime);
 };
