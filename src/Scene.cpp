@@ -84,17 +84,15 @@ void Scene::renderSkybox(const glm::dmat4& projViewMat)
 	// Comprobar que haya un skybox activo
 	if (skyboxActive && m_skybox != nullptr)
 	{
-		// Debería haber una mejor forma de hacer esto
-		m_skybox->setPosition(m_camera->getPosition());
-
 		// Activar el shader y pasarle la MVP
 		m_skybox->getShader()->use();
-		m_skybox->getShader()->setMat4d("mvpMat", projViewMat * m_skybox->getModelMat());
+		m_skybox->getShader()->setVec3("viewPos", m_camera->getPosition());
+		m_skybox->getShader()->setMat4d("projViewMat", projViewMat);
 
 		// Pintar el skybox
 		m_skybox->render();
 
-		Shader::turnOff();
+		//Shader::turnOff();
 	}
 }
 
@@ -114,15 +112,17 @@ void Scene::renderEntities(const glm::dmat4& projViewMat)
 			if (e->getShader() == nullptr) 
 			{
 				Shader::turnOff();
+				// render s/shaders
+				e->render(m_camera->getViewMat());
 			}
 			// Usa shaders; lo activamos y pasamos los valores uniform necesarios
 			else
 			{
 				e->getShader()->use();
 				sendUniforms(e);
+				// render c/shaders
+				e->render();
 			}
-			// en cualquier caso, mandamos la info de los vértices
-			e->render(m_camera->getViewMat());
 		}
 	}
 	// Valor predet.
@@ -138,7 +138,7 @@ void Scene::renderNormals(const glm::dmat4& projViewMat)
 		{
 			// Pasar la matriz MVP al vertex shader y pintar
 			normalsShader->setMat4d("mvpMat", projViewMat * e->getModelMat());
-			e->render(m_camera->getViewMat());
+			e->render();
 		}
 	}
 }

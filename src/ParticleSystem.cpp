@@ -70,7 +70,7 @@ ParticleSystem::~ParticleSystem()
 		delete[] m_life;
 }
 
-void ParticleSystem::render(const glm::dmat4& viewMat)
+void ParticleSystem::render()
 {
 	// Definir la forma de pintar la malla
 	glPolygonMode(GL_FRONT, GL_FILL);

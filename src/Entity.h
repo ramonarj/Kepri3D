@@ -22,9 +22,13 @@ public:
 	/* Destructora virtual */
 	virtual ~Entity();
 
-	/* La entidad pinta su malla en función de la matriz de vista, cargando antes su textura y 
+	/* Método render que usa el fixed pipeline; pinta su malla en función de la matriz de vista, cargando antes su textura y 
 	material correspondiente */
 	virtual void render(glm::dmat4 const& viewMat);
+
+	/* Método render que usa shaders; necesario activar el shader y pasar los uniforms correspondientes antes
+	de llamar a la función */
+	virtual void render();
 
 	// Actualizar
 	virtual void update(GLuint deltaTime);
@@ -238,7 +242,7 @@ public:
 	CuboMultitex(GLdouble size);
 	~CuboMultitex() { };
 
-	void render(glm::dmat4 const& viewMat) override;
+	void render() override;
 
 	void setSecondTex(const std::string& textureID);
 private:
@@ -253,7 +257,7 @@ public:
 	CuboSpecmap(GLdouble size);
 	~CuboSpecmap() { };
 
-	void render(glm::dmat4 const& viewMat) override;
+	void render() override;
 };
 
 // - - - - - - - - - - - - 

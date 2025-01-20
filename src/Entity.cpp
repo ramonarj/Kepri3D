@@ -104,6 +104,32 @@ void Entity::render(glm::dmat4 const& viewMat)
 	}
 }
 
+void Entity::render()
+{
+	// 1) Renderizar la propia entidad
+	// Activar la textura si la tiene
+	if (m_texture != nullptr)
+		m_texture->bind();
+
+
+	// 2) Dibujar la/s malla/s
+	if (m_mesh != nullptr)
+		m_mesh->draw();
+
+	// Desactivar la textura si la tiene
+	if (m_texture != nullptr)
+		m_texture->unbind();
+
+	// 2) Renderizar sus hijos con el mismo shader dado
+	for (Entity* e : m_children)
+	{
+		if (e->isActive())
+		{
+			e->render();
+		}
+	}
+}
+
 void Entity::update(GLuint deltaTime)
 {
 	// Actualizar los hijos
@@ -324,7 +350,6 @@ void Skybox::render()
 	m_texture->bind();
 
 	// 2) Dibujar la/s malla/s
-	m_material.load();
 	if (m_mesh != nullptr)
 		m_mesh->draw();
 
@@ -347,7 +372,7 @@ CuboMultitex::CuboMultitex(GLdouble size) : secondTex(nullptr)
 }
 
 
-void CuboMultitex::render(glm::dmat4 const& viewMat)
+void CuboMultitex::render()
 {
 	glActiveTexture(GL_TEXTURE0);
 	m_texture->bind();
@@ -386,7 +411,7 @@ CuboSpecmap::CuboSpecmap(GLdouble size)
 }
 
 
-void CuboSpecmap::render(glm::dmat4 const& viewMat)
+void CuboSpecmap::render()
 {
 	glActiveTexture(GL_TEXTURE0);
 	m_texture->bind();

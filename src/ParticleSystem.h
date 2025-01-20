@@ -19,7 +19,7 @@ public:
 	ParticleSystem(GLdouble size, GLuint maxParticles, PARTICLE_TYPE partType = PARTICLE_2D); 
 	~ParticleSystem();
 
-	void render(const glm::dmat4& viewMat) override;
+	void render() override;
 
 	void update(GLuint deltaTime) override;
 
