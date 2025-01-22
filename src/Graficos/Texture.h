@@ -6,6 +6,10 @@
 #include <vector>
 #include <glm.hpp>
 
+// GL_RGBA -> sin correción gamma
+// GL_SRGB_ALPHA -> con corrección gamma
+const GLint COLOR_SPACE = GL_SRGB_ALPHA;
+
 class Texture
 {
 public:
@@ -14,13 +18,10 @@ public:
 	/* Borra la textura asociada si tenía alguna */
 	virtual ~Texture() { if (id != 0) glDeleteTextures(1, &id); };
 
-	/* Carga la textura */
+	/* Carga la textura y le da la transparencia indicada. Usa la librería STBI */
 	bool load(const std::string& filePath, GLubyte alpha = 255);
+	/* Carga la textura con la librería PixMap32RGBA */
 	bool load(const std::string& filePath, const glm::ivec3& colorTrans);
-	bool loadSTBI(const std::string& filePath);
-
-	/* Carga el contenido del color buffer en esta textura */
-	bool loadRTT(GLsizei width, GLsizei height, GLenum buf = GL_BACK);
 
 	// Activar/desactivar la textura
 	/* Activa la textura y mezcla la luz de la escena con el mix dado

@@ -173,6 +173,10 @@ void PruebaScene::init()
 	gm->addComponent(camComp);
 
 	AddEntity(gm);
+
+	// Esto no debería hacerlo la hija
+	frameBuf = new Framebuffer(m_camera->getVP()->getW(), m_camera->getVP()->getH());
+	defaultComposite = (Shader*)&ResourceManager::Instance()->getComposite("defaultComposite");
 }
 
 void PruebaScene::loadResources()
@@ -192,9 +196,9 @@ void PruebaScene::loadResources()
 	ResourceManager::Instance()->loadTexture("cajaPrueba.png", "cajaPrueba");
 	ResourceManager::Instance()->loadTexture("caja_specular.bmp", "caja_spec");
 	ResourceManager::Instance()->loadTexture("cobre.bmp", "cobre");
-	ResourceManager::Instance()->loadTexture("agua.bmp", "agua", 200);
+	ResourceManager::Instance()->loadTexture("agua.bmp", "agua");
 	ResourceManager::Instance()->loadTexture("emoji.bmp", "emoji", { 0, 0, 0 });
-	ResourceManager::Instance()->loadTexture("lego.bmp", "lego");
+	ResourceManager::Instance()->loadTexture("lego.bmp", "lego", 100);
 	ResourceManager::Instance()->loadTexture("grass.bmp", "hierba", { 0,0,0 });
 
 	// Botones

@@ -5,6 +5,7 @@
 #include <string>
 #include <glew.h>
 #include <glm.hpp>
+#include "Framebuffer.h"
 
 class Entity;
 class Camera;
@@ -72,6 +73,8 @@ protected:
 
 	/* Efecto de postprocesado que se aplicará a la escena */
 	static Shader* compositeShader;
+	// Shader por defecto para postprocesado (no hace nada)
+	static Shader* defaultComposite;
 
 	/* Malla para pintar los efectos */
 	Mesh* m_effectsMesh;
@@ -85,6 +88,9 @@ protected:
 	// Métodos auxiliares
 	static void switchBoolParam(GLenum param);
 
+	// Framebuffer usado para los efectos
+	Framebuffer* frameBuf;
+
 private:
 	// Sub-métodos del render() para que sea más legible
 	void loadLights();
@@ -96,6 +102,8 @@ private:
 
 	/* Manda todos los uniforms necesarios al shader de la entidad dada */
 	void sendUniforms(Entity* e);
+
+
 };
 
 #endif

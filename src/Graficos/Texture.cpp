@@ -7,8 +7,6 @@
 #include <iostream>
 #include <freeglut.h>
 
-const GLint COLOR_SPACE = GL_SRGB_ALPHA;
-
 void Texture::Init()
 {
 	// Genera una nueva textura y devuelve un identificador para acceder a ella
@@ -29,30 +27,32 @@ void Texture::Init()
 bool Texture::load(const std::string& filePath, GLubyte alpha)
 {
 	// Crear la textura y establecer los filtros
-	if (id == 0) 
+	if (id == 0)
 		Init();
 
-	// Cargamos la información del BMP y le añadimos la 
-	PixMap32RGBA pixMap; 
-	pixMap.load_bmp24BGR(filePath); 
-	if (pixMap.is_null())
-		return false;
+	// Cargamos la información del archivo de imagen (BMP, JPG, PNG, etc).
+	// Siempre usamos 4 canales, aunque no sea un PNG
+	int numChannels;
+	stbi_set_flip_vertically_on_load(true);
+	unsigned char* data = stbi_load(filePath.c_str(), (int*)&w, (int*)&h, &numChannels, 4);
+	// Dar la transparencia indicada
+	if(alpha != 255)
+	{
+		for (int i = 0; i < (w * h); i++)
+			data[i * 4 + 3] = alpha;
+	}
+		
 
-	if (alpha != 255) // transparencia especificada
-		pixMap.set_alpha(alpha);
-
-	// Dimensiones
-	w = pixMap.width();
-	h = pixMap.height();
-
-	// Rellena la ya creada textura con el array de colores del BMP
+	// Rellena la ya creada textura con el array de píxeles
 	glBindTexture(GL_TEXTURE_2D, id);
-	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, w, h, 0, GL_RGBA, GL_UNSIGNED_BYTE, pixMap.data());
+	glTexImage2D(GL_TEXTURE_2D, 0, COLOR_SPACE, w, h, 0, GL_RGBA, GL_UNSIGNED_BYTE, data);
 
-	// Genera un mipmap para la textura
+	// Genera un mipmap
 	glGenerateMipmap(GL_TEXTURE_2D);
 	hasMipmap = true;
 
+	// Liberar la memoria y volver
+	stbi_image_free(data);
 	return true;
 }
 
@@ -86,60 +86,7 @@ bool Texture::load(const std::string& filePath, const glm::ivec3& colorTrans)
 		return false;
 }
 
-bool Texture::loadSTBI(const std::string& filePath)
-{
-	// Crear la textura y establecer los filtros
-	if (id == 0)
-		Init();
 
-	// Cargamos la información del archivo de imagen (BMP, JPG, PNG, etc).
-	// Siempre usamos 4 canales, aunque no sea un PNG
-	int numChannels;
-	stbi_set_flip_vertically_on_load(true);
-	unsigned char* data = stbi_load(filePath.c_str(), (int*) & w, (int*) & h, &numChannels, 4);
-
-	// Rellena la ya creada textura con el array de píxeles
-	glBindTexture(GL_TEXTURE_2D, id);
-	glTexImage2D(GL_TEXTURE_2D, 0, COLOR_SPACE, w, h, 0, GL_RGBA, GL_UNSIGNED_BYTE, data);
-
-	// Genera un mipmap
-	glGenerateMipmap(GL_TEXTURE_2D);
-	hasMipmap = true;
-
-	// Liberar la memoria y volver
-	stbi_image_free(data);
-	return true;
-}
-
-bool Texture::loadRTT(GLsizei width, GLsizei height, GLenum buf)
-{
-	// 1) Leer la información del color buffer
-	glReadBuffer(buf);
-	glCopyTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, 0, 0, width, height, 0);
-
-	// Crea el mapa de píxeles con las dimensiones de la pantalla
-	PixMap32RGBA pixMap;
-	pixMap.create_pixmap(width, height); // width, height
-
-	// Lo rellena con la info obtenida del color buffer
-	glGetTexImage(GL_TEXTURE_2D, 0, GL_RGBA, GL_UNSIGNED_BYTE, pixMap.data());
-
-	// 2) Crear la textura y establecer los filtros
-	if (id == 0)
-		Init();
-
-	// Dimensiones
-	this->w = width;
-	this->h = height;
-
-	// Rellena la ya creada textura con el array de colores del BMP
-	glBindTexture(GL_TEXTURE_2D, id);
-	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, w, h, 0, GL_RGBA, GL_UNSIGNED_BYTE, pixMap.data());
-
-	// No generamos mipmap
-
-	return true;
-}
 
 void Texture::bind(GLuint mix)
 {

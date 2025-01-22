@@ -18,6 +18,7 @@ bool Scene::skyboxActive = true;
 bool Scene::mipmapsActive = false;
 Shader* Scene::normalsShader = nullptr;
 Shader* Scene::compositeShader = nullptr;
+Shader* Scene::defaultComposite = nullptr;
 
 Scene::Scene() : m_camera(nullptr), m_canvas(nullptr), m_skybox(nullptr)
 {
@@ -37,6 +38,8 @@ void Scene::AddEntity(Entity* e, bool isTranslucid)
 
 void Scene::render()
 {
+	// Activar este framebuffer; todo lo que se pinte se guardará en su textura
+	frameBuf->bind();
 	// 0) Limpiar el color y depth buffer
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
@@ -56,10 +59,11 @@ void Scene::render()
 	// 5) Pintar el canvas
 	renderCanvas();
 
+	// Volver a activar el buffer normal
+	frameBuf->unbind();
+
 	// 6) Post-procesar la imagen del color buffer
 	renderEffects();
-
-	//ViewportTest();
 
 	// 7) Hacer swap de buffers
 	// Hay 2 buffers; uno se está mostrando por ventana, y el otro es el que usamos
@@ -162,22 +166,17 @@ void Scene::renderCanvas()
 
 void Scene::renderEffects()
 {
+	glDepthFunc(GL_ALWAYS);
+
+	// Activamos el FS de postprocesado, pasándole la textura que contiene la información de la escena
 	if (compositeShader != nullptr)
-	{
-		// 'glClear' es una operación costosa, podría buscarse una alternativa
-		//glClear(GL_DEPTH_BUFFER_BIT);
-		glDepthFunc(GL_ALWAYS);
 		compositeShader->use();
+	else
+		defaultComposite->use();
+	frameBuf->bindTexture();
+	m_effectsMesh->draw();
 
-		// Crear textura con los píxeles del color buffer (tiene que ser GL_BACK para que funcione)
-		Texture t;
-		t.loadRTT(m_camera->getVP()->getW(), m_camera->getVP()->getH(), GL_BACK);
-
-		// "Re"dibujar la escena usando el shader
-		m_effectsMesh->draw();
-
-		glDepthFunc(GL_LESS);
-	}
+	glDepthFunc(GL_LESS);
 }
 
 void Scene::update(GLuint deltaTime)

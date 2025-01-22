@@ -163,6 +163,7 @@
     <ClCompile Include="..\src\Entity.cpp" />
     <ClCompile Include="..\src\Game.cpp" />
     <ClCompile Include="..\src\Graficos\Camera.cpp" />
+    <ClCompile Include="..\src\Graficos\Framebuffer.cpp" />
     <ClCompile Include="..\src\Graficos\Light.cpp" />
     <ClCompile Include="..\src\Graficos\Material.cpp" />
     <ClCompile Include="..\src\Graficos\Mesh.cpp" />
@@ -190,6 +191,7 @@
     <ClInclude Include="..\src\Entity.h" />
     <ClInclude Include="..\src\Game.h" />
     <ClInclude Include="..\src\Graficos\Camera.h" />
+    <ClInclude Include="..\src\Graficos\Framebuffer.h" />
     <ClInclude Include="..\src\Graficos\Light.h" />
     <ClInclude Include="..\src\Graficos\Material.h" />
     <ClInclude Include="..\src\Graficos\Mesh.h" />
