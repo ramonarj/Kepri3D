@@ -36,12 +36,14 @@ void PruebaScene::init()
 	Light* dirLight = new Light(DIRECTIONAL_LIGHT);
 	dirLight->setDirection({ -1,0 , 0 });
 	dirLight->setDiffuse({ 1, 1, 1, 1.0 });
+	dirLight->setAmbient({ 0.05, 0.05, 0.1, 0.0 });
 	dirLight->setActive(true);
 	AddLight(dirLight);
 
 	// Puntual (va en círculos)
 	Light* circleLight = new Light(POINT_LIGHT, { 1, 1, 0, 1 });
 	circleLight->setPosition({ 3,3,-3 });
+	circleLight->setAmbient({ 0.05, 0.2, 0.02, 1.0 });
 	circleLight->setSpecular({ 0, 0, 1, 1.0 });
 	AddLight(circleLight);
 

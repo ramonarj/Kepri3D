@@ -34,6 +34,9 @@ public:
 	/* Devuelve la posición */
 	inline const glm::fvec3& getPosition() const { return posDir; }
 
+	/* Devuelve la componente ambient de la luz */
+	inline const glm::fvec3& getAmbient() const { return ambient; }
+
 	/* Devuelve la componente difusa de la luz*/
 	inline const glm::fvec3& getDiffuse() const { return diffuse; }
 

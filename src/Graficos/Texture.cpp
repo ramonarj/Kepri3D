@@ -7,6 +7,7 @@
 #include <iostream>
 #include <freeglut.h>
 
+const GLint COLOR_SPACE = GL_SRGB_ALPHA;
 
 void Texture::Init()
 {
@@ -73,7 +74,7 @@ bool Texture::load(const std::string& filePath, const glm::ivec3& colorTrans)
 		h = pixMap.height();
 
 		glBindTexture(GL_TEXTURE_2D, id);
-		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, w, h, 0, GL_RGBA, GL_UNSIGNED_BYTE, pixMap.data());
+		glTexImage2D(GL_TEXTURE_2D, 0, COLOR_SPACE, w, h, 0, GL_RGBA, GL_UNSIGNED_BYTE, pixMap.data());
 
 		// No es recomendable usar mipmap con este modelo (se pierde la transparencia al alejarnos)
 		hasMipmap = false;
@@ -99,7 +100,7 @@ bool Texture::loadSTBI(const std::string& filePath)
 
 	// Rellena la ya creada textura con el array de píxeles
 	glBindTexture(GL_TEXTURE_2D, id);
-	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, w, h, 0, GL_RGBA, GL_UNSIGNED_BYTE, data);
+	glTexImage2D(GL_TEXTURE_2D, 0, COLOR_SPACE, w, h, 0, GL_RGBA, GL_UNSIGNED_BYTE, data);
 
 	// Genera un mipmap
 	glGenerateMipmap(GL_TEXTURE_2D);
@@ -165,7 +166,7 @@ void Texture::useMipmaps(bool b)
 void Texture::loadColorBuffer(GLsizei width, GLsizei height, GLenum buf)
 {
 	glReadBuffer(buf);
-	glCopyTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, 0, 0, width, height, 0);
+	glCopyTexImage2D(GL_TEXTURE_2D, 0, COLOR_SPACE, 0, 0, width, height, 0);
 }
 
 
@@ -206,7 +207,7 @@ bool CubemapTexture::load(std::vector<std::string> faces)
 		unsigned char* data = stbi_load(faces[i].c_str(), (int*)&w, (int*)&h, &numChannels, 4);
 
 		// Rellena la ya creada textura con el array de píxeles
-		glTexImage2D(GL_TEXTURE_CUBE_MAP_POSITIVE_X + i, 0, GL_RGBA,
+		glTexImage2D(GL_TEXTURE_CUBE_MAP_POSITIVE_X + i, 0, COLOR_SPACE,
 			w, h, 0, GL_RGBA, GL_UNSIGNED_BYTE, data);
 
 		// Parámetros de escalado y repetición

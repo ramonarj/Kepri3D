@@ -225,6 +225,7 @@ void Scene::sendUniforms(Entity* e)
 
 			// pasar la información de las luces al fragment shader
 			sh->setVec3(str + ".dir", l->getPosition());
+			sh->setVec3(str + ".ambient", l->getAmbient());
 			sh->setVec3(str + ".diffuse", l->getDiffuse());
 			sh->setVec3(str + ".specular", l->getSpecular());
 
@@ -238,6 +239,7 @@ void Scene::sendUniforms(Entity* e)
 		}
 		else // 
 		{
+			sh->setVec3(str + ".ambient", { 0, 0, 0 });
 			sh->setVec3(str + ".diffuse", { 0, 0, 0 });
 			sh->setVec3(str + ".specular", { 0, 0, 0 });
 		}

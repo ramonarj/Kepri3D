@@ -13,8 +13,11 @@ struct Light // (direccional)
 	int type; 
 
 	vec3 dir;
-	vec3 diffuse; 
-	vec3 specular; 
+	
+	// Componentes de la luz
+	vec3 ambient;
+	vec3 diffuse;
+	vec3 specular;
 	
 	// Para luces puntuales
 	float constant;
@@ -41,15 +44,11 @@ uniform sampler2D textura;
 uniform sampler2D specMap;
 
 // - - Luces - - //
-/* Ambient */
-vec3 globalAmbient = { 0.2, 0.2, 0.2 };
-
-/* Diffuse */
 // Permitiremos un máximo de 5 luces por el momento
 const int MAX_LIGHTS = 5;
 uniform Light luces[MAX_LIGHTS];
 
-/* Specular */
+// - - Material - - //
 uniform Material material;
 uniform vec3 viewPos;
 
@@ -83,7 +82,7 @@ void main()
 		}
 	}
 	// Aplicamos las luces al color de la textura (* = MODULATE, + = ADD, ...)
-	vec3 result = (globalAmbient + luzTotal) * vec3(texColor);
+	vec3 result = luzTotal * vec3(texColor);
 
 	FragColor = vec4(result, 1.0);
 }
@@ -94,6 +93,8 @@ vec3 CalcDirLight(Light light)
 	// Obtener la dirección normalizada de cada luz
 	vec3 lightDir = normalize(light.dir);
 
+	// - - La componente ambiente se queda tal cual - - //
+	
 	// - - Calcular la componente difusa - - //
 	// Producto escalar de la normal con la dirección de la luz
 	float diff = max(dot(data_in.normals, lightDir), 0.0);
@@ -110,7 +111,7 @@ vec3 CalcDirLight(Light light)
     vec3 specular = specMapColor * spec * light.specular;
 	
 	// Devolver la suma de las 3 componentes
-	return (diffuse + specular);
+	return (light.ambient + diffuse + specular);
 }
 
 /* Calcula la cantidad de luz que recibe el fragmento de una luz direccional */
@@ -132,11 +133,13 @@ vec3 CalcPointLight(Light light)
     float distance = length(light.dir - data_in.fragPos);
     float attenuation = 1.0 / (light.constant + light.linear * distance + light.quadratic * (distance * distance));    
 				 
-    // Combinar los resultados
+    // Combinar los resultados y devolver la suma
+	vec3 ambient = light.ambient;
     vec3 diffuse  = light.diffuse  * diff; // * material.diffuse;
     vec3 specular = light.specular * spec * specMapColor;
+	ambient  *= attenuation;
     diffuse  *= attenuation;
     specular *= attenuation;
 	
-    return (diffuse + specular);
+    return (ambient + diffuse + specular);
 }

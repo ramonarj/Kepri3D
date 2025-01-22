@@ -13,7 +13,8 @@ struct Light // (direccional)
 	int type; 
 	
 	vec3 dir;
-	// Por ahora usaremos ambient global
+	// Componentes de la luz
+	vec3 ambient;
 	vec3 diffuse;
 	vec3 specular;
 	
@@ -40,15 +41,11 @@ out vec4 FragColor;
 uniform sampler2D textura;
 
 // - - Luces - - //
-/* Ambient */
-vec3 globalAmbient = { 0.2, 0.2, 0.2 };
-
-/* Diffuse */
 // Permitiremos un máximo de 5 luces por el momento
 const int MAX_LIGHTS = 5;
 uniform Light luces[MAX_LIGHTS];
 
-/* Specular */
+// - - Material - - //
 uniform Material material;
 uniform vec3 viewPos;
 
@@ -83,7 +80,7 @@ void main()
 	}
 	
 	// Aplicamos la iluminación al color de la textura (* = MODULATE, + = ADD, ...)
-	vec3 result = (globalAmbient + luzTotal) * vec3(texColor);
+	vec3 result = luzTotal * vec3(texColor);
 
 	FragColor = vec4(result, texColor.a);
 }
@@ -93,6 +90,9 @@ vec3 CalcDirLight(Light light)
 {
 	// Obtener la dirección normalizada de cada luz
 	vec3 lightDir = normalize(light.dir);
+	
+	// - - Calcular la componente ambient -- //
+	//vec3 ambient = diff * light.ambient;
 
 	// - - Calcular la componente difusa - - //
 	// Producto escalar de la normal con la dirección de la luz
@@ -108,7 +108,7 @@ vec3 CalcDirLight(Light light)
     vec3 specular = material.specular * spec * light.specular;
 	
 	// Devolver la suma de las 3 componentes
-	return (diffuse + specular);
+	return (light.ambient + diffuse + specular);
 }
 
 /* Calcula la cantidad de luz que recibe el fragmento de una luz direccional */
@@ -130,10 +130,12 @@ vec3 CalcPointLight(Light light)
     float attenuation = 1.0 / (light.constant + light.linear * distance + light.quadratic * (distance * distance));    
 				 
     // Combinar los resultados
+	vec3 ambient = light.ambient;
     vec3 diffuse  = light.diffuse  * diff; // * material.diffuse;
     vec3 specular = light.specular * spec * material.specular;
+	ambient  *= attenuation;
     diffuse  *= attenuation;
     specular *= attenuation;
 	
-    return (diffuse + specular);
+    return (ambient + diffuse + specular);
 }
