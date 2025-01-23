@@ -293,4 +293,7 @@ Scene::~Scene()
 
 	// Malla para el postprocesado
 	delete m_effectsMesh;
+
+	// FB para el postprocesado
+	delete frameBuf;
 }

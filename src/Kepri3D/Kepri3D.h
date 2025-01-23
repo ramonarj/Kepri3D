@@ -8,6 +8,7 @@
 #include "Shader.h"
 #include "ParticleSystem.h"
 // Managers
+#include "Game.h"
 #include "ResourceManager.h"
 #include "InputManager.h"
 // UI

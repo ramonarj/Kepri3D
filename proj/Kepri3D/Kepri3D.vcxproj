@@ -1,0 +1,245 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup Label="ProjectConfigurations">
+    <ProjectConfiguration Include="Debug|Win32">
+      <Configuration>Debug</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|Win32">
+      <Configuration>Release</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Debug|x64">
+      <Configuration>Debug</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|x64">
+      <Configuration>Release</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+  </ItemGroup>
+  <PropertyGroup Label="Globals">
+    <VCProjectVersion>16.0</VCProjectVersion>
+    <Keyword>Win32Proj</Keyword>
+    <ProjectGuid>{afa6bc59-4471-421f-967b-5bc7e119116c}</ProjectGuid>
+    <RootNamespace>Kepri3D</RootNamespace>
+    <WindowsTargetPlatformVersion>10.0</WindowsTargetPlatformVersion>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
+    <ConfigurationType>StaticLibrary</ConfigurationType>
+    <UseDebugLibraries>true</UseDebugLibraries>
+    <PlatformToolset>v143</PlatformToolset>
+    <CharacterSet>Unicode</CharacterSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
+    <ConfigurationType>StaticLibrary</ConfigurationType>
+    <UseDebugLibraries>false</UseDebugLibraries>
+    <PlatformToolset>v143</PlatformToolset>
+    <WholeProgramOptimization>true</WholeProgramOptimization>
+    <CharacterSet>Unicode</CharacterSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
+    <ConfigurationType>StaticLibrary</ConfigurationType>
+    <UseDebugLibraries>true</UseDebugLibraries>
+    <PlatformToolset>v143</PlatformToolset>
+    <CharacterSet>Unicode</CharacterSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
+    <ConfigurationType>StaticLibrary</ConfigurationType>
+    <UseDebugLibraries>false</UseDebugLibraries>
+    <PlatformToolset>v143</PlatformToolset>
+    <WholeProgramOptimization>true</WholeProgramOptimization>
+    <CharacterSet>Unicode</CharacterSet>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
+  <ImportGroup Label="ExtensionSettings">
+  </ImportGroup>
+  <ImportGroup Label="Shared">
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <PropertyGroup Label="UserMacros" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <OutDir>$(SolutionDir)bin\</OutDir>
+    <IntDir>$(SolutionDir)inter\$(ProjectName)\$(Platform)\$(Configuration)\</IntDir>
+    <TargetName>$(ProjectName)_debug</TargetName>
+    <IncludePath>$(SolutionDir)dependencies\glm-1.0.1\glm\;$(SolutionDir)dependencies\freeglut-3.6.0\include\GL\;$(SolutionDir)dependencies\glew-2.2.0\include\GL\;$(IncludePath)</IncludePath>
+    <LibraryPath>$(SolutionDir)dependencies\freeglut-3.6.0\libs\;$(LibraryPath)</LibraryPath>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <OutDir>$(SolutionDir)bin\</OutDir>
+    <IntDir>$(SolutionDir)inter\$(ProjectName)\$(Platform)\$(Configuration)\</IntDir>
+    <IncludePath>$(SolutionDir)dependencies\glm-1.0.1\glm\;$(SolutionDir)dependencies\freeglut-3.6.0\include\GL\;$(SolutionDir)dependencies\glew-2.2.0\include\GL\;$(IncludePath)</IncludePath>
+    <LibraryPath>$(SolutionDir)dependencies\freeglut-3.6.0\libs\;$(LibraryPath)</LibraryPath>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <OutDir>$(SolutionDir)bin\</OutDir>
+    <IntDir>$(SolutionDir)inter\$(ProjectName)\$(Platform)\$(Configuration)\</IntDir>
+    <TargetName>$(ProjectName)_debug</TargetName>
+    <IncludePath>$(SolutionDir)dependencies\glm-1.0.1\glm\;$(SolutionDir)dependencies\freeglut-3.6.0\include\GL\;$(SolutionDir)dependencies\glew-2.2.0\include\GL\;$(IncludePath)</IncludePath>
+    <LibraryPath>$(SolutionDir)dependencies\freeglut-3.6.0\VisualC\lib\$(Configuration)\;$(SolutionDir)dependencies\glew-2.2.0\lib\$(Configuration)\$(Platform)\;$(LibraryPath)</LibraryPath>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <OutDir>$(SolutionDir)bin\</OutDir>
+    <IntDir>$(SolutionDir)inter\$(ProjectName)\$(Platform)\$(Configuration)\</IntDir>
+    <IncludePath>$(SolutionDir)dependencies\glm-1.0.1\glm\;$(SolutionDir)dependencies\freeglut-3.6.0\include\GL\;$(SolutionDir)dependencies\glew-2.2.0\include\GL\;$(IncludePath)</IncludePath>
+    <LibraryPath>$(SolutionDir)dependencies\freeglut-3.6.0\VisualC\lib\$(Configuration)\;$(SolutionDir)dependencies\glew-2.2.0\lib\$(Configuration)\$(Platform)\;$(LibraryPath)</LibraryPath>
+  </PropertyGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <ClCompile>
+      <WarningLevel>Level3</WarningLevel>
+      <SDLCheck>true</SDLCheck>
+      <PreprocessorDefinitions>WIN32;_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <ConformanceMode>true</ConformanceMode>
+      <AdditionalIncludeDirectories>$(SolutionDir)src\$(ProjectName)\;$(SolutionDir)src\$(ProjectName)\Graficos\;$(SolutionDir)src\$(ProjectName)\Utils\;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+    </ClCompile>
+    <Link>
+      <SubSystem>Console</SubSystem>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+    </Link>
+    <Lib>
+      <AdditionalDependencies>glew32d.lib</AdditionalDependencies>
+    </Lib>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <ClCompile>
+      <WarningLevel>Level3</WarningLevel>
+      <FunctionLevelLinking>true</FunctionLevelLinking>
+      <IntrinsicFunctions>true</IntrinsicFunctions>
+      <SDLCheck>true</SDLCheck>
+      <PreprocessorDefinitions>WIN32;NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <ConformanceMode>true</ConformanceMode>
+      <AdditionalIncludeDirectories>$(SolutionDir)src\$(ProjectName)\;$(SolutionDir)src\$(ProjectName)\Graficos\;$(SolutionDir)src\$(ProjectName)\Utils\;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+    </ClCompile>
+    <Link>
+      <SubSystem>Console</SubSystem>
+      <EnableCOMDATFolding>true</EnableCOMDATFolding>
+      <OptimizeReferences>true</OptimizeReferences>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+    </Link>
+    <Lib>
+      <AdditionalDependencies>glew32d.lib</AdditionalDependencies>
+    </Lib>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <ClCompile>
+      <WarningLevel>Level3</WarningLevel>
+      <SDLCheck>true</SDLCheck>
+      <PreprocessorDefinitions>_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <ConformanceMode>true</ConformanceMode>
+      <AdditionalIncludeDirectories>$(SolutionDir)src\$(ProjectName)\;$(SolutionDir)src\$(ProjectName)\Graficos\;$(SolutionDir)src\$(ProjectName)\Utils\;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+    </ClCompile>
+    <Link>
+      <SubSystem>Console</SubSystem>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <AdditionalDependencies>glew32d.lib;%(AdditionalDependencies)</AdditionalDependencies>
+    </Link>
+    <Lib>
+      <AdditionalDependencies>glew32d.lib</AdditionalDependencies>
+    </Lib>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <ClCompile>
+      <WarningLevel>Level3</WarningLevel>
+      <FunctionLevelLinking>true</FunctionLevelLinking>
+      <IntrinsicFunctions>true</IntrinsicFunctions>
+      <SDLCheck>true</SDLCheck>
+      <PreprocessorDefinitions>NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <ConformanceMode>true</ConformanceMode>
+      <AdditionalIncludeDirectories>$(SolutionDir)src\$(ProjectName)\;$(SolutionDir)src\$(ProjectName)\Graficos\;$(SolutionDir)src\$(ProjectName)\Utils\;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+    </ClCompile>
+    <Link>
+      <SubSystem>Console</SubSystem>
+      <EnableCOMDATFolding>true</EnableCOMDATFolding>
+      <OptimizeReferences>true</OptimizeReferences>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <AdditionalDependencies>glew32.lib;%(AdditionalDependencies)</AdditionalDependencies>
+    </Link>
+    <Lib>
+      <AdditionalDependencies>glew32d.lib</AdditionalDependencies>
+    </Lib>
+  </ItemDefinitionGroup>
+  <ItemGroup>
+    <ClCompile Include="..\..\src\Kepri3D\Component.cpp" />
+    <ClCompile Include="..\..\src\Kepri3D\Entity.cpp" />
+    <ClCompile Include="..\..\src\Kepri3D\Game.cpp" />
+    <ClCompile Include="..\..\src\Kepri3D\Graficos\Camera.cpp" />
+    <ClCompile Include="..\..\src\Kepri3D\Graficos\Framebuffer.cpp" />
+    <ClCompile Include="..\..\src\Kepri3D\Graficos\Light.cpp" />
+    <ClCompile Include="..\..\src\Kepri3D\Graficos\Material.cpp" />
+    <ClCompile Include="..\..\src\Kepri3D\Graficos\Mesh.cpp" />
+    <ClCompile Include="..\..\src\Kepri3D\Graficos\Shader.cpp" />
+    <ClCompile Include="..\..\src\Kepri3D\Graficos\Texture.cpp" />
+    <ClCompile Include="..\..\src\Kepri3D\InputManager.cpp" />
+    <ClCompile Include="..\..\src\Kepri3D\ParticleSystem.cpp" />
+    <ClCompile Include="..\..\src\Kepri3D\ResourceManager.cpp" />
+    <ClCompile Include="..\..\src\Kepri3D\Scene.cpp" />
+    <ClCompile Include="..\..\src\Kepri3D\UI\Button.cpp" />
+    <ClCompile Include="..\..\src\Kepri3D\UI\Canvas.cpp" />
+    <ClCompile Include="..\..\src\Kepri3D\UI\UIElement.cpp" />
+    <ClCompile Include="..\..\src\Kepri3D\Utils\MeshLoader.cpp" />
+    <ClCompile Include="..\..\src\Kepri3D\Utils\Pixmap32RGBA.cpp" />
+    <ClCompile Include="..\..\src\Kepri3D\Utils\Utils.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="..\..\src\Kepri3D\Component.h" />
+    <ClInclude Include="..\..\src\Kepri3D\Entity.h" />
+    <ClInclude Include="..\..\src\Kepri3D\Game.h" />
+    <ClInclude Include="..\..\src\Kepri3D\Graficos\Camera.h" />
+    <ClInclude Include="..\..\src\Kepri3D\Graficos\Framebuffer.h" />
+    <ClInclude Include="..\..\src\Kepri3D\Graficos\Light.h" />
+    <ClInclude Include="..\..\src\Kepri3D\Graficos\Material.h" />
+    <ClInclude Include="..\..\src\Kepri3D\Graficos\Mesh.h" />
+    <ClInclude Include="..\..\src\Kepri3D\Graficos\Shader.h" />
+    <ClInclude Include="..\..\src\Kepri3D\Graficos\Texture.h" />
+    <ClInclude Include="..\..\src\Kepri3D\InputManager.h" />
+    <ClInclude Include="..\..\src\Kepri3D\Kepri3D.h" />
+    <ClInclude Include="..\..\src\Kepri3D\ParticleSystem.h" />
+    <ClInclude Include="..\..\src\Kepri3D\ResourceManager.h" />
+    <ClInclude Include="..\..\src\Kepri3D\Scene.h" />
+    <ClInclude Include="..\..\src\Kepri3D\UI\Button.h" />
+    <ClInclude Include="..\..\src\Kepri3D\UI\Canvas.h" />
+    <ClInclude Include="..\..\src\Kepri3D\UI\UIElement.h" />
+    <ClInclude Include="..\..\src\Kepri3D\Utils\checkML.h" />
+    <ClInclude Include="..\..\src\Kepri3D\Utils\MeshLoader.h" />
+    <ClInclude Include="..\..\src\Kepri3D\Utils\Pixmap32RGBA.h" />
+    <ClInclude Include="..\..\src\Kepri3D\Utils\stb_image.h" />
+    <ClInclude Include="..\..\src\Kepri3D\Utils\Utils.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="..\bin\assets\shaders\cruces.geom" />
+    <None Include="..\bin\assets\shaders\default.frag" />
+    <None Include="..\bin\assets\shaders\default.geom" />
+    <None Include="..\bin\assets\shaders\default.vert" />
+    <None Include="..\bin\assets\shaders\lights.vert" />
+    <None Include="..\bin\assets\shaders\fog.frag" />
+    <None Include="..\bin\assets\shaders\lights.frag" />
+    <None Include="..\bin\assets\shaders\maximize.vert" />
+    <None Include="..\bin\assets\shaders\movimiento.frag" />
+    <None Include="..\bin\assets\shaders\normals.frag" />
+    <None Include="..\bin\assets\shaders\normals.geom" />
+    <None Include="..\bin\assets\shaders\normals.vert" />
+    <None Include="..\bin\assets\shaders\particle.frag" />
+    <None Include="..\bin\assets\shaders\particle.vert" />
+    <None Include="..\bin\assets\shaders\postprocess\composite.vert" />
+    <None Include="..\bin\assets\shaders\postprocess\interference.frag" />
+    <None Include="..\bin\assets\shaders\postprocess\waves.frag" />
+    <None Include="..\bin\assets\shaders\skybox.frag" />
+    <None Include="..\bin\assets\shaders\skybox.vert" />
+    <None Include="..\bin\assets\shaders\specularMap.frag" />
+  </ItemGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
+  <ImportGroup Label="ExtensionTargets">
+  </ImportGroup>
+</Project>

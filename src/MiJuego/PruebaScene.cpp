@@ -312,21 +312,21 @@ void PruebaScene::PruebaMateriales()
 
 	// Terreno antiguo
 	Terrain* oldTer = new Terrain();
-	oldTer->loadRAW("../bin/assets/terrain.raw", 0.05);
+	oldTer->loadRAW("../../bin/assets/terrain.raw", 0.05);
 	oldTer->setTexture("terreno");
 	oldTer->setPosition({ -30,0, 0 });
 	AddEntity(oldTer);
 
 	// Terreno Islandia
 	Terrain* terrain = new Terrain();
-	terrain->loadHeightMap("../bin/assets/icelandHeight.bmp", 1);
+	terrain->loadHeightMap("../../bin/assets/icelandHeight.bmp", 1);
 	terrain->setTexture("iceland");
 	terrain->setPosition({ 0,-10,0 });
 	AddEntity(terrain);
 
 	// Minimap
 	Terrain* miniTer = new Terrain();
-	miniTer->loadHeightMap("../bin/assets/icelandHeight.bmp", 0.01);
+	miniTer->loadHeightMap("../../bin/assets/icelandHeight.bmp", 0.01);
 	miniTer->setTexture("iceland");
 	miniTer->scale({ 1,1.5,1 });
 	miniTer->setPosition({ -6,-0.99,6 });

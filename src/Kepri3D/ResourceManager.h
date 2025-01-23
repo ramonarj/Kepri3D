@@ -13,11 +13,11 @@ class Material;
 class Shader;
 
 
-const std::string MESHES_PATH = "..\\bin\\assets\\meshes\\";
-const std::string TEXTURES_PATH = "..\\bin\\assets\\textures\\";
-const std::string MATERIALS_PATH = "..\\bin\\assets\\materials\\";
-const std::string SHADERS_PATH = "..\\bin\\assets\\shaders\\";
-const std::string COMPOSITES_PATH = "..\\bin\\assets\\shaders\\postprocess\\";
+const std::string MESHES_PATH = "..\\..\\bin\\assets\\meshes\\";
+const std::string TEXTURES_PATH = "..\\..\\bin\\assets\\textures\\";
+const std::string MATERIALS_PATH = "..\\..\\bin\\assets\\materials\\";
+const std::string SHADERS_PATH = "..\\..\\bin\\assets\\shaders\\";
+const std::string COMPOSITES_PATH = "..\\..\\bin\\assets\\shaders\\postprocess\\";
 
 class ResourceManager
 {

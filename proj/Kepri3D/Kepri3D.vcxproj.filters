@@ -1,10 +1,6 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup>
-    <Filter Include="Archivos de origen">
-      <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
-      <Extensions>cpp;c;cc;cxx;c++;cppm;ixx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
-    </Filter>
     <Filter Include="UI">
       <UniqueIdentifier>{7074cc85-ccd5-42a0-b175-21860ce6f3f5}</UniqueIdentifier>
     </Filter>
@@ -25,167 +21,136 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="..\src\UI\Button.cpp">
-      <Filter>UI</Filter>
-    </ClCompile>
-    <ClCompile Include="..\src\Entity.cpp">
-      <Filter>Core</Filter>
-    </ClCompile>
-    <ClCompile Include="..\src\Scene.cpp">
-      <Filter>Core</Filter>
-    </ClCompile>
-    <ClCompile Include="..\src\ResourceManager.cpp">
-      <Filter>Core</Filter>
-    </ClCompile>
-    <ClCompile Include="..\src\UI\Canvas.cpp">
-      <Filter>UI</Filter>
-    </ClCompile>
-    <ClCompile Include="..\src\UI\UIElement.cpp">
-      <Filter>UI</Filter>
-    </ClCompile>
-    <ClCompile Include="..\src\InputManager.cpp">
-      <Filter>Core</Filter>
-    </ClCompile>
-    <ClCompile Include="..\src\Game.cpp">
-      <Filter>Core</Filter>
-    </ClCompile>
-    <ClCompile Include="..\src\Juego\GameManager.cpp">
-      <Filter>Archivos de origen</Filter>
-    </ClCompile>
-    <ClCompile Include="..\src\Juego\SpaceScene.cpp">
-      <Filter>Archivos de origen</Filter>
-    </ClCompile>
-    <ClCompile Include="..\src\Juego\PruebaScene.cpp">
-      <Filter>Archivos de origen</Filter>
-    </ClCompile>
-    <ClCompile Include="..\src\ParticleSystem.cpp">
-      <Filter>Core</Filter>
-    </ClCompile>
-    <ClCompile Include="..\src\Juego\Main.cpp">
-      <Filter>Archivos de origen</Filter>
-    </ClCompile>
-    <ClCompile Include="..\src\Utils\MeshLoader.cpp">
+    <ClCompile Include="..\..\src\Kepri3D\Utils\MeshLoader.cpp">
       <Filter>Utils</Filter>
     </ClCompile>
-    <ClCompile Include="..\src\Utils\Pixmap32RGBA.cpp">
+    <ClCompile Include="..\..\src\Kepri3D\Utils\Pixmap32RGBA.cpp">
       <Filter>Utils</Filter>
     </ClCompile>
-    <ClCompile Include="..\src\Utils\Utils.cpp">
+    <ClCompile Include="..\..\src\Kepri3D\Utils\Utils.cpp">
       <Filter>Utils</Filter>
     </ClCompile>
-    <ClCompile Include="..\src\Graficos\Camera.cpp">
+    <ClCompile Include="..\..\src\Kepri3D\UI\Button.cpp">
+      <Filter>UI</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\Kepri3D\UI\Canvas.cpp">
+      <Filter>UI</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\Kepri3D\UI\UIElement.cpp">
+      <Filter>UI</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\Kepri3D\Graficos\Camera.cpp">
       <Filter>Graficos</Filter>
     </ClCompile>
-    <ClCompile Include="..\src\Graficos\Light.cpp">
+    <ClCompile Include="..\..\src\Kepri3D\Graficos\Framebuffer.cpp">
       <Filter>Graficos</Filter>
     </ClCompile>
-    <ClCompile Include="..\src\Graficos\Material.cpp">
+    <ClCompile Include="..\..\src\Kepri3D\Graficos\Light.cpp">
       <Filter>Graficos</Filter>
     </ClCompile>
-    <ClCompile Include="..\src\Graficos\Mesh.cpp">
+    <ClCompile Include="..\..\src\Kepri3D\Graficos\Material.cpp">
       <Filter>Graficos</Filter>
     </ClCompile>
-    <ClCompile Include="..\src\Graficos\Shader.cpp">
+    <ClCompile Include="..\..\src\Kepri3D\Graficos\Mesh.cpp">
       <Filter>Graficos</Filter>
     </ClCompile>
-    <ClCompile Include="..\src\Graficos\Texture.cpp">
+    <ClCompile Include="..\..\src\Kepri3D\Graficos\Shader.cpp">
       <Filter>Graficos</Filter>
     </ClCompile>
-    <ClCompile Include="..\src\Component.cpp">
+    <ClCompile Include="..\..\src\Kepri3D\Graficos\Texture.cpp">
+      <Filter>Graficos</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\Kepri3D\Component.cpp">
       <Filter>Core</Filter>
     </ClCompile>
-    <ClCompile Include="..\src\Juego\RotationComp.cpp">
-      <Filter>Archivos de origen</Filter>
+    <ClCompile Include="..\..\src\Kepri3D\Entity.cpp">
+      <Filter>Core</Filter>
     </ClCompile>
-    <ClCompile Include="..\src\Juego\CameraController.cpp">
-      <Filter>Archivos de origen</Filter>
+    <ClCompile Include="..\..\src\Kepri3D\Game.cpp">
+      <Filter>Core</Filter>
     </ClCompile>
-    <ClCompile Include="..\src\Graficos\Framebuffer.cpp">
-      <Filter>Graficos</Filter>
+    <ClCompile Include="..\..\src\Kepri3D\InputManager.cpp">
+      <Filter>Core</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\Kepri3D\ParticleSystem.cpp">
+      <Filter>Core</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\Kepri3D\ResourceManager.cpp">
+      <Filter>Core</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\Kepri3D\Scene.cpp">
+      <Filter>Core</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="..\src\UI\Button.h">
+    <ClInclude Include="..\..\src\Kepri3D\Utils\checkML.h">
+      <Filter>Utils</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\Kepri3D\Utils\MeshLoader.h">
+      <Filter>Utils</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\Kepri3D\Utils\Pixmap32RGBA.h">
+      <Filter>Utils</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\Kepri3D\Utils\stb_image.h">
+      <Filter>Utils</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\Kepri3D\Utils\Utils.h">
+      <Filter>Utils</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\Kepri3D\UI\Button.h">
       <Filter>UI</Filter>
     </ClInclude>
-    <ClInclude Include="..\src\Entity.h">
-      <Filter>Core</Filter>
-    </ClInclude>
-    <ClInclude Include="..\src\Scene.h">
-      <Filter>Core</Filter>
-    </ClInclude>
-    <ClInclude Include="..\src\ResourceManager.h">
-      <Filter>Core</Filter>
-    </ClInclude>
-    <ClInclude Include="..\src\UI\Canvas.h">
+    <ClInclude Include="..\..\src\Kepri3D\UI\Canvas.h">
       <Filter>UI</Filter>
     </ClInclude>
-    <ClInclude Include="..\src\UI\UIElement.h">
+    <ClInclude Include="..\..\src\Kepri3D\UI\UIElement.h">
       <Filter>UI</Filter>
     </ClInclude>
-    <ClInclude Include="..\src\InputManager.h">
+    <ClInclude Include="..\..\src\Kepri3D\Graficos\Camera.h">
+      <Filter>Graficos</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\Kepri3D\Graficos\Framebuffer.h">
+      <Filter>Graficos</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\Kepri3D\Graficos\Light.h">
+      <Filter>Graficos</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\Kepri3D\Graficos\Material.h">
+      <Filter>Graficos</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\Kepri3D\Graficos\Mesh.h">
+      <Filter>Graficos</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\Kepri3D\Graficos\Shader.h">
+      <Filter>Graficos</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\Kepri3D\Graficos\Texture.h">
+      <Filter>Graficos</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\Kepri3D\Component.h">
       <Filter>Core</Filter>
     </ClInclude>
-    <ClInclude Include="..\src\Game.h">
+    <ClInclude Include="..\..\src\Kepri3D\Entity.h">
       <Filter>Core</Filter>
     </ClInclude>
-    <ClInclude Include="..\src\Juego\GameManager.h">
-      <Filter>Archivos de origen</Filter>
-    </ClInclude>
-    <ClInclude Include="..\src\Juego\SpaceScene.h">
-      <Filter>Archivos de origen</Filter>
-    </ClInclude>
-    <ClInclude Include="..\src\Juego\PruebaScene.h">
-      <Filter>Archivos de origen</Filter>
-    </ClInclude>
-    <ClInclude Include="..\src\Kepri3D.h">
+    <ClInclude Include="..\..\src\Kepri3D\Game.h">
       <Filter>Core</Filter>
     </ClInclude>
-    <ClInclude Include="..\src\ParticleSystem.h">
+    <ClInclude Include="..\..\src\Kepri3D\InputManager.h">
       <Filter>Core</Filter>
     </ClInclude>
-    <ClInclude Include="..\src\Utils\checkML.h">
-      <Filter>Utils</Filter>
-    </ClInclude>
-    <ClInclude Include="..\src\Utils\MeshLoader.h">
-      <Filter>Utils</Filter>
-    </ClInclude>
-    <ClInclude Include="..\src\Utils\Pixmap32RGBA.h">
-      <Filter>Utils</Filter>
-    </ClInclude>
-    <ClInclude Include="..\src\Utils\Utils.h">
-      <Filter>Utils</Filter>
-    </ClInclude>
-    <ClInclude Include="..\src\Graficos\Camera.h">
-      <Filter>Graficos</Filter>
-    </ClInclude>
-    <ClInclude Include="..\src\Graficos\Light.h">
-      <Filter>Graficos</Filter>
-    </ClInclude>
-    <ClInclude Include="..\src\Graficos\Material.h">
-      <Filter>Graficos</Filter>
-    </ClInclude>
-    <ClInclude Include="..\src\Graficos\Mesh.h">
-      <Filter>Graficos</Filter>
-    </ClInclude>
-    <ClInclude Include="..\src\Graficos\Shader.h">
-      <Filter>Graficos</Filter>
-    </ClInclude>
-    <ClInclude Include="..\src\Graficos\Texture.h">
-      <Filter>Graficos</Filter>
-    </ClInclude>
-    <ClInclude Include="..\src\Utils\stb_image.h">
-      <Filter>Utils</Filter>
-    </ClInclude>
-    <ClInclude Include="..\src\Component.h">
+    <ClInclude Include="..\..\src\Kepri3D\Kepri3D.h">
       <Filter>Core</Filter>
     </ClInclude>
-    <ClInclude Include="..\src\Juego\RotationComp.h">
-      <Filter>Archivos de origen</Filter>
+    <ClInclude Include="..\..\src\Kepri3D\ParticleSystem.h">
+      <Filter>Core</Filter>
     </ClInclude>
-    <ClInclude Include="..\src\Juego\CameraController.h" />
-    <ClInclude Include="..\src\Graficos\Framebuffer.h">
-      <Filter>Graficos</Filter>
+    <ClInclude Include="..\..\src\Kepri3D\ResourceManager.h">
+      <Filter>Core</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\Kepri3D\Scene.h">
+      <Filter>Core</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
