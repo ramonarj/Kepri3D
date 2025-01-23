@@ -99,6 +99,7 @@ void PruebaScene::init()
 	// Un toro
 	Toro* toro = new Toro(0.75, 0.4, 30, 10);
 	toro->setPosition({ 15,-0.4,6 });
+	toro->setMaterial("fluorescente");
 	AddEntity(toro);
 
 	// Un cubo multitextura
@@ -218,6 +219,7 @@ void PruebaScene::loadResources()
 	ResourceManager::Instance()->loadMaterial("crome.material", "cromo");
 	ResourceManager::Instance()->loadMaterial("ruby.material", "ruby");
 	ResourceManager::Instance()->loadMaterial("cristal.material", "cristal");
+	ResourceManager::Instance()->loadMaterial("fluorescente.material", "fluorescente");
 
 	// Prueba excepciones
 	ResourceManager::Instance()->loadTexture("ladrillo.bmp", "ladrillo");
@@ -249,7 +251,7 @@ void PruebaScene::PruebaMateriales()
 	// Cubo de orientación (distintas texturas)
 	Cubo* c2 = new Cubo(2, true, false);
 	c2->setTexture("orientacion");
-	c2->setMaterial("orientacion");
+	c2->setMaterial("fluorescente");
 	c2->setPosition({ -5,0,0 });
 	AddEntity(c2);
 

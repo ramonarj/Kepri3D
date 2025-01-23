@@ -116,6 +116,9 @@ bool ResourceManager::loadMaterial(const std::string& materialName, const std::s
 		glm::fvec4 specular{};
 		stream >> specular.x >> specular.y >> specular.z >> specular.w;
 
+		glm::fvec4 emission{};
+		stream >> emission.x >> emission.y >> emission.z >> emission.w;
+
 		float expF = 0;
 		stream >> expF;
 
@@ -123,7 +126,7 @@ bool ResourceManager::loadMaterial(const std::string& materialName, const std::s
 		stream.close();
 
 		// Crear el material y añadirlo al diccionario
-		materials[id] = new Material(ambient, diffuse, specular, expF);
+		materials[id] = new Material(ambient, diffuse, specular, emission, expF);
 		return true;
 	}
 

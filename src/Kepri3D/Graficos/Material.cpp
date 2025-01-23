@@ -9,16 +9,18 @@ Material::Material()
 	m_ambient = { 0.2, 0.2, 0.2, 1.0 };
 	m_diffuse = { 0.8, 0.8, 0.8, 1.0 };
 	m_specular = { 0.0, 0.0, 0.0, 1.0 };
+	m_emission = { 0.0, 0.0, 0.0, 1.0 };
 	m_brillo = 50;
 	m_face = GL_FRONT;
 	m_translucent = false;
 }
 
-Material::Material(glm::fvec4 ambient, glm::fvec4 diffuse, glm::fvec4 specular, GLfloat brillo)
+Material::Material(glm::fvec4 ambient, glm::fvec4 diffuse, glm::fvec4 specular, glm::fvec4 emission, GLfloat brillo)
 {
 	m_ambient = ambient;
 	m_diffuse = diffuse;
 	m_specular = specular;
+	m_emission = emission;
 
 	m_brillo = brillo;
 	m_face = GL_FRONT;
@@ -36,6 +38,8 @@ void Material::load()
 	glMaterialfv(m_face, GL_SPECULAR, value_ptr(m_specular));
 
 	glMaterialf(m_face, GL_SHININESS, m_brillo);
+
+	glMaterialfv(m_face, GL_EMISSION, value_ptr(m_emission));
 
 	// Esto hay que hacerlo aunque ya se establezca al inicio del programa
 	glShadeModel(m_shading);

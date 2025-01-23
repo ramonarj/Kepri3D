@@ -9,7 +9,8 @@ class Material
 public: 
 	/* Constructora por defecto */
 	Material();
-	Material(glm::fvec4 ambient, glm::fvec4 diffuse, glm::fvec4 specular, GLfloat brillo = 0);
+	Material(glm::fvec4 ambient, glm::fvec4 diffuse, glm::fvec4 specular,
+		glm::fvec4 emission = { 0, 0, 0, 1 }, GLfloat brillo = 0);
 
 	/* Carga el material */
 	virtual void load();
@@ -37,6 +38,9 @@ private:
 
 	/* Exponente especular { 0 - 128 } */
 	GLfloat m_brillo;
+
+	/* Para materiales que 'emiten' luz (o más bien, que se ven cuando no hay luz) */
+	glm::fvec4 m_emission;
 
 	/* Cara en la que se usará el material */
 	GLuint m_face;
