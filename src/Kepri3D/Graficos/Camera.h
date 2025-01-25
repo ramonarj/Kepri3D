@@ -6,7 +6,6 @@
 #include <gtc/type_ptr.hpp>
 #include <iostream>
 
-#include "Utils.h"
 #include "Entity.h"
 
 //-------------------------------------------------------------------------

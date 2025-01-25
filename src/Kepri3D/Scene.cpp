@@ -1,5 +1,6 @@
 #include "Scene.h"
 
+#include "Utils.h"
 #include "Mesh.h"
 #include "Texture.h"
 #include "Entity.h"
@@ -17,8 +18,7 @@
 bool Scene::skyboxActive = true;
 bool Scene::mipmapsActive = false;
 Shader* Scene::normalsShader = nullptr;
-Shader* Scene::compositeShader = nullptr;
-Shader* Scene::defaultComposite = nullptr;
+std::vector<Shader*> Scene::m_composites;
 
 Scene::Scene() : m_camera(nullptr), m_canvas(nullptr), m_skybox(nullptr)
 {
@@ -58,9 +58,6 @@ void Scene::render()
 
 	// 5) Pintar el canvas
 	renderCanvas();
-
-	// Volver a activar el buffer normal
-	frameBuf->unbind();
 
 	// 6) Post-procesar la imagen del color buffer
 	renderEffects();
@@ -168,14 +165,27 @@ void Scene::renderEffects()
 {
 	glDepthFunc(GL_ALWAYS);
 
-	// Activamos el FS de postprocesado, pasándole la textura que contiene la información de la escena
-	if (compositeShader != nullptr)
-		compositeShader->use();
-	else
-		defaultComposite->use();
-	frameBuf->bindTexture();
-	m_effectsMesh->draw();
+	Framebuffer* fbo1 = frameBuf;
+	Framebuffer* fbo2 = frameBuf2;
+	// Aplicamos solo los efectos que estén activos, haciendo "ping-pong" entre los 2 FBOs que tenemos
+	// NOTA: siempre habrá al menos 1 composite (el default, que no hace nada). Si solo está este, no usamos el frameBuf2
+	for(int i = 0; i < m_composites.size(); i++)
+	{
+		// Activar un buffer
+		if (i < (m_composites.size() - 1))
+			fbo2->bind();
+		// (si es el último composite, pintamos al FrameBuffer predet. de OpenGL, no a los nuestros)
+		else
+			Framebuffer::unbind();
 
+		// Usar el siguiente FX para pintar la textura (del otro buffer) sobre el rectángulo que ocupa la pantalla
+		m_composites.at(i)->use();
+		fbo1->bindTexture();
+		m_effectsMesh->draw();
+
+		// Intercambio de punteros
+		std::swap(fbo1, fbo2);
+	}
 	glDepthFunc(GL_LESS);
 }
 
@@ -249,6 +259,11 @@ void Scene::sendUniforms(Entity* e)
 	sh->setMat4d("mvpMat", m_camera->getProjMat() * m_camera->getViewMat() * e->getModelMat());
 }
 
+void Scene::AddComposite(Shader* sh, bool active)
+{
+	m_composites.push_back(sh);
+}
+
 void Scene::takePhoto()
 {
 	// Leemos la información del front buffer (el que está en pantalla), porque 
@@ -296,4 +311,5 @@ Scene::~Scene()
 
 	// FB para el postprocesado
 	delete frameBuf;
+	delete frameBuf2;
 }

@@ -2,6 +2,8 @@
 
 #include <glm.hpp>
 #include <gtc/type_ptr.hpp>
+
+#include "Utils.h"
 #include "Entity.h"
 
 void Viewport::setSize(GLsizei width, GLsizei height)

@@ -175,9 +175,16 @@ void PruebaScene::init()
 
 	AddEntity(gm);
 
+
+	/* - - - Efectos de postprocesado (el orden importa) - - - */
+	AddComposite((Shader*)&ResourceManager::Instance()->getComposite("defaultComposite"));
+	AddComposite((Shader*)&ResourceManager::Instance()->getComposite("byn"));
+	AddComposite((Shader*)&ResourceManager::Instance()->getComposite("waves"));
+	AddComposite((Shader*)&ResourceManager::Instance()->getComposite("interference"));
+
 	// Esto no debería hacerlo la hija
 	frameBuf = new Framebuffer(m_camera->getVP()->getW(), m_camera->getVP()->getH());
-	defaultComposite = (Shader*)&ResourceManager::Instance()->getComposite("defaultComposite");
+	frameBuf2 = new Framebuffer(m_camera->getVP()->getW(), m_camera->getVP()->getH());
 }
 
 void PruebaScene::loadResources()
@@ -236,6 +243,7 @@ void PruebaScene::loadResources()
 	/* Efectos de postprocesado ('composites') */
 	ResourceManager::Instance()->loadComposite("interference.frag", "interference");
 	ResourceManager::Instance()->loadComposite("waves.frag", "waves");
+	ResourceManager::Instance()->loadComposite("byn.frag", "byn");
 }
 
 
@@ -459,11 +467,9 @@ void PruebaScene::normalsButtonPressed()
 
 void PruebaScene::compositeButtonPressed()
 {
-	// Activar / desactivar la visualización de vectores normales a cada vértice
-	if (compositeShader == nullptr)
-		compositeShader = (Shader*)&ResourceManager::Instance()->getComposite("waves");
-	else
-		compositeShader = nullptr;
+	// Quitar todos los efectos de composite menos el predet.
+	while (m_composites.size() > 1)
+		m_composites.pop_back();
 
 	centerMouse();
 }

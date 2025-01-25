@@ -40,6 +40,9 @@ public:
 	/* Añade una luz a la escena */
 	inline void AddLight(Light* l) { m_lights.push_back(l); }
 
+	/* Añade un efecto de postprocesado a la escena */
+	void AddComposite(Shader* sh, bool active = true);
+
 	/* Establece el skybox de la escena */
 	inline void SetSkybox(Skybox* skybox) { m_skybox = skybox; }
 
@@ -71,14 +74,11 @@ protected:
 	/* Canvas de la escena */
 	Canvas* m_canvas;
 
-	/* Efecto de postprocesado que se aplicará a la escena */
-	static Shader* compositeShader;
-	// Shader por defecto para postprocesado (no hace nada)
-	static Shader* defaultComposite;
+	/* Lista de efectos de postprocesado que se aplicarán (en este orden) a la escena */
+	static std::vector<Shader*> m_composites;
 
 	/* Malla para pintar los efectos */
 	Mesh* m_effectsMesh;
-
 
 	// Extra
 	static Shader* normalsShader;
@@ -90,6 +90,7 @@ protected:
 
 	// Framebuffer usado para los efectos
 	Framebuffer* frameBuf;
+	Framebuffer* frameBuf2;
 
 private:
 	// Sub-métodos del render() para que sea más legible
@@ -102,8 +103,6 @@ private:
 
 	/* Manda todos los uniforms necesarios al shader de la entidad dada */
 	void sendUniforms(Entity* e);
-
-
 };
 
 #endif

@@ -14,7 +14,7 @@ out vec4 fragColor;
 // Parámetros de la onda
 // Con valores de 0.01 y 2.0 (respect.), sirve para simular cristal
 const float amplitudOnda = 0.003f;
-const float frecuenciaOnda = 0.1f;
+const float frecuenciaOnda = 0.5f;
 
 void main()
  {

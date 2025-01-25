@@ -12,8 +12,8 @@ public:
 	/* Establece este framebuffer para pintar sobre él */
 	void bind() { glBindFramebuffer(GL_FRAMEBUFFER, id); }
 
-	/* Desactiva el framebuffer, volviendo a dejar el predeterminado */
-	void unbind() { glBindFramebuffer(GL_FRAMEBUFFER, 0); }
+	/* Desactiva el framebuffer que hubiera, volviendo a dejar el predeterminado de OpenGL */
+	static void unbind() { glBindFramebuffer(GL_FRAMEBUFFER, 0); }
 
 	/* Desactiva el framebuffer, volviendo a dejar el predeterminado */
 	void bindTexture() { glBindTexture(GL_TEXTURE_2D, textureId); }
