@@ -381,6 +381,33 @@ void Skybox::render()
 	glDepthMask(GL_TRUE);
 }
 
+// - - - - - - - - - - - - - - - - -
+
+Billboard::Billboard(const std::string& textureID, GLfloat width, GLfloat height)
+{
+	m_mesh = IndexMesh::generateRectangle(width, height);
+	m_name = "Billboard";
+	setTexture(textureID);
+
+	setShader("billboard");
+	// Para que el billboard esté anclado por abajo (valor por defecto)
+	ancla = glm::vec2(0, - height / 2.0f);
+}
+
+void Billboard::render()
+{
+	// Uniforms necesarios
+	m_shader->setVec2("ancla", ancla);
+
+	m_texture->bind();
+
+	// Dibujar la entidad
+	if (m_mesh != nullptr)
+		m_mesh->draw();
+
+	m_texture->unbind();
+}
+
 // - - - - - - - - - - - - - - - - - 
 
 CuboMultitex::CuboMultitex(GLdouble size) : secondTex(nullptr)

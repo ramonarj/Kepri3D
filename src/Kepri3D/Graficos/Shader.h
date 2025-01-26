@@ -29,6 +29,9 @@ public:
 	/* Pasa un uniform de tipo FLOAT al shader */
 	void setFloat(const std::string& name, float value) const;
 
+	/* Pasa un uniform de tipo VEC2 al shader */
+	void setVec2(const std::string& name, const glm::vec2 value) const;
+
 	/* Pasa un uniform de tipo VEC3 al shader */
 	void setVec3(const std::string& name, const glm::vec3 value) const; 
 

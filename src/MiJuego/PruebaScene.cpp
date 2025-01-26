@@ -98,7 +98,7 @@ void PruebaScene::init()
 
 	// Un toro
 	Toro* toro = new Toro(0.75, 0.4, 30, 10);
-	toro->setPosition({ 15,-0.4,6 });
+	toro->setPosition({ 20,-0.4,6 });
 	toro->setMaterial("fluorescente");
 	AddEntity(toro);
 
@@ -119,11 +119,30 @@ void PruebaScene::init()
 
 	// Hierba
 	Hierba* hierba = new Hierba(2.5, 3);
-	hierba->setPosition({ 10, 0.5, 5 });
+	hierba->setPosition({ 15, 0.5, 5 });
 	hierba->rotate(-PI / 2, { 0, 1, 0 }, GLOBAL);
 	hierba->setTexture("hierba");
 	//hierba->setShader("lights");
 	AddEntity(hierba);
+
+
+	// Matojos de hierba (billboards)
+	int numMatojos = 20;
+	glm::vec3 posMatojo = { 6, -6, 44 };
+	float radioMax = 15.0f;
+	for(int i = 0; i < numMatojos; i++)
+	{
+		glm::vec3 incr = { (std::rand() % 100) / (100 / radioMax), 0, (std::rand() % 100) / (100 / radioMax) };
+		Billboard* bill = new Billboard("hierba", 2, 2.5);
+		bill->setPosition(posMatojo + incr);
+		AddEntity(bill);
+	}
+
+	// Árbol (billboard)
+	Billboard* tree = new Billboard("tree", 8, 10);
+	tree->setPosition({ 42.25, -0.3, 28 });
+	tree->setAncla({ 0, -4.25 });
+	AddEntity(tree);
 
 	/* - - Canvas - - */
 	m_canvas = new Canvas();
@@ -208,6 +227,7 @@ void PruebaScene::loadResources()
 	ResourceManager::Instance()->loadTexture("emoji.bmp", "emoji", { 0, 0, 0 });
 	ResourceManager::Instance()->loadTexture("lego.bmp", "lego", 100);
 	ResourceManager::Instance()->loadTexture("grass.bmp", "hierba", { 0,0,0 });
+	ResourceManager::Instance()->loadTexture("tree.png", "tree");
 
 	// Botones
 	for (int i = 0; i < buttonNames.size(); i++)
@@ -239,6 +259,7 @@ void PruebaScene::loadResources()
 	ResourceManager::Instance()->loadShader("default.vert", "", "movimiento.frag", "movimiento");
 	ResourceManager::Instance()->loadShader("default.vert", "", "multitexture.frag", "multitexture");
 	ResourceManager::Instance()->loadShader("lights.vert", "", "specularMap.frag", "specMap");
+
 
 	/* Efectos de postprocesado ('composites') */
 	ResourceManager::Instance()->loadComposite("interference.frag", "interference");
@@ -305,7 +326,7 @@ void PruebaScene::PruebaMateriales()
 	//m_entities.push_back(venus);
 
 	// Rejilla (suelo)
-	Grid* grid = new Grid(80, 160, 0.25, 0.25);
+	Grid* grid = new Grid(100, 200, 0.3, 0.3);
 	grid->setTexture("agua");
 	grid->setMaterial("cromo");
 	grid->setPosition({ 0,-1,0 });
@@ -313,9 +334,9 @@ void PruebaScene::PruebaMateriales()
 	AddEntity(grid);
 
 	// "Cascada"
-	MovingGrid* movGrid = new MovingGrid(80, 80, 0.25, 0.25);
+	MovingGrid* movGrid = new MovingGrid(100, 80, 0.3, 0.3);
 	movGrid->setTexture("agua");
-	movGrid->setPosition({ 20,-11,0 });
+	movGrid->setPosition({ 30,-13,0 });
 	movGrid->rotate(-PI / 2, { 0, 0, 1 }, GLOBAL);
 	movGrid->setShader("movimiento");
 	AddEntity(movGrid);

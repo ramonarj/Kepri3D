@@ -264,6 +264,21 @@ public:
 
 // - - - - - - - - - - - - 
 
+class Billboard : public Entity
+{
+public:
+	Billboard(const std::string& textureID, GLfloat width, GLfloat height);
+	~Billboard() { };
+
+	inline void setAncla(const glm::vec2& ancla) { this->ancla = ancla; }
+
+	void render() override;
+private:
+	glm::vec2 ancla;
+};
+
+// - - - - - - - - - - - - 
+
 class CuboMultitex : public Entity
 {
 public:
@@ -299,5 +314,6 @@ public:
 	void render(glm::dmat4 const& viewMat) override;
 	void update(GLuint timeElapsed) override;
 };
+
 
 #endif
