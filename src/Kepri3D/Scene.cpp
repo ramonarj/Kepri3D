@@ -219,6 +219,7 @@ void Scene::sendUniforms(Entity* e)
 
 	// pasar las propiedades del material al FS
 	sh->setVec3("viewPos", m_camera->getPosition());
+	sh->setVec3("material.ambient", e->getMaterial()->getAmbient());
 	sh->setVec3("material.specular", e->getMaterial()->getSpecular());
 	sh->setFloat("material.brillo", e->getMaterial()->getBrillo());
 

@@ -23,7 +23,9 @@ void main()
 	gl_Position = vec4(projection * view * model * vertex);
 	
 	data_out.TexCoords = uv0;
-	data_out.normals = aNormals;
 	// Posición del fragmento en el espacio global
 	data_out.fragPos = vec3(model * vertex);
+	// Aplicar la rotación del modelo a las normales (copiado de https://learnopengl.com/Lighting/Basic-Lighting)
+	data_out.normals = mat3(transpose(inverse(model))) * aNormals;
+	//data_out.normals = aNormals;
 }

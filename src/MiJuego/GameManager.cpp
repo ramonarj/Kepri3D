@@ -22,6 +22,7 @@ void GameManager::setLights(Light* dirLight, Light* circleLight, Light* spotLigh
 	this->spotLight->setAttenuationFactors(0, 0.07, 0.0002);
 
 	this->circleLight->setAttenuationFactors(1, 0, 0.05);
+	this->circleLight->setActive(true);
 }
 
 void GameManager::update(GLuint deltaTime)

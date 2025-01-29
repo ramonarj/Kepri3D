@@ -538,3 +538,42 @@ void Hierba::update(GLuint timeElapsed)
 	rotate(timeElapsed / 1000.0f * 0.5, { 0, 1, 0 });
 }
 
+// - - - - - - - - - - - - - - - - - 
+
+NormalMapWall::NormalMapWall()
+{
+	m_mesh = IndexMesh::generateGrid(25, 25, 0.6, 0.6);
+	m_name = "Wall";
+
+	setShader("normalMap");
+}
+
+void NormalMapWall::setNormalMap(const std::string& textureID)
+{
+	normalMap = (Texture*)&ResourceManager::Instance()->getTexture(textureID);
+}
+
+
+void NormalMapWall::render()
+{
+	glActiveTexture(GL_TEXTURE0);
+	m_texture->bind();
+	glActiveTexture(GL_TEXTURE1);
+	normalMap->bind();
+
+	// Pasar las texturas al shader
+	m_shader->setInt("textura", 0); //este incluso sobraría, porque se manda automático
+	m_shader->setInt("normalMap", 1);
+
+	// Dibujar la entidad
+	if (m_mesh != nullptr)
+		m_mesh->draw();
+
+	normalMap->unbind();
+	glActiveTexture(GL_TEXTURE0);
+
+	m_texture->unbind();
+}
+
+// - - - - - - - - - - - - - - - - - 
+

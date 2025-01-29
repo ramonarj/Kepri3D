@@ -24,6 +24,9 @@ public:
 	inline bool isTranslucid() const { return m_translucent; }
 
 	/* Devuelve la componente especular del material */
+	inline const glm::vec3& getAmbient() const { return m_ambient; }
+
+	/* Devuelve la componente especular del material */
 	inline const glm::vec3& getSpecular() const { return m_specular; }
 
 	/* Devuelve el brillo especular del material (0 - 128)*/

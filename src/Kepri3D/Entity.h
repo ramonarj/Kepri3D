@@ -315,5 +315,21 @@ public:
 	void update(GLuint timeElapsed) override;
 };
 
+// - - - - - - - - - - - - 
+
+class NormalMapWall : public Entity
+{
+public:
+	NormalMapWall();
+	~NormalMapWall() { };
+
+	void render() override;
+
+	void setNormalMap(const std::string& textureID);
+
+private:
+	Texture* normalMap;
+};
+
 
 #endif

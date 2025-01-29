@@ -4,6 +4,7 @@
 struct Material
 {
 	// Por ahora nos da igual el diffuse del material
+	vec3 ambient;
 	vec3 specular;
 	float brillo;
 };
@@ -92,7 +93,7 @@ vec3 CalcDirLight(Light light)
 	vec3 lightDir = normalize(light.dir);
 	
 	// - - Calcular la componente ambient -- //
-	//vec3 ambient = diff * light.ambient;
+	vec3 ambient = material.ambient * light.ambient;
 
 	// - - Calcular la componente difusa - - //
 	// Producto escalar de la normal con la dirección de la luz
@@ -108,7 +109,7 @@ vec3 CalcDirLight(Light light)
     vec3 specular = material.specular * spec * light.specular;
 	
 	// Devolver la suma de las 3 componentes
-	return (light.ambient + diffuse + specular);
+	return (ambient + diffuse + specular);
 }
 
 /* Calcula la cantidad de luz que recibe el fragmento de una luz direccional */
@@ -130,7 +131,7 @@ vec3 CalcPointLight(Light light)
     float attenuation = 1.0 / (light.constant + light.linear * distance + light.quadratic * (distance * distance));    
 				 
     // Combinar los resultados
-	vec3 ambient = light.ambient;
+	vec3 ambient = light.ambient * material.ambient;
     vec3 diffuse  = light.diffuse  * diff; // * material.diffuse;
     vec3 specular = light.specular * spec * material.specular;
 	ambient  *= attenuation;

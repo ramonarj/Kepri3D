@@ -36,7 +36,7 @@ void PruebaScene::init()
 	Light* dirLight = new Light(DIRECTIONAL_LIGHT);
 	dirLight->setDirection({ -1,0 , 0 });
 	dirLight->setDiffuse({ 1, 1, 1, 1.0 });
-	dirLight->setAmbient({ 0.05, 0.05, 0.1, 0.0 });
+	dirLight->setAmbient({ 0.2, 0.2, 0.2, 0.0 });
 	dirLight->setActive(true);
 	AddLight(dirLight);
 
@@ -197,9 +197,9 @@ void PruebaScene::init()
 
 	/* - - - Efectos de postprocesado (el orden importa) - - - */
 	AddComposite((Shader*)&ResourceManager::Instance()->getComposite("defaultComposite"));
-	AddComposite((Shader*)&ResourceManager::Instance()->getComposite("byn"));
-	AddComposite((Shader*)&ResourceManager::Instance()->getComposite("waves"));
-	AddComposite((Shader*)&ResourceManager::Instance()->getComposite("interference"));
+	//AddComposite((Shader*)&ResourceManager::Instance()->getComposite("byn"));
+	//AddComposite((Shader*)&ResourceManager::Instance()->getComposite("waves"));
+	//AddComposite((Shader*)&ResourceManager::Instance()->getComposite("interference"));
 
 	// Esto no debería hacerlo la hija
 	frameBuf = new Framebuffer(m_camera->getVP()->getW(), m_camera->getVP()->getH());
@@ -228,6 +228,8 @@ void PruebaScene::loadResources()
 	ResourceManager::Instance()->loadTexture("lego.bmp", "lego", 100);
 	ResourceManager::Instance()->loadTexture("grass.bmp", "hierba", { 0,0,0 });
 	ResourceManager::Instance()->loadTexture("tree.png", "tree");
+	ResourceManager::Instance()->loadTexture("brickwall.jpg", "wall");
+	ResourceManager::Instance()->loadTexture("brickwall_normal.png", "wall_normal");
 
 	// Botones
 	for (int i = 0; i < buttonNames.size(); i++)
@@ -259,6 +261,7 @@ void PruebaScene::loadResources()
 	ResourceManager::Instance()->loadShader("default.vert", "", "movimiento.frag", "movimiento");
 	ResourceManager::Instance()->loadShader("default.vert", "", "multitexture.frag", "multitexture");
 	ResourceManager::Instance()->loadShader("lights.vert", "", "specularMap.frag", "specMap");
+	ResourceManager::Instance()->loadShader("lights.vert", "", "normalMap.frag", "normalMap");
 
 
 	/* Efectos de postprocesado ('composites') */
@@ -328,7 +331,7 @@ void PruebaScene::PruebaMateriales()
 	// Rejilla (suelo)
 	Grid* grid = new Grid(100, 200, 0.3, 0.3);
 	grid->setTexture("agua");
-	grid->setMaterial("cromo");
+	//grid->setMaterial("cromo");
 	grid->setPosition({ 0,-1,0 });
 	//grid->setShader("lights");
 	AddEntity(grid);
@@ -356,13 +359,35 @@ void PruebaScene::PruebaMateriales()
 	AddEntity(terrain);
 
 	// Minimap
-	Terrain* miniTer = new Terrain();
-	miniTer->loadHeightMap("../../bin/assets/icelandHeight.bmp", 0.01);
-	miniTer->setTexture("iceland");
-	miniTer->scale({ 1,1.5,1 });
-	miniTer->setPosition({ -6,-0.99,6 });
-	miniTer->rotate(PI / 2, { 0,1,0 }, GLOBAL);
-	AddEntity(miniTer);
+	//Terrain* miniTer = new Terrain();
+	//miniTer->loadHeightMap("../../bin/assets/icelandHeight.bmp", 0.01);
+	//miniTer->setTexture("iceland");
+	//miniTer->scale({ 1,1.5,1 });
+	//miniTer->setPosition({ -6,-0.99,6 });
+	//miniTer->rotate(PI / 2, { 0,1,0 }, GLOBAL);
+	//AddEntity(miniTer);
+
+	// Pared de ladrillos (normal maps)
+	NormalMapWall* pared = new NormalMapWall();
+	pared->setTexture("wall");
+	pared->setNormalMap("wall_normal");
+	//grid->setMaterial("cromo");
+	pared->setPosition({ 0,6.5,-15 });
+	pared->rotate(PI / 2, { 1,0,0 });
+	
+	AddEntity(pared);
+
+	// Pared sin normal map para comparar
+	Grid* pared2 = new Grid(25, 25, 0.6, 0.6);
+	pared2->setTexture("wall");
+	pared2->setShader("lights");
+	//grid->setMaterial("cromo");
+	pared2->setPosition({ 0,6.5,-30 });
+	pared2->rotate(PI / 2, { 1,0,0 });
+	AddEntity(pared2);
+
+	//pared->rotate(PI / 2, { 0,1,0 });
+	//pared2->rotate(PI / 2, { 0,1,0 });
 }
 
 void PruebaScene::ViewportTest()
