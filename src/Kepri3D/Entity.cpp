@@ -315,18 +315,43 @@ MovingGrid::MovingGrid(GLuint filas, GLuint columnas, GLdouble tamFila, GLdouble
 	Grid(filas, columnas, tamFila, tamColumna)
 {
 	m_name = "MovingGrid";
+
+	setShader("movimiento");
+
+	velDisp = { -1, -1 };
+	velTex = { 2, 0 };
 }
 
+void MovingGrid::setDisplacementMap(const std::string& textureID)
+{
+	m_dispMap = (Texture*)&ResourceManager::Instance()->getTexture(textureID);
+}
 
 void MovingGrid::render()
 {
+	// Mandar las texturas al shader
+	glActiveTexture(GL_TEXTURE0);
+	m_texture->bind();
+	glActiveTexture(GL_TEXTURE1);
+	m_dispMap->bind();
+
+	m_shader->setInt("textura", 0); //este incluso sobraría, porque se manda automático
+	m_shader->setInt("dispMap", 1);
+
 	// Pasarle el tiempo al fragment shader
-	if (m_shader != nullptr)
-	{
-		float t = glutGet(GLUT_ELAPSED_TIME);
-		m_shader->setFloat("tiempo", t / 10000.0f);
-	}
-	Entity::render();
+	float t = glutGet(GLUT_ELAPSED_TIME);
+	m_shader->setFloat("tiempo", t / 10000.0f);
+	m_shader->setVec2("velTex", velTex);
+	m_shader->setVec2("velDisp", velDisp);
+
+	// Dibujar la entidad
+	if (m_mesh != nullptr)
+		m_mesh->draw();
+
+	m_dispMap->unbind();
+	glActiveTexture(GL_TEXTURE0);
+
+	m_texture->unbind();
 }
 
 // - - - - - - - - - - - - - - - - - 

@@ -223,13 +223,15 @@ void PruebaScene::loadResources()
 	ResourceManager::Instance()->loadTexture("cajaPrueba.png", "cajaPrueba");
 	ResourceManager::Instance()->loadTexture("caja_specular.bmp", "caja_spec");
 	ResourceManager::Instance()->loadTexture("cobre.bmp", "cobre");
-	ResourceManager::Instance()->loadTexture("agua.bmp", "agua");
+	ResourceManager::Instance()->loadTexture("agua.jpg", "agua");
+	ResourceManager::Instance()->loadTexture("agua_disp.jpg", "agua_disp");
 	ResourceManager::Instance()->loadTexture("emoji.bmp", "emoji", { 0, 0, 0 });
 	ResourceManager::Instance()->loadTexture("lego.bmp", "lego", 100);
 	ResourceManager::Instance()->loadTexture("grass.bmp", "hierba", { 0,0,0 });
 	ResourceManager::Instance()->loadTexture("tree.png", "tree");
 	ResourceManager::Instance()->loadTexture("brickwall.jpg", "wall");
 	ResourceManager::Instance()->loadTexture("brickwall_normal.png", "wall_normal");
+	ResourceManager::Instance()->loadTexture("rio.jpg", "rio");
 
 	// Botones
 	for (int i = 0; i < buttonNames.size(); i++)
@@ -329,20 +331,22 @@ void PruebaScene::PruebaMateriales()
 	//m_entities.push_back(venus);
 
 	// Rejilla (suelo)
-	Grid* grid = new Grid(100, 200, 0.3, 0.3);
+	MovingGrid* grid = new MovingGrid(100, 200, 0.3, 0.3);
 	grid->setTexture("agua");
+	grid->setDisplacementMap("agua_disp");
+	grid->setSpeeds({ 2.0, 0.0 }, { -2, 0 });
 	//grid->setMaterial("cromo");
 	grid->setPosition({ 0,-1,0 });
-	//grid->setShader("lights");
 	AddEntity(grid);
 
 	// "Cascada"
-	MovingGrid* movGrid = new MovingGrid(100, 80, 0.3, 0.3);
-	movGrid->setTexture("agua");
-	movGrid->setPosition({ 30,-13,0 });
-	movGrid->rotate(-PI / 2, { 0, 0, 1 }, GLOBAL);
-	movGrid->setShader("movimiento");
-	AddEntity(movGrid);
+	MovingGrid* cascada = new MovingGrid(100, 80, 0.3, 0.3);
+	cascada->setTexture("agua");
+	cascada->setDisplacementMap("agua_disp");
+	cascada->setSpeeds({ 5.0, 0.0 }, { 10.0, 0.0 });
+	cascada->setPosition({ 30,-13,0 });
+	cascada->rotate(-PI / 2, { 0, 0, 1 }, GLOBAL);
+	AddEntity(cascada);
 
 	// Terreno antiguo
 	Terrain* oldTer = new Terrain();

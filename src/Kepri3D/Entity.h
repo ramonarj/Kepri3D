@@ -229,8 +229,15 @@ public:
 	MovingGrid(GLuint filas, GLuint columnas, GLdouble tamFila, GLdouble tamColumna);
 	~MovingGrid() { };
 	void render() override;
+
+	void setSpeeds(glm::vec2 texSpeed, glm::vec2 dispSpeed) { velTex = texSpeed; velDisp = dispSpeed; }
+	void setDisplacementMap(const std::string& textureID);
 private:
-	int timeLoc;
+	Texture* m_dispMap;
+
+	glm::vec2 velTex;
+	// Útil para simular la dirección y fuerza del viento en la superficie del agua
+	glm::vec2 velDisp;
 };
 
 // - - - - - - - - - - - - 
