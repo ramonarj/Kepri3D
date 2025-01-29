@@ -34,7 +34,7 @@ void PruebaScene::init()
 	// LUCES
 	// Direccional
 	Light* dirLight = new Light(DIRECTIONAL_LIGHT);
-	dirLight->setDirection({ -1,0 , 0 });
+	dirLight->setDirection({ 1,0 , 0 });
 	dirLight->setDiffuse({ 1, 1, 1, 1.0 });
 	dirLight->setAmbient({ 0.2, 0.2, 0.2, 0.0 });
 	dirLight->setActive(true);
@@ -50,7 +50,7 @@ void PruebaScene::init()
 	// Foco (linterna)
 	Light* spotLight = new Light(SPOT_LIGHT, { 0.6, 0.6, 0.6, 1 });
 	spotLight->setPosition({ -2.5,0.5,-2.5 });
-	//spotLight->setSpecular({ 1, 0, 0, 1.0 });
+	spotLight->setSpecular({ 1, 0, 0, 1.0 });
 	spotLight->setActive(true);
 	AddLight(spotLight);
 
@@ -371,18 +371,15 @@ void PruebaScene::PruebaMateriales()
 	NormalMapWall* pared = new NormalMapWall();
 	pared->setTexture("wall");
 	pared->setNormalMap("wall_normal");
-	//grid->setMaterial("cromo");
-	pared->setPosition({ 0,6.5,-15 });
+	pared->setPosition({ -5,6.5,-15 });
 	pared->rotate(PI / 2, { 1,0,0 });
-	
 	AddEntity(pared);
 
 	// Pared sin normal map para comparar
 	Grid* pared2 = new Grid(25, 25, 0.6, 0.6);
 	pared2->setTexture("wall");
 	pared2->setShader("lights");
-	//grid->setMaterial("cromo");
-	pared2->setPosition({ 0,6.5,-30 });
+	pared2->setPosition({ 10,6.5,-15 });
 	pared2->rotate(PI / 2, { 1,0,0 });
 	AddEntity(pared2);
 

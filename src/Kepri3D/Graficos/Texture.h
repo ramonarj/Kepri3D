@@ -8,7 +8,7 @@
 
 // GL_RGBA -> sin correción gamma
 // GL_SRGB_ALPHA -> con corrección gamma
-const GLint COLOR_SPACE = GL_SRGB_ALPHA;
+const GLint COLOR_SPACE = GL_RGBA;
 
 class Texture
 {

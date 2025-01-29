@@ -63,6 +63,7 @@ void main()
 	fragNormal = texture(normalMap, data_in.TexCoords).rgb;
 	// Pasar del valor RGB a la normal
 	fragNormal = normalize(fragNormal * 2.0 - 1.0);
+	
 	// Cogemos el color de la textura correspondiente al fragmento actual
 	vec4 texColor = texture(textura, data_in.TexCoords);
 
