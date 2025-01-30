@@ -15,7 +15,7 @@ Light::Light(LightType type, glm::fvec4 diffuse) : id(GL_MAX_LIGHTS), m_active(t
 
 	// Valor por defecto para focos (hacia abajo)
 	this->spotDir = { 0,-1,0 };
-	this->spotAngle = 180.0f;
+	this->spotCutoff = 180.0f;
 	this->spotExp = 0.0f;
 
 	// Asegurarnos de que cabe otra luz más
@@ -56,8 +56,8 @@ void Light::load(glm::dmat4 viewMat)
 	if (type == SPOT_LIGHT)
 	{
 		// Valores por defecto: 180º, 0 y (0,0,-1)
-		glLightf(id, GL_SPOT_CUTOFF, spotAngle);
-		glLightf(id, GL_SPOT_EXPONENT, spotExp); // entre 0 - 128
+		glLightf(id, GL_SPOT_CUTOFF, spotCutoff);
+		glLightf(id, GL_SPOT_EXPONENT, spotExp); // entre 0 - 128 (0 = duro)
 		glLightfv(id, GL_SPOT_DIRECTION, value_ptr(spotDir));
 	}
 
@@ -104,9 +104,9 @@ void Light::setSpotlightDir(glm::fvec3 dir)
 	spotDir = dir;
 }
 
-void Light::setSpotlightAngle(GLfloat angle)
+void Light::setSpotlightCutoff(GLfloat angle)
 {
-	spotAngle = angle / 2.0f;
+	spotCutoff = angle / 2.0f;
 }
 
 void Light::setSpotlightHardness(GLfloat hardness)

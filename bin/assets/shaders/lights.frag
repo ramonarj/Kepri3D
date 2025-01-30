@@ -19,10 +19,15 @@ struct Light // (direccional)
 	vec3 diffuse;
 	vec3 specular;
 	
-	// Para luces puntuales
+	// Para luces no direccionales
 	float constant;
 	float linear;
-	float quadratic; 
+	float quadratic;
+
+	// Para focos
+	vec3 spotDir;
+	float spotCutoff;
+	float spotExp;
 };
 
 // - - - - - - - - - - - - - - - - - -  - - - - - - - - - - - - - - - //
@@ -53,6 +58,9 @@ uniform vec3 viewPos;
 // Prototipos para las funciones
 vec3 CalcDirLight(Light light);
 vec3 CalcPointLight(Light light);
+vec3 CalcSpotlight(Light light);
+
+const float PI = 3.141593;
 
 void main()
 {
@@ -76,7 +84,7 @@ void main()
 		// c) Focos
 		else if(luces[i].type == 2)
 		{
-			luzTotal += CalcPointLight(luces[i]);
+			luzTotal += CalcSpotlight(luces[i]);
 		}
 	}
 	
@@ -134,6 +142,50 @@ vec3 CalcPointLight(Light light)
 	vec3 ambient = light.ambient * material.ambient;
     vec3 diffuse  = light.diffuse  * diff; // * material.diffuse;
     vec3 specular = light.specular * spec * material.specular;
+	ambient  *= attenuation;
+    diffuse  *= attenuation;
+    specular *= attenuation;
+	
+    return (ambient + diffuse + specular);
+}
+
+/* Calcula la cantidad de luz que recibe el fragmento de una luz direccional */
+vec3 CalcSpotlight(Light light)
+{
+	// Obtener la dirección normalizada de cada luz
+    vec3 lightDir = normalize(light.dir - data_in.fragPos);
+	
+    // - - Calcular la componente difusa - - //
+	// Ángulo que forma la dirección del foco con el fragmento actual
+	float diff = 1.0f;
+	float cutoffRad = light.spotCutoff * PI / 180.0;
+	float angle = acos(dot(-lightDir, light.spotDir));
+	// Cortar en el límite
+	if(angle > cutoffRad)
+		diff = 0;
+	// Aplicar la difuminación del foco
+	else
+	{
+		//diff = pow(cos(angle), light.spotExp);
+		diff = 1.0 - angle / cutoffRad;
+	}
+		
+	// Tener en cuenta también las normales	
+	diff *= max(dot(data_in.normals, -light.spotDir), 0.0);
+	
+    // - - Calcular la componente especular - - //
+	vec3 viewDir = normalize(viewPos - data_in.fragPos);
+    vec3 reflectDir = reflect(light.spotDir, data_in.normals);
+    float spec = pow(max(dot(viewDir, reflectDir), 0.0), material.brillo);
+	
+    // - - Atenuación por la distancia - - //
+    float distance = length(light.dir - data_in.fragPos);
+    float attenuation = 1.0 / (light.constant + light.linear * distance + light.quadratic * (distance * distance));    
+				 
+    // Combinar los resultados
+	vec3 ambient = light.ambient * material.ambient;
+    vec3 diffuse  = light.diffuse  * diff; // * material.diffuse;
+    vec3 specular = light.specular * spec * diff * material.specular;
 	ambient  *= attenuation;
     diffuse  *= attenuation;
     specular *= attenuation;

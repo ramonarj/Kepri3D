@@ -73,10 +73,16 @@ public:
 	void setSpotlightDir(glm::fvec3 dir);
 
 	/* Establece el ángulo de apertura del foco */
-	void setSpotlightAngle(GLfloat angle);
+	void setSpotlightCutoff(GLfloat angle);
 
 	/* Establece la 'dureza' del foco (0 - 128). Cuanto mayor sea, menos diferencia de luz entre el centro y los bordes */
 	void setSpotlightHardness(GLfloat angle);
+	
+	// Getters
+	inline glm::vec3 getSpotDirection() const { return spotDir; }
+	inline float getSpotCutoff() const { return spotCutoff; }
+	inline float getSpotExponent() const { return spotExp; }
+
 
 protected:
 	/* Número de luces totales en la escena */
@@ -113,7 +119,7 @@ protected:
 	glm::fvec3 spotDir;
 
 	/* Ángulo del foco */
-	GLfloat spotAngle;
+	GLfloat spotCutoff;
 
 	/* Intensidad en la distribución de luz del foco */
 	GLfloat spotExp;

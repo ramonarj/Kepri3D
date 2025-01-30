@@ -44,14 +44,12 @@ void PruebaScene::init()
 	Light* circleLight = new Light(POINT_LIGHT, { 1, 1, 0, 1 });
 	circleLight->setPosition({ 3,3,-3 });
 	circleLight->setAmbient({ 0.05, 0.2, 0.02, 1.0 });
-	circleLight->setSpecular({ 0, 0, 1, 1.0 });
+	circleLight->setSpecular({ 1, 1, 0, 1.0 });
 	AddLight(circleLight);
 
 	// Foco (linterna)
-	Light* spotLight = new Light(SPOT_LIGHT, { 0.6, 0.6, 0.6, 1 });
-	spotLight->setPosition({ -2.5,0.5,-2.5 });
-	spotLight->setSpecular({ 1, 0, 0, 1.0 });
-	spotLight->setActive(true);
+	Light* spotLight = new Light(SPOT_LIGHT, { 0.7, 0.7, 0.7, 1 });
+	spotLight->setSpecular({ 1, 1, 1, 1.0 });
 	AddLight(spotLight);
 
 
@@ -277,7 +275,7 @@ void PruebaScene::PruebaMateriales()
 {
 	// Cubo con la misma textura en todas las caras
 	Cubo* c = new Cubo(2, true);
-	c->setTexture("cajaPrueba");
+	c->setTexture("caja");
 	c->setPosition({ -10,0,0 });
 	c->setShader("lights");
 	AddEntity(c);

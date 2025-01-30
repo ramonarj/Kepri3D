@@ -15,13 +15,13 @@ void GameManager::setLights(Light* dirLight, Light* circleLight, Light* spotLigh
 
 	
 	//this->dirLight->setActive(false);
+	this->spotLight->setPosition(cam->getPosition());
+	this->spotLight->setSpotlightDir(-cam->forward());
+	this->spotLight->setSpotlightCutoff(75.0f);
+	this->spotLight->setSpotlightHardness(100);
+	this->spotLight->setAttenuationFactors(0, 0.04, 0.0002);
 
-	this->spotLight->setSpotlightDir({ 0, -1, 0 });
-	this->spotLight->setSpotlightAngle(60.0f);
-	this->spotLight->setSpotlightHardness(90);
-	this->spotLight->setAttenuationFactors(0, 0.07, 0.0002);
-
-	this->circleLight->setAttenuationFactors(1, 0, 0.05);
+	this->circleLight->setAttenuationFactors(0.5, 0, 0.01);
 	this->circleLight->setActive(true);
 }
 

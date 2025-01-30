@@ -245,6 +245,13 @@ void Scene::sendUniforms(Entity* e)
 				sh->setFloat(str + ".constant", l->getAttenuation(0));
 				sh->setFloat(str + ".linear", l->getAttenuation(1));
 				sh->setFloat(str + ".quadratic", l->getAttenuation(2));
+				// Para focos necesitamos parámetros extra
+				if(l->getType() == SPOT_LIGHT)
+				{
+					sh->setVec3(str + ".spotDir", l->getSpotDirection());
+					sh->setFloat(str + ".spotCutoff", l->getSpotCutoff());
+					sh->setFloat(str + ".spotExp", l->getSpotExponent());
+				}
 			}
 		}
 		else // 
