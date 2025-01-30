@@ -23,8 +23,11 @@ public:
 	/* Indica si el material es translúcido o no */
 	inline bool isTranslucid() const { return m_translucent; }
 
-	/* Devuelve la componente especular del material */
+	/* Devuelve la componente ambiente del material */
 	inline const glm::vec3& getAmbient() const { return m_ambient; }
+
+	/* Devuelve la componente difusa del material */
+	inline const glm::vec3& getDiffuse() const { return m_diffuse; }
 
 	/* Devuelve la componente especular del material */
 	inline const glm::vec3& getSpecular() const { return m_specular; }

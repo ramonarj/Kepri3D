@@ -55,6 +55,9 @@ public:
 	/* Hace una foto */
 	void takePhoto();
 
+	/* Cambia entre el modelo Phong y el Blinn-Phong */
+	inline void switchBlinnPhong() { blinn = !blinn; }
+
 protected:
 	/* Nombre de la escena */
 	std::string m_name;
@@ -103,6 +106,9 @@ private:
 
 	/* Manda todos los uniforms necesarios al shader de la entidad dada */
 	void sendUniforms(Entity* e);
+
+	// Modelo de iluminación. 0 = Phong, 1 = Blinn-phong
+	bool blinn = false;
 };
 
 #endif

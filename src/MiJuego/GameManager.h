@@ -13,9 +13,9 @@ class GameManager : public Component
 public:
 	GameManager(Scene* scene, Camera* cam, UIElement* botonesMenu, Entity* particleSystem) :
 		dirLight(nullptr), circleLight(nullptr), spotLight(nullptr)
-	{ 
+	{
 		this->scene = scene;
-		this->cam = cam; 
+		this->cam = cam;
 		this->botonesMenu = botonesMenu;
 		this->pSystem = particleSystem;
 
@@ -23,14 +23,14 @@ public:
 	}
 	~GameManager(){}
 
-	void setLights(Light* dirLight, Light* circleLight, Light* spotLight);
+	void setLights(Light* dirLight, Light* circleLight, Light* spotLight, Light* luzBlinn);
 
 	void update(GLuint deltaTime) override;
 private:
 	// Referencias a los GameObjects
 	Camera* cam;
 	Scene* scene;
-	Light* dirLight, *circleLight, *spotLight;
+	Light* dirLight, *circleLight, *spotLight, *luzBlinn;
 	Entity* pSystem;
 	UIElement* botonesMenu;
 

@@ -220,8 +220,11 @@ void Scene::sendUniforms(Entity* e)
 	// pasar las propiedades del material al FS
 	sh->setVec3("viewPos", m_camera->getPosition());
 	sh->setVec3("material.ambient", e->getMaterial()->getAmbient());
+	sh->setVec3("material.diffuse", e->getMaterial()->getDiffuse());
 	sh->setVec3("material.specular", e->getMaterial()->getSpecular());
 	sh->setFloat("material.brillo", e->getMaterial()->getBrillo());
+
+	sh->setInt("blinn", blinn);
 
 	// por cada luz activa, pasamos sus propiedades al fragment shader
 	for (int i = 0; i < m_lights.size(); i++)

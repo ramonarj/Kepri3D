@@ -52,6 +52,12 @@ void PruebaScene::init()
 	spotLight->setSpecular({ 1, 1, 1, 1.0 });
 	AddLight(spotLight);
 
+	// Nueva luz para el Blinn
+	Light* luzBlinn = new Light(POINT_LIGHT, { 0.4, 0.4, 0.3, 1 });
+	luzBlinn->setPosition({ 60, 4, 0 });
+	luzBlinn->setAttenuationFactors(0.3, 0.03, 0.002);
+	AddLight(luzBlinn);
+
 
 	// ENTIDADES
 	// Ejes RGB
@@ -184,7 +190,7 @@ void PruebaScene::init()
 	Entity* gm = new Entity();
 	// Componente GM
 	GameManager* gmComponent = new GameManager(this, m_camera, botonesMenu, particleSys);
-	gmComponent->setLights(dirLight, circleLight, spotLight);
+	gmComponent->setLights(dirLight, circleLight, spotLight, luzBlinn);
 	gm->addComponent(gmComponent);
 	// Componente CameraController
 	CameraController* camComp = new CameraController(m_camera);
@@ -229,7 +235,6 @@ void PruebaScene::loadResources()
 	ResourceManager::Instance()->loadTexture("tree.png", "tree");
 	ResourceManager::Instance()->loadTexture("brickwall.jpg", "wall");
 	ResourceManager::Instance()->loadTexture("brickwall_normal.png", "wall_normal");
-	ResourceManager::Instance()->loadTexture("rio.jpg", "rio");
 
 	// Botones
 	for (int i = 0; i < buttonNames.size(); i++)
@@ -249,6 +254,7 @@ void PruebaScene::loadResources()
 	ResourceManager::Instance()->loadMaterial("ruby.material", "ruby");
 	ResourceManager::Instance()->loadMaterial("cristal.material", "cristal");
 	ResourceManager::Instance()->loadMaterial("fluorescente.material", "fluorescente");
+	ResourceManager::Instance()->loadMaterial("blinn.material", "blinn");
 
 	// Prueba excepciones
 	ResourceManager::Instance()->loadTexture("ladrillo.bmp", "ladrillo");
@@ -387,6 +393,15 @@ void PruebaScene::PruebaMateriales()
 
 	//pared->rotate(PI / 2, { 0,1,0 });
 	//pared2->rotate(PI / 2, { 0,1,0 });
+
+
+	// Plano para iluminación Blinn-Phong
+	Grid* plano = new Grid(100, 100, 0.3, 0.3);
+	plano->setTexture("wall");
+	plano->setMaterial("blinn");
+	plano->setShader("lights");
+	plano->setPosition({ 60,0,0 });
+	AddEntity(plano);
 }
 
 void PruebaScene::ViewportTest()

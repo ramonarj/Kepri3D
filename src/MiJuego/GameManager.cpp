@@ -7,22 +7,26 @@
 
 #include <freeglut.h>
 
-void GameManager::setLights(Light* dirLight, Light* circleLight, Light* spotLight)
+void GameManager::setLights(Light* dirLight, Light* circleLight, Light* spotLight, Light* luzBlinn)
 {
 	this->dirLight = dirLight;
 	this->circleLight = circleLight;
 	this->spotLight = spotLight;
+	this->luzBlinn = luzBlinn;
 
 	
-	//this->dirLight->setActive(false);
+	this->dirLight->setActive(false);
+
 	this->spotLight->setPosition(cam->getPosition());
 	this->spotLight->setSpotlightDir(-cam->forward());
-	this->spotLight->setSpotlightCutoff(75.0f);
+	this->spotLight->setSpotlightCutoff(65.0f);
 	this->spotLight->setSpotlightHardness(100);
 	this->spotLight->setAttenuationFactors(0, 0.04, 0.0002);
 
 	this->circleLight->setAttenuationFactors(0.5, 0, 0.01);
 	this->circleLight->setActive(true);
+	// 
+	cam->setPosition({ 60, 8, 8 });
 }
 
 void GameManager::update(GLuint deltaTime)
@@ -90,6 +94,9 @@ void GameManager::update(GLuint deltaTime)
 	// Hacer una foto
 	if (InputManager::Instance()->getKeyDown('f'))
 		scene->takePhoto();
+
+	if(InputManager::Instance()->getKeyDown('i'))
+		scene->switchBlinnPhong();
 }
 
 
@@ -171,7 +178,8 @@ void GameManager::controlTorre(GLuint deltaTime)
 		movTorre.y += 1;
 	}
 
-	// Mover la torre
+	// Mover la luz Blinn
 	movTorre = movTorre * velTorre * (deltaTime / 1000.0);
-	pSystem->translate(movTorre, GLOBAL);
+	//pSystem->translate(movTorre, GLOBAL);
+	luzBlinn->setPosition(luzBlinn->getPosition() + glm::vec3(movTorre));
 }

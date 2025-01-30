@@ -3,8 +3,8 @@
 // Estructuras necesarias
 struct Material
 {
-	// Por ahora nos da igual el diffuse del material
 	vec3 ambient;
+	vec3 diffuse;
 	vec3 specular;
 	float brillo;
 };
@@ -47,6 +47,8 @@ out vec4 FragColor;
 uniform sampler2D textura;
 
 // - - Luces - - //
+// Tipo de iluminación | 0 = Phong, 1 = Bling-Phong
+uniform bool blinn;
 // Permitiremos un máximo de 5 luces por el momento
 const int MAX_LIGHTS = 5;
 uniform Light luces[MAX_LIGHTS];
@@ -106,7 +108,7 @@ vec3 CalcDirLight(Light light)
 	// - - Calcular la componente difusa - - //
 	// Producto escalar de la normal con la dirección de la luz
 	float diff = max(dot(data_in.normals, lightDir), 0.0);
-	vec3 diffuse = diff * light.diffuse;
+	vec3 diffuse = material.diffuse * diff * light.diffuse;
 
 	// - - Calcular la componente especular - - //
 	vec3 viewDir = normalize(viewPos - data_in.fragPos);
@@ -131,8 +133,17 @@ vec3 CalcPointLight(Light light)
 	
     // - - Calcular la componente especular - - //
 	vec3 viewDir = normalize(viewPos - data_in.fragPos);
-    vec3 reflectDir = reflect(-lightDir, data_in.normals);
-    float spec = pow(max(dot(viewDir, reflectDir), 0.0), material.brillo);
+	float spec = 0.0;
+	if(blinn)
+	{
+		vec3 halfwayDir = normalize(lightDir + viewDir);  
+        spec = pow(max(dot(data_in.normals, halfwayDir), 0.0), material.brillo);
+	}
+	else
+	{
+		vec3 reflectDir = reflect(-lightDir, data_in.normals);
+		spec = pow(max(dot(viewDir, reflectDir), 0.0), material.brillo);
+	}
 	
     // - - Atenuación por la distancia - - //
     float distance = length(light.dir - data_in.fragPos);
@@ -140,7 +151,7 @@ vec3 CalcPointLight(Light light)
 				 
     // Combinar los resultados
 	vec3 ambient = light.ambient * material.ambient;
-    vec3 diffuse  = light.diffuse  * diff; // * material.diffuse;
+    vec3 diffuse  = light.diffuse  * diff * material.diffuse;
     vec3 specular = light.specular * spec * material.specular;
 	ambient  *= attenuation;
     diffuse  *= attenuation;
@@ -184,7 +195,7 @@ vec3 CalcSpotlight(Light light)
 				 
     // Combinar los resultados
 	vec3 ambient = light.ambient * material.ambient;
-    vec3 diffuse  = light.diffuse  * diff; // * material.diffuse;
+    vec3 diffuse  = light.diffuse  * diff * material.diffuse;
     vec3 specular = light.specular * spec * diff * material.specular;
 	ambient  *= attenuation;
     diffuse  *= attenuation;
