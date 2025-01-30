@@ -10,7 +10,19 @@
 #include <fstream>
 #include <iostream>
 
+#ifdef _WIN32
+	#include <Windows.h>
+	#include <regex>
+#endif
+
 ResourceManager* ResourceManager::instance = nullptr;
+std::string ResourceManager::ASSETS_PATH;
+
+std::string ResourceManager::TEXTURES_PATH;
+std::string ResourceManager::MESHES_PATH;
+std::string ResourceManager::MATERIALS_PATH;
+std::string ResourceManager::SHADERS_PATH;
+std::string ResourceManager::COMPOSITES_PATH;
 
 bool ResourceManager::loadMesh(const std::string& meshName, const std::string& id)
 {
@@ -267,6 +279,33 @@ void ResourceManager::enableMipmaps(bool b)
 		it->second->useMipmaps(b);
 		it++;
 	}
+}
+
+
+
+void ResourceManager::setAssetsPath()
+{
+#ifdef _WIN32
+	// Ruta absoluta del ejecutable
+	wchar_t buffer[MAX_PATH];
+	GetModuleFileName(NULL, buffer, MAX_PATH);
+	// Convertirlo a string normal
+	std::wstring ws(buffer);
+	std::string str(ws.begin(), ws.end());
+	// Quitarle el nombre del ejecutable
+	unsigned int i = str.length() - 1;
+	while (str[i] != '\\')
+		str.erase(i--);
+
+	// Actualizar las rutas (absolutas)
+	ASSETS_PATH = str + "assets\\";
+
+	TEXTURES_PATH = ASSETS_PATH + "textures\\";
+	MESHES_PATH = ASSETS_PATH + "meshes\\";
+	MATERIALS_PATH = ASSETS_PATH + "materials\\";
+	SHADERS_PATH = ASSETS_PATH + "shaders\\";
+	COMPOSITES_PATH = SHADERS_PATH + "postprocess\\";
+#endif
 }
 
 // - - - - - - - - - - - - 

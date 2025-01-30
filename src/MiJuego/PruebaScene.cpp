@@ -350,14 +350,14 @@ void PruebaScene::PruebaMateriales()
 
 	// Terreno antiguo
 	Terrain* oldTer = new Terrain();
-	oldTer->loadRAW("../../bin/assets/terrain.raw", 0.05);
+	oldTer->loadRAW(ResourceManager::ASSETS_PATH + "terrain.raw", 0.05);
 	oldTer->setTexture("terreno");
 	oldTer->setPosition({ -30,0, 0 });
 	AddEntity(oldTer);
 
 	// Terreno Islandia
 	Terrain* terrain = new Terrain();
-	terrain->loadHeightMap("../../bin/assets/icelandHeight.bmp", 1);
+	terrain->loadHeightMap(ResourceManager::TEXTURES_PATH + "iceland_height.bmp", 1);
 	terrain->setTexture("iceland");
 	terrain->setPosition({ 0,-10,0 });
 	AddEntity(terrain);

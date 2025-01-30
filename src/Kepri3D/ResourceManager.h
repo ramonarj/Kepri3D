@@ -13,21 +13,27 @@ class Material;
 class Shader;
 
 
-const std::string MESHES_PATH = "..\\..\\bin\\assets\\meshes\\";
-const std::string TEXTURES_PATH = "..\\..\\bin\\assets\\textures\\";
-const std::string MATERIALS_PATH = "..\\..\\bin\\assets\\materials\\";
-const std::string SHADERS_PATH = "..\\..\\bin\\assets\\shaders\\";
-const std::string COMPOSITES_PATH = "..\\..\\bin\\assets\\shaders\\postprocess\\";
 
 class ResourceManager
 {
 public:
+	// Rutas de recursos
+	static std::string ASSETS_PATH;
+
+	static std::string TEXTURES_PATH;
+	static std::string MESHES_PATH;
+	static std::string MATERIALS_PATH;
+	static std::string SHADERS_PATH;
+	static std::string COMPOSITES_PATH;
+
 	/* Acceso al TextureManager */
 	static ResourceManager* Instance()
 	{
 		if (instance == nullptr)
 		{
 			instance = new ResourceManager();
+
+			instance->setAssetsPath();
 
 			// Carga de textura y material por defecto
 			instance->loadTexture("default.bmp", "default");
@@ -104,6 +110,9 @@ private:
 
 	/* Diccionario de shaders accesibles por su nombre (string) */
 	std::map<std::string, Shader*> shaders;
+
+	//
+	void setAssetsPath();
 };
 
 #endif
