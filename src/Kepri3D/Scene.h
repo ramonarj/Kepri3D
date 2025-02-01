@@ -55,6 +55,9 @@ public:
 	/* Hace una foto */
 	void takePhoto();
 
+	/* Activa/desactiva un parámetro booleano de OpenGL */
+	static void switchBoolParam(GLenum param);
+
 	/* Cambia entre el modelo Phong y el Blinn-Phong */
 	inline void switchBlinnPhong() { blinn = !blinn; }
 
@@ -87,9 +90,6 @@ protected:
 	static Shader* normalsShader;
 	static bool skyboxActive;
 	static bool mipmapsActive;
-
-	// Métodos auxiliares
-	static void switchBoolParam(GLenum param);
 
 	// Framebuffer usado para los efectos
 	Framebuffer* frameBuf;

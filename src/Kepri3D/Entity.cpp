@@ -565,9 +565,9 @@ void Hierba::update(GLuint timeElapsed)
 
 // - - - - - - - - - - - - - - - - - 
 
-NormalMapWall::NormalMapWall()
+NormalMapWall::NormalMapWall(GLuint filas, GLuint columnas, GLdouble tamFila, GLdouble tamColumna)
 {
-	m_mesh = IndexMesh::generateGrid(25, 25, 0.6, 0.6);
+	m_mesh = IndexMesh::generateGrid(filas, columnas,tamFila, tamColumna);
 	m_name = "Wall";
 
 	setShader("normalMap");
@@ -602,3 +602,30 @@ void NormalMapWall::render()
 
 // - - - - - - - - - - - - - - - - - 
 
+ClippableEntity::ClippableEntity()
+{
+	m_mesh = IndexMesh::generateToro(2.5, 1.25, 20, 6);
+	setShader("clippable");
+
+	// 3 planos de corte de prueba
+	planos.push_back({ 0, -1, 0, 1 }); // -y + 1 = 0
+	planos.push_back({ 1, 0, 0, 0 }); // x = 0
+	planos.push_back({ 0.71, 0.71, 0, -0.71 }); // x + y - 1 = 0 (es equivalente)
+}
+
+void ClippableEntity::render()
+{
+	// Activar y mandar los planos de corte al shader
+	for (int i = 0; i < planos.size(); i++)
+	{
+		glEnable(GL_CLIP_DISTANCE0 + i);
+		m_shader->setVec4("planoCorte[" + std::to_string(i) + "]", planos[i]);
+	}
+
+	Entity::render();
+
+	// Dejarlo todo como estaba
+	// Si no los desactivamos, hay errores con el resto de shaders
+	for (int i = 0; i < planos.size(); i++)
+		glDisable(GL_CLIP_DISTANCE0 + i);
+}

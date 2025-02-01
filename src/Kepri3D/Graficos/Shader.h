@@ -35,6 +35,9 @@ public:
 	/* Pasa un uniform de tipo VEC3 al shader */
 	void setVec3(const std::string& name, const glm::vec3 value) const; 
 
+	/* Pasa un uniform de tipo VEC4 al shader */
+	void setVec4(const std::string& name, const glm::vec4 value) const;
+
 	/* Pasa un uniform de tipo DMAT4 al shader */
 	void setMat4d(const std::string& name, const glm::dmat4 value) const; // TODO
 

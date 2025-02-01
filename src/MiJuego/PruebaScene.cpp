@@ -268,6 +268,7 @@ void PruebaScene::loadResources()
 	ResourceManager::Instance()->loadShader("default.vert", "", "multitexture.frag", "multitexture");
 	ResourceManager::Instance()->loadShader("lights.vert", "", "specularMap.frag", "specMap");
 	ResourceManager::Instance()->loadShader("lights.vert", "", "normalMap.frag", "normalMap");
+	ResourceManager::Instance()->loadShader("clippable.vert", "", "default.frag", "clippable");
 
 
 	/* Efectos de postprocesado ('composites') */
@@ -356,7 +357,7 @@ void PruebaScene::PruebaMateriales()
 	Terrain* oldTer = new Terrain();
 	oldTer->loadRAW(ResourceManager::ASSETS_PATH + "terrain.raw", 0.05);
 	oldTer->setTexture("terreno");
-	oldTer->setPosition({ -30,0, 0 });
+	oldTer->setPosition({ -30,0, -15 });
 	AddEntity(oldTer);
 
 	// Terreno Islandia
@@ -376,7 +377,7 @@ void PruebaScene::PruebaMateriales()
 	//AddEntity(miniTer);
 
 	// Pared de ladrillos (normal maps)
-	NormalMapWall* pared = new NormalMapWall();
+	NormalMapWall* pared = new NormalMapWall(1, 1, 15, 15);
 	pared->setTexture("wall");
 	pared->setNormalMap("wall_normal");
 	pared->setPosition({ -5,6.5,-15 });
@@ -402,6 +403,12 @@ void PruebaScene::PruebaMateriales()
 	plano->setShader("lights");
 	plano->setPosition({ 60,0,0 });
 	AddEntity(plano);
+
+	// Toro para clip planes
+	ClippableEntity* cortado = new ClippableEntity();
+	cortado->setTexture("default");
+	cortado->setPosition({ -25,1,5 });
+	AddEntity(cortado);
 }
 
 void PruebaScene::ViewportTest()

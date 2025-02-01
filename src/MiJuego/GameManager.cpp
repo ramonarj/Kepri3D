@@ -26,7 +26,7 @@ void GameManager::setLights(Light* dirLight, Light* circleLight, Light* spotLigh
 	this->circleLight->setAttenuationFactors(0.5, 0, 0.01);
 	this->circleLight->setActive(true);
 	// 
-	cam->setPosition({ 60, 8, 8 });
+	//cam->setPosition({ 60, 8, 8 });
 }
 
 void GameManager::update(GLuint deltaTime)
@@ -95,6 +95,7 @@ void GameManager::update(GLuint deltaTime)
 	if (InputManager::Instance()->getKeyDown('f'))
 		scene->takePhoto();
 
+	// Cambiar entre el modelo Phong y el Blinn-Phong
 	if(InputManager::Instance()->getKeyDown('i'))
 		scene->switchBlinnPhong();
 }

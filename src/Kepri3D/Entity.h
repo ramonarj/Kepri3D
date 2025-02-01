@@ -327,7 +327,7 @@ public:
 class NormalMapWall : public Entity
 {
 public:
-	NormalMapWall();
+	NormalMapWall(GLuint filas, GLuint columnas, GLdouble tamFila, GLdouble tamColumna);
 	~NormalMapWall() { };
 
 	void render() override;
@@ -336,6 +336,19 @@ public:
 
 private:
 	Texture* normalMap;
+};
+
+// - - - - - - - - - - - - 
+
+class ClippableEntity : public Entity
+{
+public:
+	ClippableEntity();
+	~ClippableEntity() { };
+
+	void render() override;
+private:
+	std::vector<glm::vec4> planos;
 };
 
 

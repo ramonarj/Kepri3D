@@ -632,6 +632,7 @@ IndexMesh* IndexMesh::generateSphere(GLdouble size, GLuint subdivisions, bool te
 
 IndexMesh* IndexMesh::generateToro(GLdouble radExt, GLdouble radInt, GLuint anillos, GLuint lineas)
 {
+	// TODO: poner coordenadas de textura
 	IndexMesh* m = new IndexMesh();
 	m->type = GL_TRIANGLES;
 	GLuint verticesSeccion = (lineas - 2) * 2 + 2;
