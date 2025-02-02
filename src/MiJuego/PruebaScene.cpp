@@ -255,6 +255,7 @@ void PruebaScene::loadResources()
 	ResourceManager::Instance()->loadMaterial("cristal.material", "cristal");
 	ResourceManager::Instance()->loadMaterial("fluorescente.material", "fluorescente");
 	ResourceManager::Instance()->loadMaterial("blinn.material", "blinn");
+	ResourceManager::Instance()->loadMaterial("oceano.material", "oceano");
 
 	// Prueba excepciones
 	ResourceManager::Instance()->loadTexture("ladrillo.bmp", "ladrillo");
@@ -364,8 +365,20 @@ void PruebaScene::PruebaMateriales()
 	Terrain* terrain = new Terrain();
 	terrain->loadHeightMap(ResourceManager::TEXTURES_PATH + "iceland_height.bmp", 1);
 	terrain->setTexture("iceland");
+	//terrain->setShader("lights");
 	terrain->setPosition({ 0,-10,0 });
 	AddEntity(terrain);
+
+
+	// Mar de la isla
+	MovingGrid* mar = new MovingGrid(1, 1, 1087, 723);
+	mar->setTexture("agua");
+	mar->setMaterial("oceano");
+	mar->setDisplacementMap("agua_disp");
+	mar->setSpeeds({ 0.0, 0.0 }, { -0.2, -0.2 });
+	//grid->setMaterial("cromo");
+	mar->setPosition({ 0,-10.01,0 });
+	AddEntity(mar);
 
 	// Minimap
 	//Terrain* miniTer = new Terrain();

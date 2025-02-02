@@ -15,7 +15,7 @@ void GameManager::setLights(Light* dirLight, Light* circleLight, Light* spotLigh
 	this->luzBlinn = luzBlinn;
 
 	
-	this->dirLight->setActive(false);
+	//this->dirLight->setActive(false);
 
 	this->spotLight->setPosition(cam->getPosition());
 	this->spotLight->setSpotlightDir(-cam->forward());

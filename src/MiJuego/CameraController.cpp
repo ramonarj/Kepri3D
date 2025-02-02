@@ -95,10 +95,10 @@ void CameraController::volumenVistaCamara(GLuint deltaTime)
 	// Cambiar la distancia de renderizado (modificando el Far Plane)
 	if (InputManager::Instance()->getKey('1'))
 	{
-		cam->setFarPlane(cam->getFarPlane() - (deltaTime / 1000.0f) * 10.0f);
+		cam->setFarPlane(cam->getFarPlane() - (deltaTime / 1000.0f) * 20.0f);
 	}
 	else if (InputManager::Instance()->getKey('2'))
 	{
-		cam->setFarPlane(cam->getFarPlane() + (deltaTime / 1000.0f) * 10.0f);
+		cam->setFarPlane(cam->getFarPlane() + (deltaTime / 1000.0f) * 20.0f);
 	}
 }

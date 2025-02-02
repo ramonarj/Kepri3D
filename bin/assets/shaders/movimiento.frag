@@ -1,5 +1,14 @@
 #version 330 core
 
+// Estructuras necesarias
+struct Material
+{
+	vec3 ambient;
+	vec3 diffuse;
+	vec3 specular;
+	float brillo;
+};
+
 // Variables que nos llegan desde el shader anterior
 in DATA
 {	
@@ -17,6 +26,7 @@ uniform vec2 velDisp;
 
 // CLK (milisegundos)
 uniform float tiempo;
+uniform Material material;
 
 // Entre 0 y 1 (con 0.1 queda bien)
 const float maxDistorsion = 0.1;
@@ -42,5 +52,5 @@ void main()
 	// b) Desplazamiento extra (dado por dispMap)
 	vec4 color = texture(textura, data_in.TexCoords - desp - tiempo * velTex);
 
-	FragColor = color;
+	FragColor = color * vec4(material.diffuse, 1.0);
 }
