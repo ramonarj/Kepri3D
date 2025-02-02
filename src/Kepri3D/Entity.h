@@ -191,7 +191,7 @@ public:
 class Cubo : public Entity
 {
 public:
-	Cubo(GLdouble size, bool textured, bool equalFaces = true);
+	Cubo(GLdouble size, bool equalFaces = true);
 	~Cubo() { };
 	void update(GLuint timeElapsed) override;
 };

@@ -163,15 +163,31 @@ const Material& ResourceManager::getMaterial(const std::string& id)
 bool ResourceManager::loadShader(const std::string& vertexName, const std::string& geometryName, 
 	const std::string& fragmentName, const std::string& id)
 {
+	return loadShader(vertexName, "", "", geometryName, fragmentName, id);
+}
+
+bool ResourceManager::loadShader(const std::string& vertexName, const std::string& tesControlName, 
+	const std::string& tesEvalName, const std::string& geometryName, const std::string& fragmentName, const std::string& id)
+{
 	try
 	{
 		Shader* sh = new Shader();
 
 		// Leer los shaders de archivo y cargarlos en el shader program
-		if(vertexName != "")
+		if (vertexName != "")
 		{
 			std::string VSprogram = FileToString((SHADERS_PATH + vertexName).c_str());
 			sh->load(GL_VERTEX_SHADER, VSprogram.c_str());
+		}
+		if (tesControlName != "")
+		{
+			std::string TCSprogram = FileToString((SHADERS_PATH + tesControlName).c_str());
+			sh->load(GL_TESS_CONTROL_SHADER, TCSprogram.c_str());
+		}
+		if (tesEvalName != "")
+		{
+			std::string TESprogram = FileToString((SHADERS_PATH + tesEvalName).c_str());
+			sh->load(GL_TESS_EVALUATION_SHADER, TESprogram.c_str());
 		}
 		if (geometryName != "")
 		{
@@ -183,7 +199,7 @@ bool ResourceManager::loadShader(const std::string& vertexName, const std::strin
 			std::string FSprogram = FileToString((SHADERS_PATH + fragmentName).c_str());
 			sh->load(GL_FRAGMENT_SHADER, FSprogram.c_str());
 		}
-		
+
 		// Compilarlo y añadirlo al diccionario
 		sh->link();
 		shaders[id] = sh;

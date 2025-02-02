@@ -273,9 +273,9 @@ Poligono::Poligono(GLint sides, GLdouble size, bool relleno)
 
 // - - - - - - - - - - - - - - - - - 
 
-Cubo::Cubo(GLdouble size, bool textured, bool equalFaces)
+Cubo::Cubo(GLdouble size, bool equalFaces)
 {
-	m_mesh = IndexMesh::generateCube(size, textured, equalFaces);
+	m_mesh = IndexMesh::generateCube(size, equalFaces);
 	m_name = "Cubo";
 }
 
@@ -437,7 +437,7 @@ void Billboard::render()
 
 CuboMultitex::CuboMultitex(GLdouble size) : secondTex(nullptr)
 {
-	m_mesh = IndexMesh::generateCube(size, true, true);
+	m_mesh = IndexMesh::generateCube(size, true);
 	m_name = "CuboMT";
 
 	setShader("multitexture");
@@ -476,7 +476,7 @@ void CuboMultitex::setSecondTex(const std::string& textureID)
 
 CuboSpecmap::CuboSpecmap(GLdouble size) 
 {
-	m_mesh = IndexMesh::generateCube(size, true, true);
+	m_mesh = IndexMesh::generateCube(size, true);
 	m_name = "CuboSpecmap";
 
 	setShader("specMap");

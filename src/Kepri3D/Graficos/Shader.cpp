@@ -15,7 +15,7 @@ Shader::Shader() : programId(0)
 	}
 
 	// Inicializar los IDs a un valor erróneo (0)
-	for (int i = 0; i < 3; i++)
+	for (int i = 0; i < 5; i++)
 		shadersIds[i] = 0;
 }
 
@@ -45,11 +45,17 @@ void Shader::load(GLenum shaderType, const char* shaderSrc)
 	case GL_VERTEX_SHADER:
 		shadersIds[0] = shaderId;
 		break;
-	case GL_GEOMETRY_SHADER:
+	case GL_TESS_CONTROL_SHADER:
 		shadersIds[1] = shaderId;
 		break;
-	case GL_FRAGMENT_SHADER:
+	case GL_TESS_EVALUATION_SHADER:
 		shadersIds[2] = shaderId;
+		break;
+	case GL_GEOMETRY_SHADER:
+		shadersIds[3] = shaderId;
+		break;
+	case GL_FRAGMENT_SHADER:
+		shadersIds[4] = shaderId;
 		break;
 	default:
 		break;
@@ -60,7 +66,7 @@ void Shader::link()
 {
 	// Crear un programa de shaders y asignarle los shaders creados
 	programId = glCreateProgram();
-	for(int i = 0; i < 3; i++)
+	for(int i = 0; i < 5; i++)
 	{
 		if(shadersIds[i] != 0)
 			glAttachShader(programId, shadersIds[i]);
@@ -80,7 +86,7 @@ void Shader::link()
 	}
 
 	// Una vez enlazados, podemos borrar los shaders
-	for (int i = 0; i < 3; i++)
+	for (int i = 0; i < 5; i++)
 	{
 		if (shadersIds[i] != 0)
 			glDeleteShader(shadersIds[i]);

@@ -181,30 +181,23 @@ Mesh* Mesh::generateAxesRGB(GLdouble l)
 	m->type = GL_LINES;
 	m->numVertices = 6;
 
-	// COORDENADAS:
-	// X positiva hacia la derecha
-	// Y positiva hacia arriba
-	// Z positiva hacia el fondo
-
 	/* Array de vértices */
-	m->vertices = new dvec3[m->numVertices];
-	m->vertices[0] = dvec3(0, 0, 0);
-	m->vertices[1] = dvec3(l, 0, 0);
-	m->vertices[2] = dvec3(0, 0, 0);
-	m->vertices[3] = dvec3(0, l, 0);
-	m->vertices[4] = dvec3(0, 0, 0);
-	m->vertices[5] = dvec3(0, 0, l);
+	m->vertices = new dvec3[m->numVertices]
+	{
+		{0, 0, 0}, {l, 0, 0},
+		{0, 0, 0}, {0, l, 0},
+		{0, 0, 0}, {0, 0, l}
+	};
 
 	/* Colores para cada vértice */
-	m->colores = new dvec4[m->numVertices];
-	m->colores[0] = dvec4(1, 0, 0, 1); //rojo
-	m->colores[1] = dvec4(1, 0, 0, 1); 
-	m->colores[2] = dvec4(0, 1, 0, 1); //verde
-	m->colores[3] = dvec4(0, 1, 0, 1);
-	m->colores[4] = dvec4(0, 0, 1, 1); //azul
-	m->colores[5] = dvec4(0, 0, 1, 1);
+	m->colores = new dvec4[m->numVertices]
+	{
+		{1, 0, 0, 1}, {1, 0, 0, 1}, //rojo
+		{0, 1, 0, 1}, {0, 1, 0, 1}, //verde
+		{0, 0, 1, 1}, {0, 0, 1, 1} //azul
+	};
 
-	// devuelve la malla
+	// Devuelve la malla
 	return m;
 }
 
@@ -231,11 +224,8 @@ Mesh* Mesh::generatePolygon(GLint sides, GLdouble size)
 	/* Colores para cada vértice */
 	m->colores = new dvec4[m->numVertices];
 	for (int i = 0; i < m->numVertices; i++)
-	{
-		m->colores[i] = dvec4(0.2, 0.1, 0.2, 1);
-	}
+		m->colores[i] = dvec4(0.8, 0.8, 0.8, 1);
 
-	// devuelve la malla
 	return m;
 }
 
@@ -259,64 +249,13 @@ Mesh* Mesh::generateFilledPolygon(GLint sides, GLdouble size)
 	/* Colores para cada vértice */
 	m->colores = new dvec4[m->numVertices];
 	for (int i = 0; i < m->numVertices; i++)
-	{
 		m->colores[i] = dvec4(0.8, 0.8, 0, 1);
-	}
 
 	/* Coordenadas de textura (suponiendo un cuadrado) */
-	m->texCoords = new dvec2[m->numVertices];
-	m->texCoords[0] = dvec2(0.5, 0.5);
-	m->texCoords[1] = dvec2(1, 1);
-	m->texCoords[2] = dvec2(0, 1);
-	m->texCoords[3] = dvec2(0, 0);
-	m->texCoords[4] = dvec2(1, 0);
-	m->texCoords[5] = dvec2(1, 1);
-
-	// devuelve la malla
-	return m;
-}
-
-Mesh* Mesh::generateCubeSides(GLdouble size)
-{
-	Mesh* m = new Mesh();
-	m->type = GL_TRIANGLE_STRIP;
-	m->numVertices = 10;
-
-	/* Array de vértices */
-	GLdouble halfSize = size / 2.0;
-	m->vertices = new dvec3[m->numVertices];
-	// Frente
-	m->vertices[0] = dvec3(-halfSize, halfSize, halfSize);
-	m->vertices[1] = dvec3(-halfSize, -halfSize, halfSize);
-	m->vertices[2] = dvec3(halfSize, halfSize, halfSize);
-	m->vertices[3] = dvec3(halfSize, -halfSize, halfSize);
-
-	// Atrás
-	m->vertices[4] = dvec3(halfSize, halfSize, -halfSize);
-	m->vertices[5] = dvec3(halfSize, -halfSize, -halfSize);
-	m->vertices[6] = dvec3(-halfSize, halfSize, -halfSize);
-	m->vertices[7] = dvec3(-halfSize, -halfSize, -halfSize);
-
-	// Cerrar el 'loop'
-	m->vertices[8] = dvec3(-halfSize, halfSize, halfSize);
-	m->vertices[9] = dvec3(-halfSize, -halfSize, halfSize);
-
-
-	/* Colores para cada vértice */
-	m->colores = new dvec4[m->numVertices];
-	for (int i = 0; i < m->numVertices; i++)
-	{
-		m->colores[i] = dvec4(0.8, 0.8, 0.8, 1);
-	}
-
-	/* Coordenadas de textura */
-	m->texCoords = new dvec2[m->numVertices]
-	{
-		{ 0, 1 }, { 0, 0 }, { 1, 1 }, { 1, 0 }
+	m->texCoords = new dvec2[m->numVertices]{
+		{0.5, 0.5}, {1, 1}, {0, 1}, {0, 0}, {1, 0}, {1, 1}
 	};
 
-
-	// devuelve la malla
 	return m;
 }
 
@@ -335,24 +274,20 @@ Mesh* Mesh::generateRectangle(GLdouble width, GLdouble height)
 		{width / 2.0, -height / 2.0, 0}
 	};
 
-
 	/* Coordenadas de textura*/
-	m->texCoords = new dvec2[m->numVertices]
-	{
-		{0,1}, {0, 0}, {1, 1}, {1, 0}
-	};
+	m->texCoords = new dvec2[m->numVertices] { {0,1}, {0, 0}, {1, 1}, {1, 0} };
 
-	/* Coordenadas de textura*/
+	/* Colores*/
 	m->colores = new dvec4[m->numVertices];
 	for (int i = 0; i < m->numVertices; i++)
-		m->colores[i] = { 1.0,0.0, 0.0, 1.0 };
+		m->colores[i] = { 0.8,0.8, 0.8, 1.0 };
 
 	return m;
 }
 
 // - - - - - - - - Mallas indexadas - - - - - - - - - //
 
-IndexMesh* IndexMesh::generateCube(GLdouble size, bool textured, bool equalFaces)
+IndexMesh* IndexMesh::generateCube(GLdouble size, bool equalFaces)
 {
 	IndexMesh* m = new IndexMesh();
 	m->type = GL_TRIANGLES; // irrelevante, porque no se usa
@@ -403,13 +338,7 @@ IndexMesh* IndexMesh::generateCube(GLdouble size, bool textured, bool equalFaces
 	/* Colores para cada vértice */
 	m->colores = new dvec4[m->numVertices];
 	for (int i = 0; i < m->numVertices; i++)
-	{
-		m->colores[i] = dvec4(1, 1, 1, 1);
-	}
-	// De prueba
-	//m->colores[0] = dvec4(1.0, 0.0, 0.0, 1.0);
-	//m->colores[17] = dvec4(0, 1.0, 0.0, 1.0);
-	//m->colores[15] = dvec4(0, 0.5, 1.0, 1.0);
+		m->colores[i] = dvec4(0.8, 0.8, 0.8, 1);
 
 	/* Especificar los triángulos */
 	m->indices = new GLuint[m->numIndices]
@@ -453,44 +382,41 @@ IndexMesh* IndexMesh::generateCube(GLdouble size, bool textured, bool equalFaces
 	};
 
 	/* Coordenadas de textura */
-	if(textured)
+	// Usar la textura completa para cada cara
+	if (equalFaces)
 	{
-		// Usar la textura completa para cada cara
-		if(equalFaces)
+		m->texCoords = new dvec2[m->numVertices];
+		for (int i = 0; i < 6; i++)
 		{
-			m->texCoords = new dvec2[m->numVertices];
-			for(int i = 0; i < 6; i++)
-			{
-				m->texCoords[i * 4] = { 0, 1 };
-				m->texCoords[i * 4 + 1] = { 0, 0 };
-				m->texCoords[i * 4 + 2] = { 1, 0 };
-				m->texCoords[i * 4 + 3] = { 1, 1 };
-			}
+			m->texCoords[i * 4] = { 0, 1 };
+			m->texCoords[i * 4 + 1] = { 0, 0 };
+			m->texCoords[i * 4 + 2] = { 1, 0 };
+			m->texCoords[i * 4 + 3] = { 1, 1 };
 		}
-		// Usar distintas (6) partes de la textura las distintas caras
-		else
+	}
+	// Usar distintas (6) partes de la textura las distintas caras
+	else
+	{
+		m->texCoords = new dvec2[m->numVertices]
 		{
-			m->texCoords = new dvec2[m->numVertices]
-			{
-				// Frente
-				{0.251, 0.333}, {0.251, 0}, {0.5, 0}, {0.5, 0.333},
+			// Frente
+			{0.251, 0.333}, {0.251, 0}, {0.5, 0}, {0.5, 0.333},
 
-				// Derecha
-				{0.501, 0.334}, {0.75, 0.334}, {0.75, 0.66}, {0.501, 0.66},
+			// Derecha
+			{0.501, 0.334}, {0.75, 0.334}, {0.75, 0.66}, {0.501, 0.66},
 
-				// Atrás
-				{0.5, 0.667}, {0.5, 1}, {0.251, 1}, {0.251, 0.667},
+			// Atrás
+			{0.5, 0.667}, {0.5, 1}, {0.251, 1}, {0.251, 0.667},
 
-				// Izquierda
-				{0.25, 0.666}, {0, 0.666}, {0, 0.334}, {0.25, 0.334},
+			// Izquierda
+			{0.25, 0.666}, {0, 0.666}, {0, 0.334}, {0.25, 0.334},
 
-				// Arriba
-				{0.251, 0.666}, {0.251, 0.334}, {0.5, 0.334}, {0.5, 0.666},
+			// Arriba
+			{0.251, 0.666}, {0.251, 0.334}, {0.5, 0.334}, {0.5, 0.666},
 
-				// Abajo
-				{1, 0.334}, {1, 0.666}, {0.75, 0.666}, {0.75, 0.334}
-			};
-		}
+			// Abajo
+			{1, 0.334}, {1, 0.666}, {0.75, 0.666}, {0.75, 0.334}
+		};
 	}
 
 	/* Generar las normales */
@@ -882,14 +808,7 @@ IndexMesh* IndexMesh::generateCubemap(GLdouble size)
 		{-size, -size, size},
 	};
 
-	/* Colores para cada vértice (no hace falta) */
-	//m->colores = new dvec4[m->numVertices];
-	//for (int i = 0; i < m->numVertices; i++)
-	//{
-	//	m->colores[i] = dvec4(1, 1, 1, 1);
-	//}
-
-	/* Especificar los triángulos */
+	/* Índices para los triángulos */
 	m->indices = new GLuint[m->numIndices]
 	{
 		// Derecha
@@ -917,10 +836,7 @@ IndexMesh* IndexMesh::generateCubemap(GLdouble size)
 		22, 21, 23,
 	};
 
-	/* Coordenadas de textura (no hacen falta) */
-
-	/* Generar las normales (no necesita) */
-	//m->SetNormals();
+	/* No necesita colores, coordenadas de textura ni normales */
 
 	return m;
 }

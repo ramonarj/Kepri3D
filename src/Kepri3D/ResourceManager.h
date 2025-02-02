@@ -63,6 +63,8 @@ public:
 	bool loadMaterial(const std::string& materialName, const std::string& id);
 
 	/* Carga un shader de archivo y le asigna el ID dado */
+	bool loadShader(const std::string& vertexName, const std::string& geometryName, const std::string& tesControlName,
+		const std::string& tesEvalName, const std::string& fragmentName, const std::string& id);
 	bool loadShader(const std::string& vertexName, const std::string& geometryName, 
 		const std::string& fragmentName, const std::string& id);
 

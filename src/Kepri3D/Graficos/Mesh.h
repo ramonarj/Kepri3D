@@ -27,13 +27,11 @@ public:
 
 	// Polígono regular de n lados, dibujado con líneas (LINE_LOOP)
 	static Mesh* generatePolygon(GLint sides, GLdouble size);
+
 	// Polígono regular de n lados, dibujado con triángulos rellenos (TRIANGLE_FAN)
 	static Mesh* generateFilledPolygon(GLint sides, GLdouble size);
 
-	// Cubo con caras opacas
-	static Mesh* generateCubeSides(GLdouble size);
-
-	// Rectángulo usado para botones y RenderTargets (no tiene colores ni normales)
+	// Rectángulo usado para botones y RenderTargets (no tiene normales)
 	static Mesh* generateRectangle(GLdouble width, GLdouble height);
 
 protected:
@@ -81,7 +79,7 @@ public:
 	// Creación de mallas con triángulos indexados
 
 	/* - - Cubo - - */
-	static IndexMesh* generateCube(GLdouble size, bool textured, bool equalFaces = true);
+	static IndexMesh* generateCube(GLdouble size, bool equalFaces = true);
 
 	/* - - Esfera - - */
 	static IndexMesh* generateSphere(GLdouble size, GLuint subdivisions, bool textured = false);

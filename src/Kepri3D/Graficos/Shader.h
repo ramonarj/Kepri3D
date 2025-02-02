@@ -42,8 +42,8 @@ public:
 	void setMat4d(const std::string& name, const glm::dmat4 value) const; // TODO
 
 private:
-	/* IDs del Vertex, geometry y fragment shader (de momento) */
-	unsigned int shadersIds[3];
+	/* IDs del Vertex, Tess. Control, Tess. Eval., Geometry y Fragment shader (en ese orden) */
+	unsigned int shadersIds[5];
 
 	/* ID del shader program */
 	unsigned int programId;

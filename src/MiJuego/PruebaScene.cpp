@@ -132,7 +132,7 @@ void PruebaScene::init()
 
 	// Matojos de hierba (billboards)
 	int numMatojos = 20;
-	glm::vec3 posMatojo = { 6, -6, 44 };
+	glm::vec3 posMatojo = { 40, -11, 44 };
 	float radioMax = 15.0f;
 	for(int i = 0; i < numMatojos; i++)
 	{
@@ -144,7 +144,7 @@ void PruebaScene::init()
 
 	// Árbol (billboard)
 	Billboard* tree = new Billboard("tree", 8, 10);
-	tree->setPosition({ 42.25, -0.3, 28 });
+	tree->setPosition({ 85, -0.3, 57 });
 	tree->setAncla({ 0, -4.25 });
 	AddEntity(tree);
 
@@ -282,33 +282,33 @@ void PruebaScene::loadResources()
 void PruebaScene::PruebaMateriales()
 {
 	// Cubo con la misma textura en todas las caras
-	Cubo* c = new Cubo(2, true);
+	Cubo* c = new Cubo(2);
 	c->setTexture("caja");
 	c->setPosition({ -10,0,0 });
 	c->setShader("lights");
 	AddEntity(c);
 
 	// Cubo de orientación (distintas texturas)
-	Cubo* c2 = new Cubo(2, true, false);
+	Cubo* c2 = new Cubo(2, false);
 	c2->setTexture("orientacion");
 	c2->setMaterial("fluorescente");
 	c2->setPosition({ -5,0,0 });
 	AddEntity(c2);
 
 	// Cubo default
-	//Cubo* cuboDef = new Cubo(2, false);
+	//Cubo* cuboDef = new Cubo(2);
 	//cuboDef->setMaterial("default");
 	//cuboDef->setPosition({ 0,0,0 });
 	//AddEntity(cuboDef);
 
 	// Cubo de cromo
-	Cubo* cuboCromo = new Cubo(2, false);
+	Cubo* cuboCromo = new Cubo(2);
 	cuboCromo->setMaterial("cromo");
 	cuboCromo->setPosition({ 5,0,0 });
 	AddEntity(cuboCromo);
 
 	// Cubo de cobre
-	Cubo* cuboCobre = new Cubo(2, true);
+	Cubo* cuboCobre = new Cubo(2);
 	cuboCobre->setTexture("cobre");
 	cuboCobre->setMaterial("cobre");
 	cuboCobre->setPosition({ 10,0,0 });
@@ -337,7 +337,7 @@ void PruebaScene::PruebaMateriales()
 	//m_entities.push_back(venus);
 
 	// Rejilla (suelo)
-	MovingGrid* grid = new MovingGrid(100, 200, 0.3, 0.3);
+	MovingGrid* grid = new MovingGrid(10, 20, 3, 3);
 	grid->setTexture("agua");
 	grid->setDisplacementMap("agua_disp");
 	grid->setSpeeds({ 2.0, 0.0 }, { -2, 0 });
@@ -346,7 +346,7 @@ void PruebaScene::PruebaMateriales()
 	AddEntity(grid);
 
 	// "Cascada"
-	MovingGrid* cascada = new MovingGrid(100, 80, 0.3, 0.3);
+	MovingGrid* cascada = new MovingGrid(10, 8, 3, 3);
 	cascada->setTexture("agua");
 	cascada->setDisplacementMap("agua_disp");
 	cascada->setSpeeds({ 5.0, 0.0 }, { 10.0, 0.0 });
@@ -363,10 +363,10 @@ void PruebaScene::PruebaMateriales()
 
 	// Terreno Islandia
 	Terrain* terrain = new Terrain();
-	terrain->loadHeightMap(ResourceManager::TEXTURES_PATH + "iceland_height.bmp", 1);
+	terrain->loadHeightMap(ResourceManager::TEXTURES_PATH + "iceland_height.bmp", 2.0);
 	terrain->setTexture("iceland");
 	//terrain->setShader("lights");
-	terrain->setPosition({ 0,-10,0 });
+	terrain->setPosition({ 0,-20,0 });
 	AddEntity(terrain);
 
 
@@ -377,7 +377,7 @@ void PruebaScene::PruebaMateriales()
 	mar->setDisplacementMap("agua_disp");
 	mar->setSpeeds({ 0.0, 0.0 }, { -0.2, -0.2 });
 	//grid->setMaterial("cromo");
-	mar->setPosition({ 0,-10.01,0 });
+	mar->setPosition({ 0,-20.01,0 });
 	AddEntity(mar);
 
 	// Minimap
@@ -410,7 +410,7 @@ void PruebaScene::PruebaMateriales()
 
 
 	// Plano para iluminación Blinn-Phong
-	Grid* plano = new Grid(100, 100, 0.3, 0.3);
+	Grid* plano = new Grid(10, 10, 3, 3);
 	plano->setTexture("wall");
 	plano->setMaterial("blinn");
 	plano->setShader("lights");
