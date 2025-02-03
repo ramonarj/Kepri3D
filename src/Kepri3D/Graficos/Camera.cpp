@@ -32,7 +32,7 @@ Camera::Camera(Viewport* viewport) : vp(viewport), projMat(1.0), orto(false)
 	farPlane = 200.0;
 	ortoSize = 15.0; // por ejemplo
 
-	setPosition({ 0, 5, 8 });
+	setPosition({ 0, 12, 13 });
 	//updatePM(); // no es estrictamente necesario
 }
 

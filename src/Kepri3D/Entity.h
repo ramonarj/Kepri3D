@@ -81,7 +81,7 @@ public:
 	const std::string& getName() const { return m_name; }
 
 	/* Devuelve la posición de la entidad */
-	const glm::dvec3& getPosition() const { return modelMat[3]; }
+	glm::dvec3 getPosition() const { return modelMat[3]; }
 
 	/* Devuelve la matriz de modelado de la entidad */
 	const glm::dmat4& getModelMat() const { return modelMat; }
@@ -349,6 +349,22 @@ public:
 	void render() override;
 private:
 	std::vector<glm::vec4> planos;
+};
+
+// - - - - - - - - - - - - 
+
+class TessTerrain : public Entity
+{
+public:
+	/* Crea un terreno vacío */
+	TessTerrain();
+	~TessTerrain() { };
+
+	void render() override;
+
+	void setSubdivisions(int sub);
+private:
+	float subdivisiones;
 };
 
 

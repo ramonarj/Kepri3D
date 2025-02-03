@@ -186,11 +186,18 @@ void PruebaScene::init()
 	particleSys->setActive(false);
 	AddEntity(particleSys);
 
+	// Terreno teselado
+	TessTerrain* tesTerrain = new TessTerrain();
+	//tesTerrain->setTexture("iceland");
+	tesTerrain->setPosition({ 0,10,10 });
+	AddEntity(tesTerrain);
+
 	/* - - GameManager - - */
 	Entity* gm = new Entity();
 	// Componente GM
 	GameManager* gmComponent = new GameManager(this, m_camera, botonesMenu, particleSys);
 	gmComponent->setLights(dirLight, circleLight, spotLight, luzBlinn);
+	gmComponent->setTessTerrain(tesTerrain);
 	gm->addComponent(gmComponent);
 	// Componente CameraController
 	CameraController* camComp = new CameraController(m_camera);
@@ -270,6 +277,7 @@ void PruebaScene::loadResources()
 	ResourceManager::Instance()->loadShader("lights.vert", "", "specularMap.frag", "specMap");
 	ResourceManager::Instance()->loadShader("lights.vert", "", "normalMap.frag", "normalMap");
 	ResourceManager::Instance()->loadShader("clippable.vert", "", "default.frag", "clippable");
+	ResourceManager::Instance()->loadShader("default.vert", "terrain.tesc", "terrain.tese", "", "default.frag", "terreno");
 
 
 	/* Efectos de postprocesado ('composites') */

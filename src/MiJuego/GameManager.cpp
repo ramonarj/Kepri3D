@@ -98,6 +98,10 @@ void GameManager::update(GLuint deltaTime)
 	// Cambiar entre el modelo Phong y el Blinn-Phong
 	if(InputManager::Instance()->getKeyDown('i'))
 		scene->switchBlinnPhong();
+
+	// Decirle al terreno en cuántos parches dividirse
+	float dist = glm::length(cam->getPosition() - tessTerrain->getPosition());
+	tessTerrain->setSubdivisions(glm::max(10 - dist, 1.0f));
 }
 
 

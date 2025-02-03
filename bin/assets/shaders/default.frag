@@ -18,5 +18,5 @@ void main()
 	//Cogemos el color de la textura correspondiente al fragmento actual
 	vec3 color = vec3(texture(textura, data_in.TexCoords));
 
-	FragColor = vec4(color, 1.0f);
+	FragColor = vec4(1, 0, 0, 1.0f);
 }

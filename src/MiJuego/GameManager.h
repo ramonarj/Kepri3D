@@ -24,6 +24,7 @@ public:
 	~GameManager(){}
 
 	void setLights(Light* dirLight, Light* circleLight, Light* spotLight, Light* luzBlinn);
+	void setTessTerrain(TessTerrain* tesTerrain) { this->tessTerrain = tesTerrain; }
 
 	void update(GLuint deltaTime) override;
 private:
@@ -33,6 +34,7 @@ private:
 	Light* dirLight, *circleLight, *spotLight, *luzBlinn;
 	Entity* pSystem;
 	UIElement* botonesMenu;
+	TessTerrain* tessTerrain;
 
 	// Cursor y pantalla
 	bool lockedMouse = true;

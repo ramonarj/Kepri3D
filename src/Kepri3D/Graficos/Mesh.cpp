@@ -840,3 +840,89 @@ IndexMesh* IndexMesh::generateCubemap(GLdouble size)
 
 	return m;
 }
+
+// - - - - - - - - - - - - - - - - 
+
+void TessMesh::draw()
+{
+	// Activa los arrays de vértices, colores, texturas... y el de índices
+	Mesh::enableArrays();
+	if (indices != nullptr)
+	{
+		glEnableClientState(GL_INDEX_ARRAY);
+		glIndexPointer(GL_UNSIGNED_INT, 0, indices);
+	}
+
+	// Dibuja los parches definidos por la tabla de índices
+	glDrawElements(GL_PATCHES, numIndices, GL_UNSIGNED_INT, indices);
+
+	// Dejarlo todo como estaba
+	glDisableClientState(GL_INDEX_ARRAY);
+	Mesh::disableArrays();
+}
+
+TessMesh* TessMesh::generateTessGrid(GLint filas, GLint columnas, GLdouble tamFila, GLdouble tamColumna)
+{
+	TessMesh* m = new TessMesh();
+	m->type = GL_PATCHES;
+	m->numVertices = (filas + 1) * (columnas + 1);
+	m->numIndices = filas * columnas * 4; //ahorramos algunos índices
+
+	/* Lista de vértices (igual que en IndexMesh) */
+	m->vertices = new dvec3[m->numVertices];
+	GLuint k = 0; //var. auxiliar
+	GLdouble iniZ = -filas / 2.0 * tamFila;
+	for (int i = 0; i < filas + 1; i++)
+	{
+		GLdouble iniX = -columnas / 2.0 * tamColumna;
+		for (int j = 0; j < columnas + 1; j++)
+		{
+			m->vertices[k] = { iniX + tamColumna * j, 0, iniZ + tamFila * i };
+			k++;
+		}
+	}
+
+	/* Lista de colores */
+	m->colores = new dvec4[m->numVertices];
+	for (int i = 0; i < m->numVertices; i++)
+		m->colores[i] = dvec4(0.8, 0.8, 0.8, 1);
+
+	/* Coordenadas de textura -> se podría meter en el mismo bucle que los vértices */
+	//m->texCoords = new dvec2[m->numVertices];
+	//GLdouble texIncrX = 1.0 / columnas;
+	//GLdouble texIncrZ = 1.0 / filas;
+	//k = 0;
+	//for (int i = 0; i < filas + 1; i++)
+	//{
+	//	for (int j = 0; j < columnas + 1; j++)
+	//	{
+	//		m->texCoords[k] = { texIncrX * j , 1 - texIncrZ * i };
+	//		k++;
+	//	}
+	//}
+
+	/* Lista de parches (índices) */
+	m->indices = new GLuint[m->numIndices];
+	k = 0;
+	for (int i = 0; i < filas; i++)
+	{
+		for (int j = 0; j < columnas; j++)
+		{
+			// Empezando por el vértice de arriba izq. y en sentido antihorario
+			m->indices[k] = i * (columnas + 1) + j;
+			m->indices[k + 1] = (i + 1) * (columnas + 1) + j;
+			m->indices[k + 2] = (i + 1) * (columnas + 1) + j + 1;
+			m->indices[k + 3] = i * (columnas + 1) + j + 1;
+
+			k += 4;
+		}
+	}
+
+	/* Lista de vectores normales */
+	m->normales = new dvec3[m->numVertices];
+	for (int i = 0; i < m->numVertices; i++)
+		m->normales[i] = { 0,1, 0 };
+
+
+	return m;
+}

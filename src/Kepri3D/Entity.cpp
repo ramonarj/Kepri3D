@@ -629,3 +629,27 @@ void ClippableEntity::render()
 	for (int i = 0; i < planos.size(); i++)
 		glDisable(GL_CLIP_DISTANCE0 + i);
 }
+
+// - - - - - - - - - - - - - - - - - 
+
+TessTerrain::TessTerrain()
+{
+	m_name = "TessTerrain";
+	m_mesh = TessMesh::generateTessGrid(1, 1, 4, 4);
+
+	setShader("terreno");
+}
+
+void TessTerrain::render()
+{
+	m_shader->setInt("subdivisions", subdivisiones);
+	// Para depurarlo
+	glPolygonMode(GL_FRONT, GL_LINE);
+	Entity::render();
+	glPolygonMode(GL_FRONT, GL_FILL);
+}
+
+void TessTerrain::setSubdivisions(int sub)
+{
+	subdivisiones = sub;
+}
