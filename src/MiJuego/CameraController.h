@@ -8,7 +8,7 @@ class Camera;
 class CameraController : public Component
 {
 public:
-	CameraController(Camera* cam) : cam(cam){}
+	CameraController(Camera* cam);
 	~CameraController(){}
 
 	void update(GLuint deltaTime) override;

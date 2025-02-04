@@ -36,11 +36,11 @@ public:
 	/* Destructora */
 	~Game();
 
-	/* Carga la escena inicial del juego*/
-	void loadScene(Scene* scene);
-
 	/* Crea la ventana, inicializa OpenGL y inicializa la primera escena */
 	void init(int argc, char* argv[], int windowWidth, int windowHeight, const std::string& windowName);
+
+	/* Carga la escena inicial del juego*/
+	void loadScene(Scene* scene);
 
 	/* Ejecuta el bucle principal del juego (hasta que se cierre la ventana) */
 	void run();
@@ -53,6 +53,9 @@ public:
 
 	/* Limpia la instancia */
 	void clean();
+
+	// Getters
+	inline Camera* getCamera() const { return camera; }
 
 	// Para callbacks
 	/* Redimensiona el */

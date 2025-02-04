@@ -25,7 +25,10 @@ public:
 	/* Destructora */
 	~Scene();
 
-	/* Inicia los subsistemas de openGL y crea texturas y entidades */
+	/* Carga todos los recursos necesarios para esta escena */
+	virtual void loadResources() = 0;
+
+	/* Crea las entidades y componentes que aparecerán en escena */
 	virtual void init() = 0;
 
 	/* Pinta todas las entidades */

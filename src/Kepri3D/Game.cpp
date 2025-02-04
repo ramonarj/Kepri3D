@@ -26,13 +26,6 @@ void clickedMotion(int x, int y);
 unsigned int currentSec = 0;
 unsigned int fps = 0;
 
-void Game::loadScene(Scene* scene)
-{
-	this->scene = scene;
-	std::cout << "Cargada escena '" << scene->getName() << "'" << std::endl;
-}
-
-
 void Game::init(int argc, char* argv[], int windowWidth, int windowHeight, const std::string& windowName)
 {
 	// 1) Iniciar GLUT y GLEW
@@ -46,16 +39,23 @@ void Game::init(int argc, char* argv[], int windowWidth, int windowHeight, const
 	// 2) Crear el puerto de vista, la cámara y la escena
 	viewport = new Viewport(windowWidth, windowHeight);
 	camera = new Camera(viewport);
-	scene->setCamera(camera);
 
 	// 3) Registrar los distintos callbacks de teclado, ratón y ventana
 	registerGlutCallbacks();
 
 	// 4) Iniciar subsistemas de OpenGL (texturas, luz, blending, etc)
 	initGLSubsystems();
+}
 
-	// 5) Iniciar la escena(cargar recursos necesarios, crear entidades y colocarlas)
+void Game::loadScene(Scene* scene)
+{
+	// Iniciar la escena(cargar recursos necesarios, crear entidades y colocarlas)
+	this->scene = scene;
+	scene->loadResources();
 	scene->init();
+
+	std::cout << "Cargada escena '" << scene->getName() << "'" << std::endl;
+	// TODO StateMachine
 }
 
 void Game::run()

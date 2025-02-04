@@ -1,5 +1,6 @@
 #include "Scene.h"
 
+#include "Game.h"
 #include "Utils.h"
 #include "Mesh.h"
 #include "Texture.h"
@@ -11,8 +12,6 @@
 #include "InputManager.h"
 #include "UI/Canvas.h"
 
-
-//#include <glew.h>
 #include <freeglut.h>
 
 bool Scene::skyboxActive = true;
@@ -20,11 +19,19 @@ bool Scene::mipmapsActive = false;
 Shader* Scene::normalsShader = nullptr;
 std::vector<Shader*> Scene::m_composites;
 
-Scene::Scene() : m_camera(nullptr), m_canvas(nullptr), m_skybox(nullptr)
+Scene::Scene() : m_canvas(nullptr), m_skybox(nullptr)
 {
-	// Crear la malla de rectángulo para el postprocesado
-	// (2, 2) para que ocupe la pantalla entera
+	m_camera = Game::Instance()->getCamera();
+
+	// Crear la malla de rectángulo para el postprocesado. ({2, 2} para que ocupe la pantalla entera)
 	m_effectsMesh = Mesh::generateRectangle(2, 2);
+
+	// Crear los 2 FrameBuffers para el renderizado
+	frameBuf = new Framebuffer(m_camera->getVP()->getW(), m_camera->getVP()->getH());
+	frameBuf2 = new Framebuffer(m_camera->getVP()->getW(), m_camera->getVP()->getH());
+
+	// Composite por defecto
+	AddComposite((Shader*)&ResourceManager::Instance()->getComposite("defaultComposite"));
 }
 
 void Scene::AddEntity(Entity* e, bool isTranslucid)

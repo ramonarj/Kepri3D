@@ -158,16 +158,18 @@
     <ClCompile Include="..\..\src\MiJuego\CameraController.cpp" />
     <ClCompile Include="..\..\src\MiJuego\GameManager.cpp" />
     <ClCompile Include="..\..\src\MiJuego\Main.cpp" />
-    <ClCompile Include="..\..\src\MiJuego\PruebaScene.cpp" />
     <ClCompile Include="..\..\src\MiJuego\RotationComp.cpp" />
-    <ClCompile Include="..\..\src\MiJuego\SpaceScene.cpp" />
+    <ClCompile Include="..\..\src\MiJuego\Scenes\PruebaScene.cpp" />
+    <ClCompile Include="..\..\src\MiJuego\Scenes\SimVuelo.cpp" />
+    <ClCompile Include="..\..\src\MiJuego\Scenes\SpaceScene.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\src\MiJuego\CameraController.h" />
     <ClInclude Include="..\..\src\MiJuego\GameManager.h" />
-    <ClInclude Include="..\..\src\MiJuego\PruebaScene.h" />
     <ClInclude Include="..\..\src\MiJuego\RotationComp.h" />
-    <ClInclude Include="..\..\src\MiJuego\SpaceScene.h" />
+    <ClInclude Include="..\..\src\MiJuego\Scenes\PruebaScene.h" />
+    <ClInclude Include="..\..\src\MiJuego\Scenes\SimVuelo.h" />
+    <ClInclude Include="..\..\src\MiJuego\Scenes\SpaceScene.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

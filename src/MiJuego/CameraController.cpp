@@ -2,6 +2,15 @@
 
 #include "Kepri3D.h"
 
+CameraController::CameraController(Camera* cam)
+{
+	this->cam = cam;
+
+	// Hacer que el cursor sea invisible y moverlo al centro de la ventana
+	InputManager::Instance()->setCursor(GLUT_CURSOR_NONE);
+	InputManager::Instance()->setMousePos(cam->getVP()->getW() / 2, cam->getVP()->getH() / 2);
+}
+
 void CameraController::update(GLuint deltaTime)
 {
 	// Cambiar la perspectiva

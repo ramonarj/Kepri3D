@@ -5,6 +5,9 @@
       <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
       <Extensions>cpp;c;cc;cxx;c++;cppm;ixx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
     </Filter>
+    <Filter Include="Scenes">
+      <UniqueIdentifier>{ba38d5b1-8858-4b04-98f7-240d74c6aef0}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\..\src\MiJuego\CameraController.cpp">
@@ -16,14 +19,17 @@
     <ClCompile Include="..\..\src\MiJuego\Main.cpp">
       <Filter>Archivos de origen</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\src\MiJuego\PruebaScene.cpp">
-      <Filter>Archivos de origen</Filter>
-    </ClCompile>
     <ClCompile Include="..\..\src\MiJuego\RotationComp.cpp">
       <Filter>Archivos de origen</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\src\MiJuego\SpaceScene.cpp">
-      <Filter>Archivos de origen</Filter>
+    <ClCompile Include="..\..\src\MiJuego\Scenes\PruebaScene.cpp">
+      <Filter>Scenes</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\MiJuego\Scenes\SimVuelo.cpp">
+      <Filter>Scenes</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\MiJuego\Scenes\SpaceScene.cpp">
+      <Filter>Scenes</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -33,14 +39,17 @@
     <ClInclude Include="..\..\src\MiJuego\GameManager.h">
       <Filter>Archivos de origen</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\src\MiJuego\PruebaScene.h">
-      <Filter>Archivos de origen</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\src\MiJuego\RotationComp.h">
       <Filter>Archivos de origen</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\src\MiJuego\SpaceScene.h">
-      <Filter>Archivos de origen</Filter>
+    <ClInclude Include="..\..\src\MiJuego\Scenes\PruebaScene.h">
+      <Filter>Scenes</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\MiJuego\Scenes\SimVuelo.h">
+      <Filter>Scenes</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\MiJuego\Scenes\SpaceScene.h">
+      <Filter>Scenes</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

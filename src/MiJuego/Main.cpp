@@ -1,26 +1,26 @@
 #include "checkML.h"
 #include "Kepri3D.h"
 
-#include "PruebaScene.h"
-#include "SpaceScene.h"
+#include "Scenes/PruebaScene.h"
+#include "Scenes/SpaceScene.h"
+#include "Scenes/SimVuelo.h"
 
 int main(int argc, char*argv[])
 {
 	// Detección de basura dinámica
 	_CrtSetDbgFlag ( _CRTDBG_ALLOC_MEM_DF | _CRTDBG_LEAK_CHECK_DF ); 
 
-	// 0) Cargar la escena inicial del juego
-	Scene* prueba = new PruebaScene();
-	//Scene* espacio = new SpaceScene();
-	Game::Instance()->loadScene(prueba);
-
 	// 1) Crear e inicializar el juego con las dimensiones dadas
 	Game::Instance()->init(argc, argv, 800, 600, "Mi juego");
 
-	// 2) Bucle de 'juego' (lo maneja glut)
+	// 2) Cargar la escena inicial
+	Scene* escena = new SimVuelo();
+	Game::Instance()->loadScene(escena);
+
+	// 3) Bucle de 'juego' (lo maneja glut)
 	Game::Instance()->run();
 
-	// 3) Destruir el juego y salir
+	// 4) Destruir el juego y salir
 	Game::Instance()->clean();
 
 	return 0;
