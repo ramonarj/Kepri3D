@@ -26,6 +26,7 @@ std::string ResourceManager::COMPOSITES_PATH;
 
 bool ResourceManager::loadMesh(const std::string& meshName, const std::string& id)
 {
+	std::cout << "Loading mesh " << meshName << std::endl;
 	try
 	{
 		// Cargamos la malla gracias a MeshLoader

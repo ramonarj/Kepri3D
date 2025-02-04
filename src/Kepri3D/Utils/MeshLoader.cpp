@@ -10,57 +10,43 @@ using namespace glm;
 
 void MeshLoader::loadOBJ(const std::string& filename)
 {
-	// A priori no podemos saber cuántos vértices tendrá la malla, por eso usamos un std::vector
-	// que nos permita ampliar el tamaño todo lo que se quiera con 'push_back'
-	//std::vector<glm::dvec3> vertices;
-
-	// Abrir el archivo
-	std::ifstream stream(filename.c_str());
+	// Abrir el archivo (lectura porque solo vamos a leer)
+	std::ifstream stream(filename.c_str(), std::ios::in);
 	if (!stream.is_open())
-	{
-		throw std::ios_base::failure("MeshLoader ERROR: Could not open file");
-	}
+	{ throw std::ios_base::failure("MeshLoader ERROR: Could not open file"); }
 
-	// Crear la malla
+	// 1) Vuelta de reconocimiento para ver en qué línea empieza cada array de datos
+	Reconocimiento(stream);
+
+	// 2) Crear la malla y los arrays con el tamaño correspondiente
 	mesh = new IndexMesh();
 	mesh->type = GL_TRIANGLES;
+	mesh->numVertices = m_vertices.num;
 
-	// Llegamos a los vértices
-	bool stopRead = false;
-	std::string texto;
-	while(!stopRead)
-	{
-		// 'Marcador' para poder volver a esa posición si nos pasamos
-		std::streampos inicioVert = stream.tellg();
+	// Volver a la línea de los vértices
+	stream.seekg(0, std::ios::beg);
+	lineNo = 1;
+	getTo("v ", stream);
 
-		std::getline(stream, texto);
-		if (texto[0] == 'v' && texto[1] == ' ')
-		{
-			//hemos llegado
-			stopRead = true;
-			stream.seekg(inicioVert);
-		}
-	}
-
-	/* 1) Leer los vértices */
+	/* a) Leer los vértices */
+	mesh->vertices = new glm::dvec3[mesh->numVertices];
 	readVertices(stream);
 
-	// Crear los arrays de la propia malla
-	mesh->numVertices = vertices.size();
-	mesh->vertices = new glm::dvec3[mesh->numVertices];
-	mesh->texCoords = new glm::dvec2[mesh->numVertices];
+	/* b) Leer las normales */
 	mesh->normales = new glm::dvec3[mesh->numVertices];
-	for (int i = 0; i < mesh->numVertices; i++)
-		mesh->vertices[i] = this->vertices[i];
-	//std::cout << "Num. vertices: " << mesh->numVertices << std::endl;
-
-	/* 2) Leer las normales */
 	readNormals(stream);
 
-	/* 3) Leer las coordenadas de textura */
+	/* c) Leer las coordenadas de textura */
+	mesh->texCoords = new glm::dvec2[mesh->numVertices];
 	readTexCoords(stream);
 
-	/* 4) Leer los triángulos y a la vez rellenar los datos de la malla */
+	// Nos saltamos el parámetro smooth
+	std::string texto;
+	std::getline(stream, texto);
+	std::getline(stream, texto); // ???
+	lineNo++;
+
+	/* d) Leer los triángulos */
 	readFaces(stream);
 	mesh->numIndices = indices.size() * 3;
 	mesh->indices = new GLuint[mesh->numIndices];
@@ -76,57 +62,63 @@ void MeshLoader::loadOBJ(const std::string& filename)
 	// No sería necesario
 	mesh->SetNormals();
 
-
-	//for(int i = 0; i < vertices.size(); i++)
-	//	std::cout << vertices[i].x << ", " << vertices[i].y << ", " << vertices[i].z << std::endl;
-	//for(int i = 0; i < normales.size(); i++)
-	//	std::cout << normales[i].x << ", " << normales[i].y << ", " << normales[i].z << std::endl;
-	//for (int i = 0; i < texCoords.size(); i++)
-	//	std::cout << texCoords[i].x << ", " << texCoords[i].y << std::endl;
-
-
 	// Cerrar el archivo
 	stream.close();
 }
 
+void MeshLoader::Reconocimiento(std::ifstream& stream)
+{
+	// Nos colocamos en la primera línea y vamos avanzando, guardando
+	// cuántos vértices, normales, texCoords, etc. hay, y en qué línea empieza cada lista
+	lineNo = 1;
+
+	getTo("v ", stream);
+	m_vertices.line = lineNo;
+
+	getTo("vn", stream);
+	m_vertices.num = lineNo - m_vertices.line;
+	m_normales.line = lineNo;
+
+	getTo("vt", stream);
+	m_normales.num = lineNo - m_normales.line;
+	m_texCoods.line = lineNo;
+
+	getTo("s ", stream);
+	m_texCoods.num = lineNo - m_texCoods.line;
+
+	getTo("f ", stream);
+	m_indices.line = lineNo;
+
+	// fin del archivo
+	getTo("", stream);
+	m_indices.num = lineNo - m_indices.line;
+}
+
+
 void MeshLoader::readVertices(std::ifstream& stream)
 {
-	// Leer todos los vértices
-	int i = 0;
-	std::string texto = "v";
-	while (texto == "v")
+	for(int i = 0; i < m_vertices.num; i++)
 	{
-		// Comprobar que sigue siendo un vértice
-		stream >> texto;
-		if (texto != "v")
-			continue;
+		std::string v;
+		stream >> v;
 
 		// Leer sus componentes
 		double vX, vY, vZ;
 		stream >> vX >> vY >> vZ;
 
 		// Añadirlo a la lista
-		vertices.push_back({ vX, vY, vZ });
-		i++;
+		mesh->vertices[i] = { vX, vY, vZ };
+		lineNo++;
 	}
-
-	// "v" "n"
-	stream.unget();
-	stream.unget();
 }
 
 // Idéntico al método anterior
 void MeshLoader::readNormals(std::ifstream& stream)
 {
-	// Leer todos los vértices
-	int i = 0;
-	std::string texto = "vn";
-	while (texto == "vn")
+	for(int i = 0; i < m_normales.num; i++)
 	{
-		// Comprobar que sigue siendo un vector normal
-		stream >> texto;
-		if (texto != "vn")
-			continue;
+		std::string vn;
+		stream >> vn;
 
 		// Leer sus componentes
 		double nX, nY, nZ;
@@ -134,26 +126,17 @@ void MeshLoader::readNormals(std::ifstream& stream)
 
 		// Añadirlo a la lista de normales
 		normales.push_back({ nX, nY, nZ });
-		i++;
+		lineNo++;
 	}
-
-	// "v" "t"
-	stream.unget();
-	stream.unget();
 }
 
 
 void MeshLoader::readTexCoords(std::ifstream& stream)
 {
-	// Leer todos los vértices
-	int i = 0;
-	std::string texto = "vt";
-	while (texto == "vt")
+	for(int i = 0; i < m_texCoods.num; i++)
 	{
-		// Comprobar que sigue siendo una coordenada de textura
-		stream >> texto;
-		if (texto != "vt")
-			continue;
+		std::string vt;
+		stream >> vt;
 
 		// Leer sus componentes
 		double tX, tY;
@@ -161,63 +144,62 @@ void MeshLoader::readTexCoords(std::ifstream& stream)
 
 		// Añadirlo a la lista de coordenadas
 		texCoords.push_back({ tX, tY });
-		i++;
+		lineNo++;
 	}
 
-	// 's' '0'
-	std::getline(stream, texto);
 }
 
 void MeshLoader::readFaces(std::ifstream& stream)
 {
 	// Leer todos los triángulos
-	int i = 0;
-	std::string texto = "f";
-	while (!stream.eof() && texto == "f")
+	for(int i = 0; i < m_indices.num; i++)
 	{
-		// Comprobar que sigue siendo un triángulo
-		stream >> texto;
-		if (texto != "f")
-			continue;
+		std::string f;
+		stream >> f;
 
-		int v1, v2, v3;
+		glm::ivec3 tri;
 		int vt, vn;
 
-		// Primer vértice
-		stream >> v1;
-		stream.get();
-		stream >> vt;
-		stream.get();
-		stream >> vn;
-		stream.get();
+		// Cada uno de los 3 vértices del triángulo
+		for(int i = 0; i < 3; i++)
+		{
+			// Primer vértice
+			stream >> tri[i];
+			stream.get();
+			stream >> vt;
+			stream.get();
+			stream >> vn;
+			stream.get();
 
-		mesh->texCoords[v1 - 1] = texCoords[vt - 1];
-		mesh->normales[v1 - 1] = normales[vn - 1];
+			// Los índices vienen dados desde el 1
+			tri[i]--; vt--; vn--;
 
-		// Segundo vértice
-		stream >> v2;
-		stream.get();
-		stream >> vt;
-		stream.get();
-		stream >> vn;
-		stream.get();
-
-		mesh->texCoords[v2 - 1] = texCoords[vt - 1];
-		mesh->normales[v2 - 1] = normales[vn - 1];
-
-		// Tercer vértice
-		stream >> v3;
-		stream.get();
-		stream >> vt;
-		stream.get();
-		stream >> vn;
-		stream.get();
-
-		mesh->texCoords[v3 - 1] = texCoords[vt - 1];
-		mesh->normales[v3 - 1] = normales[vn - 1];
+			mesh->texCoords[tri[i]] = texCoords[vt];
+			mesh->normales[tri[i]] = normales[vn];
+		}
 
 		// Añadir el triángulo
-		indices.push_back({ v1 - 1 , v2 - 1, v3 - 1 });
-		i++;
+		indices.push_back(tri);
+	}
+}
+
+void MeshLoader::getTo(const std::string& pattern, std::ifstream& stream)
+{
+	bool stopRead = false;
+	std::string texto;
+	while (!stream.eof() && !stopRead)
+	{
+		// 'Marcador' para poder volver a esa posición si nos pasamos
+		std::streampos inicio = stream.tellg();
+		// Leemos la línea completa
+		std::getline(stream, texto);
+		if (texto == pattern || texto[0] == pattern[0] && texto[1] == pattern[1])
+		{
+			//hemos llegado -> volver al marcador
+			stopRead = true;
+			stream.seekg(inicio);
+		}
+		else
+			lineNo++;
 	}
 }

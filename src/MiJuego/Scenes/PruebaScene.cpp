@@ -67,6 +67,24 @@ void PruebaScene::init()
 	// Materiales y cubos
 	PruebaMateriales();
 
+	// Estrella del Mario 64
+	Entity* estrella = new Entity("Estrella");
+	estrella->setMesh("star");
+	estrella->setTexture("star");
+	estrella->setShader("default");
+	estrella->setPosition({ -5,2,-6 });
+	AddEntity(estrella);
+	estrella->addComponent(new RotationComp(1.0));
+
+	// Redead del Zelda OoT
+	Entity* redead = new Entity("Estrella");
+	redead->setMesh("redead");
+	redead->setTexture("redead");
+	redead->setShader("default");
+	redead->setPosition({ -8,2,-6 });
+	redead->scale({ 0.1, 0.1, 0.1 });
+	AddEntity(redead);
+
 	// Peon de ajedrez
 	Entity* peon = new Entity("Peon");
 	peon->setMesh("peon");
@@ -209,6 +227,8 @@ void PruebaScene::loadResources()
 	/* Mallas */
 	ResourceManager::Instance()->loadMesh("Torre.obj", "torre");
 	ResourceManager::Instance()->loadMesh("Peon.obj", "peon");
+	ResourceManager::Instance()->loadMesh("star.obj", "star");
+	ResourceManager::Instance()->loadMesh("redead.obj", "redead");
 
 	/* Texturas */
 	ResourceManager::Instance()->loadTexture("earth24.bmp", "earth");
@@ -229,6 +249,8 @@ void PruebaScene::loadResources()
 	ResourceManager::Instance()->loadTexture("tree.png", "tree");
 	ResourceManager::Instance()->loadTexture("brickwall.jpg", "wall");
 	ResourceManager::Instance()->loadTexture("brickwall_normal.png", "wall_normal");
+	ResourceManager::Instance()->loadTexture("star.png", "star");
+	ResourceManager::Instance()->loadTexture("redead.png", "redead");
 
 	// Botones
 	for (int i = 0; i < buttonNames.size(); i++)
