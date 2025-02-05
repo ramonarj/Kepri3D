@@ -13,6 +13,7 @@
 #include "InputManager.h"
 // UI
 #include "UI/Button.h"
+#include "UI/Text.h"
 #include "UI/Canvas.h"
 
 //#include <glew.h>

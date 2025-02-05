@@ -285,6 +285,215 @@ Mesh* Mesh::generateRectangle(GLdouble width, GLdouble height)
 	return m;
 }
 
+Mesh* Mesh::generateLetter(char l, const glm::vec4& color)
+{
+	Mesh* m = new Mesh();
+	m->type = GL_LINE_STRIP;
+	switch(l)
+	{
+	case 'A':
+		m->numVertices = 6;
+		m->vertices = new dvec3[m->numVertices]
+		{ {0, 0, 0}, {0, 1, 0}, {1, 1, 0}, {1, 0, 0}, {1, 0.5, 0}, {0, 0.5, 0} };
+		break;
+	case 'B':
+		m->numVertices = 6;
+		m->vertices = new dvec3[m->numVertices]
+		{ {0, 0, 0}, {0, 1, 0}, {1, 0.75, 0}, {0, 0.5, 0}, {1, 0.25, 0}, {0, 0, 0} };
+		break;
+	case 'C':
+		m->numVertices = 4;
+		m->vertices = new dvec3[m->numVertices]
+		{ {1, 1, 0}, {0, 1, 0}, {0, 0, 0},{1, 0, 0} };
+		break;
+	case 'D':
+		m->numVertices = 5;
+		m->vertices = new dvec3[m->numVertices]
+		{ {0, 0, 0}, {0, 1, 0}, {1, 0.8, 0},{1, 0.2, 0}, {0, 0, 0} };
+		break;
+	case 'E':
+		m->numVertices = 7;
+		m->vertices = new dvec3[m->numVertices]
+		{ {1, 1, 0}, {0, 1, 0}, {0, 0, 0}, {1, 0, 0} , {0, 0, 0} , {0, 0.5, 0}, {1, 0.5, 0} };
+		break;
+	case 'F':
+		m->numVertices = 6;
+		m->vertices = new dvec3[m->numVertices]
+		{ {0, 0, 0}, {0, 1, 0}, {1, 1, 0}, {0, 1, 0} , {0, 0.5, 0} , {1, 0.5, 0} };
+		break;
+	case 'G':
+		m->numVertices = 6;
+		m->vertices = new dvec3[m->numVertices]
+		{ {1, 1, 0} , {0, 1, 0}, {0, 0, 0}, {1, 0, 0}, {1, 0.5, 0} , {0.5, 0.5, 0} };
+		break;
+	case 'H':
+		m->numVertices = 6;
+		m->vertices = new dvec3[m->numVertices]
+		{ {0, 1, 0} , {0, 0, 0}, {0, 0.5, 0}, {1, 0.5, 0}, {1, 1, 0} , {1, 0, 0} };
+		break;
+	case 'I':
+		m->numVertices = 6;
+		m->vertices = new dvec3[m->numVertices]
+		{ {0, 1, 0}, {1, 1, 0}, {0.5, 1, 0}, {0.5, 0, 0} , {0, 0, 0} , {1, 0, 0} };
+		break;
+	case 'J':
+		m->numVertices = 5;
+		m->vertices = new dvec3[m->numVertices]
+		{ {0, 1, 0}, {1, 1, 0}, {0.5, 1, 0}, {0.5, 0, 0} , {0, 0, 0} };
+		break;
+	case 'K':
+		m->numVertices = 6;
+		m->vertices = new dvec3[m->numVertices]
+		{ {0, 1, 0}, {0, 0, 0}, {0, 0.5, 0}, {1, 1, 0} , {0, 0.5, 0}, {1, 0, 0} };
+		break;
+	case 'L':
+		m->numVertices = 3;
+		m->vertices = new dvec3[m->numVertices]
+		{ {0, 1, 0}, {0, 0, 0}, {1, 0, 0} };
+		break;
+	case 'M':
+		m->numVertices = 5;
+		m->vertices = new dvec3[m->numVertices]
+		{ {0, 0, 0}, {0, 1, 0}, {0.5, 0.5, 0}, {1, 1, 0}, {1, 0, 0} };
+		break;
+	case 'N':
+		m->numVertices = 4;
+		m->vertices = new dvec3[m->numVertices]
+		{ {0, 0, 0}, {0, 1, 0}, {1, 0, 0}, {1, 1, 0} };
+		break;
+	case 'O':
+		m->numVertices = 5;
+		m->vertices = new dvec3[m->numVertices]
+		{ {0, 1, 0}, {0, 0, 0}, {1, 0, 0}, {1, 1, 0}, {0, 1, 0} };
+		break;
+	case 'P':
+		m->numVertices = 5;
+		m->vertices = new dvec3[m->numVertices]
+		{ {0, 0, 0}, {0, 1, 0}, {1, 1, 0}, {1, 0.5, 0}, {0, 0.5, 0} };
+		break;
+	case 'Q':
+		m->numVertices = 7;
+		m->vertices = new dvec3[m->numVertices]
+		{ {0.8, 0.2, 0}, {0.8, 1, 0}, {0, 1, 0}, {0, 0.2, 0}, {0.8, 0.2, 0}, {0.5, 0.5, 0}, {1, 0, 0} };
+		break;
+	case 'R':
+		m->numVertices = 6;
+		m->vertices = new dvec3[m->numVertices]
+		{ {0, 0, 0}, {0, 1, 0}, {1, 1, 0}, {1, 0.5, 0}, {0, 0.5, 0} , {1, 0, 0} };
+		break;
+	case 'S':
+		m->numVertices = 6;
+		m->vertices = new dvec3[m->numVertices]
+		{ {0, 0, 0}, {1, 0, 0}, {1, 0.5, 0}, {0, 0.5, 0}, {0, 1, 0}, {1, 1, 0} };
+		break;
+	case 'T':
+		m->numVertices = 4;
+		m->vertices = new dvec3[m->numVertices]
+		{ {0, 1, 0}, {1, 1, 0}, {0.5, 1, 0}, {0.5, 0, 0} };
+		break;
+	case 'U': 
+		m->numVertices = 4;
+		m->vertices = new dvec3[m->numVertices]
+		{ {0, 1, 0}, {0, 0, 0}, {1, 0, 0}, {1, 1, 0 } };
+		break;
+	case 'V':
+		m->numVertices = 3;
+		m->vertices = new dvec3[m->numVertices]
+		{ {0, 1, 0}, {0.5, 0, 0}, {1, 1, 0} };
+		break;
+	case 'W':
+		m->numVertices = 5;
+		m->vertices = new dvec3[m->numVertices]
+		{ {0, 1, 0}, {0.25, 0, 0}, {0.5, 0.5, 0}, {0.75, 0, 0}, {1, 1, 0} };
+		break;
+	case 'X':
+		m->numVertices = 5;
+		m->vertices = new dvec3[m->numVertices]
+		{ {0, 0, 0}, {1, 1, 0}, {0.5, 0.5, 0}, {0, 1, 0}, {1, 0, 0} };
+		break;
+	case 'Y':
+		m->numVertices = 6;
+		m->vertices = new dvec3[m->numVertices]
+		{ {0, 1, 0}, {0, 0.5, 0}, {1, 0.5, 0}, {1, 1, 0}, {1, 0, 0}, {0, 0, 0 } };
+		break;
+	case 'Z':
+		m->numVertices = 4;
+		m->vertices = new dvec3[m->numVertices]
+		{ {0, 1, 0}, {1, 1, 0}, {0, 0, 0}, {1, 0, 0} };
+		break;
+	case '0':
+		m->numVertices = 6;
+		m->vertices = new dvec3[m->numVertices]
+		{ {1, 1, 0}, {0, 1, 0}, {0, 0, 0}, {1, 0, 0}, {1, 1, 0}, {0, 0, 0} };
+		break;
+	case '1':
+		m->numVertices = 3;
+		m->vertices = new dvec3[m->numVertices]
+		{ {0, 0.5, 0}, {1, 1, 0}, {1, 0, 0} };
+		break;
+	case '2':
+		m->numVertices = 6;
+		m->vertices = new dvec3[m->numVertices]
+		{ {0, 1, 0}, {1, 1, 0}, {1, 0.5, 0} , {0, 0.5, 0}, {0, 0, 0}, {1, 0, 0} };
+		break;
+	case '3':
+		m->numVertices = 7;
+		m->vertices = new dvec3[m->numVertices]
+		{ {0, 1, 0}, {1, 1, 0}, {1, 0.5, 0}, {0, 0.5, 0}, {1, 0.5, 0}, {1, 0, 0}, {0, 0, 0} };
+		break;
+	case '4':
+		m->numVertices = 5;
+		m->vertices = new dvec3[m->numVertices]
+		{ {0, 1, 0}, {0, 0.5, 0}, {1, 0.5, 0}, {1, 1, 0}, {1, 0, 0} };
+		break;
+	case '5':
+		m->numVertices = 6;
+		m->vertices = new dvec3[m->numVertices]
+		{ {1, 1, 0}, {0, 1, 0}, {0, 0.5, 0}, {1, 0.5, 0}, {1, 0, 0} , {0, 0, 0} };
+		break;
+	case '6':
+		m->numVertices = 6;
+		m->vertices = new dvec3[m->numVertices]
+		{ {1, 1, 0}, {0, 1, 0}, {0, 0, 0}, {1, 0, 0}, {1, 0.5, 0}, {0, 0.5, 0} };
+		break;
+	case '7':
+		m->numVertices = 3;
+		m->vertices = new dvec3[m->numVertices]
+		{ {0, 1, 0}, {1, 1, 0}, {0, 0, 0} };
+		break;
+	case '8':
+		m->numVertices = 7;
+		m->vertices = new dvec3[m->numVertices]
+		{ {0, 0, 0}, {0, 1, 0}, {1, 1, 0}, {1, 0, 0}, {0, 0, 0}, {0, 0.5, 0}, {1, 0.5, 0} };
+		break;
+	case '9':
+		m->numVertices = 5;
+		m->vertices = new dvec3[m->numVertices]
+		{ {1, 0, 0}, {1, 1, 0}, {0, 1, 0}, {0, 0.5, 0}, {1, 0.5, 0} };
+		break;
+	case '-':
+		m->numVertices = 2;
+		m->vertices = new dvec3[m->numVertices]
+		{ {0, 0.5, 0}, {1, 0.5, 0} };
+		break;
+	case '/':
+		m->numVertices = 2;
+		m->vertices = new dvec3[m->numVertices]
+		{ {0, 0, 0}, {1, 1, 0} };
+		break;
+	default:
+		break;
+	}
+
+	/* Colores */
+	m->colores = new glm::dvec4[m->numVertices];
+	for (int i = 0; i < m->numVertices; i++)
+		m->colores[i] = color;
+
+	return m;
+}
+
+
 // - - - - - - - - Mallas indexadas - - - - - - - - - //
 
 IndexMesh* IndexMesh::generateCube(GLdouble size, bool equalFaces)
@@ -690,11 +899,10 @@ IndexMesh* IndexMesh::generateGrid(GLint filas, GLint columnas, GLdouble tamFila
 		}
 	}
 
-	/* Lista de vectores normales */
+	/* Normales */
 	m->normales = new dvec3[m->numVertices];
 	for (int i = 0; i < m->numVertices; i++)
 		m->normales[i] = { 0,1, 0 };
-
 
 	return m;
 }

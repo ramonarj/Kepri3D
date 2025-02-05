@@ -34,6 +34,9 @@ public:
 	// Rectángulo usado para botones y RenderTargets (no tiene normales)
 	static Mesh* generateRectangle(GLdouble width, GLdouble height);
 
+	// Letra mayúscula hecha con GL_LINE_STRIP de un color dado
+	static Mesh* generateLetter(char letter, const glm::vec4& color = {1, 1, 1, 1});
+
 protected:
 	/* Número total de vértices */
 	int numVertices;

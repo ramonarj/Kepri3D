@@ -81,6 +81,9 @@
     <ClCompile Include="..\..\src\Kepri3D\Scene.cpp">
       <Filter>Core</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\src\Kepri3D\UI\Text.cpp">
+      <Filter>UI</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\src\Kepri3D\Utils\checkML.h">
@@ -151,6 +154,9 @@
     </ClInclude>
     <ClInclude Include="..\..\src\Kepri3D\Scene.h">
       <Filter>Core</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\Kepri3D\UI\Text.h">
+      <Filter>UI</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

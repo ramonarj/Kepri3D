@@ -182,6 +182,17 @@ void PruebaScene::init()
 		b->setParent(botonesMenu); // hijos del nodo vacío
 	}
 
+	// Textos de prueba
+	//ABCDEFGHIJKLMNOPQRSTUVWXYZ
+	Text* texto = new Text("EN UN LUGAR DE LA MANCHA", m_canvas, {0, 1, 0, 1});
+	texto->setPositionUI(0.15, 0.1);
+	m_canvas->addElement(texto);
+
+	Text* textoNums = new Text("0123456789-/", m_canvas, { 0, 1, 0, 1 });
+	textoNums->setPositionUI(0.3, 0.05);
+	textoNums->setGrosor(2.0);
+	m_canvas->addElement(textoNums);
+
 
 	/* - - Skybox - - */
 	Skybox* sky = new Skybox("citySkybox");

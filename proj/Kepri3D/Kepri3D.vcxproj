@@ -187,6 +187,7 @@
     <ClCompile Include="..\..\src\Kepri3D\Scene.cpp" />
     <ClCompile Include="..\..\src\Kepri3D\UI\Button.cpp" />
     <ClCompile Include="..\..\src\Kepri3D\UI\Canvas.cpp" />
+    <ClCompile Include="..\..\src\Kepri3D\UI\Text.cpp" />
     <ClCompile Include="..\..\src\Kepri3D\UI\UIElement.cpp" />
     <ClCompile Include="..\..\src\Kepri3D\Utils\MeshLoader.cpp" />
     <ClCompile Include="..\..\src\Kepri3D\Utils\Pixmap32RGBA.cpp" />
@@ -210,6 +211,7 @@
     <ClInclude Include="..\..\src\Kepri3D\Scene.h" />
     <ClInclude Include="..\..\src\Kepri3D\UI\Button.h" />
     <ClInclude Include="..\..\src\Kepri3D\UI\Canvas.h" />
+    <ClInclude Include="..\..\src\Kepri3D\UI\Text.h" />
     <ClInclude Include="..\..\src\Kepri3D\UI\UIElement.h" />
     <ClInclude Include="..\..\src\Kepri3D\Utils\checkML.h" />
     <ClInclude Include="..\..\src\Kepri3D\Utils\MeshLoader.h" />
