@@ -42,6 +42,11 @@ void Camera::translate(glm::dvec3 transVector, ReferenceSystem refSys)
 	Entity::translate(transVector, refSys);
 }
 
+void Camera::lookAt(const glm::dvec3& point, const glm::dvec3& up)
+{
+	modelMat = glm::inverse(glm::lookAt(glm::dvec3(modelMat[3]), point, up));
+}
+
 void Camera::setSize(GLdouble w, GLdouble h)
 {
 	nearW = w;

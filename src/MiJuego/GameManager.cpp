@@ -18,7 +18,7 @@ void GameManager::setLights(Light* dirLight, Light* circleLight, Light* spotLigh
 	//this->dirLight->setActive(false);
 
 	this->spotLight->setPosition(cam->getPosition());
-	this->spotLight->setSpotlightDir(-cam->forward());
+	this->spotLight->setSpotlightDir(cam->forward());
 	this->spotLight->setSpotlightCutoff(65.0f);
 	this->spotLight->setSpotlightHardness(100);
 	this->spotLight->setAttenuationFactors(0, 0.04, 0.0002);
@@ -99,6 +99,10 @@ void GameManager::update(GLuint deltaTime)
 	if(InputManager::Instance()->getKeyDown('i'))
 		scene->switchBlinnPhong();
 
+	// Fijar la cámara en la luz circular
+	if (InputManager::Instance()->getKey('k'))
+		cam->lookAt(circleLight->getPosition());
+
 	// Decirle al terreno en cuántos parches dividirse
 	float dist = glm::length(cam->getPosition() - tessTerrain->getPosition());
 	tessTerrain->setSubdivisions(glm::max(10 - dist, 1.0f));
@@ -111,7 +115,7 @@ void GameManager::controlLuces(GLuint deltaTime)
 	// Posición y dirección
 	spotLight->setPosition(cam->getPosition());
 	// Un poco feo pero funciona
-	spotLight->setSpotlightDir(-cam->forward());
+	spotLight->setSpotlightDir(cam->forward());
 	// Encenderla / apagarla
 	if (lockedMouse && InputManager::Instance()->getMouseKeyDown(LEFT))
 	{

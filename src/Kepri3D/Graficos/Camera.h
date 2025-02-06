@@ -52,6 +52,9 @@ public:
 	/* Necesario invertir el parámetro Z antes de llamar al método de Entity */
 	void translate(glm::dvec3 transVector, ReferenceSystem refSys = GLOBAL);
 
+	/* Esto también */
+	inline glm::dvec3 forward() { return -modelMat[2]; }
+
 
 	// Getters
 	/* Devuelve la matriz de vista (inversa de la de modelado) */
@@ -74,6 +77,9 @@ public:
 	// Setters
 	/* Cambia la perspectiva entre ortogonal y frustrum */
 	void changePerspective();
+
+	/* Orienta la cámara hacia el punto dado, en coordenadas globales */
+	void lookAt(const glm::dvec3& point, const glm::dvec3& up = {0, 1, 0});
 
 	/* Establece las dimensiones de la cámara */
 	void setSize(GLdouble aw, GLdouble ah);
