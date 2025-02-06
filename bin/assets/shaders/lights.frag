@@ -6,6 +6,7 @@ struct Material
 	vec3 ambient;
 	vec3 diffuse;
 	vec3 specular;
+	sampler2D specular_map;
 	float brillo;
 };
 
@@ -57,6 +58,8 @@ uniform Light luces[MAX_LIGHTS];
 uniform Material material;
 uniform vec3 viewPos;
 
+uniform bool use_spec_map;
+
 // Prototipos para las funciones
 vec3 CalcDirLight(Light light);
 vec3 CalcPointLight(Light light);
@@ -94,6 +97,8 @@ void main()
 	vec3 result = luzTotal * vec3(texColor);
 
 	FragColor = vec4(result, texColor.a);
+	//FragColor = texture(material.specular_map, data_in.TexCoords);
+	//FragColor = vec4(1, 0, 0, 1);
 }
 
 /* Calcula la cantidad de luz que recibe el fragmento de una luz direccional */
@@ -116,7 +121,12 @@ vec3 CalcDirLight(Light light)
 	vec3 reflectDir = reflect(-lightDir, data_in.normals);
 
 	float spec = pow(max(dot(viewDir, reflectDir), 0.0), material.brillo);
-    vec3 specular = material.specular * spec * light.specular;
+    vec3 specular = light.specular * spec;
+	// Usar una textura/no para la componente especular
+	if(use_spec_map)
+		specular *= vec3(texture(material.specular_map, data_in.TexCoords));
+	else
+		specular *= material.specular;
 	
 	// Devolver la suma de las 3 componentes
 	return (ambient + diffuse + specular);
@@ -152,7 +162,14 @@ vec3 CalcPointLight(Light light)
     // Combinar los resultados
 	vec3 ambient = light.ambient * material.ambient;
     vec3 diffuse  = light.diffuse  * diff * material.diffuse;
-    vec3 specular = light.specular * spec * material.specular;
+    vec3 specular = light.specular * spec;
+	// Usar una textura/no para la componente especular
+	if(use_spec_map)
+		specular *= vec3(texture(material.specular_map, data_in.TexCoords));
+	else
+		specular *= material.specular;
+	
+	// Atenuación por la distancia
 	ambient  *= attenuation;
     diffuse  *= attenuation;
     specular *= attenuation;
@@ -196,7 +213,15 @@ vec3 CalcSpotlight(Light light)
     // Combinar los resultados
 	vec3 ambient = light.ambient * material.ambient;
     vec3 diffuse  = light.diffuse  * diff * material.diffuse;
-    vec3 specular = light.specular * spec * diff * material.specular;
+	vec3 specular = light.specular * spec * diff;
+	
+	// Usar una textura/no para la componente especular
+	if(use_spec_map)
+		specular *= vec3(texture(material.specular_map, data_in.TexCoords));
+	else
+		specular *= material.specular;
+		
+	// Atenuación por la distancia
 	ambient  *= attenuation;
     diffuse  *= attenuation;
     specular *= attenuation;

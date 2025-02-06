@@ -479,29 +479,34 @@ CuboSpecmap::CuboSpecmap(GLdouble size)
 	m_mesh = IndexMesh::generateCube(size, true);
 	m_name = "CuboSpecmap";
 
-	setShader("specMap");
+	setShader("lights");
 }
 
 
 void CuboSpecmap::render()
 {
+	// Pasar las texturas al shader
 	glActiveTexture(GL_TEXTURE0);
 	m_texture->bind();
-	glActiveTexture(GL_TEXTURE1);
-	m_specMap->bind();
+	m_shader->setInt("textura", 0);
 
-	// Pasar las texturas al shader
-	m_shader->setInt("textura", 0); //este incluso sobraría, porque se manda automático
-	m_shader->setInt("specMap", 1);
+	// Mapa especular
+	if(m_specMap != nullptr)
+	{
+		glActiveTexture(GL_TEXTURE1);
+		m_specMap->bind();
+		m_shader->setInt("use_spec_map", true);
+		m_shader->setInt("material.specular_map", 1);
+	}
 
 	// Dibujar la entidad
 	if (m_mesh != nullptr)
 		m_mesh->draw();
-
+	
+	// Dejarlo todo como estaba
 	m_specMap->unbind();
 	glActiveTexture(GL_TEXTURE0);
-
-	m_texture->unbind();
+	m_shader->setInt("use_spec_map", false);
 }
 
 // - - - - - - - - - - - - - - - - - 

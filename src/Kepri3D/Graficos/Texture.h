@@ -29,6 +29,8 @@ public:
 	->MODULATE: luz * textura
 	->ADD: luz + textura (efecto quemado) */
 	virtual void bind(GLuint mix = GL_MODULATE);
+
+	/* Desactiva cualquier textura que estuviera activa */
 	virtual void unbind();
 
 	/* Carga un rectángulo de píxeles RGBA de tamaño 'width * height' desde el buffer 'buf' para su posterior lectura */

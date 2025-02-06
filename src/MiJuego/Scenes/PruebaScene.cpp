@@ -293,7 +293,6 @@ void PruebaScene::loadResources()
 	ResourceManager::Instance()->loadShader("maximize.vert", "", "fog.frag", "bigFog");
 	ResourceManager::Instance()->loadShader("default.vert", "", "movimiento.frag", "movimiento");
 	ResourceManager::Instance()->loadShader("default.vert", "", "multitexture.frag", "multitexture");
-	ResourceManager::Instance()->loadShader("lights.vert", "", "specularMap.frag", "specMap");
 	ResourceManager::Instance()->loadShader("lights.vert", "", "normalMap.frag", "normalMap");
 	ResourceManager::Instance()->loadShader("clippable.vert", "", "default.frag", "clippable");
 	ResourceManager::Instance()->loadShader("default.vert", "terrain.tesc", "terrain.tese", "", "default.frag", "terreno");
@@ -414,6 +413,7 @@ void PruebaScene::PruebaMateriales()
 	NormalMapWall* pared = new NormalMapWall(1, 1, 15, 15);
 	pared->setTexture("wall");
 	pared->setNormalMap("wall_normal");
+	pared->setMaterial("cromo");
 	pared->setPosition({ -5,6.5,-15 });
 	pared->rotate(PI / 2, { 1,0,0 });
 	AddEntity(pared);
@@ -433,7 +433,7 @@ void PruebaScene::PruebaMateriales()
 	// Plano para iluminación Blinn-Phong
 	Grid* plano = new Grid(10, 10, 3, 3);
 	plano->setTexture("wall");
-	plano->setMaterial("blinn");
+	//plano->setMaterial("blinn");
 	plano->setShader("lights");
 	plano->setPosition({ 60,0,0 });
 	AddEntity(plano);
