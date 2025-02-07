@@ -38,6 +38,7 @@ in DATA
 	vec2 TexCoords;
 	vec3 normals;
 	vec3 fragPos;
+	mat3 TBN;
 } data_in;
 
 // Obligatorio darle un valor al fragmento actual
@@ -65,10 +66,12 @@ vec3 CalcSpotlight(Light light);
 
 void main()
 {
-	// Cogemos la normal del fragmento actual
+	// 1) Cogemos la normal del fragmento actual
 	fragNormal = texture(normalMap, data_in.TexCoords).rgb;
-	// Pasar del valor RGB a la normal
+	// 2) Pasar del valor RGB a la normal
 	fragNormal = normalize(fragNormal * 2.0 - 1.0);
+	// 3) Pasar de espacio tangente a espacio global, con la matriz TBN
+	fragNormal = normalize(data_in.TBN * fragNormal);
 	
 	// Cogemos el color de la textura correspondiente al fragmento actual
 	vec4 texColor = texture(textura, data_in.TexCoords);

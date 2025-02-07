@@ -226,7 +226,6 @@ void PruebaScene::init()
 
 	AddEntity(gm);
 
-
 	/* - - - Efectos de postprocesado (el orden importa) - - - */
 	//AddComposite((Shader*)&ResourceManager::Instance()->getComposite("byn"));
 	//AddComposite((Shader*)&ResourceManager::Instance()->getComposite("waves"));
@@ -293,7 +292,7 @@ void PruebaScene::loadResources()
 	ResourceManager::Instance()->loadShader("maximize.vert", "", "fog.frag", "bigFog");
 	ResourceManager::Instance()->loadShader("default.vert", "", "movimiento.frag", "movimiento");
 	ResourceManager::Instance()->loadShader("default.vert", "", "multitexture.frag", "multitexture");
-	ResourceManager::Instance()->loadShader("lights.vert", "", "normalMap.frag", "normalMap");
+	ResourceManager::Instance()->loadShader("normalMap.vert", "", "normalMap.frag", "normalMap");
 	ResourceManager::Instance()->loadShader("clippable.vert", "", "default.frag", "clippable");
 	ResourceManager::Instance()->loadShader("default.vert", "terrain.tesc", "terrain.tese", "", "default.frag", "terreno");
 
@@ -416,6 +415,7 @@ void PruebaScene::PruebaMateriales()
 	pared->setMaterial("cromo");
 	pared->setPosition({ -5,6.5,-15 });
 	pared->rotate(PI / 2, { 1,0,0 });
+	pared->addComponent(new RotationComp(0.5));
 	AddEntity(pared);
 
 	// Pared sin normal map para comparar
@@ -424,9 +424,10 @@ void PruebaScene::PruebaMateriales()
 	pared2->setShader("lights");
 	pared2->setPosition({ 10,6.5,-15 });
 	pared2->rotate(PI / 2, { 1,0,0 });
+	pared2->addComponent(new RotationComp(0.5));
 	AddEntity(pared2);
 
-	//pared->rotate(PI / 2, { 0,1,0 });
+	//pared->rotate(-PI / 2, { 1,0,0 });
 	//pared2->rotate(PI / 2, { 0,1,0 });
 
 

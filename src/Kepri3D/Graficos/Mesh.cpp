@@ -112,10 +112,26 @@ void Mesh::drawInstanced(GLuint numInstances)
 
 // - - - - - - - - - - - - - - - - - - -
 
+IndexMesh::~IndexMesh() 
+{
+	if (indices != nullptr)
+		delete[] indices;
+	if (tangentes != nullptr)
+		delete[] tangentes;
+}
+
 void IndexMesh::draw()
 {
-	// Activa los arrays de vértices, colores, texturas... y el de índices
+	// Activa los arrays de vértices, colores, texturas...
 	Mesh::enableArrays();
+	// Tangentes
+	if (tangentes != nullptr)
+	{
+		// Para el vertex shader
+		glVertexAttribPointer(4, 3, GL_FLOAT, GL_FALSE, 0, tangentes);
+		glEnableVertexAttribArray(4);
+	}
+	// Índices
 	if (indices != nullptr)
 	{
 		glEnableClientState(GL_INDEX_ARRAY);
@@ -127,6 +143,7 @@ void IndexMesh::draw()
 
 	// Dejarlo todo como estaba
 	glDisableClientState(GL_INDEX_ARRAY);
+	glDisableVertexAttribArray(4);
 	Mesh::disableArrays();
 }
 
@@ -171,6 +188,49 @@ void IndexMesh::SetNormals()
 	// Normalizar las normales
 	for (int i = 0; i < numVertices; i++)
 		normales[i] = glm::normalize(normales[i]);
+}
+
+// Muy similar a setNormals()
+void IndexMesh::setTangents()
+{
+	tangentes = new glm::vec3[numVertices];
+	// Se inicializan todas a 0
+	for (int i = 0; i < numVertices; i++)
+		tangentes[i] = { 0,0,0 };
+
+	// Para cada triángulo:
+	for (int i = 0; i < numIndices; i+=3)
+	{
+		// Los 3 vértices del triángulo (y sus UVs)
+		glm::dvec3 a = vertices[indices[i]];
+		glm::dvec3 b = vertices[indices[i + 1]];
+		glm::dvec3 c = vertices[indices[i + 2]];
+
+		glm::dvec2 UVa = texCoords[indices[i]];
+		glm::dvec2 UVb = texCoords[indices[i + 1]];
+		glm::dvec2 UVc = texCoords[indices[i + 2]];
+
+		// Incremento en la posición y las UV
+		glm::vec3 edge1 = b - a;
+		glm::vec3 edge2 = c - a;
+		glm::vec2 deltaUV1 = UVb - UVa;
+		glm::vec2 deltaUV2 = UVc - UVa;
+
+		// Calcular la tangente al triángulo
+		float f = 1.0f / (deltaUV1.x * deltaUV2.y - deltaUV2.x * deltaUV1.y);
+
+		glm::dvec3 t = { f * (deltaUV2.y * edge1.x - deltaUV1.y * edge2.x) ,
+			f * (deltaUV2.y * edge1.y - deltaUV1.y * edge2.y),
+			f * (deltaUV2.y * edge1.z - deltaUV1.y * edge2.z) };
+
+		// Sumársela a sus vértices
+		tangentes[indices[i]] += t;
+		tangentes[indices[i + 1]] += t;
+		tangentes[indices[i + 2]] += t;
+	}
+	// Normalizar las tangentes
+	for (int i = 0; i < numVertices; i++)
+		tangentes[i] = glm::normalize(tangentes[i]);
 }
 
 // - - - - - - - - - Mallas - - - - - - - - - - //

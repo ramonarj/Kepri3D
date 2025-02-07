@@ -71,9 +71,9 @@ class IndexMesh : public Mesh
 {
 public:
 	/* Constructora por defecto */
-	IndexMesh() : indices(nullptr), numIndices(0) {}
+	IndexMesh() : indices(nullptr), tangentes(nullptr), numIndices(0) {}
 	/* Destructora */
-	virtual ~IndexMesh() { delete[] indices; }
+	virtual ~IndexMesh(); 
 
 	/* Pinta la malla pero usando la tabla de índices, y no otras primitivas */
 	void draw() override;
@@ -99,11 +99,17 @@ public:
 	/* - - Cubemap - - */
 	static IndexMesh* generateCubemap(GLdouble size = 4.0);
 
+	/* Rellena el vector de tangentes usando los triángulos y las UV */
+	void setTangents();
+
 protected:
 	friend class MeshLoader;
 
 	/* Tabla de índices para formar los triángulos */
 	GLuint* indices;
+
+	/* Array de tangentes a cada uno de los vértices, en la dirección 'u' de la textura */
+	glm::vec3* tangentes;
 
 	/* Variable auxiliar para ahorrar cálculos (= numTriangulos * 3) */
 	GLuint numIndices;
@@ -111,6 +117,7 @@ protected:
 	// Métodos auxiliares
 	/* Rellena el vector de normales usando los triángulos indexados */
 	void SetNormals();
+
 };
 
 // - - - - - - - - - - - - - - 

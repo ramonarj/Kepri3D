@@ -572,7 +572,9 @@ void Hierba::update(GLuint timeElapsed)
 
 NormalMapWall::NormalMapWall(GLuint filas, GLuint columnas, GLdouble tamFila, GLdouble tamColumna)
 {
-	m_mesh = IndexMesh::generateGrid(filas, columnas,tamFila, tamColumna);
+	IndexMesh* m = IndexMesh::generateGrid(filas, columnas, tamFila, tamColumna);
+	m->setTangents();
+	m_mesh = m;
 	m_name = "Wall";
 
 	setShader("normalMap");
