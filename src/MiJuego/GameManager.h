@@ -41,7 +41,7 @@ private:
 	bool fullscreen = false;
 	// Luces
 	GLuint totalTime = 0;
-	float sunVel = 0.3;
+	float sunVel = 0.15;
 	bool movingLights = true;
 	// Partículas
 	GLdouble velTorre = 10.0f;

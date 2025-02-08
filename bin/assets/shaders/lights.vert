@@ -20,12 +20,12 @@ out DATA
 
 void main()
 {
+	// Posición del vértice en Clip Space
 	gl_Position = vec4(projection * view * model * vertex);
-	
+	// Pasar las UV
 	data_out.TexCoords = uv0;
-	// Posición del fragmento en el espacio global
+	// Posición del fragmento en World Space
 	data_out.fragPos = vec3(model * vertex);
 	// Aplicar la rotación del modelo a las normales (copiado de https://learnopengl.com/Lighting/Basic-Lighting)
 	data_out.normals = mat3(transpose(inverse(model))) * aNormals;
-	//data_out.normals = aNormals;
 }

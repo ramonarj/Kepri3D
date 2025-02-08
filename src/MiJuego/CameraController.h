@@ -16,7 +16,7 @@ private:
 	Camera* cam;
 
 	double velocidad = 16.0f;
-	float sensibilidad = 1.5;
+	float sensibilidad = 0.3;
 
 	// Métodos
 	void movimientoCamara(GLuint deltaTime);

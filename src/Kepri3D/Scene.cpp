@@ -95,7 +95,7 @@ void Scene::renderSkybox(const glm::dmat4& projViewMat)
 		// Activar el shader y pasarle la MVP
 		m_skybox->getShader()->use();
 		m_skybox->getShader()->setVec3("viewPos", m_camera->getPosition());
-		m_skybox->getShader()->setMat4d("projViewMat", projViewMat);
+		m_skybox->getShader()->setMat4("projViewMat", projViewMat);
 
 		// Pintar el skybox
 		m_skybox->render();

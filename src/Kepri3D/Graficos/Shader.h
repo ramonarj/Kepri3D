@@ -38,8 +38,11 @@ public:
 	/* Pasa un uniform de tipo VEC4 al shader */
 	void setVec4(const std::string& name, const glm::vec4 value) const;
 
+	/* Pasa un uniform de tipo MAT4 al shader */
+	void setMat4(const std::string& name, const glm::mat4 matValue) const;
+
 	/* Pasa un uniform de tipo DMAT4 al shader */
-	void setMat4d(const std::string& name, const glm::dmat4 value) const; // TODO
+	void setMat4d(const std::string& name, const glm::dmat4 value) const; // TODO por referencia
 
 private:
 	/* IDs del Vertex, Tess. Control, Tess. Eval., Geometry y Fragment shader (en ese orden) */

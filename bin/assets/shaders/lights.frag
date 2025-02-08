@@ -1,6 +1,6 @@
 #version 330 core
 
-// Estructuras necesarias
+// Material con sus 3 componentes
 struct Material
 {
 	vec3 ambient;
@@ -10,7 +10,8 @@ struct Material
 	float brillo;
 };
 
-struct Light // (direccional)
+// Struct multifunción para los 3 tipos de luces
+struct Light 
 {
 	int type; 
 	
@@ -61,9 +62,11 @@ uniform vec3 viewPos;
 uniform bool use_spec_map;
 
 // Prototipos para las funciones
-vec3 CalcDirLight(Light light);
-vec3 CalcPointLight(Light light);
-vec3 CalcSpotlight(Light light);
+vec3 CalcDirLight(Light light, vec3 normal, vec3 viewDir);
+vec3 CalcPointLight(Light light, vec3 normal, vec3 viewDir);
+vec3 CalcSpotlight(Light light, vec3 normal, vec3 viewDir);
+
+float SpecFactor(vec3 lightDir, vec3 viewDir, vec3 normal, float brillo, bool useBlinn);
 
 const float PI = 3.141593;
 
@@ -71,6 +74,12 @@ void main()
 {
 	// Cogemos el color de la textura correspondiente al fragmento actual
 	vec4 texColor = texture(textura, data_in.TexCoords);
+	
+	// Variables comunes a todas las luces. NOTA: todos los vectores salen del fragmento (N, V, L, R...)
+	vec3 viewDir = normalize(viewPos - data_in.fragPos);
+	// La interpolación de normales por el FS genera un acortamiento en éstas, provocando que el triángulo 
+	// sea más brillante en los bordes. Por eso, hay que volver a normalizarla aquí.
+	vec3 normal = normalize(data_in.normals);
 
 	// Iteramos todas las luces para conocer la iluminación del fragmento
 	vec3 luzTotal = vec3(0.0);
@@ -78,31 +87,23 @@ void main()
 	{
 		// a) Luces direccionales
 		if(luces[i].type == 0)
-		{
-			luzTotal += CalcDirLight(luces[i]);
-		}
+			luzTotal += CalcDirLight(luces[i], normal, viewDir);
 		// b) Luces puntuales
 		else if(luces[i].type == 1)
-		{
-			luzTotal += CalcPointLight(luces[i]);
-		}
+			luzTotal += CalcPointLight(luces[i], normal, viewDir);
 		// c) Focos
 		else if(luces[i].type == 2)
-		{
-			luzTotal += CalcSpotlight(luces[i]);
-		}
+			luzTotal += CalcSpotlight(luces[i], normal, viewDir);
 	}
 	
 	// Aplicamos la iluminación al color de la textura (* = MODULATE, + = ADD, ...)
 	vec3 result = luzTotal * vec3(texColor);
 
 	FragColor = vec4(result, texColor.a);
-	//FragColor = texture(material.specular_map, data_in.TexCoords);
-	//FragColor = vec4(1, 0, 0, 1);
 }
 
 /* Calcula la cantidad de luz que recibe el fragmento de una luz direccional */
-vec3 CalcDirLight(Light light)
+vec3 CalcDirLight(Light light, vec3 normal, vec3 viewDir)
 {
 	// Obtener la dirección normalizada de cada luz
 	vec3 lightDir = normalize(light.dir);
@@ -112,16 +113,13 @@ vec3 CalcDirLight(Light light)
 
 	// - - Calcular la componente difusa - - //
 	// Producto escalar de la normal con la dirección de la luz
-	float diff = max(dot(data_in.normals, lightDir), 0.0);
+	float diff = max(dot(normal, lightDir), 0.0);
 	vec3 diffuse = material.diffuse * diff * light.diffuse;
 
 	// - - Calcular la componente especular - - //
-	vec3 viewDir = normalize(viewPos - data_in.fragPos);
-	// 'reflect' calcula el vector de reflexión
-	vec3 reflectDir = reflect(-lightDir, data_in.normals);
-
-	float spec = pow(max(dot(viewDir, reflectDir), 0.0), material.brillo);
+	float spec = SpecFactor(lightDir, viewDir, normal, material.brillo, blinn);
     vec3 specular = light.specular * spec;
+	
 	// Usar una textura/no para la componente especular
 	if(use_spec_map)
 		specular *= vec3(texture(material.specular_map, data_in.TexCoords));
@@ -133,27 +131,16 @@ vec3 CalcDirLight(Light light)
 }
 
 /* Calcula la cantidad de luz que recibe el fragmento de una luz direccional */
-vec3 CalcPointLight(Light light)
+vec3 CalcPointLight(Light light, vec3 normal, vec3 viewDir)
 {
 	// Obtener la dirección normalizada de cada luz
     vec3 lightDir = normalize(light.dir - data_in.fragPos);
 	
     // - - Calcular la componente difusa - - //
-    float diff = max(dot(data_in.normals, lightDir), 0.0);
+    float diff = max(dot(normal, lightDir), 0.0);
 	
     // - - Calcular la componente especular - - //
-	vec3 viewDir = normalize(viewPos - data_in.fragPos);
-	float spec = 0.0;
-	if(blinn)
-	{
-		vec3 halfwayDir = normalize(lightDir + viewDir);  
-        spec = pow(max(dot(data_in.normals, halfwayDir), 0.0), material.brillo);
-	}
-	else
-	{
-		vec3 reflectDir = reflect(-lightDir, data_in.normals);
-		spec = pow(max(dot(viewDir, reflectDir), 0.0), material.brillo);
-	}
+	float spec = SpecFactor(lightDir, viewDir, normal, material.brillo, blinn);
 	
     // - - Atenuación por la distancia - - //
     float distance = length(light.dir - data_in.fragPos);
@@ -178,7 +165,7 @@ vec3 CalcPointLight(Light light)
 }
 
 /* Calcula la cantidad de luz que recibe el fragmento de una luz direccional */
-vec3 CalcSpotlight(Light light)
+vec3 CalcSpotlight(Light light, vec3 normal, vec3 viewDir)
 {
 	// Obtener la dirección normalizada de cada luz
     vec3 lightDir = normalize(light.dir - data_in.fragPos);
@@ -199,12 +186,10 @@ vec3 CalcSpotlight(Light light)
 	}
 		
 	// Tener en cuenta también las normales	
-	diff *= max(dot(data_in.normals, -light.spotDir), 0.0);
+	diff *= max(dot(normal, -light.spotDir), 0.0);
 	
     // - - Calcular la componente especular - - //
-	vec3 viewDir = normalize(viewPos - data_in.fragPos);
-    vec3 reflectDir = reflect(light.spotDir, data_in.normals);
-    float spec = pow(max(dot(viewDir, reflectDir), 0.0), material.brillo);
+	float spec = SpecFactor(lightDir, viewDir, normal, material.brillo, blinn);
 	
     // - - Atenuación por la distancia - - //
     float distance = length(light.dir - data_in.fragPos);
@@ -227,4 +212,25 @@ vec3 CalcSpotlight(Light light)
     specular *= attenuation;
 	
     return (ambient + diffuse + specular);
+}
+
+float SpecFactor(vec3 lightDir, vec3 viewDir, vec3 normal, float brillo, bool useBlinn)
+{
+	// Evitar reflejos que vengan desde detrás de la superficie
+	if(dot(normal, lightDir) <= 0)
+		return 0;
+	// Blinn-Phong
+	float spec = 0.0;
+	if(useBlinn)
+	{
+		vec3 halfwayDir = normalize(lightDir + viewDir);  
+        spec = pow(max(dot(normal, halfwayDir), 0.0), brillo);
+	}
+	// Phong
+	else
+	{
+		vec3 reflectDir = reflect(-lightDir, normal);
+		spec = pow(max(dot(viewDir, reflectDir), 0.0), brillo);
+	}
+	return spec;
 }

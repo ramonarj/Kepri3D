@@ -69,14 +69,20 @@ void CameraController::movimientoCamara(GLuint deltaTime)
 
 void CameraController::rotacionesCamara(GLuint deltaTime)
 {
-	glm::ivec2 mousePos = InputManager::Instance()->getMousePos();
+	glm::vec2 rotCamara = { 0,0 };
+
 	// Incremento en la posición del ratón
+	glm::ivec2 mousePos = InputManager::Instance()->getMousePos();
 	glm::dvec2 diff((double)mousePos.x - cam->getVP()->getW() / 2,
 		(double)mousePos.y - cam->getVP()->getH() / 2);
 
+	// Aplicarle la sensibilidad
+	rotCamara -= diff;
+	rotCamara *= (deltaTime / 1000.0 * sensibilidad);
+
 	// Cámara tipo FPS; las rotaciones en Y son globales y en X son locales.
-	cam->rotate(-diff.x / 1000.0 * sensibilidad, { 0,1,0 }, GLOBAL);
-	cam->rotate(-diff.y / 1000.0 * sensibilidad, { 1,0,0 }, LOCAL); // lo mismo que hacer pitch
+	cam->rotate(rotCamara.x, { 0,1,0 }, GLOBAL);
+	cam->rotate(rotCamara.y, { 1,0,0 }, LOCAL); // lo mismo que hacer pitch
 }
 
 void CameraController::volumenVistaCamara(GLuint deltaTime)

@@ -26,16 +26,16 @@ void PruebaScene::init()
 	// LUCES
 	// Direccional
 	Light* dirLight = new Light(DIRECTIONAL_LIGHT);
-	dirLight->setDirection({ 1,0 , 0 });
+	dirLight->setDirection({ -1,0 , 0 });
 	dirLight->setDiffuse({ 1, 1, 1, 1.0 });
-	dirLight->setAmbient({ 0.2, 0.2, 0.2, 0.0 });
+	dirLight->setAmbient({ 0.2, 0.2, 0.5, 0.0 });
 	dirLight->setActive(true);
 	AddLight(dirLight);
 
 	// Puntual (va en círculos)
 	Light* circleLight = new Light(POINT_LIGHT, { 1, 1, 0, 1 });
 	circleLight->setPosition({ 3,3,-3 });
-	circleLight->setAmbient({ 0.05, 0.2, 0.02, 1.0 });
+	circleLight->setAmbient({ 0.1, 0.5, 0.1, 1.0 });
 	circleLight->setSpecular({ 1, 1, 0, 1.0 });
 	AddLight(circleLight);
 
@@ -419,7 +419,7 @@ void PruebaScene::PruebaMateriales()
 	AddEntity(pared);
 
 	// Pared sin normal map para comparar
-	Grid* pared2 = new Grid(25, 25, 0.6, 0.6);
+	Grid* pared2 = new Grid(1, 1, 15, 15);
 	pared2->setTexture("wall");
 	pared2->setShader("lights");
 	pared2->setPosition({ 10,6.5,-15 });
@@ -434,7 +434,7 @@ void PruebaScene::PruebaMateriales()
 	// Plano para iluminación Blinn-Phong
 	Grid* plano = new Grid(10, 10, 3, 3);
 	plano->setTexture("wall");
-	//plano->setMaterial("blinn");
+	plano->setMaterial("blinn");
 	plano->setShader("lights");
 	plano->setPosition({ 60,0,0 });
 	AddEntity(plano);
@@ -444,6 +444,14 @@ void PruebaScene::PruebaMateriales()
 	cortado->setTexture("default");
 	cortado->setPosition({ -25,1,5 });
 	AddEntity(cortado);
+
+	// Esfera HD
+	Esfera* esf = new Esfera(10, 40);
+	esf->setTexture("default");
+	esf->setPosition({ 0,10,25 });
+	esf->setMaterial("cromo");
+	esf->setShader("lights");
+	AddEntity(esf);
 }
 
 void PruebaScene::ViewportTest()
