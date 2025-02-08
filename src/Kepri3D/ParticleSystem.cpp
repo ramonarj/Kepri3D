@@ -74,8 +74,8 @@ void ParticleSystem::render()
 	glPolygonMode(GL_BACK, GL_LINE);
 
 	// Activar la textura si la tiene
-	if (m_texture != nullptr)
-		m_texture->bind();
+	if (m_textures[0] != nullptr)
+		m_textures[0]->bind();
 
 	// 2) Dibujar las mallas de todas las partículas a la vez
 	if (m_mesh != nullptr)
@@ -94,8 +94,8 @@ void ParticleSystem::render()
 	}
 
 	// Desactivar la textura si la tiene
-	if (m_texture != nullptr)
-		m_texture->unbind();
+	if (m_textures[0] != nullptr)
+		m_textures[0]->unbind();
 }
 
 

@@ -52,11 +52,11 @@ void Entity::defaultValues()
 	m_active = true;
 	m_parent = nullptr;
 	m_mesh = nullptr;
-	m_texture = nullptr;
+	for (int i = 0; i < NUM_TEXTURES; i++)
+		m_textures[i] = nullptr;
 	// Pone la matriz de modelado a la matriz identidad de grado 4 (1 0 0 0 / 0 1 0 0 ...)
 	modelMat = (1.0);
 	m_shader = nullptr;
-	m_specMap = nullptr;
 
 	m_polyModeFront = GL_FILL;
 	m_polyModeBack = GL_LINE;
@@ -80,8 +80,8 @@ void Entity::render(glm::dmat4 const& viewMat)
 
 	// 1) Renderizar la propia entidad
 	// Activar la textura si la tiene
-	if (m_texture != nullptr)
-		m_texture->bind();
+	if (m_textures[0] != nullptr)
+		m_textures[0]->bind();
 
 	// 1) Cargar la matriz V*M
 	// Decirle a OpenGL que la siguiente matriz que cargaremos es de modelado/vista (no de proyección)
@@ -96,8 +96,8 @@ void Entity::render(glm::dmat4 const& viewMat)
 		m_mesh->draw();
 
 	// Desactivar la textura si la tiene
-	if (m_texture != nullptr)
-		m_texture->unbind();
+	if (m_textures[0] != nullptr)
+		m_textures[0]->unbind();
 
 
 	// 2) Renderizar sus hijos
@@ -113,16 +113,16 @@ void Entity::render()
 
 	// 1) Renderizar la propia entidad
 	// Activar la textura si la tiene
-	if (m_texture != nullptr)
-		m_texture->bind();
+	if (m_textures[0] != nullptr)
+		m_textures[0]->bind();
 
 	// 2) Dibujar la/s malla/s
 	if (m_mesh != nullptr)
 		m_mesh->draw();
 
 	// Desactivar la textura si la tiene
-	if (m_texture != nullptr)
-		m_texture->unbind();
+	if (m_textures[0] != nullptr)
+		m_textures[0]->unbind();
 
 	// 2) Renderizar sus hijos con el mismo shader dado
 	for (Entity* e : m_children)
@@ -210,11 +210,6 @@ void Entity::setMesh(const std::string& meshID)
 	m_mesh = (Mesh*) & ResourceManager::Instance()->getMesh(meshID);
 }
 
-void Entity::setTexture(const std::string& textureID)
-{
-	m_texture = (Texture*)&ResourceManager::Instance()->getTexture(textureID);
-}
-
 void Entity::setMaterial(const std::string& materialID)
 {
 	m_material = ResourceManager::Instance()->getMaterial(materialID);
@@ -225,9 +220,29 @@ void Entity::setShader(const std::string& shaderID)
 	m_shader = (Shader*)&ResourceManager::Instance()->getShader(shaderID);
 }
 
+void Entity::setTexture(const std::string& textureID)
+{
+	m_textures[0] = (Texture*)&ResourceManager::Instance()->getTexture(textureID);
+}
+
+void Entity::setSecondTex(const std::string& textureID)
+{
+	m_textures[1] = (Texture*)&ResourceManager::Instance()->getTexture(textureID);
+}
+
 void Entity::setSpecularMap(const std::string& textureID)
 {
-	m_specMap = (Texture*)&ResourceManager::Instance()->getTexture(textureID);
+	m_textures[2] = (Texture*)&ResourceManager::Instance()->getTexture(textureID);
+}
+
+void Entity::setNormalMap(const std::string& textureID)
+{
+	m_textures[3] = (Texture*)&ResourceManager::Instance()->getTexture(textureID);
+}
+
+void Entity::setDisplacementMap(const std::string& textureID)
+{
+	m_textures[4] = (Texture*)&ResourceManager::Instance()->getTexture(textureID);
 }
 
 void Entity::setPolygonMode(GLenum front, GLenum back)
@@ -308,18 +323,13 @@ MovingGrid::MovingGrid(GLuint filas, GLuint columnas, GLdouble tamFila, GLdouble
 	velTex = { 2, 0 };
 }
 
-void MovingGrid::setDisplacementMap(const std::string& textureID)
-{
-	m_dispMap = (Texture*)&ResourceManager::Instance()->getTexture(textureID);
-}
-
 void MovingGrid::render()
 {
 	// Mandar las texturas al shader
 	glActiveTexture(GL_TEXTURE0);
-	m_texture->bind();
+	m_textures[0]->bind();
 	glActiveTexture(GL_TEXTURE1);
-	m_dispMap->bind();
+	m_textures[4]->bind();
 
 	m_shader->setInt("textura", 0); //este incluso sobraría, porque se manda automático
 	m_shader->setInt("dispMap", 1);
@@ -334,10 +344,10 @@ void MovingGrid::render()
 	if (m_mesh != nullptr)
 		m_mesh->draw();
 
-	m_dispMap->unbind();
+	m_textures[4]->unbind();
 	glActiveTexture(GL_TEXTURE0);
 
-	m_texture->unbind();
+	m_textures[0]->unbind();
 }
 
 // - - - - - - - - - - - - - - - - - 
@@ -396,18 +406,18 @@ void Billboard::render()
 	// Uniforms necesarios
 	m_shader->setVec2("ancla", ancla);
 
-	m_texture->bind();
+	m_textures[0]->bind();
 
 	// Dibujar la entidad
 	if (m_mesh != nullptr)
 		m_mesh->draw();
 
-	m_texture->unbind();
+	m_textures[0]->unbind();
 }
 
 // - - - - - - - - - - - - - - - - - 
 
-CuboMultitex::CuboMultitex(GLdouble size) : secondTex(nullptr)
+CuboMultitex::CuboMultitex(GLdouble size)
 {
 	m_mesh = IndexMesh::generateCube(size, true);
 	m_name = "CuboMT";
@@ -419,9 +429,9 @@ CuboMultitex::CuboMultitex(GLdouble size) : secondTex(nullptr)
 void CuboMultitex::render()
 {
 	glActiveTexture(GL_TEXTURE0);
-	m_texture->bind();
+	m_textures[0]->bind();
 	glActiveTexture(GL_TEXTURE1);
-	secondTex->bind();
+	m_textures[1]->bind();
 
 	// Pasar las texturas al shader
 	m_shader->setInt("texture1", 0); //este incluso sobraría, porque se manda automático
@@ -433,15 +443,10 @@ void CuboMultitex::render()
 	if (m_mesh != nullptr)
 		m_mesh->draw();
 
-	secondTex->unbind();
+	m_textures[1]->unbind();
 	glActiveTexture(GL_TEXTURE0);
 
-	m_texture->unbind();
-}
-
-void CuboMultitex::setSecondTex(const std::string& textureID)
-{
-	this->secondTex = (Texture*)&ResourceManager::Instance()->getTexture(textureID);
+	m_textures[0]->unbind();
 }
 
 // - - - - - - - - - - - - - - - - - 
@@ -459,14 +464,14 @@ void CuboSpecmap::render()
 {
 	// Pasar las texturas al shader
 	glActiveTexture(GL_TEXTURE0);
-	m_texture->bind();
+	m_textures[0]->bind();
 	m_shader->setInt("textura", 0);
 
 	// Mapa especular
-	if(m_specMap != nullptr)
+	if(m_textures[2] != nullptr)
 	{
 		glActiveTexture(GL_TEXTURE1);
-		m_specMap->bind();
+		m_textures[2]->bind();
 		m_shader->setInt("use_spec_map", true);
 		m_shader->setInt("material.specular_map", 1);
 	}
@@ -476,7 +481,7 @@ void CuboSpecmap::render()
 		m_mesh->draw();
 	
 	// Dejarlo todo como estaba
-	m_specMap->unbind();
+	m_textures[2]->unbind();
 	glActiveTexture(GL_TEXTURE0);
 	m_shader->setInt("use_spec_map", false);
 }
@@ -500,8 +505,8 @@ void Hierba::render(glm::dmat4 const& viewMat)
 	glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
 
 	// Activar la textura si la tiene
-	if (m_texture != nullptr)
-		m_texture->bind();
+	if (m_textures[0] != nullptr)
+		m_textures[0]->bind();
 
 	// Pintar los haces
 	if (m_mesh != nullptr)
@@ -524,8 +529,8 @@ void Hierba::render(glm::dmat4 const& viewMat)
 	}
 
 	// Desactivar la textura si la tiene
-	if (m_texture != nullptr)
-		m_texture->unbind();
+	if (m_textures[0] != nullptr)
+		m_textures[0]->unbind();
 
 	if(cullActivado)
 		glEnable(GL_CULL_FACE);
@@ -548,18 +553,13 @@ NormalMapWall::NormalMapWall(GLuint filas, GLuint columnas, GLdouble tamFila, GL
 	setShader("normalMap");
 }
 
-void NormalMapWall::setNormalMap(const std::string& textureID)
-{
-	normalMap = (Texture*)&ResourceManager::Instance()->getTexture(textureID);
-}
-
 
 void NormalMapWall::render()
 {
 	glActiveTexture(GL_TEXTURE0);
-	m_texture->bind();
+	m_textures[0]->bind();
 	glActiveTexture(GL_TEXTURE1);
-	normalMap->bind();
+	m_textures[3]->bind();
 
 	// Pasar las texturas al shader
 	m_shader->setInt("textura", 0); //este incluso sobraría, porque se manda automático
@@ -569,10 +569,10 @@ void NormalMapWall::render()
 	if (m_mesh != nullptr)
 		m_mesh->draw();
 
-	normalMap->unbind();
+	m_textures[3]->unbind();
 	glActiveTexture(GL_TEXTURE0);
 
-	m_texture->unbind();
+	m_textures[0]->unbind();
 }
 
 // - - - - - - - - - - - - - - - - - 

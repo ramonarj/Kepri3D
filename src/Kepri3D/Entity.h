@@ -13,6 +13,7 @@ class Component;
 #include <iostream>
 #include "Utils.h"
 
+const unsigned int NUM_TEXTURES = 5;
 
 class Entity
 {
@@ -64,17 +65,26 @@ public:
 	/* Establece la malla (ya creada) que usará la entidad */
 	void setMesh(const std::string& meshID);
 
-	/* Establece la textura (ya creada) que usará la entidad */
-	void setTexture(const std::string& textureID);
-
 	/* Establece el material (ya creado) que usará la entidad */
 	void setMaterial(const std::string& materialID);
 
 	/* Establece el shader (ya creado) que usará la entidad */
 	void setShader(const std::string& shaderID);
 
-	/* Establece el mapa especular (textura en B/N) que se usará para los brillos especulares de la textura principal */
+	/* Establece la textura principal (diffuse) que usará la entidad */
+	void setTexture(const std::string& textureID);
+
+	/* Establece la textura secundaria a usar, que se mezclará con la principal en la medida dada */
+	void setSecondTex(const std::string& textureID);
+
+	/* Establece el mapa especular (textura en B/N) que se usará para 'reemplazar' la componente specular del material */
 	void setSpecularMap(const std::string& textureID);
+
+	/* Establece el mapa de normales (bump map) que se usará para 'reemplazar' las normales de la malla */
+	void setNormalMap(const std::string& textureID);
+
+	/* Establece el mapa de desplazamiento (textura en B/N) que desplazará las coordenadas de textura de la malla */
+	void setDisplacementMap(const std::string& textureID);
 
 	/* Cómo debe pintarse la entidad por delante y detrás (GL_FILL/GL_LINE/GL_POINT) */
 	void setPolygonMode(GLenum front, GLenum back);
@@ -134,17 +144,19 @@ protected:
 	(traslaciones, rotaciones, escalados) hechas a la entidad */
 	glm::dmat4 modelMat;
 
-	/* Textura utilizada por la entidad */
-	Texture* m_texture;
+	/* Texturas utilizada por la entidad */
+	// 0 = Textura Principal
+	// 1 = Textura Secundaria
+	// 2 = Specular Map
+	// 3 = Normal Map
+	// 4 = Displacement Map
+	Texture* m_textures[NUM_TEXTURES];
 
 	/* Material usado por la entidad */
 	Material m_material;
 
 	/* Shader usado por la entidad */
 	Shader* m_shader;
-
-	/* Mapa especular usado para la entidad */
-	Texture* m_specMap;
 
 	/* Forma en que debe pintarse */
 	GLenum m_polyModeFront;
@@ -226,10 +238,7 @@ public:
 	void render() override;
 
 	void setSpeeds(glm::vec2 texSpeed, glm::vec2 dispSpeed) { velTex = texSpeed; velDisp = dispSpeed; }
-	void setDisplacementMap(const std::string& textureID);
 private:
-	Texture* m_dispMap;
-
 	glm::vec2 velTex;
 	// Útil para simular la dirección y fuerza del viento en la superficie del agua
 	glm::vec2 velDisp;
@@ -288,10 +297,6 @@ public:
 	~CuboMultitex() { };
 
 	void render() override;
-
-	void setSecondTex(const std::string& textureID);
-private:
-	Texture* secondTex;
 };
 
 // - - - - - - - - - - - - 
@@ -326,11 +331,6 @@ public:
 	~NormalMapWall() { };
 
 	void render() override;
-
-	void setNormalMap(const std::string& textureID);
-
-private:
-	Texture* normalMap;
 };
 
 // - - - - - - - - - - - - 

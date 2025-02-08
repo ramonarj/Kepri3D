@@ -33,8 +33,8 @@ void UIElement::setScaleUI(float x, float y)
 void UIElement::render(glm::dmat4 const& viewMat)
 {
 	// 1) Renderizarme yo mismo
-	if(m_texture != nullptr)
-		m_texture->bind(GL_REPLACE); // a los elementos del canvas NO les afecta la iluminación (no usamos MODULATE)
+	if(m_textures[0] != nullptr)
+		m_textures[0]->bind(GL_REPLACE); // a los elementos del canvas NO les afecta la iluminación (no usamos MODULATE)
 
 	// Cargar la matriz de modelado
 	glMatrixMode(GL_MODELVIEW);
@@ -44,8 +44,8 @@ void UIElement::render(glm::dmat4 const& viewMat)
 	if (m_mesh != nullptr)
 		m_mesh->draw();
 
-	if (m_texture != nullptr)
-		m_texture->unbind();
+	if (m_textures[0] != nullptr)
+		m_textures[0]->unbind();
 
 	// 2) Renderizar mis hijos
 	for (Entity* e : m_children)
