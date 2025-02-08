@@ -12,7 +12,6 @@ Material::Material()
 	m_emission = { 0.0, 0.0, 0.0, 1.0 };
 	m_brillo = 32;
 	m_face = GL_FRONT;
-	m_translucent = false;
 }
 
 Material::Material(glm::fvec4 ambient, glm::fvec4 diffuse, glm::fvec4 specular, glm::fvec4 emission, GLfloat brillo)
@@ -24,9 +23,6 @@ Material::Material(glm::fvec4 ambient, glm::fvec4 diffuse, glm::fvec4 specular, 
 
 	m_brillo = brillo;
 	m_face = GL_FRONT;
-
-	// Si alguna componente tiene alfa, es transúcido
-	m_translucent = (ambient.a < 1 || diffuse.a < 1 || specular.a < 1);
 }
 
 void Material::load()

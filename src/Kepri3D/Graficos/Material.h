@@ -20,9 +20,6 @@ public:
 	static inline void setShadingType(GLuint sh) { m_shading = sh; }
 
 	// Getters
-	/* Indica si el material es translúcido o no */
-	inline bool isTranslucid() const { return m_translucent; }
-
 	/* Devuelve la componente ambiente del material */
 	inline const glm::vec3& getAmbient() const { return m_ambient; }
 
@@ -51,14 +48,8 @@ private:
 	/* Cara en la que se usará el material */
 	GLuint m_face;
 
-	/* Tipo de sombreado para el material */
+	/* Tipo de sombreado para los materiales (compartido) */
 	static GLuint m_shading;
-
-	/* ¿Es translúcido? */
-	bool m_translucent;
-
-	/* ¿Emite luz? */
-	//bool m_lightEmitter;
 };
 
 #endif

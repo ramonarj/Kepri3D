@@ -8,9 +8,6 @@
 
 ParticleSystem::ParticleSystem(GLdouble size, GLuint maxParticles, PARTICLE_TYPE partType)
 {
-	//m_mesh = Mesh::generateFilledPolygon(10, size);
-	//m_mesh = IndexMesh::generateRectangle(1, 1);
-	// m_mesh = IndexMesh::generateSphere(size, 12, true);
 	// Generar la malla
 	if (partType == PARTICLE_2D) // 'círculo'
 		m_mesh = IndexMesh::generateRectangle(size, size);
@@ -80,7 +77,6 @@ void ParticleSystem::render()
 	if (m_texture != nullptr)
 		m_texture->bind();
 
-	m_material.load();
 	// 2) Dibujar las mallas de todas las partículas a la vez
 	if (m_mesh != nullptr)
 	{
@@ -100,9 +96,6 @@ void ParticleSystem::render()
 	// Desactivar la textura si la tiene
 	if (m_texture != nullptr)
 		m_texture->unbind();
-
-	// Dejarlo como estaba
-	glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
 }
 
 

@@ -76,6 +76,9 @@ public:
 	/* Establece el mapa especular (textura en B/N) que se usará para los brillos especulares de la textura principal */
 	void setSpecularMap(const std::string& textureID);
 
+	/* Cómo debe pintarse la entidad por delante y detrás (GL_FILL/GL_LINE/GL_POINT) */
+	void setPolygonMode(GLenum front, GLenum back);
+
 	// Getters
 	/* Devuelve el nombre de la entidad */
 	const std::string& getName() const { return m_name; }
@@ -143,17 +146,9 @@ protected:
 	/* Mapa especular usado para la entidad */
 	Texture* m_specMap;
 
-	//Mesh* mesh = nullptr;
-	//Mesh* mesh2 = nullptr;
-	//Texture texture;
-	//Texture texture2;
-
-
-	//virtual void draw();
-	//virtual void setMvM(glm::dmat4 const& modelViewMat);
-
-	////Método auxiliar
-	//virtual void drawTexture(GLenum face, Mesh* meshUsed, Texture* textureUsed);
+	/* Forma en que debe pintarse */
+	GLenum m_polyModeFront;
+	GLenum m_polyModeBack;
 };
 
 template<typename T>

@@ -57,6 +57,9 @@ void Entity::defaultValues()
 	modelMat = (1.0);
 	m_shader = nullptr;
 	m_specMap = nullptr;
+
+	m_polyModeFront = GL_FILL;
+	m_polyModeBack = GL_LINE;
 }
 
 void Entity::addComponent(Component* c)
@@ -72,28 +75,20 @@ void Entity::addComponent(Component* c)
 
 void Entity::render(glm::dmat4 const& viewMat)
 {
-	// 1) Renderizar la propia entidad
-	
-	// Para materiales translúcidos
-	if (m_material.isTranslucid())
-	{
-		//glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-		//glDepthMask(GL_FALSE);
-	}
+	glPolygonMode(GL_FRONT, m_polyModeFront);
+	glPolygonMode(GL_BACK, m_polyModeBack);
 
+	// 1) Renderizar la propia entidad
 	// Activar la textura si la tiene
 	if (m_texture != nullptr)
 		m_texture->bind();
 
-	// 1) Cargar la matriz V*M (esto NO hace falta cuando se usan shaders)
+	// 1) Cargar la matriz V*M
 	// Decirle a OpenGL que la siguiente matriz que cargaremos es de modelado/vista (no de proyección)
 	glMatrixMode(GL_MODELVIEW);
-	// Calcular la matriz VM (vista * modelado)
+	// Calcular la matriz VM
 	glm::dmat4 modelViewMat = viewMat * modelMat;
-	// Cargarla 
 	glLoadMatrixd(value_ptr(modelViewMat));
-	//glLoadMatrixd((GLdouble*)&modelViewMat); //equivalente a hacer esto
-
 
 	// 2) Dibujar la/s malla/s
 	m_material.load();
@@ -104,29 +99,22 @@ void Entity::render(glm::dmat4 const& viewMat)
 	if (m_texture != nullptr)
 		m_texture->unbind();
 
-	//
-	if (m_material.isTranslucid())
-	{
-		//glDepthMask(GL_TRUE);
-	}
 
 	// 2) Renderizar sus hijos
 	for(Entity* e : m_children)
-	{
 		if(e->isActive())
-		{
 			e->render(modelViewMat);
-		}
-	}
 }
 
 void Entity::render()
 {
+	glPolygonMode(GL_FRONT, m_polyModeFront);
+	glPolygonMode(GL_BACK, m_polyModeBack);
+
 	// 1) Renderizar la propia entidad
 	// Activar la textura si la tiene
 	if (m_texture != nullptr)
 		m_texture->bind();
-
 
 	// 2) Dibujar la/s malla/s
 	if (m_mesh != nullptr)
@@ -138,12 +126,8 @@ void Entity::render()
 
 	// 2) Renderizar sus hijos con el mismo shader dado
 	for (Entity* e : m_children)
-	{
 		if (e->isActive())
-		{
 			e->render();
-		}
-	}
 }
 
 void Entity::update(GLuint deltaTime)
@@ -157,12 +141,8 @@ void Entity::update(GLuint deltaTime)
 
 	// Actualiza los hijos
 	for(Entity* e : m_children)
-	{
 		if(e->isActive())
-		{
 			e->update(deltaTime);
-		}
-	}
 }
 
 void Entity::setPosition(const glm::dvec3& pos)
@@ -248,6 +228,12 @@ void Entity::setShader(const std::string& shaderID)
 void Entity::setSpecularMap(const std::string& textureID)
 {
 	m_specMap = (Texture*)&ResourceManager::Instance()->getTexture(textureID);
+}
+
+void Entity::setPolygonMode(GLenum front, GLenum back)
+{
+	m_polyModeFront = front;
+	m_polyModeBack = back;
 }
 
 
@@ -379,30 +365,16 @@ Skybox::Skybox(const std::string& cubemapTextureID)
 	m_mesh = IndexMesh::generateCubemap(4.0);
 	m_name = "Skybox_" + cubemapTextureID;
 
+	// Las caras están puestas para que miren hacia dentro del cubo
 	setTexture(cubemapTextureID);
 	setShader("skybox");
 }
 
 void Skybox::render()
 {
-	// No escribimos nada en el Z-buffer para que se pinte todo al fondo
+	// No escribimos en el Z-buffer para no interferir con otras entidades
 	glDepthMask(GL_FALSE);
-
-	// Definir la forma de pintar la malla
-	glPolygonMode(GL_BACK, GL_FILL);
-
-	// Activar la textura de tipo CUBE_MAP
-	m_texture->bind();
-
-	// 2) Dibujar la/s malla/s
-	if (m_mesh != nullptr)
-		m_mesh->draw();
-
-	// Desactivar la textura
-	m_texture->unbind();
-
-	// Dejarlo todo como estaba
-	glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+	Entity::render();
 	glDepthMask(GL_TRUE);
 }
 
@@ -555,10 +527,6 @@ void Hierba::render(glm::dmat4 const& viewMat)
 	if (m_texture != nullptr)
 		m_texture->unbind();
 
-	// Dejarlo como estaba
-	glPolygonMode(GL_FRONT, GL_FILL);
-	glPolygonMode(GL_BACK, GL_LINE);
-
 	if(cullActivado)
 		glEnable(GL_CULL_FACE);
 }
@@ -643,6 +611,8 @@ TessTerrain::TessTerrain()
 {
 	m_name = "TessTerrain";
 	m_mesh = TessMesh::generateTessGrid(1, 1, 4, 4);
+	// Para depurarlo
+	setPolygonMode(GL_LINE, GL_LINE);
 
 	setShader("terreno");
 }
@@ -650,10 +620,7 @@ TessTerrain::TessTerrain()
 void TessTerrain::render()
 {
 	m_shader->setInt("subdivisions", subdivisiones);
-	// Para depurarlo
-	glPolygonMode(GL_FRONT, GL_LINE);
 	Entity::render();
-	glPolygonMode(GL_FRONT, GL_FILL);
 }
 
 void TessTerrain::setSubdivisions(int sub)

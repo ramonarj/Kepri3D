@@ -106,10 +106,6 @@ void Scene::renderSkybox(const glm::dmat4& projViewMat)
 
 void Scene::renderEntities(const glm::dmat4& projViewMat)
 {
-	// Definir la forma de pintar la malla
-	glPolygonMode(GL_FRONT, GL_FILL);
-	glPolygonMode(GL_BACK, GL_LINE);
-
 	// Pintar todas las entidades activas
 	const Shader* activeShader = nullptr;
 	for (Entity* e : m_entities)
