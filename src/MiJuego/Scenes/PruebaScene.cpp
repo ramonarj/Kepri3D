@@ -230,6 +230,7 @@ void PruebaScene::init()
 	//AddComposite((Shader*)&ResourceManager::Instance()->getComposite("byn"));
 	//AddComposite((Shader*)&ResourceManager::Instance()->getComposite("waves"));
 	//AddComposite((Shader*)&ResourceManager::Instance()->getComposite("interference"));
+	AddComposite((Shader*)&ResourceManager::Instance()->getComposite("bordes"));
 }
 
 void PruebaScene::loadResources()
@@ -301,6 +302,7 @@ void PruebaScene::loadResources()
 	ResourceManager::Instance()->loadComposite("interference.frag", "interference");
 	ResourceManager::Instance()->loadComposite("waves.frag", "waves");
 	ResourceManager::Instance()->loadComposite("byn.frag", "byn");
+	ResourceManager::Instance()->loadComposite("bordes.frag", "bordes");
 }
 
 
