@@ -131,18 +131,11 @@ void IndexMesh::draw()
 		glVertexAttribPointer(4, 3, GL_FLOAT, GL_FALSE, 0, tangentes);
 		glEnableVertexAttribArray(4);
 	}
-	// Índices
-	if (indices != nullptr)
-	{
-		glEnableClientState(GL_INDEX_ARRAY);
-		glIndexPointer(GL_UNSIGNED_INT, 0, indices);
-	}
 
 	// Dibuja los triángulos definidos por la tabla de índices
-	glDrawElements(GL_TRIANGLES, numIndices, GL_UNSIGNED_INT, indices);
+	glDrawElements(type, numIndices, GL_UNSIGNED_INT, indices);
 
 	// Dejarlo todo como estaba
-	glDisableClientState(GL_INDEX_ARRAY);
 	glDisableVertexAttribArray(4);
 	Mesh::disableArrays();
 }
@@ -1109,29 +1102,9 @@ IndexMesh* IndexMesh::generateCubemap(GLdouble size)
 	return m;
 }
 
-// - - - - - - - - - - - - - - - - 
-
-void TessMesh::draw()
+IndexMesh* IndexMesh::generateTessGrid(GLint filas, GLint columnas, GLdouble tamFila, GLdouble tamColumna)
 {
-	// Activa los arrays de vértices, colores, texturas... y el de índices
-	Mesh::enableArrays();
-	if (indices != nullptr)
-	{
-		glEnableClientState(GL_INDEX_ARRAY);
-		glIndexPointer(GL_UNSIGNED_INT, 0, indices);
-	}
-
-	// Dibuja los parches definidos por la tabla de índices
-	glDrawElements(GL_PATCHES, numIndices, GL_UNSIGNED_INT, indices);
-
-	// Dejarlo todo como estaba
-	glDisableClientState(GL_INDEX_ARRAY);
-	Mesh::disableArrays();
-}
-
-TessMesh* TessMesh::generateTessGrid(GLint filas, GLint columnas, GLdouble tamFila, GLdouble tamColumna)
-{
-	TessMesh* m = new TessMesh();
+	IndexMesh* m = new IndexMesh();
 	m->type = GL_PATCHES;
 	m->numVertices = (filas + 1) * (columnas + 1);
 	m->numIndices = filas * columnas * 4; //ahorramos algunos índices

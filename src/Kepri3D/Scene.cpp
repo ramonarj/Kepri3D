@@ -45,6 +45,9 @@ void Scene::AddEntity(Entity* e, bool isTranslucid)
 
 void Scene::render()
 {
+	if(glGetError() != GL_NO_ERROR)
+		std::cout << "ERROR OPENGL" << std::endl;
+
 	// Activar este framebuffer; todo lo que se pinte se guardará en su textura
 	frameBuf->bind();
 	// 0) Limpiar el color y depth buffer

@@ -610,7 +610,7 @@ void ClippableEntity::render()
 TessTerrain::TessTerrain()
 {
 	m_name = "TessTerrain";
-	m_mesh = TessMesh::generateTessGrid(1, 1, 4, 4);
+	m_mesh = IndexMesh::generateTessGrid(1, 1, 4, 4);
 	// Para depurarlo
 	setPolygonMode(GL_LINE, GL_LINE);
 

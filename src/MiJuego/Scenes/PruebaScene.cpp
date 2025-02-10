@@ -214,7 +214,7 @@ void PruebaScene::init()
 	AddEntity(tesTerrain);
 
 	/* - - GameManager - - */
-	Entity* gm = new Entity();
+	Entity* gm = new Entity("GameManager");
 	// Componente GM
 	GameManager* gmComponent = new GameManager(this, m_camera, botonesMenu, particleSys);
 	gmComponent->setLights(dirLight, circleLight, spotLight, luzBlinn);
@@ -230,7 +230,7 @@ void PruebaScene::init()
 	//AddComposite((Shader*)&ResourceManager::Instance()->getComposite("byn"));
 	//AddComposite((Shader*)&ResourceManager::Instance()->getComposite("waves"));
 	//AddComposite((Shader*)&ResourceManager::Instance()->getComposite("interference"));
-	AddComposite((Shader*)&ResourceManager::Instance()->getComposite("bordes"));
+	//AddComposite((Shader*)&ResourceManager::Instance()->getComposite("bordes"));
 }
 
 void PruebaScene::loadResources()

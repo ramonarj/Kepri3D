@@ -99,6 +99,9 @@ public:
 	/* - - Cubemap - - */
 	static IndexMesh* generateCubemap(GLdouble size = 4.0);
 
+	/* - - Grid usando primitiva GL_PATCHES - - */
+	static IndexMesh* generateTessGrid(GLint filas, GLint columnas, GLdouble tamFila, GLdouble tamColumna);
+
 	/* Rellena el vector de tangentes usando los triángulos y las UV */
 	void setTangents();
 
@@ -117,26 +120,6 @@ protected:
 	// Métodos auxiliares
 	/* Rellena el vector de normales usando los triángulos indexados */
 	void SetNormals();
-
-};
-
-// - - - - - - - - - - - - - - 
-
-class TessMesh : public IndexMesh
-{
-public:
-	/* Constructora por defecto */
-	TessMesh() {}
-	/* Destructora */
-	virtual ~TessMesh() { }
-
-	/* Pinta la malla pero usando la tabla de índices, y no otras primitivas */
-	void draw() override;
-
-	/* - - Grid - - */
-	static TessMesh* generateTessGrid(GLint filas, GLint columnas, GLdouble tamFila, GLdouble tamColumna);
-
-private:
 
 };
 
