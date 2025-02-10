@@ -607,12 +607,12 @@ void ClippableEntity::render()
 
 // - - - - - - - - - - - - - - - - - 
 
-TessTerrain::TessTerrain()
+TessTerrain::TessTerrain(GLuint filas, GLuint columnas, GLdouble tamFila, GLdouble tamColumna)
 {
 	m_name = "TessTerrain";
-	m_mesh = IndexMesh::generateTessGrid(1, 1, 4, 4);
+	m_mesh = IndexMesh::generateTessGrid(filas, columnas, tamFila, tamColumna);
 	// Para depurarlo
-	setPolygonMode(GL_LINE, GL_LINE);
+	setPolygonMode(GL_FILL, GL_LINE);
 
 	setShader("terreno");
 }

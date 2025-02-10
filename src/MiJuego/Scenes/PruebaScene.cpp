@@ -208,8 +208,8 @@ void PruebaScene::init()
 	AddEntity(particleSys);
 
 	// Terreno teselado
-	TessTerrain* tesTerrain = new TessTerrain();
-	//tesTerrain->setTexture("iceland");
+	TessTerrain* tesTerrain = new TessTerrain(2, 2, 3, 3);
+	tesTerrain->setTexture("windows");
 	tesTerrain->setPosition({ 0,10,10 });
 	AddEntity(tesTerrain);
 
@@ -262,6 +262,7 @@ void PruebaScene::loadResources()
 	ResourceManager::Instance()->loadTexture("brickwall_normal.png", "wall_normal");
 	ResourceManager::Instance()->loadTexture("star.png", "star");
 	ResourceManager::Instance()->loadTexture("redead.png", "redead");
+	ResourceManager::Instance()->loadTexture("windows.bmp", "windows");
 
 	// Botones
 	for (int i = 0; i < buttonNames.size(); i++)

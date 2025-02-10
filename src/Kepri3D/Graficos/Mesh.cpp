@@ -1128,20 +1128,6 @@ IndexMesh* IndexMesh::generateTessGrid(GLint filas, GLint columnas, GLdouble tam
 	for (int i = 0; i < m->numVertices; i++)
 		m->colores[i] = dvec4(0.8, 0.8, 0.8, 1);
 
-	/* Coordenadas de textura -> se podría meter en el mismo bucle que los vértices */
-	//m->texCoords = new dvec2[m->numVertices];
-	//GLdouble texIncrX = 1.0 / columnas;
-	//GLdouble texIncrZ = 1.0 / filas;
-	//k = 0;
-	//for (int i = 0; i < filas + 1; i++)
-	//{
-	//	for (int j = 0; j < columnas + 1; j++)
-	//	{
-	//		m->texCoords[k] = { texIncrX * j , 1 - texIncrZ * i };
-	//		k++;
-	//	}
-	//}
-
 	/* Lista de parches (índices) */
 	m->indices = new GLuint[m->numIndices];
 	k = 0;
@@ -1156,6 +1142,20 @@ IndexMesh* IndexMesh::generateTessGrid(GLint filas, GLint columnas, GLdouble tam
 			m->indices[k + 3] = i * (columnas + 1) + j + 1;
 
 			k += 4;
+		}
+	}
+
+	/* Coordenadas de textura (igual que el grid normal) */
+	m->texCoords = new dvec2[m->numVertices];
+	GLdouble texIncrX = 1.0 / columnas;
+	GLdouble texIncrZ = 1.0 / filas;
+	k = 0;
+	for (int i = 0; i < filas + 1; i++)
+	{
+		for (int j = 0; j < columnas + 1; j++)
+		{
+			m->texCoords[k] = { texIncrX * j , 1 - texIncrZ * i };
+			k++;
 		}
 	}
 

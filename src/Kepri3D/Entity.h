@@ -352,7 +352,7 @@ class TessTerrain : public Entity
 {
 public:
 	/* Crea un terreno vacío */
-	TessTerrain();
+	TessTerrain(GLuint filas, GLuint columnas, GLdouble tamFila, GLdouble tamColumna);
 	~TessTerrain() { };
 
 	void render() override;
