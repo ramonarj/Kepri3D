@@ -100,6 +100,9 @@ public:
 	const glm::dmat4& getModelMat() const { return modelMat; }
 
 	/* Devuelve el material que usa la entidad */
+	const Mesh* getMesh() const { return m_mesh; }
+
+	/* Devuelve el material que usa la entidad */
 	const Material* getMaterial() const { return &m_material; }
 
 	/* Devuelve el shader que usa la entidad */
@@ -120,7 +123,6 @@ public:
 private:
 	/* Establece los valores por defecto de la entidad */
 	void defaultValues();
-
 protected:
 	/* Indica si la entidad debe actualizarse y pintarse */
 	bool m_active;
@@ -161,6 +163,12 @@ protected:
 	/* Forma en que debe pintarse */
 	GLenum m_polyModeFront;
 	GLenum m_polyModeBack;
+
+	// Métodos auxiliares
+	/* Manda las texturas al shader */
+	void bindTextures();
+	/* Limpia los atributos */
+	void unbindTextures();
 };
 
 template<typename T>
@@ -181,7 +189,6 @@ class EjesRGB : public Entity
 public:
 	EjesRGB(GLdouble l);
 	~EjesRGB() { };
-	//void render() override;
 };
 
 // - - - - - - - - - - - - 
@@ -200,7 +207,6 @@ class Cubo : public Entity
 public:
 	Cubo(GLdouble size, bool equalFaces = true);
 	~Cubo() { };
-	void update(GLuint timeElapsed) override;
 };
 
 // - - - - - - - - - - - - 
@@ -306,8 +312,6 @@ class CuboSpecmap : public Entity
 public:
 	CuboSpecmap(GLdouble size);
 	~CuboSpecmap() { };
-
-	void render() override;
 };
 
 // - - - - - - - - - - - - 
@@ -319,7 +323,6 @@ public:
 	~Hierba() { };
 
 	void render(glm::dmat4 const& viewMat) override;
-	void update(GLuint timeElapsed) override;
 };
 
 // - - - - - - - - - - - - 
@@ -329,8 +332,6 @@ class NormalMapWall : public Entity
 public:
 	NormalMapWall(GLuint filas, GLuint columnas, GLdouble tamFila, GLdouble tamColumna);
 	~NormalMapWall() { };
-
-	void render() override;
 };
 
 // - - - - - - - - - - - - 

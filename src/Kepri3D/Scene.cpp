@@ -143,9 +143,12 @@ void Scene::renderNormals(const glm::dmat4& projViewMat)
 		normalsShader->use();
 		for (Entity* e : m_entities)
 		{
-			// Pasar la matriz MVP al vertex shader y pintar
-			normalsShader->setMat4d("mvpMat", projViewMat * e->getModelMat());
-			e->render();
+			if(e->getMesh() != nullptr)
+			{
+				// Pasar la matriz MVP al vertex shader y pintar
+				normalsShader->setMat4d("mvpMat", projViewMat * e->getModelMat());
+				e->render();
+			}
 		}
 	}
 }

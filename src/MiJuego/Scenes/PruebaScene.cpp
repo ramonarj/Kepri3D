@@ -137,6 +137,7 @@ void PruebaScene::init()
 	hierba->rotate(-PI / 2, { 0, 1, 0 }, GLOBAL);
 	hierba->setTexture("hierba");
 	//hierba->setShader("lights");
+	hierba->addComponent(new RotationComp(0.75));
 	AddEntity(hierba);
 
 
@@ -359,7 +360,7 @@ void PruebaScene::PruebaMateriales()
 	AddEntity(tierra);
 
 	// Rejilla (suelo)
-	MovingGrid* grid = new MovingGrid(10, 20, 3, 3);
+	MovingGrid* grid = new MovingGrid(1, 1, 30, 60);
 	grid->setTexture("agua");
 	grid->setDisplacementMap("agua_disp");
 	grid->setSpeeds({ 2.0, 0.0 }, { -2, 0 });
@@ -368,7 +369,7 @@ void PruebaScene::PruebaMateriales()
 	AddEntity(grid);
 
 	// "Cascada"
-	MovingGrid* cascada = new MovingGrid(10, 8, 3, 3);
+	MovingGrid* cascada = new MovingGrid(1, 1, 30, 24);
 	cascada->setTexture("agua");
 	cascada->setDisplacementMap("agua_disp");
 	cascada->setSpeeds({ 5.0, 0.0 }, { 10.0, 0.0 });
@@ -393,7 +394,7 @@ void PruebaScene::PruebaMateriales()
 
 
 	// Mar de la isla
-	MovingGrid* mar = new MovingGrid(1, 1, 1087, 723);
+	MovingGrid* mar = new MovingGrid(1, 1, 723, 1087);
 	mar->setTexture("agua");
 	mar->setMaterial("oceano");
 	mar->setDisplacementMap("agua_disp");
@@ -435,7 +436,7 @@ void PruebaScene::PruebaMateriales()
 
 
 	// Plano para iluminación Blinn-Phong
-	Grid* plano = new Grid(10, 10, 3, 3);
+	Grid* plano = new Grid(1, 1, 30, 30);
 	plano->setTexture("wall");
 	plano->setMaterial("blinn");
 	plano->setShader("lights");
