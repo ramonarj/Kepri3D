@@ -42,6 +42,9 @@ public:
 	/* Carga la escena inicial del juego*/
 	void loadScene(Scene* scene);
 
+	/* Sale del juego */
+	void exitGame();
+
 	/* Ejecuta el bucle principal del juego (hasta que se cierre la ventana) */
 	void run();
 
@@ -56,6 +59,12 @@ public:
 
 	// Getters
 	inline Camera* getCamera() const { return camera; }
+
+	/* Activa/desactiva un parámetro booleano de OpenGL */
+	static void switchBoolParam(GLenum param);
+
+	/* Actualiza la Scissor Box, limpiando antes a negro el/los buffers */
+	static void updateScissorBox(int x, int y, int width, int height);
 
 	// Para callbacks
 	/* Redimensiona el */

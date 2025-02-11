@@ -58,6 +58,11 @@ void Game::loadScene(Scene* scene)
 	// TODO StateMachine
 }
 
+void Game::exitGame()
+{
+	glutLeaveMainLoop();
+}
+
 void Game::run()
 {
 	glutMainLoop();
@@ -94,7 +99,8 @@ void Game::clean()
 	instance = nullptr;
 
 	// Esta función acaba la ejecución del programa; hay que llamarla lo último
-	glutDestroyWindow(glutWindow);
+	if(glutGetWindow())
+		glutDestroyWindow(glutWindow);
 }
 
 Game::~Game()
@@ -156,13 +162,13 @@ void Game::registerGlutCallbacks()
 	glutKeyboardFunc(key);
 	// Se llama cuando se suelta una tecla
 	glutKeyboardUpFunc(keyUp);
-	// Se llama cuando se pulsa una tecla especial (flechas de dirección)
+	// Se llama cuando se pulsa una tecla especial (como las flechas de dirección)
 	glutSpecialFunc(specialKey);
-	// Se llama cuando se pulsa una tecla especial (flechas de dirección)
+	// Se llama cuando se suelta una tecla especial
 	glutSpecialUpFunc(specialKeyUp);
 	// Se llama cuando la ventana se redibuja
 	glutDisplayFunc(display);
-	// Se llama cada frame, aunque no se reciban eventos de la ventana (para animaciones)
+	// Se llama cada frame, aunque no se reciban eventos de la ventana
 	glutIdleFunc(updateCallback);
 	// Se llama cuando el ratón se mueve por la ventana sin tener ningún botón pulsado
 	glutPassiveMotionFunc(motion);
@@ -248,16 +254,59 @@ void Game::initGLSubsystems()
 
 void Game::resize(int newWidth, int newHeight)
 {
+	// Update Scissor Box
+	if (glIsEnabled(GL_SCISSOR_TEST))
+	{
+		// Obtener el área visible y actualizarlo en función de lo que ha crecido / disminuido la pantalla
+		int rect[4];
+		glGetIntegerv(GL_SCISSOR_BOX, rect);
+
+		glm::ivec2 incr = { newWidth - viewport->getW(), newHeight - viewport->getH() };
+		updateScissorBox(rect[0], rect[1], rect[2] + incr.x, rect[3] + incr.y);
+	}
+
 	// Resize Viewport 
 	viewport->setSize(newWidth, newHeight);
 	// Resize Scene Visible Area 
-	camera->setSize(viewport->getW(), viewport->getH());
+	camera->setSize(newWidth, newHeight);
+	// Resize framebuffers
+	scene->resize(newWidth, newHeight);
+}
+
+void Game::updateScissorBox(int x, int y, int width, int height)
+{
+	// Clear de los 2 buffers a negro
+	glClearColor(0, 0, 0, 0);
+	glClear(GL_COLOR_BUFFER_BIT);
+	// Segundo buffer
+	if (glutGet(GLUT_WINDOW_DOUBLEBUFFER) == 1)
+	{
+		glutSwapBuffers();
+		glClear(GL_COLOR_BUFFER_BIT);
+	}
+
+	// Establecer la zona visible (en píxeles) del scissor box
+	glScissor(x, y, width, height);
+
+	// Volver a dejar el color de fondo a blanco
+	glClearColor(1, 1, 1, 0);
+}
+
+void Game::switchBoolParam(GLenum param)
+{
+	// También se puede usar 'glIsEnabled()'
+	GLboolean value;
+	glGetBooleanv(param, &value);
+	if (value)
+		glDisable(param);
+	else
+		glEnable(param);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - -
 
 // Callbacks para los eventos de GLUT
-void display()   // double buffer
+void display() 
 {
 	Game::Instance()->render();
 }

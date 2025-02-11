@@ -203,12 +203,8 @@ void Scene::update(GLuint deltaTime)
 
 	// Actualizar las entidades
 	for (Entity* e : m_entities)
-	{
 		if(e->isActive())
-		{
 			e->update(deltaTime);
-		}
-	}
 
 	// Limpiar el input para el siguiente frame
 	InputManager::Instance()->Update();
@@ -281,6 +277,13 @@ void Scene::AddComposite(Shader* sh, bool active)
 	m_composites.push_back(sh);
 }
 
+void Scene::resize(int width, int height)
+{
+	delete frameBuf; delete frameBuf2;
+	frameBuf = new Framebuffer(width, height);
+	frameBuf2 = new Framebuffer(width, height);
+}
+
 void Scene::takePhoto()
 {
 	// Leemos la información del front buffer (el que está en pantalla), porque 
@@ -291,16 +294,6 @@ void Scene::takePhoto()
 	Texture::save("foto.bmp");
 
 	std::cout << "Se ha hecho una foto" << std::endl;
-}
-
-void Scene::switchBoolParam(GLenum param)
-{
-	GLboolean value;
-	glGetBooleanv(param, &value);
-	if (value)
-		glDisable(param);
-	else
-		glEnable(param);
 }
 
 Scene::~Scene()

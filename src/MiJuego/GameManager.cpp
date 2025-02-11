@@ -27,6 +27,7 @@ void GameManager::setLights(Light* dirLight, Light* circleLight, Light* spotLigh
 	this->circleLight->setActive(true);
 	// 
 	//cam->setPosition({ 60, 8, 8 });
+	windowDim = { cam->getVP()->getW(),  cam->getVP()->getH() };
 }
 
 void GameManager::update(GLuint deltaTime)
@@ -47,9 +48,9 @@ void GameManager::update(GLuint deltaTime)
 			// Desactivar el componente hermano que controla la cámara
 			entity->getComponent<CameraController>()->setActive(false);
 		}
-		// Salir de la aplicación
+		// Salir del juego
 		else
-			glutLeaveMainLoop();
+			Game::Instance()->exitGame();
 	}
 
 	// Controlar las luces
@@ -82,13 +83,11 @@ void GameManager::update(GLuint deltaTime)
 		fullscreen = !fullscreen;
 		if (fullscreen)
 		{
+			windowDim = { cam->getVP()->getW(),  cam->getVP()->getH() };
 			glutFullScreen();
-
 		}
 		else
-		{
-			glutReshapeWindow(800, 600);
-		}
+			glutReshapeWindow(windowDim.x, windowDim.y);
 	}
 
 	// Hacer una foto

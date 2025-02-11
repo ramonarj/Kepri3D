@@ -39,6 +39,7 @@ private:
 	// Cursor y pantalla
 	bool lockedMouse = true;
 	bool fullscreen = false;
+	glm::ivec2 windowDim;
 	// Luces
 	GLuint totalTime = 0;
 	float sunVel = 0.15;

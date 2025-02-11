@@ -229,8 +229,8 @@ void PruebaScene::init()
 	/* - - - Efectos de postprocesado (el orden importa) - - - */
 	//AddComposite((Shader*)&ResourceManager::Instance()->getComposite("byn"));
 	//AddComposite((Shader*)&ResourceManager::Instance()->getComposite("waves"));
-	//AddComposite((Shader*)&ResourceManager::Instance()->getComposite("interference"));
-	//AddComposite((Shader*)&ResourceManager::Instance()->getComposite("bordes"));
+	AddComposite((Shader*)&ResourceManager::Instance()->getComposite("bordes"));
+	AddComposite((Shader*)&ResourceManager::Instance()->getComposite("interference"));
 }
 
 void PruebaScene::loadResources()
@@ -499,28 +499,28 @@ void PruebaScene::centerMouse()
 void PruebaScene::cullingButtonPressed()
 {
 	// Activar / desactivar el culling de polígonos traseros
-	switchBoolParam(GL_CULL_FACE);
+	Game::switchBoolParam(GL_CULL_FACE);
 	centerMouse();
 }
 
 void PruebaScene::blendingButtonPressed()
 {
 	// Activar / desactivar las transparencias en texturas y materiales
-	switchBoolParam(GL_BLEND);
+	Game::switchBoolParam(GL_BLEND);
 	centerMouse();
 }
 
 void PruebaScene::lightingButtonPressed()
 {
 	// Activar / desactivar la iluminación
-	switchBoolParam(GL_LIGHTING);
+	Game::switchBoolParam(GL_LIGHTING);
 	centerMouse();
 }
 
 void PruebaScene::texturesButtonPressed()
 {
 	// Activar / desactivar el uso de texturas
-	switchBoolParam(GL_TEXTURE_2D);
+	Game::switchBoolParam(GL_TEXTURE_2D);
 	centerMouse();
 }
 
@@ -547,14 +547,14 @@ void PruebaScene::shadingButtonPressed()
 void PruebaScene::alphaButtonPressed()
 {
 	// Activar / desactivar el alpha test
-	switchBoolParam(GL_ALPHA_TEST);
+	Game::switchBoolParam(GL_ALPHA_TEST);
 	centerMouse();
 }
 
 void PruebaScene::multisamplingButtonPressed()
 {
 	// Activar / desactivar el multisampling
-	switchBoolParam(GL_MULTISAMPLE);
+	Game::switchBoolParam(GL_MULTISAMPLE);
 	centerMouse();
 }
 
@@ -590,26 +590,12 @@ void PruebaScene::compositeButtonPressed()
 
 void PruebaScene::scissorButtonPressed()
 {
-	// Bandas cinemáticas negras. Como tenemos 2 buffers, hay que ponerlos los 2 a negro antes de
-	// activar el scissor test (para que los bordes no se queden con imágenes residuales y parpadeen)
-	glClearColor(0, 0, 0, 0);
-	glClear(GL_COLOR_BUFFER_BIT);
-	// Segundo buffer
-	if (glutGet(GLUT_WINDOW_DOUBLEBUFFER) == 1)
-	{
-		glutSwapBuffers();
-		glClear(GL_COLOR_BUFFER_BIT);
-	}
-
-	// Establecer la zona visible (en píxeles) del scissor box
-	float proporcionBarra = glutGet(GLUT_WINDOW_HEIGHT) / 6.0f;
-	glScissor(0, proporcionBarra, glutGet(GLUT_WINDOW_WIDTH), glutGet(GLUT_WINDOW_HEIGHT) - proporcionBarra * 2);
-
-	// Activar/desactivar el scissor test
-	switchBoolParam(GL_SCISSOR_TEST);
-
-	// Volver a dejar el color de fondo a blanco
-	glClearColor(1, 1, 1, 0);
+	int proporcionBarra = glutGet(GLUT_WINDOW_HEIGHT) / 6.0f;
+	// Actualizar el área visible
+	Game::updateScissorBox(0, proporcionBarra, glutGet(GLUT_WINDOW_WIDTH), 
+		glutGet(GLUT_WINDOW_HEIGHT) - proporcionBarra * 2);
+	// Activar / desactivar el Scissor Test (hay que hacerlo en este orden)
+	Game::switchBoolParam(GL_SCISSOR_TEST);
 
 	centerMouse();
 }
@@ -622,20 +608,20 @@ void PruebaScene::skyboxButtonPressed()
 
 void PruebaScene::gammaButtonPressed()
 {
-	switchBoolParam(GL_FRAMEBUFFER_SRGB);
+	Game::switchBoolParam(GL_FRAMEBUFFER_SRGB);
 	centerMouse();
 }
 
 void PruebaScene::stencilButtonPressed()
 {
-	switchBoolParam(GL_STENCIL_TEST);
+	Game::switchBoolParam(GL_STENCIL_TEST);
 	centerMouse();
 }
 
 void PruebaScene::logicOpButtonPressed()
 {
 	// Activar las operaciones lógicas implica desactivar totalmente el 'Blending'
-	switchBoolParam(GL_COLOR_LOGIC_OP);
+	Game::switchBoolParam(GL_COLOR_LOGIC_OP);
 
 	// Tipo de operación que se hace sobre cada píxel
 	// Curiosas : GL_COPY (predet.), GL_COPY_INVERTED (negativo), GL_INVERT (b/n)
