@@ -23,7 +23,7 @@ void GameManager::setLights(Light* dirLight, Light* circleLight, Light* spotLigh
 	this->spotLight->setSpotlightHardness(100);
 	this->spotLight->setAttenuationFactors(0, 0.04, 0.0002);
 
-	this->circleLight->setAttenuationFactors(0.5, 0, 0.01);
+	this->circleLight->setAttenuationFactors(1, 0.1, 0.01);
 	this->circleLight->setActive(true);
 	// 
 	//cam->setPosition({ 60, 8, 8 });

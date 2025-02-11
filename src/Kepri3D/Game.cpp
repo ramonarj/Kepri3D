@@ -245,7 +245,7 @@ void Game::initGLSubsystems()
 
 	/* Espacio de colores gamma, para corregir la curva que crean los monitores;
 	los colores R,G,B son linearizados antes de usarse en el framebuffer */
-	//glEnable(GL_FRAMEBUFFER_SRGB);
+	glEnable(GL_FRAMEBUFFER_SRGB);
 
 	/* Teselación */
 	// Número de vértices que conforman un parche

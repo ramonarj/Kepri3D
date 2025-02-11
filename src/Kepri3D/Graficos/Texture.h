@@ -8,7 +8,7 @@
 
 // GL_RGBA -> sin correción gamma
 // GL_SRGB_ALPHA -> con corrección gamma
-const GLint COLOR_SPACE = GL_RGBA;
+const GLint COLOR_SPACE = GL_SRGB_ALPHA;
 
 class Texture
 {
@@ -19,7 +19,7 @@ public:
 	virtual ~Texture() { if (id != 0) glDeleteTextures(1, &id); };
 
 	/* Carga la textura y le da la transparencia indicada. Usa la librería STBI */
-	bool load(const std::string& filePath, GLubyte alpha = 255);
+	bool load(const std::string& filePath, GLubyte alpha = 255, GLint intFormat = COLOR_SPACE);
 	/* Carga la textura con la librería PixMap32RGBA */
 	bool load(const std::string& filePath, const glm::ivec3& colorTrans);
 

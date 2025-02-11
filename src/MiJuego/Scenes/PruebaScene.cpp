@@ -32,14 +32,14 @@ void PruebaScene::init()
 	Light* dirLight = new Light(DIRECTIONAL_LIGHT);
 	dirLight->setDirection({ -1,0 , 0 });
 	dirLight->setDiffuse({ 1, 1, 1, 1.0 });
-	dirLight->setAmbient({ 0.2, 0.2, 0.5, 0.0 });
+	dirLight->setAmbient({ 0.2, 0.2, 0.4, 0.0 });
 	dirLight->setActive(true);
 	AddLight(dirLight);
 
 	// Puntual (va en círculos)
 	Light* circleLight = new Light(POINT_LIGHT, { 1, 1, 0, 1 });
 	circleLight->setPosition({ 3,3,-3 });
-	circleLight->setAmbient({ 0.1, 0.5, 0.1, 1.0 });
+	circleLight->setAmbient({ 0.1, 0.3, 0.1, 1.0 });
 	circleLight->setSpecular({ 1, 1, 0, 1.0 });
 	AddLight(circleLight);
 
@@ -243,8 +243,8 @@ void PruebaScene::init()
 	/* - - - Efectos de postprocesado (el orden importa) - - - */
 	//AddComposite((Shader*)&ResourceManager::Instance()->getComposite("byn"));
 	//AddComposite((Shader*)&ResourceManager::Instance()->getComposite("waves"));
-	AddComposite((Shader*)&ResourceManager::Instance()->getComposite("bordes"));
-	AddComposite((Shader*)&ResourceManager::Instance()->getComposite("interference"));
+	//AddComposite((Shader*)&ResourceManager::Instance()->getComposite("bordes"));
+	//AddComposite((Shader*)&ResourceManager::Instance()->getComposite("interference"));
 }
 
 void PruebaScene::loadResources()
@@ -273,7 +273,8 @@ void PruebaScene::loadResources()
 	ResourceManager::Instance()->loadTexture("grass.bmp", "hierba", { 0,0,0 });
 	ResourceManager::Instance()->loadTexture("tree.png", "tree");
 	ResourceManager::Instance()->loadTexture("brickwall.jpg", "wall");
-	ResourceManager::Instance()->loadTexture("brickwall_normal.png", "wall_normal");
+	// Los mapas de normales no pueden cargarse con SRGB_ALPHA
+	ResourceManager::Instance()->loadTexture("brickwall_normal.png", "wall_normal", 255, GL_RGBA);
 	ResourceManager::Instance()->loadTexture("star.png", "star");
 	ResourceManager::Instance()->loadTexture("redead.png", "redead");
 	ResourceManager::Instance()->loadTexture("windows.bmp", "windows");
@@ -429,7 +430,7 @@ void PruebaScene::PruebaMateriales()
 	pared->setMaterial("cromo");
 	pared->setPosition({ -5,6.5,-15 });
 	pared->rotate(PI / 2, { 1,0,0 });
-	pared->addComponent(new RotationComp(0.5));
+	//pared->addComponent(new RotationComp(0.5));
 	AddEntity(pared);
 
 	// Pared sin normal map para comparar
@@ -438,7 +439,7 @@ void PruebaScene::PruebaMateriales()
 	pared2->setShader("lights");
 	pared2->setPosition({ 10,6.5,-15 });
 	pared2->rotate(PI / 2, { 1,0,0 });
-	pared2->addComponent(new RotationComp(0.5));
+	//pared2->addComponent(new RotationComp(0.5));
 	AddEntity(pared2);
 
 	//pared->rotate(-PI / 2, { 1,0,0 });

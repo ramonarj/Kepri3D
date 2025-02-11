@@ -57,12 +57,12 @@ const Mesh& ResourceManager::getMesh(const std::string& id)
 
 // - - - - - - - - - - - - 
 
-bool ResourceManager::loadTexture(const std::string& textureName, const std::string& id, GLubyte alpha)
+bool ResourceManager::loadTexture(const std::string& textureName, const std::string& id, GLubyte alpha, GLint internalFormat)
 {
 	Texture* tex = new Texture();
 	try
 	{
-		tex->load(TEXTURES_PATH + textureName, alpha);
+		tex->load(TEXTURES_PATH + textureName, alpha, internalFormat);
 		textures[id] = tex;
 		return true;
 	}

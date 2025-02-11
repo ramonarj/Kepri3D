@@ -24,7 +24,7 @@ void Texture::Init()
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
 }
 
-bool Texture::load(const std::string& filePath, GLubyte alpha)
+bool Texture::load(const std::string& filePath, GLubyte alpha, GLint intFormat)
 {
 	// Crear la textura y establecer los filtros
 	if (id == 0)
@@ -45,7 +45,7 @@ bool Texture::load(const std::string& filePath, GLubyte alpha)
 
 	// Rellena la ya creada textura con el array de píxeles
 	glBindTexture(GL_TEXTURE_2D, id);
-	glTexImage2D(GL_TEXTURE_2D, 0, COLOR_SPACE, w, h, 0, GL_RGBA, GL_UNSIGNED_BYTE, data);
+	glTexImage2D(GL_TEXTURE_2D, 0, intFormat, w, h, 0, GL_RGBA, GL_UNSIGNED_BYTE, data);
 
 	// Genera un mipmap
 	glGenerateMipmap(GL_TEXTURE_2D);
