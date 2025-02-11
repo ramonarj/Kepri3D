@@ -14,6 +14,10 @@ std::vector<std::string> buttonNames = { "botonCulling", "botonBlending", "boton
 "botonAlpha", "botonMultisampling", "botonMipmaps", "botonNormales", "botonPostprocess", "botonScissor",
 "botonSkybox", "botonGamma", "botonInstancing", "botonStencil", "botonLogicOp"};
 
+std::vector<std::string> buttonTexts = { "CULLING", "BLENDING", "LIGHTING", "TEXTURES", "FLAT\nSHADING",
+"ALPHA\nTEST", "MULTI\nSAMPLING", "MIPMAPS", "VER\nNORMALES", "POST\nPROCESADO", "SCISSOR\nTEST",
+"SKYBOX", "GAMMA\nCORRECTION", "INSTANCING", "STENCIL\nTEST", "LOGIC\nOP" };
+
 std::vector<void(*)()> PruebaScene::callbacks = { cullingButtonPressed, blendingButtonPressed, lightingButtonPressed,
 texturesButtonPressed, shadingButtonPressed, alphaButtonPressed, multisamplingButtonPressed, mipmapButtonPressed,
 normalsButtonPressed, compositeButtonPressed, scissorButtonPressed, skyboxButtonPressed, gammaButtonPressed, 
@@ -163,7 +167,17 @@ void PruebaScene::init()
 	m_canvas = new Canvas();
 	m_canvas->setSize(800, 600);
 
-	
+	// Textos de prueba
+	//ABCDEFGHIJKLMNOPQRSTUVWXYZ
+	Text* texto = new Text("EN UN LUGAR DE LA MANCHA", m_canvas, { 0, 1, 0, 1 });
+	texto->setPositionUI(0.15, 0.1);
+	m_canvas->addElement(texto);
+
+	Text* textoNums = new Text("0123456789-/", m_canvas, { 0, 1, 0, 1 });
+	textoNums->setPositionUI(0.3, 0.05);
+	textoNums->setGrosor(2.0);
+	m_canvas->addElement(textoNums);
+
 	// Entidad vacía para que cuelguen los botones
 	UIElement* botonesMenu = new UIElement();
 	botonesMenu->setActive(false);
@@ -173,26 +187,25 @@ void PruebaScene::init()
 	for (int i = 0; i < buttonNames.size(); i++)
 	{
 		// Su textura, posición, escala y callback
-		Button* b = new Button(buttonNames[i], m_canvas);
+		Button* b = new Button("boton", m_canvas);
+		b->setName(buttonNames[i]);
+		glm::vec2 pos;
 		if (i < 8)
-			b->setPositionUI(buttonMargin, 0.92 - i * buttonSep);
+			pos = { buttonMargin, 0.92 - i * buttonSep };
 		else
-			b->setPositionUI(1 - buttonMargin, 0.92 - (i - 8) * buttonSep);
+			pos = { 1 - buttonMargin, 0.92 - (i - 8) * buttonSep };
+		b->setPositionUI(pos.x, pos.y);
 		b->setScaleUI(buttonScale, buttonScale);
 		b->setCallback(callbacks[i]);
 		b->setParent(botonesMenu); // hijos del nodo vacío
+
+		// El texto que contiene
+		Text* t = new Text(buttonTexts[i], m_canvas, {1, 1, 1, 1});
+		t->setPositionUI(pos.x - 0.06, pos.y);
+		t->setScaleUI(buttonScale * 2, buttonScale * 2);
+		t->setGrosor(1.5);
+		t->setParent(b);
 	}
-
-	// Textos de prueba
-	//ABCDEFGHIJKLMNOPQRSTUVWXYZ
-	Text* texto = new Text("EN UN LUGAR DE LA MANCHA", m_canvas, {0, 1, 0, 1});
-	texto->setPositionUI(0.15, 0.1);
-	m_canvas->addElement(texto);
-
-	Text* textoNums = new Text("0123456789-/", m_canvas, { 0, 1, 0, 1 });
-	textoNums->setPositionUI(0.3, 0.05);
-	textoNums->setGrosor(2.0);
-	m_canvas->addElement(textoNums);
 
 
 	/* - - Skybox - - */
@@ -266,10 +279,7 @@ void PruebaScene::loadResources()
 	ResourceManager::Instance()->loadTexture("windows.bmp", "windows");
 
 	// Botones
-	for (int i = 0; i < buttonNames.size(); i++)
-	{
-		ResourceManager::Instance()->loadTexture("UI\\" + buttonNames[i] + ".bmp", buttonNames[i]);
-	}
+	ResourceManager::Instance()->loadTexture("UI\\boton.png", "boton");
 
 	// Skyboxes - el orden tiene que ser este (top y bottom están invertidos por alguna razón)
 	ResourceManager::Instance()->loadCubemapTexture({ "skyboxes/right.jpg", "skyboxes/left.jpg", "skyboxes/bottom.jpg",

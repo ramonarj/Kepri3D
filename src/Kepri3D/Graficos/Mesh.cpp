@@ -350,9 +350,9 @@ Mesh* Mesh::generateLetter(char l, const glm::vec4& color)
 		{ {0, 0, 0}, {0, 1, 0}, {1, 1, 0}, {1, 0, 0}, {1, 0.5, 0}, {0, 0.5, 0} };
 		break;
 	case 'B':
-		m->numVertices = 6;
+		m->numVertices = 7;
 		m->vertices = new dvec3[m->numVertices]
-		{ {0, 0, 0}, {0, 1, 0}, {1, 0.75, 0}, {0, 0.5, 0}, {1, 0.25, 0}, {0, 0, 0} };
+		{ {0, 0, 0}, {0, 1, 0}, {1, 1, 0}, {1, 0, 0}, {0, 0, 0}, {0, 0.5, 0}, {1, 0.5, 0} };
 		break;
 	case 'C':
 		m->numVertices = 4;
@@ -514,7 +514,7 @@ Mesh* Mesh::generateLetter(char l, const glm::vec4& color)
 		m->vertices = new dvec3[m->numVertices]
 		{ {0, 1, 0}, {1, 1, 0}, {0, 0, 0} };
 		break;
-	case '8':
+	case '8': // Igual que la B
 		m->numVertices = 7;
 		m->vertices = new dvec3[m->numVertices]
 		{ {0, 0, 0}, {0, 1, 0}, {1, 1, 0}, {1, 0, 0}, {0, 0, 0}, {0, 0.5, 0}, {1, 0.5, 0} };

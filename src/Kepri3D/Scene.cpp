@@ -82,12 +82,8 @@ void Scene::render()
 void Scene::loadLights()
 {
 	for (Light* l : m_lights)
-	{
 		if (l->isActive())
-		{
 			l->load(m_camera->getViewMat());
-		}
-	}
 }
 
 void Scene::renderSkybox(const glm::dmat4& projViewMat)
@@ -160,6 +156,8 @@ void Scene::renderCanvas()
 
 	// Desactivamos cualquier shader que hubiera
 	Shader::turnOff();
+	bool lightOn = glIsEnabled(GL_LIGHTING);
+	glDisable(GL_LIGHTING);
 
 	//glClear(GL_DEPTH_BUFFER_BIT); // esto es más costoso que cambiar la función del Z-test
 	// Cambiar la función del Z-test para pasarlo siempre
@@ -167,7 +165,10 @@ void Scene::renderCanvas()
 	// Pintar el canvas
 	m_canvas->render(m_camera->getViewMat());
 
+	// Dejarlo todo como estaba
 	glDepthFunc(GL_LESS); // valor predet.
+	if(lightOn)
+		glEnable(GL_LIGHTING);
 }
 
 void Scene::renderEffects()

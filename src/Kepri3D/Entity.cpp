@@ -251,6 +251,8 @@ void Entity::setPolygonMode(GLenum front, GLenum back)
 
 void Entity::bindTextures()
 {
+	if (m_shader == nullptr)
+		return;
 	// Nombre que deben tener las respectivas variables 'sampler2D' del shader
 	std::string texNames[NUM_TEXTURES] = { "textura", "textura2", "material.specular_map", "normalMap", "dispMap"};
 
@@ -268,7 +270,7 @@ void Entity::bindTextures()
 	// Booleanos extra
 	if(m_textures[2] != nullptr)
 		m_shader->setInt("use_spec_map", true);
-	else
+	else 
 		m_shader->setInt("use_spec_map", false);
 }
 

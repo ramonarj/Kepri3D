@@ -9,7 +9,7 @@ Text::Text(const std::string& texto, Canvas* canvas, const glm::vec4& color) : g
 	this->texto = texto;
 	for (int i = 0; i < texto.size(); i++)
 	{
-		if (texto[i] != ' ')
+		if (texto[i] != ' ' && texto[i] != '\n')
 			letters.push_back(Mesh::generateLetter(texto[i], color));
 	}
 
@@ -43,16 +43,26 @@ void Text::render(glm::dmat4 const& viewMat)
 	glMatrixMode(GL_MODELVIEW);
 
 	// Dibujar las mallas de cada una de las letras
+	int col = 0;
+	int fil = 0;
 	int k = 0;
 	for(int i = 0; i < texto.size(); i++)
 	{
-		// Saltar los espacios
-		if(texto[i] != ' ')
+		// Saltar las líneas, justificando a la izquierda
+		if (texto[i] == '\n')
 		{
-			glLoadMatrixd(value_ptr(glm::translate(modelMat, { i + SPACING * i, 0, 0 })));
-			letters[k]->draw();
-			k++;
+			fil++;
+			col = 0;
 		}
+		// Saltar los espacios
+		else if(texto[i] != ' ')
+		{
+			glLoadMatrixd(value_ptr(glm::translate(modelMat, { col + SPACING * col, -fil - SPACING_Y * fil, 0 })));
+			letters[k]->draw();
+			k++; col++;
+		}
+		else
+			col++;
 	}
 
 	// 2) Renderizar mis hijos
