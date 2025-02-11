@@ -120,6 +120,14 @@ void PruebaScene::init()
 	toro->setMaterial("fluorescente");
 	AddEntity(toro);
 
+	// Un cilindro
+	Cilindro* cilindro = new Cilindro(2, 4);
+	cilindro->setPosition({ 24,-0.9,-10 });
+	cilindro->setTexture("venus");
+	cilindro->setMaterial("cromo");
+	cilindro->setShader("lights");
+	AddEntity(cilindro);
+
 	// Un cubo multitextura
 	CuboMultitex* cuboMT = new CuboMultitex(2);
 	cuboMT->setPosition({ -15, 0, 6 });

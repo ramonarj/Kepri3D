@@ -322,6 +322,14 @@ Esfera::Esfera(GLdouble size, GLuint subdivisions, bool textured)
 	m_name = "Esfera";
 }
 
+// - - - - - - - - - - - - - - - - - 
+
+Cilindro::Cilindro(GLdouble radio, GLdouble altura, GLuint lados)
+{
+	m_mesh = IndexMesh::generateCilindro(radio, altura, lados);
+	m_name = "Cilindro";
+}
+
 
 // - - - - - - - - - - - - - - - - - 
 

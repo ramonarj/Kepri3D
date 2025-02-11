@@ -220,6 +220,15 @@ public:
 
 // - - - - - - - - - - - - 
 
+class Cilindro : public Entity
+{
+public:
+	Cilindro(GLdouble radio, GLdouble altura, GLuint lados = 20);
+	~Cilindro() { };
+};
+
+// - - - - - - - - - - - - 
+
 class Toro : public Entity
 {
 public:

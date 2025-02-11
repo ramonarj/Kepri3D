@@ -818,6 +818,71 @@ IndexMesh* IndexMesh::generateSphere(GLdouble size, GLuint subdivisions, bool te
 	return m;
 }
 
+IndexMesh* IndexMesh::generateCilindro(GLdouble radio, GLdouble altura, GLuint lados)
+{
+	IndexMesh* m = new IndexMesh();
+	m->type = GL_TRIANGLES;
+	m->numVertices = 4 * lados + 2; // teniendo en cuenta que son bordes duros (vértices repetidos)
+	m->numIndices = 4 * lados * 3;
+
+	// Vértices
+	float angleIncr = 2 * PI / lados;
+	m->vertices = new glm::dvec3[m->numVertices];
+	for(int i = 0; i < lados; i++)
+	{
+		double posX = radio * cos(angleIncr * i);
+		double posZ = radio * -sin(angleIncr * i);
+		// Base repetida
+		m->vertices[i] = { posX, 0, posZ };
+		m->vertices[i + lados] = m->vertices[i];
+		// Techo repetido
+		m->vertices[i + lados * 2] = { posX, altura, posZ };
+		m->vertices[i + lados * 3] = m->vertices[i + lados * 2];
+	}
+	// Los 2 centros de las tapas
+	int centroBase = m->numVertices - 2;
+	int centroTapa = m->numVertices - 1;
+	m->vertices[centroBase] = { 0, 0, 0 };
+	m->vertices[centroTapa] = { 0, altura, 0 };
+
+
+	// Índices
+	m->indices = new GLuint[m->numIndices];
+	int k = 0;
+	for (int i = 0; i < lados * 3; i+=3)
+	{
+		// Triángulo de la base
+		m->indices[i] = k;
+		m->indices[i + 1] = centroBase;
+		m->indices[i + 2] = (k + 1) % lados;
+
+		// Triángulos del cuerpo
+		m->indices[lados * 3 + i * 2] = lados + k;
+		m->indices[lados * 3 + i * 2 + 1] = lados + (k + 1) % lados;
+		m->indices[lados * 3 + i * 2 + 2] = lados * 2 + k;
+
+		m->indices[lados * 3 + i * 2 + 3] = lados * 2 + k;
+		m->indices[lados * 3 + i * 2 + 4] = lados + (k + 1) % lados;
+		m->indices[lados * 3 + i * 2 + 5] = lados * 2 + (k + 1) % lados;
+
+		// Triángulo de la tapa
+		m->indices[lados * 9 + i] = lados * 3 + k;
+		m->indices[lados * 9 + i + 1] = lados * 3 + (k + 1) % lados;
+		m->indices[lados * 9 + i + 2] = centroTapa;
+		k++;
+	}
+
+	// Colores
+	m->colores = new glm::dvec4[m->numVertices];
+	for (int i = 0; i < m->numVertices; i++)
+		m->colores[i] = { 0.8, 0.8, 0.8, 1 };
+
+	// Normales
+	m->SetNormals();
+
+	return m;
+}
+
 IndexMesh* IndexMesh::generateToro(GLdouble radExt, GLdouble radInt, GLuint anillos, GLuint lineas)
 {
 	// TODO: poner coordenadas de textura

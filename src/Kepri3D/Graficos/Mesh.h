@@ -87,6 +87,9 @@ public:
 	/* - - Esfera - - */
 	static IndexMesh* generateSphere(GLdouble size, GLuint subdivisions, bool textured = false);
 
+	/* - - Cilindro - - */
+	static IndexMesh* generateCilindro(GLdouble radio, GLdouble altura, GLuint lados);
+
 	/* - - Toro - - */
 	static IndexMesh* generateToro(GLdouble radioExterior, GLdouble radioInterior, GLuint anillos, GLuint lineas);
 
