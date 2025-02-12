@@ -325,7 +325,7 @@ void PruebaScene::loadResources()
 	ResourceManager::Instance()->loadShader("maximize.vert", "", "fog.frag", "bigFog");
 	ResourceManager::Instance()->loadShader("default.vert", "", "movimiento.frag", "movimiento");
 	ResourceManager::Instance()->loadShader("default.vert", "", "multitexture.frag", "multitexture");
-	ResourceManager::Instance()->loadShader("normalMap.vert", "", "normalMap.frag", "normalMap");
+	//ResourceManager::Instance()->loadShader("normalMap.vert", "", "normalMap.frag", "normalMap");
 	ResourceManager::Instance()->loadShader("clippable.vert", "", "default.frag", "clippable");
 	ResourceManager::Instance()->loadShader("default.vert", "terrain.tesc", "terrain.tese", "", "default.frag", "terreno");
 

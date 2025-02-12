@@ -40,13 +40,15 @@ in DATA
 	vec2 TexCoords;
 	vec3 normals;
 	vec3 fragPos;
+	mat3 TBN;
 } data_in;
 
 // Obligatorio darle un valor al fragmento actual
 out vec4 FragColor;
 
-// Se coge automáticamente
+// Texturas
 uniform sampler2D textura;
+uniform sampler2D normalMap;
 
 // - - Luces - - //
 // Tipo de iluminación | 0 = Phong, 1 = Bling-Phong
@@ -60,6 +62,7 @@ uniform Material material;
 uniform vec3 viewPos;
 
 uniform bool use_spec_map;
+uniform bool use_normal_map;
 
 // Prototipos para las funciones
 vec3 CalcDirLight(Light light, vec3 normal, vec3 viewDir);
@@ -77,9 +80,23 @@ void main()
 	
 	// Variables comunes a todas las luces. NOTA: todos los vectores salen del fragmento (N, V, L, R...)
 	vec3 viewDir = normalize(viewPos - data_in.fragPos);
+	
+	vec3 normal;
+	// Usamos el valor del normal map y no del vértice
+	if(use_normal_map)
+	{
+		// 1) Cogemos el valor RGB correspondiente al fragmento actual
+		normal = texture(normalMap, data_in.TexCoords).rgb;
+		// 2) Pasamos del valor RGB a un vector en Tangent Space
+		normal = normalize(normal * 2.0 - 1.0);
+		// 3) Pasamos de espacio tangente a espacio global, con la matriz TBN
+		normal = normalize(data_in.TBN * normal);
+	}
 	// La interpolación de normales por el FS genera un acortamiento en éstas, provocando que el triángulo 
 	// sea más brillante en los bordes. Por eso, hay que volver a normalizarla aquí.
-	vec3 normal = normalize(data_in.normals);
+	else
+		normal = normalize(data_in.normals);
+
 
 	// Iteramos todas las luces para conocer la iluminación del fragmento
 	vec3 luzTotal = vec3(0.0);

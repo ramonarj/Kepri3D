@@ -272,6 +272,11 @@ void Entity::bindTextures()
 		m_shader->setInt("use_spec_map", true);
 	else 
 		m_shader->setInt("use_spec_map", false);
+
+	if (m_textures[3] != nullptr)
+		m_shader->setInt("use_normal_map", true);
+	else
+		m_shader->setInt("use_normal_map", false);
 }
 
 void Entity::unbindTextures()
@@ -513,7 +518,7 @@ NormalMapWall::NormalMapWall(GLuint filas, GLuint columnas, GLdouble tamFila, GL
 	m_mesh = m;
 	m_name = "Wall";
 
-	setShader("normalMap");
+	setShader("lights");
 }
 
 
