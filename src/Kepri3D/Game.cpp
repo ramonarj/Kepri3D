@@ -1,5 +1,7 @@
 #include "Game.h"
 
+#include "Mesh.h"
+#include "Texture.h"
 #include "Scene.h"
 #include "Camera.h"
 #include "Material.h"
@@ -71,6 +73,15 @@ void Game::run()
 void Game::render()
 {
 	scene->render();
+
+	// Recopilar información de depuración una vez hemos acabado de dibujar todo
+#ifdef __DEBUG_INFO__
+	debugInfo.numVerts = Mesh::numVerts;
+	debugInfo.numTris = Mesh::numTris;
+	debugInfo.numTextureBinds = Texture::numBinds;
+
+	Mesh::numVerts = Mesh::numTris = Texture::numBinds = 0;
+#endif
 }
 
 void Game::update()
@@ -89,6 +100,9 @@ void Game::update()
 	{
 		glutSetWindowTitle((windowName + " - " + std::to_string(fps) + " fps").c_str());
 		currentSec = 0;
+#ifdef __DEBUG_INFO__
+		debugInfo.fps = fps;
+#endif
 		fps = 0;
 	}
 }

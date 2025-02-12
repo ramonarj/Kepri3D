@@ -5,6 +5,7 @@
 #include <glew.h>
 #include <string>
 #include "checkML.h"
+#include "Game.h"
 
 
 class Mesh
@@ -36,6 +37,11 @@ public:
 
 	// Letra mayúscula hecha con GL_LINE_STRIP de un color dado
 	static Mesh* generateLetter(char letter, const glm::vec4& color = {1, 1, 1, 1});
+
+#ifdef __DEBUG_INFO__
+	static GLuint numVerts;
+	static GLuint numTris;
+#endif
 
 protected:
 	/* Número total de vértices */

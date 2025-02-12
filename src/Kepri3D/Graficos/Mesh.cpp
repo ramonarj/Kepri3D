@@ -7,6 +7,11 @@
 
 using namespace glm;
 
+#ifdef __DEBUG_INFO__
+GLuint Mesh::numVerts = 0;
+GLuint Mesh::numTris = 0;
+#endif
+
 Mesh::Mesh() : numVertices(0), type(GL_POINTS), vertices(nullptr), colores(nullptr), 
 	texCoords(nullptr), normales(nullptr)
 {
@@ -96,6 +101,9 @@ void Mesh::draw()
 
 	// 3) Volver a dejarlo todo como estaba
 	disableArrays();
+#ifdef __DEBUG_INFO__
+	numVerts += numVertices;
+#endif
 }
 
 void Mesh::drawInstanced(GLuint numInstances)
@@ -108,6 +116,9 @@ void Mesh::drawInstanced(GLuint numInstances)
 
 	// 3) Volver a dejarlo todo como estaba
 	disableArrays();
+#ifdef __DEBUG_INFO__
+	numVerts += numVertices * numInstances;
+#endif
 }
 
 // - - - - - - - - - - - - - - - - - - -
@@ -138,6 +149,11 @@ void IndexMesh::draw()
 	// Dejarlo todo como estaba
 	glDisableVertexAttribArray(4);
 	Mesh::disableArrays();
+
+#ifdef __DEBUG_INFO__
+	numVerts += numVertices;
+	numTris += numIndices / 3.0;
+#endif
 }
 
 void IndexMesh::drawInstanced(GLuint numInstances)
@@ -150,6 +166,10 @@ void IndexMesh::drawInstanced(GLuint numInstances)
 
 	// 3) Volver a dejarlo todo como estaba
 	disableArrays();
+#ifdef __DEBUG_INFO__
+	numVerts += numVertices * numInstances;
+	numTris += numIndices / 3.0;
+#endif
 }
 
 void IndexMesh::SetNormals()

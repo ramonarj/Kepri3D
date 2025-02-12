@@ -22,6 +22,8 @@ Button::Button(const std::string& textureName, Canvas* canvas) : m_callback(null
 
 void Button::update(GLuint deltaTime)
 {
+	if (m_callback == nullptr)
+		return;
 	// Clic izquierdo del ratón
 	if(InputManager::Instance()->getMouseKeyDown(LEFT))
 	{

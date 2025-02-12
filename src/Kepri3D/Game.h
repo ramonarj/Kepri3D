@@ -21,6 +21,8 @@ class Scene;
 class Camera;
 class Viewport;
 
+#define __DEBUG_INFO__
+
 /* Clase singleton para gestionar el juego */
 class Game
 {
@@ -69,6 +71,17 @@ public:
 	// Para callbacks
 	/* Redimensiona el */
 	void resize(int newWidth, int newHeight);
+
+#ifdef __DEBUG_INFO__
+	struct DebugInfo
+	{
+		GLuint numVerts;
+		GLuint numTris;
+		GLuint numTextureBinds;
+		GLuint fps;
+	};
+	DebugInfo debugInfo;
+#endif
 
 private:
 	Game() : camera(nullptr), scene(nullptr), viewport(nullptr){}

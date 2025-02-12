@@ -5,6 +5,7 @@
 #include <string>
 #include <vector>
 #include <glm.hpp>
+#include "Game.h"
 
 // GL_RGBA -> sin correción gamma
 // GL_SRGB_ALPHA -> con corrección gamma
@@ -49,6 +50,10 @@ public:
 	// Otros
 	/* Activa o desactiva el uso de mipmaps */
 	void useMipmaps(bool b);
+
+#ifdef __DEBUG_INFO__
+	static GLuint numBinds;
+#endif
 
 protected:
 	// Dimensiones de la textura (en píxeles)

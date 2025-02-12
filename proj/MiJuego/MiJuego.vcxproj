@@ -156,6 +156,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="..\..\src\MiJuego\CameraController.cpp" />
+    <ClCompile Include="..\..\src\MiJuego\DebugText.cpp" />
     <ClCompile Include="..\..\src\MiJuego\GameManager.cpp" />
     <ClCompile Include="..\..\src\MiJuego\Main.cpp" />
     <ClCompile Include="..\..\src\MiJuego\RotationComp.cpp" />
@@ -165,6 +166,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\src\MiJuego\CameraController.h" />
+    <ClInclude Include="..\..\src\MiJuego\DebugText.h" />
     <ClInclude Include="..\..\src\MiJuego\GameManager.h" />
     <ClInclude Include="..\..\src\MiJuego\RotationComp.h" />
     <ClInclude Include="..\..\src\MiJuego\Scenes\PruebaScene.h" />

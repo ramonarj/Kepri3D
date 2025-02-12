@@ -5,6 +5,7 @@
 #include "../GameManager.h"
 #include "../RotationComp.h"
 #include "../CameraController.h"
+#include "../DebugText.h"
 
 const float buttonScale = 0.27f;
 const float buttonMargin = 0.1f;
@@ -177,14 +178,14 @@ void PruebaScene::init()
 
 	// Textos de prueba
 	//ABCDEFGHIJKLMNOPQRSTUVWXYZ
-	Text* texto = new Text("EN UN LUGAR DE LA MANCHA", m_canvas, { 0, 1, 0, 1 });
-	texto->setPositionUI(0.15, 0.1);
-	m_canvas->addElement(texto);
+	//Text* texto = new Text("EN UN LUGAR DE LA MANCHA", m_canvas, { 0, 1, 0, 1 });
+	//texto->setPositionUI(0.15, 0.1);
+	//m_canvas->addElement(texto);
 
-	Text* textoNums = new Text("0123456789-/", m_canvas, { 0, 1, 0, 1 });
-	textoNums->setPositionUI(0.3, 0.05);
-	textoNums->setGrosor(2.0);
-	m_canvas->addElement(textoNums);
+	//Text* textoNums = new Text("0123456789-/", m_canvas, { 0, 1, 0, 1 });
+	//textoNums->setPositionUI(0.3, 0.05);
+	//textoNums->setGrosor(2.0);
+	//m_canvas->addElement(textoNums);
 
 	// Entidad vacía para que cuelguen los botones
 	UIElement* botonesMenu = new UIElement();
@@ -234,6 +235,13 @@ void PruebaScene::init()
 	tesTerrain->setTexture("windows");
 	tesTerrain->setPosition({ 0,10,10 });
 	AddEntity(tesTerrain);
+
+	// Información de Debug
+	Entity* debugTxt = new Entity("DebugText");
+	debugTxt->setPosition({ 0,0,0 });
+	debugTxt->addComponent(new DebugText(m_canvas, "panel"));
+	AddEntity(debugTxt);
+	debugTxt->setActive(true);
 
 	/* - - GameManager - - */
 	Entity* gm = new Entity("GameManager");
@@ -289,8 +297,9 @@ void PruebaScene::loadResources()
 	ResourceManager::Instance()->loadTexture("windows.bmp", "windows");
 	ResourceManager::Instance()->loadTexture("coke.jpg", "coke");
 
-	// Botones
+	// Canvas
 	ResourceManager::Instance()->loadTexture("UI\\boton.png", "boton");
+	ResourceManager::Instance()->loadTexture("UI\\panel.png", "panel");
 
 	// Skyboxes - el orden tiene que ser este (top y bottom están invertidos por alguna razón)
 	ResourceManager::Instance()->loadCubemapTexture({ "skyboxes/right.jpg", "skyboxes/left.jpg", "skyboxes/bottom.jpg",

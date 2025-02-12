@@ -3,22 +3,25 @@
 #include "Mesh.h"
 #include "Camera.h"
 
-
-Text::Text(const std::string& texto, Canvas* canvas, const glm::vec4& color) : grosor(1.0)
+void Text::setText(const std::string& text)
 {
-	this->texto = texto;
+	clearText();
+	this->texto = text;
 	for (int i = 0; i < texto.size(); i++)
 	{
 		if (texto[i] != ' ' && texto[i] != '\n')
 			letters.push_back(Mesh::generateLetter(texto[i], color));
 	}
+}
 
-	//m_mesh = Mesh::generateText("AM");
-	//m_mesh = Mesh::generateLetter('C');
-	// 
+
+Text::Text(const std::string& texto, Canvas* canvas, const glm::vec4& color) : grosor(1.0)
+{
+	// Inicializar el array de mallas
+	this->color = color;
+	setText(texto);
+
 	double aspectRatio = (double)canvas->getWidth() / canvas->getHeight();
-	//m_mesh = Mesh::generateRectangle((double)width / canvas->getWidth() * 2,
-	//	(double)height / canvas->getHeight() * 2 / aspectRatio);
 
 	// Dimensiones
 	width = 50;
@@ -29,10 +32,16 @@ Text::Text(const std::string& texto, Canvas* canvas, const glm::vec4& color) : g
 	setCanvas(canvas);
 }
 
-Text::~Text()
+void Text::clearText()
 {
 	for (Mesh* m : letters)
 		delete m;
+	letters.clear();
+}
+
+Text::~Text()
+{
+	clearText();
 }
 
 void Text::render(glm::dmat4 const& viewMat)

@@ -10,7 +10,7 @@ ParticleSystem::ParticleSystem(GLdouble size, GLuint maxParticles, PARTICLE_TYPE
 {
 	// Generar la malla
 	if (partType == PARTICLE_2D) // 'círculo'
-		m_mesh = IndexMesh::generateRectangle(size, size);
+		m_mesh = Mesh::generateRectangle(size, size);
 	else // esfera
 		m_mesh = IndexMesh::generateToro(size, size / 3.0, 15, 5);
 

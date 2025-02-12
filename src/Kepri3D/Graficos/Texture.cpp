@@ -7,6 +7,10 @@
 #include <iostream>
 #include <freeglut.h>
 
+#ifdef __DEBUG_INFO__
+GLuint Texture::numBinds = 0;
+#endif
+
 void Texture::Init()
 {
 	// Genera una nueva textura y devuelve un identificador para acceder a ella
@@ -92,6 +96,9 @@ void Texture::bind(GLuint mix)
 {
 	glBindTexture(GL_TEXTURE_2D, id);
 	glTexEnvi(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, mix);
+#ifdef __DEBUG_INFO__
+	numBinds++;
+#endif
 }
 
 void Texture::unbind()
@@ -179,6 +186,9 @@ void CubemapTexture::bind(GLuint mix)
 {
 	glBindTexture(GL_TEXTURE_CUBE_MAP, id);
 	glTexEnvi(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, mix); //REPLACE sería lo correcto
+#ifdef __DEBUG_INFO__
+	numBinds++;
+#endif
 }
 
 void CubemapTexture::unbind()

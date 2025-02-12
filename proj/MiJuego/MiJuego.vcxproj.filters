@@ -31,6 +31,9 @@
     <ClCompile Include="..\..\src\MiJuego\Scenes\SpaceScene.cpp">
       <Filter>Scenes</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\src\MiJuego\DebugText.cpp">
+      <Filter>Archivos de origen</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\src\MiJuego\CameraController.h">
@@ -50,6 +53,9 @@
     </ClInclude>
     <ClInclude Include="..\..\src\MiJuego\Scenes\SpaceScene.h">
       <Filter>Scenes</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\MiJuego\DebugText.h">
+      <Filter>Archivos de origen</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

@@ -17,9 +17,15 @@ public:
 
 	void setGrosor(float grosor) { this->grosor = grosor; }
 
+	/* Cambia el texto */
+	void setText(const std::string& text);
+
 private:
 	/* Cadena de texto indicada por el usuario */
 	std::string texto;
+
+	/* Color del texto */
+	glm::vec4 color;
 
 	/* Lista de mallas de cada letra y número */
 	//TODO: hacer un diccionario estático para compartir letras entre distintos textos
@@ -27,6 +33,9 @@ private:
 
 	/* Grosor de la línea con que se dibujarán las letras */
 	float grosor;
+
+	// Métodos auxiliares
+	void clearText();
 };
 
 #endif
