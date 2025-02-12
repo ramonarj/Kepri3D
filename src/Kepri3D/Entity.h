@@ -214,7 +214,7 @@ public:
 class Esfera : public Entity
 {
 public:
-	Esfera(GLdouble size, GLuint subdivisions = 20, bool textured = false);
+	Esfera(GLdouble radio, GLuint paralelos = 10, GLuint meridianos = 20);
 	~Esfera() { };
 };
 

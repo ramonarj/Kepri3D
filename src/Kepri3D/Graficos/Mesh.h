@@ -85,7 +85,7 @@ public:
 	static IndexMesh* generateCube(GLdouble size, bool equalFaces = true);
 
 	/* - - Esfera - - */
-	static IndexMesh* generateSphere(GLdouble size, GLuint subdivisions, bool textured = false);
+	static IndexMesh* generateSphere(GLdouble radio, GLuint paralelos, GLuint meridianos);
 
 	/* - - Cilindro - - */
 	static IndexMesh* generateCilindro(GLdouble radio, GLdouble altura, GLuint lados);

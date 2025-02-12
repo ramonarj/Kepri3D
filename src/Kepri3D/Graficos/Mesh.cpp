@@ -687,130 +687,86 @@ IndexMesh* IndexMesh::generateCube(GLdouble size, bool equalFaces)
 	return m;
 }
 
-IndexMesh* IndexMesh::generateSphere(GLdouble size, GLuint subdivisions, bool textured)
+IndexMesh* IndexMesh::generateSphere(GLdouble radio, GLuint paralelos, GLuint meridianos)
 {
 	IndexMesh* m = new IndexMesh();
 	m->type = GL_TRIANGLES; 
-	m->numVertices = subdivisions * (subdivisions - 1)
-		+ 2; // vértice superior e inferior
-	m->numIndices = subdivisions * 2 //triángulos de arriba y de abajo
-		+ ((subdivisions - 2) * subdivisions * 2); // triángulos del resto del cuerpo
-	m->numIndices *= 3; // 3 índices para cada triángulo
-
+	m->numVertices = (meridianos + 1) * paralelos + 2; // meridiano repetido para poder envolver con la textura
+	m->numIndices = 6 * meridianos * paralelos;
 
 	/* Array de  vértices */
 	m->vertices = new dvec3[m->numVertices];
-	m->vertices[0] = { 0, size, 0 }; //tapas
-	m->vertices[m->numVertices - 1] = { 0, -size, 0 };
-
-	GLdouble angleIncr = 2 * PI / subdivisions;
-	GLdouble angleIncrY = PI / subdivisions;
-	GLdouble initialAngle = PI / 2; // 90 grados
-	// Plano cenital
-	int k = 1;
-	for(int i = 1; i < subdivisions; i++)
+	GLdouble angleIncr = 2 * PI / meridianos;
+	GLdouble angleIncrY = PI / (paralelos + 1);
+	GLdouble initialY = PI / 2 - angleIncrY;
+	int k = 0;
+	// Recorremos por meridianos, añadiendo uno extra
+	for (int j = 0; j < meridianos + 1; j++)
 	{
-		GLdouble posY = size * sin(initialAngle + angleIncrY * i);
-		GLdouble radius = size * cos(initialAngle - angleIncrY * i);
-		// Dibujar cada uno de los cortes cenitales en Y = posY
-		for(int j = 0; j < subdivisions; j++)
+		for (int i = 0; i < paralelos; i++)
 		{
-			GLdouble posX = -radius * cos(initialAngle + angleIncr * j);
-			GLdouble posZ = radius * sin(initialAngle + angleIncr * j);
+			GLdouble subradio = radio * cos(initialY - angleIncrY * i);
+			GLdouble posX = subradio * cos(angleIncr * j);
+			GLdouble posY = radio * sin(initialY - angleIncrY * i);
+			GLdouble posZ = subradio * -sin(angleIncr * j);
 			m->vertices[k] = { posX,posY,posZ };
-			//std::cout << "V" << k << ": (" << posX << ", " << posY << ", " << posZ << ")" << std::endl;
 			k++;
 		}
 	}
+	// Las 2 tapas
+	int centroTapa = m->numVertices - 2;
+	int centroBase = m->numVertices - 1;
+	m->vertices[centroTapa] = { 0, radio, 0 };
+	m->vertices[centroBase] = { 0, -radio, 0 };
 
-	/* Array de colores */
-	m->colores = new dvec4[m->numVertices];
-	for (int i = 0; i < m->numVertices; i++)
-	{
-		m->colores[i] = dvec4(0.8, 0.8, 0.8, 1);
-	}
-
-
-	/* Especificar los triángulos (array de índices) */
+	// Índices
 	m->indices = new GLuint[m->numIndices];
-	for (int i = 0; i < m->numIndices; i++)
-		m->indices[i] = 0;
-	// "Tapa" de arriba"
-	for(int i = 0; i < subdivisions; i++)
+	k = 0;
+	for (int j = 0; j < meridianos; j++)
 	{
-		m->indices[i * 3] = 0;
-		m->indices[i * 3 + 1] = i + 1;
-		m->indices[i * 3 + 2] = i + 2;
-	}
-	m->indices[(subdivisions - 1) * 3 + 2] = 1; //cerrar el círculo
-
-	// Cuerpo de la esfera
-	int count = 3 * subdivisions;
-	for(int i = 1; i < subdivisions - 1; i++) // < subdivisions - 1
-	{
-		GLuint v1, v2, v3, v4;
-		// Pintar cuadrados en cada nivel de la esfera
-		for (int j = 1; j <= subdivisions; j++)
+		// Tapa de arriba
+		m->indices[k] = centroTapa;
+		m->indices[k + 1] = paralelos * j;
+		m->indices[k + 2] = paralelos * (j + 1);
+		k += 3;
+		// Cuerpo de la esfera
+		for (int i = 0; i < paralelos - 1; i++)
 		{
-			//  v1  v3
-			//  |  / |
-			//  | /  |
-			//  v2   v4
-			v1 = subdivisions * (i - 1) + j;
-			v2 = subdivisions * i + j;
-			v3 = subdivisions * (i - 1) + j + 1;
-			v4 = subdivisions * i + j + 1;
-			if(j == subdivisions) // un caso especial, habría mejor forma de hacerlo
-			{
-				v3 -= subdivisions;
-				v4 -= subdivisions;
-			}
+			m->indices[k] = paralelos * j + i;
+			m->indices[k + 1] = paralelos * j + i + 1;
+			m->indices[k + 2] = paralelos * (j + 1) + i;
 
-			// Primer triángulo del cuadrado
-			m->indices[count] = v1;
-			m->indices[count + 1] = v2;
-			m->indices[count + 2] = v3;
-			count += 3;
-
-			// Segundo triángulo del cuadrado
-			m->indices[count] = v3;
-			m->indices[count + 1] = v2;
-			m->indices[count + 2] = v4;
-			count += 3;
+			m->indices[k + 3] = paralelos * (j + 1) + i;
+			m->indices[k + 4] = paralelos * j + i + 1;
+			m->indices[k + 5] = paralelos * (j + 1) + i + 1;
+			k += 6;
 		}
+		// Tapa de abajo
+		m->indices[k] = paralelos * (j + 1) - 1;
+		m->indices[k + 1] = centroBase;
+		m->indices[k + 2] = paralelos * (j + 2) - 1;
+		k += 3;
 	}
-
-	// "Tapa" de abajo
-	for (int i = 0; i < subdivisions; i++)
-	{
-		m->indices[count] = m->numVertices - subdivisions + i - 1;
-		m->indices[count + 1] = m->numVertices - 1;
-		m->indices[count + 2] = m->numVertices - subdivisions + i;
-		count += 3;
-	}
-	m->indices[count - 1] = m->numVertices - subdivisions - 1; //cerrar el círculo
-
 
 	/* Coordenadas de textura */
-	if(textured)
+	m->texCoords = new dvec2[m->numVertices];
+	for (int j = 0; j < meridianos + 1; j++)
 	{
-		m->texCoords = new dvec2[m->numVertices];
-		// Niveles (Y)
-		for(int i = 0; i < subdivisions - 1; i++)
+		GLdouble texX = j * (1.0 / meridianos);
+		for (int i = 0; i < paralelos; i++)
 		{
-			for(int j = 0; j < subdivisions; j++)
-			{
-				GLdouble texX = 0.5 + (1.0 / subdivisions) * j;
-				if (texX >= 1) // se podría hacer mejor
-					texX -= 1.0;
-				GLdouble texY = 1 - (1.0 / (subdivisions + 1) * i);
-				m->texCoords[i * subdivisions + j + 1] = { texX, texY };
-			}
+			GLdouble texY = 1.0 - 1.0 / (paralelos + 1) - (1.0 / (paralelos + 1) * i);
+			m->texCoords[j * paralelos + i] = { texX, texY };
 		}
-		// Tapas
-		m->texCoords[0] = { 0.5, 1 };
-		m->texCoords[m->numVertices - 1] = { 0.5, 0 };
 	}
+	// Tapas
+	m->texCoords[centroTapa] = { 0.5, 1 };
+	m->texCoords[centroBase] = { 0.5, 0 };
+
+	/* Colores */
+	m->colores = new dvec4[m->numVertices];
+	for (int i = 0; i < m->numVertices; i++)
+		m->colores[i] = dvec4(0, 1, 0, 1);
 
 	/* Normales */
 	m->SetNormals();
@@ -879,6 +835,22 @@ IndexMesh* IndexMesh::generateCilindro(GLdouble radio, GLdouble altura, GLuint l
 
 	// Normales
 	m->SetNormals();
+
+	// Coordenadas de textura
+	m->texCoords = new glm::dvec2[m->numVertices];
+	for (int i = 0; i < lados; i++)
+	{
+		double coordX = (cos(angleIncr * i) + 1) / 2.0;
+		double coordY = (sin(angleIncr * i) + 1) / 2.0;
+		// Base
+		m->texCoords[i] = { 1 - coordX, coordY };
+		// Techo
+		m->texCoords[i + lados * 3] = { coordX, coordY };
+		// Cuerpo
+		m->texCoords[i + lados] = { 1.0 / lados * i, 0 };
+		m->texCoords[i + lados * 2] = { 1.0 / lados * i, 1 };
+	}
+	m->texCoords[centroBase] = m->texCoords[centroTapa] = { 0.5, 0.5 };
 
 	return m;
 }

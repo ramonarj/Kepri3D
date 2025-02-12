@@ -316,9 +316,9 @@ Cubo::Cubo(GLdouble size, bool equalFaces)
 
 // - - - - - - - - - - - - - - - - - 
 
-Esfera::Esfera(GLdouble size, GLuint subdivisions, bool textured)
+Esfera::Esfera(GLdouble radio, GLuint paralelos, GLuint meridianos)
 {
-	m_mesh = IndexMesh::generateSphere(size, subdivisions, textured);
+	m_mesh = IndexMesh::generateSphere(radio, paralelos, meridianos);
 	m_name = "Esfera";
 }
 

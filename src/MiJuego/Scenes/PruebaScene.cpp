@@ -108,7 +108,7 @@ void PruebaScene::init()
 	// tiene que estar la última de las entidades
 
 	// Esferita hija de la torre
-	Esfera* esferita = new Esfera(0.5, 10, true);
+	Esfera* esferita = new Esfera(0.5, 5, 10);
 	//esferita->setTexture("earth");
 	esferita->setPosition({ 0,3.5,-2 });
 	esferita->setParent(torre);
@@ -123,7 +123,7 @@ void PruebaScene::init()
 	// Un cilindro
 	Cilindro* cilindro = new Cilindro(2, 4);
 	cilindro->setPosition({ 24,-0.9,-10 });
-	cilindro->setTexture("venus");
+	cilindro->setTexture("coke");
 	cilindro->setMaterial("cromo");
 	cilindro->setShader("lights");
 	AddEntity(cilindro);
@@ -265,6 +265,7 @@ void PruebaScene::loadResources()
 
 	/* Texturas */
 	ResourceManager::Instance()->loadTexture("earth24.bmp", "earth");
+	ResourceManager::Instance()->loadTexture("earthHD.jpg", "earthHD");
 	ResourceManager::Instance()->loadTexture("venus.bmp", "venus");
 	ResourceManager::Instance()->loadTexture("orientacion.bmp", "orientacion");
 	ResourceManager::Instance()->loadTexture("Zelda.bmp", "zelda");
@@ -286,6 +287,7 @@ void PruebaScene::loadResources()
 	ResourceManager::Instance()->loadTexture("star.png", "star");
 	ResourceManager::Instance()->loadTexture("redead.png", "redead");
 	ResourceManager::Instance()->loadTexture("windows.bmp", "windows");
+	ResourceManager::Instance()->loadTexture("coke.jpg", "coke");
 
 	// Botones
 	ResourceManager::Instance()->loadTexture("UI\\boton.png", "boton");
@@ -363,14 +365,14 @@ void PruebaScene::PruebaMateriales()
 	AddEntity(cuboCobre);
 
 	// Esfera
-	Esfera* esfera = new Esfera(1, 8, true);
+	Esfera* esfera = new Esfera(1, 8, 16);
 	esfera->setTexture("earth");
 	esfera->setPosition({ -15,2,-3 });
 	esfera->setShader("bigFog");
 	AddEntity(esfera);
 
 	// Tierra
-	Esfera* tierra = new Esfera(3, 20, true);
+	Esfera* tierra = new Esfera(3);
 	tierra->addComponent(new RotationComp(1.0));
 	tierra->setTexture("earth");
 	tierra->setPosition({ 6,15,0 });
@@ -469,11 +471,12 @@ void PruebaScene::PruebaMateriales()
 	AddEntity(cortado);
 
 	// Esfera HD
-	Esfera* esf = new Esfera(10, 40);
-	esf->setTexture("default");
+	Esfera* esf = new Esfera(10, 30, 40);
+	esf->setTexture("earthHD");
 	esf->setPosition({ 0,10,25 });
 	esf->setMaterial("cromo");
 	esf->setShader("lights");
+	esf->addComponent(new RotationComp(0.25));
 	AddEntity(esf);
 }
 
