@@ -9,6 +9,7 @@
 #include "ParticleSystem.h"
 // Managers
 #include "Game.h"
+#include "Scene.h"
 #include "ResourceManager.h"
 #include "InputManager.h"
 // UI

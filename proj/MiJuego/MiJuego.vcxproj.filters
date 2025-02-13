@@ -34,6 +34,9 @@
     <ClCompile Include="..\..\src\MiJuego\DebugText.cpp">
       <Filter>Archivos de origen</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\src\MiJuego\Callbacks.cpp">
+      <Filter>Archivos de origen</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\src\MiJuego\CameraController.h">
@@ -55,6 +58,9 @@
       <Filter>Scenes</Filter>
     </ClInclude>
     <ClInclude Include="..\..\src\MiJuego\DebugText.h">
+      <Filter>Archivos de origen</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\MiJuego\Callbacks.h">
       <Filter>Archivos de origen</Filter>
     </ClInclude>
   </ItemGroup>

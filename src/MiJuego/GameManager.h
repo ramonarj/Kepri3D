@@ -7,6 +7,7 @@ class Camera;
 class Scene;
 class Light;
 class UIElement;
+class ParticleSystem;
 
 class GameManager : public Component
 {
@@ -25,8 +26,15 @@ public:
 
 	void setLights(Light* dirLight, Light* circleLight, Light* spotLight, Light* luzBlinn);
 	void setTessTerrain(TessTerrain* tesTerrain) { this->tessTerrain = tesTerrain; }
+	void setParticleSys(ParticleSystem* partSys) { this->particleSys = partSys; }
 
 	void update(GLuint deltaTime) override;
+
+	static void centerMouse();
+
+	// Sistema de partículas
+	static ParticleSystem* particleSys;
+
 private:
 	// Referencias a los GameObjects
 	Camera* cam;

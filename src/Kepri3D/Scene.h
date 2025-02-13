@@ -64,6 +64,14 @@ public:
 	/* Cambia entre el modelo Phong y el Blinn-Phong */
 	inline void switchBlinnPhong() { blinn = !blinn; }
 
+	// Para ser accesibles desde callbacks
+	static bool skyboxActive;
+	static bool mipmapsActive;
+	static Shader* normalsShader;
+
+	/* Lista de efectos de postprocesado que se aplicarán (en este orden) a la escena */
+	static std::vector<Shader*> m_composites;
+
 protected:
 	/* Nombre de la escena */
 	std::string m_name;
@@ -83,16 +91,8 @@ protected:
 	/* Canvas de la escena */
 	Canvas* m_canvas;
 
-	/* Lista de efectos de postprocesado que se aplicarán (en este orden) a la escena */
-	static std::vector<Shader*> m_composites;
-
 	/* Malla para pintar los efectos */
 	Mesh* m_effectsMesh;
-
-	// Extra
-	static Shader* normalsShader;
-	static bool skyboxActive;
-	static bool mipmapsActive;
 
 	// Framebuffer usado para los efectos
 	Framebuffer* frameBuf;

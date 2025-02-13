@@ -6,6 +6,7 @@
 #include "../RotationComp.h"
 #include "../CameraController.h"
 #include "../DebugText.h"
+#include "../Callbacks.h"
 
 const float buttonScale = 0.27f;
 const float buttonMargin = 0.1f;
@@ -24,7 +25,6 @@ texturesButtonPressed, shadingButtonPressed, alphaButtonPressed, multisamplingBu
 normalsButtonPressed, compositeButtonPressed, scissorButtonPressed, skyboxButtonPressed, gammaButtonPressed, 
 instancingButtonPressed, stencilButtonPressed, logicOpButtonPressed };
 
-ParticleSystem* PruebaScene::particleSys = nullptr;
 
 void PruebaScene::init()
 {
@@ -223,7 +223,7 @@ void PruebaScene::init()
 
 	/* - - Sistema de partículas - - */
 	// Con 10.000, empieza a ir demasiado lento
-	particleSys = new ParticleSystem(0.4, 1000, PARTICLE_2D);
+	ParticleSystem* particleSys = new ParticleSystem(0.4, 1000, PARTICLE_2D);
 	particleSys->setTexture("emoji");
 	particleSys->setParticleSpeed(3.0);
 	particleSys->setLifetime(2);
@@ -249,6 +249,7 @@ void PruebaScene::init()
 	GameManager* gmComponent = new GameManager(this, m_camera, botonesMenu, particleSys);
 	gmComponent->setLights(dirLight, circleLight, spotLight, luzBlinn);
 	gmComponent->setTessTerrain(tesTerrain);
+	gmComponent->setParticleSys(particleSys);
 	gm->addComponent(gmComponent);
 	// Componente CameraController
 	CameraController* camComp = new CameraController(m_camera);
@@ -519,155 +520,4 @@ void PruebaScene::ViewportTest()
 	m_entities[3]->render(m_camera->getViewMat());
 
 	view->setSize(w, h); //Volvemos a dejar el viewPort como estaba
-}
-
-void PruebaScene::centerMouse()
-{
-	InputManager::Instance()->setMousePos(400, 300);
-}
-
-// - - - - - - - - - - - - Callbacks - - - - - - - - - - - - - - - //
-
-void PruebaScene::cullingButtonPressed()
-{
-	// Activar / desactivar el culling de polígonos traseros
-	Game::switchBoolParam(GL_CULL_FACE);
-	centerMouse();
-}
-
-void PruebaScene::blendingButtonPressed()
-{
-	// Activar / desactivar las transparencias en texturas y materiales
-	Game::switchBoolParam(GL_BLEND);
-	centerMouse();
-}
-
-void PruebaScene::lightingButtonPressed()
-{
-	// Activar / desactivar la iluminación
-	Game::switchBoolParam(GL_LIGHTING);
-	centerMouse();
-}
-
-void PruebaScene::texturesButtonPressed()
-{
-	// Activar / desactivar el uso de texturas
-	Game::switchBoolParam(GL_TEXTURE_2D);
-	centerMouse();
-}
-
-void PruebaScene::shadingButtonPressed()
-{
-	// Cambiar entre sombreado FLAT y SMOOTH
-	GLint shadeType;
-	glGetIntegerv(GL_SHADE_MODEL, &shadeType);
-	if (shadeType == GL_FLAT)
-	{
-		glShadeModel(GL_SMOOTH);
-		Material::setShadingType(GL_SMOOTH);
-	}
-
-	else
-	{
-		glShadeModel(GL_FLAT);
-		Material::setShadingType(GL_FLAT);
-	}
-
-	centerMouse();
-}
-
-void PruebaScene::alphaButtonPressed()
-{
-	// Activar / desactivar el alpha test
-	Game::switchBoolParam(GL_ALPHA_TEST);
-	centerMouse();
-}
-
-void PruebaScene::multisamplingButtonPressed()
-{
-	// Activar / desactivar el multisampling
-	Game::switchBoolParam(GL_MULTISAMPLE);
-	centerMouse();
-}
-
-void PruebaScene::mipmapButtonPressed()
-{
-	// Activar / desactivar el uso de mipmaps
-	mipmapsActive = !mipmapsActive;
-	ResourceManager::Instance()->enableMipmaps(mipmapsActive);
-
-	centerMouse();
-}
-
-void PruebaScene::normalsButtonPressed()
-{
-	// Activar / desactivar la visualización de vectores normales a cada vértice
-	if (normalsShader == nullptr)
-		normalsShader = (Shader*)&ResourceManager::Instance()->getShader("normals");
-	else
-		normalsShader = nullptr;
-
-	centerMouse();
-}
-
-void PruebaScene::compositeButtonPressed()
-{
-	// Quitar todos los efectos de composite menos el predet.
-	while (m_composites.size() > 1)
-		m_composites.pop_back();
-
-	centerMouse();
-}
-
-
-void PruebaScene::scissorButtonPressed()
-{
-	int proporcionBarra = glutGet(GLUT_WINDOW_HEIGHT) / 6.0f;
-	// Actualizar el área visible
-	Game::updateScissorBox(0, proporcionBarra, glutGet(GLUT_WINDOW_WIDTH), 
-		glutGet(GLUT_WINDOW_HEIGHT) - proporcionBarra * 2);
-	// Activar / desactivar el Scissor Test (hay que hacerlo en este orden)
-	Game::switchBoolParam(GL_SCISSOR_TEST);
-
-	centerMouse();
-}
-
-void PruebaScene::skyboxButtonPressed()
-{
-	skyboxActive = !skyboxActive;
-	centerMouse();
-}
-
-void PruebaScene::gammaButtonPressed()
-{
-	Game::switchBoolParam(GL_FRAMEBUFFER_SRGB);
-	centerMouse();
-}
-
-void PruebaScene::stencilButtonPressed()
-{
-	Game::switchBoolParam(GL_STENCIL_TEST);
-	centerMouse();
-}
-
-void PruebaScene::logicOpButtonPressed()
-{
-	// Activar las operaciones lógicas implica desactivar totalmente el 'Blending'
-	Game::switchBoolParam(GL_COLOR_LOGIC_OP);
-
-	// Tipo de operación que se hace sobre cada píxel
-	// Curiosas : GL_COPY (predet.), GL_COPY_INVERTED (negativo), GL_INVERT (b/n)
-	glLogicOp(GL_COPY_INVERTED);
-
-	centerMouse();
-}
-
-
-void PruebaScene::instancingButtonPressed() 
-{
-	if(particleSys != nullptr)
-	{
-		particleSys->setActive(!particleSys->isActive());
-	}
-	centerMouse();
 }

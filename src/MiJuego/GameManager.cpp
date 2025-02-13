@@ -7,6 +7,9 @@
 
 #include <freeglut.h>
 
+
+ParticleSystem* GameManager::particleSys = nullptr;
+
 void GameManager::setLights(Light* dirLight, Light* circleLight, Light* spotLight, Light* luzBlinn)
 {
 	this->dirLight = dirLight;
@@ -190,4 +193,10 @@ void GameManager::controlTorre(GLuint deltaTime)
 	movTorre = movTorre * velTorre * (deltaTime / 1000.0);
 	//pSystem->translate(movTorre, GLOBAL);
 	luzBlinn->setPosition(luzBlinn->getPosition() + glm::vec3(movTorre));
+}
+
+void GameManager::centerMouse()
+{
+	InputManager::Instance()->setMousePos(Game::Instance()->getCamera()->getVP()->getW() / 2.0, 
+		Game::Instance()->getCamera()->getVP()->getH() / 2.0);
 }

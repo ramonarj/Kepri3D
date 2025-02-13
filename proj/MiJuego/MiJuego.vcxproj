@@ -155,6 +155,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="..\..\src\MiJuego\Callbacks.cpp" />
     <ClCompile Include="..\..\src\MiJuego\CameraController.cpp" />
     <ClCompile Include="..\..\src\MiJuego\DebugText.cpp" />
     <ClCompile Include="..\..\src\MiJuego\GameManager.cpp" />
@@ -165,6 +166,7 @@
     <ClCompile Include="..\..\src\MiJuego\Scenes\SpaceScene.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="..\..\src\MiJuego\Callbacks.h" />
     <ClInclude Include="..\..\src\MiJuego\CameraController.h" />
     <ClInclude Include="..\..\src\MiJuego\DebugText.h" />
     <ClInclude Include="..\..\src\MiJuego\GameManager.h" />
