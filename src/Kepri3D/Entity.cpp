@@ -10,8 +10,8 @@
 #include "Texture.h"
 #include "MeshLoader.h"
 #include "Shader.h"
-#include "Pixmap32RGBA.h"
 #include "Component.h"
+#include "Camera.h"
 
 #include <freeglut.h>
 
@@ -557,20 +557,22 @@ void ClippableEntity::render()
 TessTerrain::TessTerrain(GLuint filas, GLuint columnas, GLdouble tamFila, GLdouble tamColumna)
 {
 	m_name = "TessTerrain";
-	m_mesh = IndexMesh::generateTessGrid(filas, columnas, tamFila, tamColumna);
+	//m_mesh = IndexMesh::generateTessGrid(filas, columnas, tamFila, tamColumna);
 	// Para depurarlo
 	setPolygonMode(GL_FILL, GL_LINE);
 
 	setShader("terreno");
+	useEyedir = false;
+}
+
+void TessTerrain::loadHeightMap(const std::string& heightMap, GLdouble scale)
+{
+	m_mesh = IndexMesh::generateTessTerrain(heightMap, scale, false);
 }
 
 void TessTerrain::render()
 {
-	m_shader->setInt("subdivisions", subdivisiones);
+	m_shader->setInt("use_eyeDir", useEyedir);
+	m_shader->setVec3("camFW", cam->forward());
 	Entity::render();
-}
-
-void TessTerrain::setSubdivisions(int sub)
-{
-	subdivisiones = sub;
 }

@@ -34,11 +34,8 @@ public:
 	/* Desactiva cualquier textura que estuviera activa */
 	virtual void unbind();
 
-	/* Carga un rectángulo de píxeles RGBA de tamaño 'width * height' desde el buffer 'buf' para su posterior lectura */
-	static void loadColorBuffer(GLsizei width, GLsizei height, GLenum buf = GL_BACK);
-
-	/* Salva la textura obtenida del color buffer en un archivo BMP */
-	static void save(const std::string& BMP_Name);
+	/* Salva el contenido del color buffer dado en un archivo BMP */
+	static void save(const std::string& BMP_Name, GLenum buf = GL_BACK);
 
 	//Getters
 	/* Ancho de la textura, en píxeles */

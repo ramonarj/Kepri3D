@@ -3,6 +3,7 @@
 #define STB_IMAGE_IMPLEMENTATION
 #include "stb_image.h"
 
+#include "ResourceManager.h"
 #include "Pixmap32RGBA.h"
 #include <iostream>
 #include <freeglut.h>
@@ -117,24 +118,24 @@ void Texture::useMipmaps(bool b)
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
 }
 
-void Texture::loadColorBuffer(GLsizei width, GLsizei height, GLenum buf)
+void Texture::save(const std::string& BMP_Name, GLenum buf)
 {
+	GLuint w = glutGet(GLUT_WINDOW_WIDTH);
+	GLuint h = glutGet(GLUT_WINDOW_HEIGHT);
+
+	// Lee los píxeles del Color Buffer
 	glReadBuffer(buf);
-	glCopyTexImage2D(GL_TEXTURE_2D, 0, COLOR_SPACE, 0, 0, width, height, 0);
-}
+	glCopyTexImage2D(GL_TEXTURE_2D, 0, COLOR_SPACE, 0, 0, w, h, 0);
 
-
-void Texture::save(const std::string& BMP_Name)
-{
 	// Crea el mapa de píxeles con las dimensiones de la pantalla
 	PixMap32RGBA pixMap;
-	pixMap.create_pixmap(glutGet(GLUT_WINDOW_WIDTH), glutGet(GLUT_WINDOW_HEIGHT));
+	pixMap.create_pixmap(w, h);
 
 	// Lo rellena con la info obtenida del color buffer y lo guarda en formato BMP
 	glGetTexImage(GL_TEXTURE_2D, 0, GL_RGBA, GL_UNSIGNED_BYTE, pixMap.data());
 	try
 	{
-		pixMap.save_bmp24BGR("..\\bin\\assets\\textures\\" + BMP_Name);
+		pixMap.save_bmp24BGR(ResourceManager::ASSETS_PATH + BMP_Name);
 	}
 	catch (const std::exception& e)
 	{

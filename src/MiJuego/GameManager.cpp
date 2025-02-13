@@ -6,6 +6,7 @@
 #include "CameraController.h"
 
 #include <freeglut.h>
+#include <iostream>
 
 
 ParticleSystem* GameManager::particleSys = nullptr;
@@ -95,7 +96,10 @@ void GameManager::update(GLuint deltaTime)
 
 	// Hacer una foto
 	if (InputManager::Instance()->getKeyDown('f'))
-		scene->takePhoto();
+	{
+		Texture::save("foto.bmp", GL_BACK);
+		std::cout << "Se ha hecho una foto" << std::endl;
+	}
 
 	// Cambiar entre el modelo Phong y el Blinn-Phong
 	if(InputManager::Instance()->getKeyDown('i'))
@@ -106,8 +110,10 @@ void GameManager::update(GLuint deltaTime)
 		cam->lookAt(circleLight->getPosition());
 
 	// Decirle al terreno en cuántos parches dividirse
-	float dist = glm::length(cam->getPosition() - tessTerrain->getPosition());
-	tessTerrain->setSubdivisions(glm::max(10 - dist, 1.0f));
+	if (InputManager::Instance()->getKeyDown('o'))
+	{
+		tessTerrain->useEyedir = !tessTerrain->useEyedir;
+	}
 }
 
 

@@ -288,18 +288,6 @@ void Scene::resize(int width, int height)
 	frameBuf2 = new Framebuffer(width, height);
 }
 
-void Scene::takePhoto()
-{
-	// Leemos la información del front buffer (el que está en pantalla), porque 
-	// el trasero podría estar dibujándose y tendríamos 'tearing'0
-	Texture::loadColorBuffer(m_camera->getVP()->getW(), m_camera->getVP()->getH(), GL_BACK);
-	// Sin embargo, con GL_BACK afecta menos al rendimiento (framerate)
-
-	Texture::save("foto.bmp");
-
-	std::cout << "Se ha hecho una foto" << std::endl;
-}
-
 Scene::~Scene()
 {
 	// Borrar el canvas

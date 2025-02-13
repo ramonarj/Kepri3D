@@ -231,9 +231,11 @@ void PruebaScene::init()
 	AddEntity(particleSys);
 
 	// Terreno teselado
-	TessTerrain* tesTerrain = new TessTerrain(2, 2, 3, 3);
-	tesTerrain->setTexture("windows");
-	tesTerrain->setPosition({ 0,10,10 });
+	TessTerrain* tesTerrain = new TessTerrain(2, 2, 30, 30);
+	tesTerrain->loadHeightMap(ResourceManager::TEXTURES_PATH + "iceland_height.bmp", 2.0);
+	tesTerrain->setTexture("iceland");
+	tesTerrain->setPosition({ 0,20,10 });
+	tesTerrain->setCamera(m_camera);
 	AddEntity(tesTerrain);
 
 	// Información de Debug
@@ -328,7 +330,7 @@ void PruebaScene::loadResources()
 	ResourceManager::Instance()->loadShader("default.vert", "", "multitexture.frag", "multitexture");
 	//ResourceManager::Instance()->loadShader("normalMap.vert", "", "normalMap.frag", "normalMap");
 	ResourceManager::Instance()->loadShader("clippable.vert", "", "default.frag", "clippable");
-	ResourceManager::Instance()->loadShader("default.vert", "terrain.tesc", "terrain.tese", "", "default.frag", "terreno");
+	ResourceManager::Instance()->loadShader("terrain.vert", "terrain.tesc", "terrain.tese", "", "default.frag", "terreno");
 
 
 	/* Efectos de postprocesado ('composites') */

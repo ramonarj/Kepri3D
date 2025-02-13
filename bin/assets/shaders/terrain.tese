@@ -16,6 +16,8 @@ out DATA
 	vec3 normals;
 } data_out;
 
+uniform dmat4 mvpMat;
+
 void main()
 {
 	// Posición de este vértice en el parche abstracto
@@ -33,7 +35,7 @@ void main()
     vec4 rightPos = pos1 + v * (pos2 - pos1);
     vec4 pos = leftPos + u * (rightPos - leftPos);
 
-    gl_Position = pos; // ya se multiplica por MVP en el VS
+    gl_Position = vec4(mvpMat * pos);
 	
 	// Lo mismo con las coordenadas de textura
     vec2 t0 = data_in[0].TexCoords;

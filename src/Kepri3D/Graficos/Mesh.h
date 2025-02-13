@@ -111,6 +111,9 @@ public:
 	/* - - Grid usando primitiva GL_PATCHES - - */
 	static IndexMesh* generateTessGrid(GLint filas, GLint columnas, GLdouble tamFila, GLdouble tamColumna);
 
+	/* - - Terreno usando primitiva GL_PATCHES - - */
+	static IndexMesh* generateTessTerrain(const std::string& filename, GLdouble scale, bool rawFile);
+
 	/* Rellena el vector de tangentes usando los triángulos y las UV */
 	void setTangents();
 

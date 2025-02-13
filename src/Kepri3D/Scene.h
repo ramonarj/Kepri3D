@@ -58,9 +58,6 @@ public:
 	/* Devuelve el nombre de la escena */
 	inline const std::string& getName() const { return m_name; }
 
-	/* Hace una foto */
-	void takePhoto();
-
 	/* Cambia entre el modelo Phong y el Blinn-Phong */
 	inline void switchBlinnPhong() { blinn = !blinn; }
 
