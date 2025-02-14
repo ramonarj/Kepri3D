@@ -13,11 +13,8 @@
     <Filter Include="Graficos">
       <UniqueIdentifier>{1320ee1d-a25c-4561-85d1-7cbde431e3f4}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Shaders">
-      <UniqueIdentifier>{d31576a6-8d65-4862-8c83-08989f0987c3}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Shaders\Postprocess">
-      <UniqueIdentifier>{e55dff7b-21c4-4953-b8d1-7c0374184db0}</UniqueIdentifier>
+    <Filter Include="Fisicas">
+      <UniqueIdentifier>{52f4ab5d-f8cb-4116-bd1e-b696cb086bee}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -83,6 +80,9 @@
     </ClCompile>
     <ClCompile Include="..\..\src\Kepri3D\UI\Text.cpp">
       <Filter>UI</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\Kepri3D\Fisica\Rigid.cpp">
+      <Filter>Fisicas</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -158,67 +158,8 @@
     <ClInclude Include="..\..\src\Kepri3D\UI\Text.h">
       <Filter>UI</Filter>
     </ClInclude>
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="..\bin\assets\shaders\cruces.geom">
-      <Filter>Shaders</Filter>
-    </None>
-    <None Include="..\bin\assets\shaders\default.geom">
-      <Filter>Shaders</Filter>
-    </None>
-    <None Include="..\bin\assets\shaders\lights.vert">
-      <Filter>Shaders</Filter>
-    </None>
-    <None Include="..\bin\assets\shaders\fog.frag">
-      <Filter>Shaders</Filter>
-    </None>
-    <None Include="..\bin\assets\shaders\maximize.vert">
-      <Filter>Shaders</Filter>
-    </None>
-    <None Include="..\bin\assets\shaders\movimiento.frag">
-      <Filter>Shaders</Filter>
-    </None>
-    <None Include="..\bin\assets\shaders\normals.frag">
-      <Filter>Shaders</Filter>
-    </None>
-    <None Include="..\bin\assets\shaders\normals.geom">
-      <Filter>Shaders</Filter>
-    </None>
-    <None Include="..\bin\assets\shaders\normals.vert">
-      <Filter>Shaders</Filter>
-    </None>
-    <None Include="..\bin\assets\shaders\particle.frag">
-      <Filter>Shaders</Filter>
-    </None>
-    <None Include="..\bin\assets\shaders\particle.vert">
-      <Filter>Shaders</Filter>
-    </None>
-    <None Include="..\bin\assets\shaders\skybox.frag">
-      <Filter>Shaders</Filter>
-    </None>
-    <None Include="..\bin\assets\shaders\skybox.vert">
-      <Filter>Shaders</Filter>
-    </None>
-    <None Include="..\bin\assets\shaders\specularMap.frag">
-      <Filter>Shaders</Filter>
-    </None>
-    <None Include="..\bin\assets\shaders\postprocess\composite.vert">
-      <Filter>Shaders\Postprocess</Filter>
-    </None>
-    <None Include="..\bin\assets\shaders\postprocess\interference.frag">
-      <Filter>Shaders\Postprocess</Filter>
-    </None>
-    <None Include="..\bin\assets\shaders\postprocess\waves.frag">
-      <Filter>Shaders\Postprocess</Filter>
-    </None>
-    <None Include="..\bin\assets\shaders\lights.frag">
-      <Filter>Shaders</Filter>
-    </None>
-    <None Include="..\bin\assets\shaders\default.vert">
-      <Filter>Shaders</Filter>
-    </None>
-    <None Include="..\bin\assets\shaders\default.frag">
-      <Filter>Shaders</Filter>
-    </None>
+    <ClInclude Include="..\..\src\Kepri3D\Fisica\Rigid.h">
+      <Filter>Fisicas</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

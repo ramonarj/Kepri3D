@@ -102,7 +102,7 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>WIN32;_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>$(SolutionDir)src\$(ProjectName)\;$(SolutionDir)src\$(ProjectName)\Graficos\;$(SolutionDir)src\$(ProjectName)\Utils\;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)src\$(ProjectName)\;$(SolutionDir)src\$(ProjectName)\Graficos\;$(SolutionDir)src\$(ProjectName)\Fisica\;$(SolutionDir)src\$(ProjectName)\Utils\;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -120,7 +120,7 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>WIN32;NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>$(SolutionDir)src\$(ProjectName)\;$(SolutionDir)src\$(ProjectName)\Graficos\;$(SolutionDir)src\$(ProjectName)\Utils\;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)src\$(ProjectName)\;$(SolutionDir)src\$(ProjectName)\Graficos\;$(SolutionDir)src\$(ProjectName)\Fisica\;$(SolutionDir)src\$(ProjectName)\Utils\;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -138,7 +138,7 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>$(SolutionDir)src\$(ProjectName)\;$(SolutionDir)src\$(ProjectName)\Graficos\;$(SolutionDir)src\$(ProjectName)\Utils\;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)src\$(ProjectName)\;$(SolutionDir)src\$(ProjectName)\Graficos\;$(SolutionDir)src\$(ProjectName)\Fisica\;$(SolutionDir)src\$(ProjectName)\Utils\;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -157,7 +157,7 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>$(SolutionDir)src\$(ProjectName)\;$(SolutionDir)src\$(ProjectName)\Graficos\;$(SolutionDir)src\$(ProjectName)\Utils\;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)src\$(ProjectName)\;$(SolutionDir)src\$(ProjectName)\Graficos\;$(SolutionDir)src\$(ProjectName)\Fisica\;$(SolutionDir)src\$(ProjectName)\Utils\;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -173,6 +173,7 @@
   <ItemGroup>
     <ClCompile Include="..\..\src\Kepri3D\Component.cpp" />
     <ClCompile Include="..\..\src\Kepri3D\Entity.cpp" />
+    <ClCompile Include="..\..\src\Kepri3D\Fisica\Rigid.cpp" />
     <ClCompile Include="..\..\src\Kepri3D\Game.cpp" />
     <ClCompile Include="..\..\src\Kepri3D\Graficos\Camera.cpp" />
     <ClCompile Include="..\..\src\Kepri3D\Graficos\Framebuffer.cpp" />
@@ -196,6 +197,7 @@
   <ItemGroup>
     <ClInclude Include="..\..\src\Kepri3D\Component.h" />
     <ClInclude Include="..\..\src\Kepri3D\Entity.h" />
+    <ClInclude Include="..\..\src\Kepri3D\Fisica\Rigid.h" />
     <ClInclude Include="..\..\src\Kepri3D\Game.h" />
     <ClInclude Include="..\..\src\Kepri3D\Graficos\Camera.h" />
     <ClInclude Include="..\..\src\Kepri3D\Graficos\Framebuffer.h" />
@@ -218,28 +220,6 @@
     <ClInclude Include="..\..\src\Kepri3D\Utils\Pixmap32RGBA.h" />
     <ClInclude Include="..\..\src\Kepri3D\Utils\stb_image.h" />
     <ClInclude Include="..\..\src\Kepri3D\Utils\Utils.h" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="..\bin\assets\shaders\cruces.geom" />
-    <None Include="..\bin\assets\shaders\default.frag" />
-    <None Include="..\bin\assets\shaders\default.geom" />
-    <None Include="..\bin\assets\shaders\default.vert" />
-    <None Include="..\bin\assets\shaders\lights.vert" />
-    <None Include="..\bin\assets\shaders\fog.frag" />
-    <None Include="..\bin\assets\shaders\lights.frag" />
-    <None Include="..\bin\assets\shaders\maximize.vert" />
-    <None Include="..\bin\assets\shaders\movimiento.frag" />
-    <None Include="..\bin\assets\shaders\normals.frag" />
-    <None Include="..\bin\assets\shaders\normals.geom" />
-    <None Include="..\bin\assets\shaders\normals.vert" />
-    <None Include="..\bin\assets\shaders\particle.frag" />
-    <None Include="..\bin\assets\shaders\particle.vert" />
-    <None Include="..\bin\assets\shaders\postprocess\composite.vert" />
-    <None Include="..\bin\assets\shaders\postprocess\interference.frag" />
-    <None Include="..\bin\assets\shaders\postprocess\waves.frag" />
-    <None Include="..\bin\assets\shaders\skybox.frag" />
-    <None Include="..\bin\assets\shaders\skybox.vert" />
-    <None Include="..\bin\assets\shaders\specularMap.frag" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

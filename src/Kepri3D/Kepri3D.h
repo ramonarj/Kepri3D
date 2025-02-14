@@ -1,5 +1,6 @@
 #include <glm.hpp>
 
+// Gráficos
 #include "Mesh.h"
 #include "Texture.h"
 #include "Entity.h"
@@ -7,6 +8,8 @@
 #include "Light.h"
 #include "Shader.h"
 #include "ParticleSystem.h"
+// Físicas
+#include "Rigid.h"
 // Managers
 #include "Game.h"
 #include "Scene.h"

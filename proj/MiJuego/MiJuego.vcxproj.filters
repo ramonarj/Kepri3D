@@ -25,7 +25,7 @@
     <ClCompile Include="..\..\src\MiJuego\Scenes\PruebaScene.cpp">
       <Filter>Scenes</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\src\MiJuego\Scenes\SimVuelo.cpp">
+    <ClCompile Include="..\..\src\MiJuego\Scenes\PruebaFisicas.cpp">
       <Filter>Scenes</Filter>
     </ClCompile>
     <ClCompile Include="..\..\src\MiJuego\Scenes\SpaceScene.cpp">
@@ -51,7 +51,7 @@
     <ClInclude Include="..\..\src\MiJuego\Scenes\PruebaScene.h">
       <Filter>Scenes</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\src\MiJuego\Scenes\SimVuelo.h">
+    <ClInclude Include="..\..\src\MiJuego\Scenes\PruebaFisicas.h">
       <Filter>Scenes</Filter>
     </ClInclude>
     <ClInclude Include="..\..\src\MiJuego\Scenes\SpaceScene.h">

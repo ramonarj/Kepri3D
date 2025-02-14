@@ -98,7 +98,7 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>WIN32;_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>$(SolutionDir)src\Kepri3D\;$(SolutionDir)src\Kepri3D\Graficos\;$(SolutionDir)src\Kepri3D\Utils\;$(SolutionDir)src\Kepri3D\UI\;$(SolutionDir)dependencies\glm-1.0.1\glm\;$(SolutionDir)dependencies\freeglut-3.6.0\include\GL\;$(SolutionDir)dependencies\glew-2.2.0\include\GL\;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)src\Kepri3D\;$(SolutionDir)src\Kepri3D\Graficos\;$(SolutionDir)src\Kepri3D\Fisica\;$(SolutionDir)src\Kepri3D\Utils\;$(SolutionDir)src\Kepri3D\UI\;$(SolutionDir)dependencies\glm-1.0.1\glm\;$(SolutionDir)dependencies\freeglut-3.6.0\include\GL\;$(SolutionDir)dependencies\glew-2.2.0\include\GL\;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -114,7 +114,7 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>WIN32;NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>$(SolutionDir)src\Kepri3D\;$(SolutionDir)src\Kepri3D\Graficos\;$(SolutionDir)src\Kepri3D\Utils\;$(SolutionDir)src\Kepri3D\UI\;$(SolutionDir)dependencies\glm-1.0.1\glm\;$(SolutionDir)dependencies\freeglut-3.6.0\include\GL\;$(SolutionDir)dependencies\glew-2.2.0\include\GL\;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)src\Kepri3D\;$(SolutionDir)src\Kepri3D\Graficos\;$(SolutionDir)src\Kepri3D\Fisica\;$(SolutionDir)src\Kepri3D\Utils\;$(SolutionDir)src\Kepri3D\UI\;$(SolutionDir)dependencies\glm-1.0.1\glm\;$(SolutionDir)dependencies\freeglut-3.6.0\include\GL\;$(SolutionDir)dependencies\glew-2.2.0\include\GL\;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -129,7 +129,7 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>$(SolutionDir)src\Kepri3D\;$(SolutionDir)src\Kepri3D\Graficos\;$(SolutionDir)src\Kepri3D\Utils\;$(SolutionDir)src\Kepri3D\UI\;$(SolutionDir)dependencies\glm-1.0.1\glm\;$(SolutionDir)dependencies\freeglut-3.6.0\include\GL\;$(SolutionDir)dependencies\glew-2.2.0\include\GL\;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)src\Kepri3D\;$(SolutionDir)src\Kepri3D\Graficos\;$(SolutionDir)src\Kepri3D\Fisica\;$(SolutionDir)src\Kepri3D\Utils\;$(SolutionDir)src\Kepri3D\UI\;$(SolutionDir)dependencies\glm-1.0.1\glm\;$(SolutionDir)dependencies\freeglut-3.6.0\include\GL\;$(SolutionDir)dependencies\glew-2.2.0\include\GL\;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -145,7 +145,7 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>$(SolutionDir)src\Kepri3D\;$(SolutionDir)src\Kepri3D\Graficos\;$(SolutionDir)src\Kepri3D\Utils\;$(SolutionDir)src\Kepri3D\UI\;$(SolutionDir)dependencies\glm-1.0.1\glm\;$(SolutionDir)dependencies\freeglut-3.6.0\include\GL\;$(SolutionDir)dependencies\glew-2.2.0\include\GL\;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)src\Kepri3D\;$(SolutionDir)src\Kepri3D\Graficos\;$(SolutionDir)src\Kepri3D\Fisica\;$(SolutionDir)src\Kepri3D\Utils\;$(SolutionDir)src\Kepri3D\UI\;$(SolutionDir)dependencies\glm-1.0.1\glm\;$(SolutionDir)dependencies\freeglut-3.6.0\include\GL\;$(SolutionDir)dependencies\glew-2.2.0\include\GL\;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -162,7 +162,7 @@
     <ClCompile Include="..\..\src\MiJuego\Main.cpp" />
     <ClCompile Include="..\..\src\MiJuego\RotationComp.cpp" />
     <ClCompile Include="..\..\src\MiJuego\Scenes\PruebaScene.cpp" />
-    <ClCompile Include="..\..\src\MiJuego\Scenes\SimVuelo.cpp" />
+    <ClCompile Include="..\..\src\MiJuego\Scenes\PruebaFisicas.cpp" />
     <ClCompile Include="..\..\src\MiJuego\Scenes\SpaceScene.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -172,7 +172,7 @@
     <ClInclude Include="..\..\src\MiJuego\GameManager.h" />
     <ClInclude Include="..\..\src\MiJuego\RotationComp.h" />
     <ClInclude Include="..\..\src\MiJuego\Scenes\PruebaScene.h" />
-    <ClInclude Include="..\..\src\MiJuego\Scenes\SimVuelo.h" />
+    <ClInclude Include="..\..\src\MiJuego\Scenes\PruebaFisicas.h" />
     <ClInclude Include="..\..\src\MiJuego\Scenes\SpaceScene.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
