@@ -17,6 +17,10 @@ out DATA
 } data_out;
 
 uniform dmat4 mvpMat;
+// Reutilizamos este nombre
+uniform sampler2D dispMap;
+
+uniform float elevacion = 1.0f;
 
 void main()
 {
@@ -24,20 +28,7 @@ void main()
     float u = gl_TessCoord.x;
     float v = gl_TessCoord.y;
 	
-	// Posición de los 4 vértices que forman el parche
-    vec4 pos0 = gl_in[0].gl_Position;
-    vec4 pos1 = gl_in[1].gl_Position;
-    vec4 pos2 = gl_in[2].gl_Position;
-    vec4 pos3 = gl_in[3].gl_Position;
-	
-	// Interpolar bilinearmente
-    vec4 leftPos = pos0 + v * (pos3 - pos0);
-    vec4 rightPos = pos1 + v * (pos2 - pos1);
-    vec4 pos = leftPos + u * (rightPos - leftPos);
-
-    gl_Position = vec4(mvpMat * pos);
-	
-	// Lo mismo con las coordenadas de textura
+	// Interpolar bilinealmente las coordenadas de textura
     vec2 t0 = data_in[0].TexCoords;
     vec2 t1 = data_in[1].TexCoords;
     vec2 t2 = data_in[2].TexCoords;
@@ -48,4 +39,20 @@ void main()
     vec2 coord = leftCoord + u * (rightCoord - leftCoord);
 
 	data_out.TexCoords = coord;
+	
+	// Lo mismo con la posición de los vértices
+    vec4 pos0 = gl_in[0].gl_Position;
+    vec4 pos1 = gl_in[1].gl_Position;
+    vec4 pos2 = gl_in[2].gl_Position;
+    vec4 pos3 = gl_in[3].gl_Position;
+	
+    vec4 leftPos = pos0 + v * (pos3 - pos0);
+    vec4 rightPos = pos1 + v * (pos2 - pos1);
+    vec4 pos = leftPos + u * (rightPos - leftPos);
+	
+	// Sumarle la altura del Height Map
+	float y = texture(dispMap, coord).r;
+	pos.y += (y * elevacion);
+
+    gl_Position = vec4(mvpMat * pos);
 }

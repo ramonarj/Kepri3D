@@ -231,10 +231,10 @@ void PruebaScene::init()
 	AddEntity(particleSys);
 
 	// Terreno teselado
-	TessTerrain* tesTerrain = new TessTerrain(2, 2, 30, 30);
-	tesTerrain->loadHeightMap(ResourceManager::TEXTURES_PATH + "iceland_height.bmp", 2.0);
+	TessTerrain* tesTerrain = new TessTerrain(9, 14, 80, 80); //patches de 40x40uds
 	tesTerrain->setTexture("iceland");
-	tesTerrain->setPosition({ 0,20,10 });
+	tesTerrain->setHeightMap("iceland_height", 25.0f);
+	tesTerrain->setPosition({ 0,-20,0 });
 	tesTerrain->setCamera(m_camera);
 	AddEntity(tesTerrain);
 
@@ -295,6 +295,7 @@ void PruebaScene::loadResources()
 	ResourceManager::Instance()->loadTexture("brickwall.jpg", "wall");
 	// Los mapas de normales no pueden cargarse con SRGB_ALPHA
 	ResourceManager::Instance()->loadTexture("brickwall_normal.png", "wall_normal", 255, GL_RGBA);
+	ResourceManager::Instance()->loadTexture("iceland_height.bmp", "iceland_height", 255, GL_RGBA);
 	ResourceManager::Instance()->loadTexture("star.png", "star");
 	ResourceManager::Instance()->loadTexture("redead.png", "redead");
 	ResourceManager::Instance()->loadTexture("windows.bmp", "windows");
@@ -418,12 +419,12 @@ void PruebaScene::PruebaMateriales()
 	AddEntity(oldTer);
 
 	// Terreno Islandia
-	Terrain* terrain = new Terrain();
-	terrain->loadHeightMap(ResourceManager::TEXTURES_PATH + "iceland_height.bmp", 2.0);
-	terrain->setTexture("iceland");
-	//terrain->setShader("lights");
-	terrain->setPosition({ 0,-20,0 });
-	AddEntity(terrain);
+	//Terrain* terrain = new Terrain();
+	//terrain->loadHeightMap(ResourceManager::TEXTURES_PATH + "iceland_height.bmp", 2.0);
+	//terrain->setTexture("iceland");
+	////terrain->setShader("lights");
+	//terrain->setPosition({ 0,-20,0 });
+	//AddEntity(terrain);
 
 
 	// Mar de la isla

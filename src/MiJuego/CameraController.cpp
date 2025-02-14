@@ -5,6 +5,7 @@
 CameraController::CameraController(Camera* cam)
 {
 	this->cam = cam;
+	cam->setFarPlane(500.0);
 
 	// Hacer que el cursor sea invisible y moverlo al centro de la ventana
 	InputManager::Instance()->setCursor(GLUT_CURSOR_NONE);

@@ -24,8 +24,9 @@ uniform vec3 camFW;
 uniform bool use_eyeDir = false;
 
 // Constantes
-const int MIN_TESS = 1;
-const int MAX_TESS = 6;
+uniform int patch_size = 25;
+const int MIN_TESS = 2;
+const int MAX_TESS = 20;
 
 void main()
 {
@@ -53,7 +54,7 @@ void main()
 		else
 		{
 			float dist = length(viewPos - centro);
-			subd = int(max(min(25.0 - dist, MAX_TESS), MIN_TESS));
+			subd = int(max(min(patch_size - dist, MAX_TESS), MIN_TESS));
 		}
 		
 		// Se podría hacer una 'mezcla'; si estamos dentro del parche, usamos la máxima teselación, 
