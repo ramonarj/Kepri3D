@@ -15,6 +15,9 @@ public:
 	/* Devuelve true si el componente se actualiza cada frame, false e.o.c. */
 	inline bool isActive() const { return m_active; }
 
+	/* Devuelve la entidad contenedora de este componente */
+	inline Entity* getEntity() const { return entity; }
+
 	// Setters
 	/* Activa / desactiva este componente */
 	inline void setActive(bool b) { m_active = b; }

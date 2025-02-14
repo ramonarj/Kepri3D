@@ -3,6 +3,7 @@
 #include "../Kepri3D.h"
 
 #include "../CameraController.h"
+#include "../PhysicsMan.h"
 
 void PruebaFisicas::init()
 {
@@ -17,9 +18,9 @@ void PruebaFisicas::init()
 	// ENTIDADES
 
 	// Esfera con componente Rigid
-	Esfera* esf = new Esfera(5.0);
+	Esfera* esf = new Esfera(1.0);
 	esf->setTexture("default");
-	esf->setPosition({ 0, 10, 0 });
+	esf->setPosition({ 0, 100, 0 });
 	Rigid* rigidEsfera = new Rigid(esf->getModelMat());
 	rigidEsfera->useGravity(true);
 	esf->addComponent(rigidEsfera);
@@ -27,9 +28,15 @@ void PruebaFisicas::init()
 
 	// Suelo sin componente rigid
 	Cubo* c = new Cubo(1);
-	c->setTexture("earth");
-	c->scale({ 20, 1, 20 });
+	c->setTexture("cobre");
+	c->scale({ 100, 1, 100 });
 	AddEntity(c);
+
+	// Sombra de la pelota
+	Entity* sombra = new Poligono(40, 3.0, true);
+	sombra->setTexture("sombra");
+	sombra->rotate(-PI / 2, { 1, 0, 0 });
+	AddEntity(sombra);
 
 	/* - - Skybox - - */
 	Skybox* sky = new Skybox("lakeSkybox");
@@ -38,6 +45,12 @@ void PruebaFisicas::init()
 	/* - - Canvas - - */
 	//m_canvas = new Canvas();
 	//m_canvas->setSize(800, 600);
+
+	// PhysicsMan
+	Entity* phyMan = new Entity("PhysicsManager");
+	PhysicsMan* phyManComp = new PhysicsMan(rigidEsfera, sombra);
+	phyMan->addComponent(phyManComp);
+	AddEntity(phyMan);
 
 	/* - - GameManager - - */
 	Entity* gm = new Entity();
@@ -55,7 +68,8 @@ void PruebaFisicas::loadResources()
 	/* Mallas */
 
 	/* Texturas */
-	ResourceManager::Instance()->loadTexture("earth24.bmp", "earth");
+	ResourceManager::Instance()->loadTexture("cobre.bmp", "cobre");
+	ResourceManager::Instance()->loadTexture("sombra.png", "sombra");
 
 	ResourceManager::Instance()->loadCubemapTexture({ "skyboxes/right.jpg", "skyboxes/left.jpg", "skyboxes/bottom.jpg",
 	"skyboxes/top.jpg", "skyboxes/front.jpg", "skyboxes/back.jpg" }, "lakeSkybox");
