@@ -23,6 +23,8 @@ class Viewport;
 
 #define __DEBUG_INFO__
 
+const int MSAA_SAMPLES = 4;
+
 /* Clase singleton para gestionar el juego */
 class Game
 {
@@ -72,6 +74,7 @@ public:
 	/* Redimensiona el */
 	void resize(int newWidth, int newHeight);
 
+
 #ifdef __DEBUG_INFO__
 	struct DebugInfo
 	{
@@ -79,6 +82,7 @@ public:
 		GLuint numTris;
 		GLuint numTextureBinds;
 		GLuint fps;
+		GLuint numLuces;
 	};
 	DebugInfo debugInfo;
 #endif

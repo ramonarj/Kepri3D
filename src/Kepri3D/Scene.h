@@ -61,6 +61,9 @@ public:
 	/* Cambia entre el modelo Phong y el Blinn-Phong */
 	inline void switchBlinnPhong() { blinn = !blinn; }
 
+	/* Número de luces en la escena */
+	GLuint numberOfLights() const { return m_lights.size(); }
+
 	// Para ser accesibles desde callbacks
 	static bool skyboxActive;
 	static bool mipmapsActive;

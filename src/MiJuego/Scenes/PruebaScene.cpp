@@ -412,11 +412,11 @@ void PruebaScene::PruebaMateriales()
 	AddEntity(cascada);
 
 	// Terreno antiguo
-	Terrain* oldTer = new Terrain();
-	oldTer->loadRAW(ResourceManager::ASSETS_PATH + "terrain.raw", 0.05);
-	oldTer->setTexture("terreno");
-	oldTer->setPosition({ -30,0, -15 });
-	AddEntity(oldTer);
+	//Terrain* oldTer = new Terrain();
+	//oldTer->loadRAW(ResourceManager::ASSETS_PATH + "terrain.raw", 0.05);
+	//oldTer->setTexture("terreno");
+	//oldTer->setPosition({ -30,0, -15 });
+	//AddEntity(oldTer);
 
 	// Terreno Islandia
 	//Terrain* terrain = new Terrain();

@@ -79,6 +79,7 @@ void Game::render()
 	debugInfo.numVerts = Mesh::numVerts;
 	debugInfo.numTris = Mesh::numTris;
 	debugInfo.numTextureBinds = Texture::numBinds;
+	debugInfo.numLuces = scene->numberOfLights();
 
 	Mesh::numVerts = Mesh::numTris = Texture::numBinds = 0;
 #endif
@@ -145,7 +146,9 @@ void Game::iniciarGlut(int argc, char* argv[], int windowW, int windowH)
 	glutInitWindowSize(windowW, windowH);   // window size
 	//glutInitWindowPosition (140, 140);
 
-	glutInitDisplayMode(GLUT_RGBA | GLUT_DOUBLE | GLUT_DEPTH | GLUT_MULTISAMPLE | GLUT_STENCIL ); // | GLUT_STENCIL
+	glutInitDisplayMode(GLUT_RGBA | GLUT_DOUBLE | GLUT_DEPTH | GLUT_MULTISAMPLE | GLUT_STENCIL); // | GLUT_STENCIL
+	// Número de samples
+	glutSetOption(GLUT_MULTISAMPLE, MSAA_SAMPLES);
 
 	glutWindow = glutCreateWindow(windowName.c_str());  // nombre de la ventana
 	glutIgnoreKeyRepeat(true);

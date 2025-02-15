@@ -15,7 +15,7 @@ DebugText::DebugText(Canvas* canvas, const std::string& backgroundTexID)
 	// 
 	text = new Text("DEBUG INFO", canvas, { 0, 0, 0, 1 });
 	text->setPositionUI(0.32, 0.14);
-	text->setGrosor(1.5);
+	text->setGrosor(1.25);
 	text->setScaleUI(0.5, 0.5);
 	canvas->addElement(text);
 }
@@ -27,7 +27,8 @@ void DebugText::update(GLuint deltaTime)
 	std::string s = "FPS " + std::to_string(Game::Instance()->debugInfo.fps) +
 		"\nVERTICES " + std::to_string(Game::Instance()->debugInfo.numVerts) +
 		"\nTRIANGLES " + std::to_string(Game::Instance()->debugInfo.numTris) +
-		"\nTEXTURE BINDS " + std::to_string(Game::Instance()->debugInfo.numTextureBinds);
+		"\nTEXTURE BINDS " + std::to_string(Game::Instance()->debugInfo.numTextureBinds) +
+		"\nLIGHTS " + std::to_string(Game::Instance()->debugInfo.numLuces);
 
 	text->setText(s);
 #endif

@@ -19,6 +19,7 @@ bool Scene::mipmapsActive = false;
 Shader* Scene::normalsShader = nullptr;
 std::vector<Shader*> Scene::m_composites;
 
+
 Scene::Scene() : m_canvas(nullptr), m_skybox(nullptr)
 {
 	m_camera = Game::Instance()->getCamera();
@@ -28,7 +29,7 @@ Scene::Scene() : m_canvas(nullptr), m_skybox(nullptr)
 
 	// Crear los 2 FrameBuffers para el renderizado
 	frameBuf = new Framebuffer(m_camera->getVP()->getW(), m_camera->getVP()->getH());
-	frameBuf2 = new Framebuffer(m_camera->getVP()->getW(), m_camera->getVP()->getH());
+	frameBuf2 = new Framebuffer(m_camera->getVP()->getW(), m_camera->getVP()->getH(), false);
 
 	// Composite por defecto
 	AddComposite((Shader*)&ResourceManager::Instance()->getComposite("defaultComposite"));
@@ -70,7 +71,14 @@ void Scene::render()
 	renderCanvas();
 
 	// 6) Post-procesar la imagen del color buffer
-	renderEffects();
+	glBindFramebuffer(GL_READ_FRAMEBUFFER, frameBuf->id);
+	glBindFramebuffer(GL_DRAW_FRAMEBUFFER, 0);
+	glBlitFramebuffer(0, 0, m_camera->getVP()->getW(), m_camera->getVP()->getH(),
+		0, 0, m_camera->getVP()->getW(), m_camera->getVP()->getH(), GL_COLOR_BUFFER_BIT, GL_NEAREST);
+
+	glBindFramebuffer(GL_FRAMEBUFFER, 0);
+	//Framebuffer::unbind();
+	//renderEffects();
 
 	// 7) Hacer swap de buffers
 	// Hay 2 buffers; uno se está mostrando por ventana, y el otro es el que usamos

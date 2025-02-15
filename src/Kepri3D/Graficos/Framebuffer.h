@@ -6,7 +6,7 @@
 class Framebuffer
 {
 public:
-	Framebuffer(GLuint width, GLuint height);
+	Framebuffer(GLuint width, GLuint height, bool multisampling = true);
 	~Framebuffer();
 
 	/* Establece este framebuffer para pintar sobre él */
@@ -17,8 +17,10 @@ public:
 
 	/* Desactiva el framebuffer, volviendo a dejar el predeterminado */
 	void bindTexture() { glBindTexture(GL_TEXTURE_2D, textureId); }
-private:
+
 	unsigned int id;
+private:
+
 	unsigned int textureId;
 	unsigned int renderbufId;
 };
