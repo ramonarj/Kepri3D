@@ -16,8 +16,7 @@ Framebuffer::Framebuffer(GLuint width, GLuint height, bool multisampling)
         // Creamos una textura que servirá de Color Buffer
         glGenTextures(1, &textureId);
         glBindTexture(GL_TEXTURE_2D_MULTISAMPLE, textureId);
-        //glTexImage2D(GL_TEXTURE_2D, 0, COLOR_SPACE, width, height, 0, GL_RGB, GL_UNSIGNED_BYTE, NULL);
-        glTexImage2DMultisample(GL_TEXTURE_2D_MULTISAMPLE, MSAA_SAMPLES, GL_RGB, width, height, GL_TRUE);
+        glTexImage2DMultisample(GL_TEXTURE_2D_MULTISAMPLE, MSAA_SAMPLES, COLOR_SPACE, width, height, GL_TRUE);
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
         glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D_MULTISAMPLE, textureId, 0); // la atamos

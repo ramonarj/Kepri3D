@@ -366,18 +366,15 @@ public:
 	TessTerrain(GLuint filas, GLuint columnas, GLdouble tamFila, GLdouble tamColumna);
 	~TessTerrain() { };
 
-	/* Crea el terreno con un mapa de alturas BMP (tendrá tantos vértices como píxeles la imagen) */
-	//void loadHeightMap(const std::string& heightFile, GLdouble scale = 1.0);
-
 	inline void setCamera(Camera* cam) { this->cam = cam; }
 	void setHeightMap(const std::string& hMap, float elevacion);
 
 	void render() override;
 
 	bool useEyedir;
+	float elevacion;
 private:
 	Camera* cam;
-	float elevacion;
 	int patchSize;
 };
 

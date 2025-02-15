@@ -13,7 +13,7 @@ class GameManager : public Component
 {
 public:
 	GameManager(Scene* scene, Camera* cam, UIElement* botonesMenu, Entity* particleSystem) :
-		dirLight(nullptr), circleLight(nullptr), spotLight(nullptr)
+		dirLight(nullptr), circleLight(nullptr), spotLight(nullptr), luzBlinn(nullptr), tessTerrain(nullptr)
 	{
 		this->scene = scene;
 		this->cam = cam;
@@ -58,6 +58,7 @@ private:
 	// Métodos
 	void controlLuces(GLuint deltaTime);
 	void controlTorre(GLuint deltaTime);
+	void controlTerreno(GLuint deltaTime);
 };
 
 #endif

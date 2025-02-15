@@ -61,6 +61,7 @@ uniform Light luces[MAX_LIGHTS];
 uniform Material material;
 uniform vec3 viewPos;
 
+uniform bool use_diff_map;
 uniform bool use_spec_map;
 uniform bool use_normal_map;
 
@@ -73,12 +74,21 @@ float SpecFactor(vec3 lightDir, vec3 viewDir, vec3 normal, float brillo, bool us
 
 const float PI = 3.141593;
 
+vec3 diffColor;
+vec3 specColor;
+
 void main()
 {
-	// Cogemos el color de la textura correspondiente al fragmento actual
-	vec4 texColor = texture(textura, data_in.TexCoords);
+	// 1) Calcular variables comunes a todas las luces
+	// Color difuso del material en el fragmento actual
+	if(use_diff_map) { diffColor = vec3(texture(textura, data_in.TexCoords)); }
+	else {diffColor = material.diffuse; }
 	
-	// Variables comunes a todas las luces. NOTA: todos los vectores salen del fragmento (N, V, L, R...)
+	// Usamos el valor del specular map / no
+	if(use_spec_map) { specColor = vec3(texture(material.specular_map, data_in.TexCoords)); }
+	else {specColor = material.specular; }
+	
+	// Vector que va del fragmento a la cámara. NOTA: todos los vectores salen del fragmento (N, V, L, R...)
 	vec3 viewDir = normalize(viewPos - data_in.fragPos);
 	
 	vec3 normal;
@@ -98,50 +108,38 @@ void main()
 		normal = normalize(data_in.normals);
 
 
-	// Iteramos todas las luces para conocer la iluminación del fragmento
-	vec3 luzTotal = vec3(0.0);
+	// 2) Iteramos todas las luces y vamos sumando el color que aportan al fragmento
+	vec3 color = vec3(0.0);
 	for(int i = 0; i < MAX_LIGHTS; i++)
 	{
-		// a) Luces direccionales
+		// 0 = Direccionales, 1 = Puntuales, 2 = Focos
 		if(luces[i].type == 0)
-			luzTotal += CalcDirLight(luces[i], normal, viewDir);
-		// b) Luces puntuales
+			color += CalcDirLight(luces[i], normal, viewDir);
 		else if(luces[i].type == 1)
-			luzTotal += CalcPointLight(luces[i], normal, viewDir);
-		// c) Focos
+			color += CalcPointLight(luces[i], normal, viewDir);
 		else if(luces[i].type == 2)
-			luzTotal += CalcSpotlight(luces[i], normal, viewDir);
+			color += CalcSpotlight(luces[i], normal, viewDir);
 	}
-	
-	// Aplicamos la iluminación al color de la textura (* = MODULATE, + = ADD, ...)
-	vec3 result = luzTotal * vec3(texColor);
 
-	FragColor = vec4(result, texColor.a);
+	// De momento no hay transparencias
+	FragColor = vec4(color, 1.0);
 }
 
 /* Calcula la cantidad de luz que recibe el fragmento de una luz direccional */
 vec3 CalcDirLight(Light light, vec3 normal, vec3 viewDir)
 {
-	// Obtener la dirección normalizada de cada luz
+	// Dirección normalizada de la luz
 	vec3 lightDir = normalize(light.dir);
 	
-	// - - Calcular la componente ambient -- //
-	vec3 ambient = material.ambient * light.ambient;
-
-	// - - Calcular la componente difusa - - //
+	// - - Componentes ambient  y diffuse -- //
+	vec3 ambient = light.ambient * diffColor; // material.ambient ¿?
 	// Producto escalar de la normal con la dirección de la luz
 	float diff = max(dot(normal, lightDir), 0.0);
-	vec3 diffuse = material.diffuse * diff * light.diffuse;
+	vec3 diffuse = light.diffuse * diff * diffColor;
 
-	// - - Calcular la componente especular - - //
+	// - - Componente especular - - //
 	float spec = SpecFactor(lightDir, viewDir, normal, material.brillo, blinn);
-    vec3 specular = light.specular * spec;
-	
-	// Usar una textura/no para la componente especular
-	if(use_spec_map)
-		specular *= vec3(texture(material.specular_map, data_in.TexCoords));
-	else
-		specular *= material.specular;
+    vec3 specular = light.specular * spec * specColor;
 	
 	// Devolver la suma de las 3 componentes
 	return (ambient + diffuse + specular);
@@ -150,13 +148,13 @@ vec3 CalcDirLight(Light light, vec3 normal, vec3 viewDir)
 /* Calcula la cantidad de luz que recibe el fragmento de una luz direccional */
 vec3 CalcPointLight(Light light, vec3 normal, vec3 viewDir)
 {
-	// Obtener la dirección normalizada de cada luz
+	// Dirección normalizada de la luz
     vec3 lightDir = normalize(light.dir - data_in.fragPos);
 	
-    // - - Calcular la componente difusa - - //
+    // - - Componente difusa - - //
     float diff = max(dot(normal, lightDir), 0.0);
 	
-    // - - Calcular la componente especular - - //
+    // - - Componente especular - - //
 	float spec = SpecFactor(lightDir, viewDir, normal, material.brillo, blinn);
 	
     // - - Atenuación por la distancia - - //
@@ -164,16 +162,10 @@ vec3 CalcPointLight(Light light, vec3 normal, vec3 viewDir)
     float attenuation = 1.0 / (light.constant + light.linear * distance + light.quadratic * (distance * distance));    
 				 
     // Combinar los resultados
-	vec3 ambient = light.ambient * material.ambient;
-    vec3 diffuse  = light.diffuse  * diff * material.diffuse;
-    vec3 specular = light.specular * spec;
-	// Usar una textura/no para la componente especular
-	if(use_spec_map)
-		specular *= vec3(texture(material.specular_map, data_in.TexCoords));
-	else
-		specular *= material.specular;
-	
-	// Atenuación por la distancia
+	vec3 ambient = light.ambient * diffColor;
+    vec3 diffuse  = light.diffuse  * diff * diffColor;
+    vec3 specular = light.specular * spec * specColor;
+
 	ambient  *= attenuation;
     diffuse  *= attenuation;
     specular *= attenuation;
@@ -184,10 +176,10 @@ vec3 CalcPointLight(Light light, vec3 normal, vec3 viewDir)
 /* Calcula la cantidad de luz que recibe el fragmento de una luz direccional */
 vec3 CalcSpotlight(Light light, vec3 normal, vec3 viewDir)
 {
-	// Obtener la dirección normalizada de cada luz
+	// Dirección normalizada de cada luz
     vec3 lightDir = normalize(light.dir - data_in.fragPos);
 	
-    // - - Calcular la componente difusa - - //
+    // - - Componente difusa - - //
 	// Ángulo que forma la dirección del foco con el fragmento actual
 	float diff = 1.0f;
 	float cutoffRad = light.spotCutoff * PI / 180.0;
@@ -205,7 +197,7 @@ vec3 CalcSpotlight(Light light, vec3 normal, vec3 viewDir)
 	// Tener en cuenta también las normales	
 	diff *= max(dot(normal, -light.spotDir), 0.0);
 	
-    // - - Calcular la componente especular - - //
+    // - - Componente especular - - //
 	float spec = SpecFactor(lightDir, viewDir, normal, material.brillo, blinn);
 	
     // - - Atenuación por la distancia - - //
@@ -213,17 +205,10 @@ vec3 CalcSpotlight(Light light, vec3 normal, vec3 viewDir)
     float attenuation = 1.0 / (light.constant + light.linear * distance + light.quadratic * (distance * distance));    
 				 
     // Combinar los resultados
-	vec3 ambient = light.ambient * material.ambient;
-    vec3 diffuse  = light.diffuse  * diff * material.diffuse;
-	vec3 specular = light.specular * spec * diff;
+	vec3 ambient = light.ambient * diffColor;
+    vec3 diffuse  = light.diffuse  * diff * diffColor;
+	vec3 specular = light.specular * spec * diff * specColor;
 	
-	// Usar una textura/no para la componente especular
-	if(use_spec_map)
-		specular *= vec3(texture(material.specular_map, data_in.TexCoords));
-	else
-		specular *= material.specular;
-		
-	// Atenuación por la distancia
 	ambient  *= attenuation;
     diffuse  *= attenuation;
     specular *= attenuation;
@@ -241,7 +226,7 @@ float SpecFactor(vec3 lightDir, vec3 viewDir, vec3 normal, float brillo, bool us
 	if(useBlinn)
 	{
 		vec3 halfwayDir = normalize(lightDir + viewDir);  
-        spec = pow(max(dot(normal, halfwayDir), 0.0), brillo);
+        spec = pow(max(dot(normal, halfwayDir), 0.0), brillo * 3.0); // Para conseguir los mismos efectos que con Blinn, el brillo debe ser entre 2 y 4 veces mayor
 	}
 	// Phong
 	else

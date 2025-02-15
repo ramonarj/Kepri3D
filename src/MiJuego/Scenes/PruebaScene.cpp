@@ -33,7 +33,7 @@ void PruebaScene::init()
 	Light* dirLight = new Light(DIRECTIONAL_LIGHT);
 	dirLight->setDirection({ -1,0 , 0 });
 	dirLight->setDiffuse({ 1, 1, 1, 1.0 });
-	dirLight->setAmbient({ 0.2, 0.2, 0.4, 0.0 });
+	dirLight->setAmbient({ 0.05, 0.05, 0.2, 0.0 });
 	dirLight->setActive(true);
 	AddLight(dirLight);
 
@@ -46,14 +46,21 @@ void PruebaScene::init()
 
 	// Foco (linterna)
 	Light* spotLight = new Light(SPOT_LIGHT, { 0.7, 0.7, 0.7, 1 });
-	spotLight->setSpecular({ 1, 1, 1, 1.0 });
+	spotLight->setSpecular({ 0.6, 0.6, 0.6, 1.0 });
 	AddLight(spotLight);
 
 	// Nueva luz para el Blinn
 	Light* luzBlinn = new Light(POINT_LIGHT, { 0.4, 0.4, 0.3, 1 });
 	luzBlinn->setPosition({ 60, 4, 0 });
-	luzBlinn->setAttenuationFactors(0.3, 0.03, 0.002);
+	luzBlinn->setAttenuationFactors(0.3, 0.3, 0.02);
 	AddLight(luzBlinn);
+
+	// Luz turquesa
+	Light* luzSuelo = new Light(DIRECTIONAL_LIGHT);
+	luzSuelo->setDirection({ 0 ,1 , 0 });
+	luzSuelo->setDiffuse({ 0, 0.7, 0.7, 1.0 });
+	//luzSuelo->setAmbient({ 0, 0.05, 0.1, 0.0 });
+	AddLight(luzSuelo);
 
 
 	// ENTIDADES
@@ -231,12 +238,12 @@ void PruebaScene::init()
 	AddEntity(particleSys);
 
 	// Terreno teselado
-	TessTerrain* tesTerrain = new TessTerrain(9, 14, 80, 80); //patches de 40x40uds
-	tesTerrain->setTexture("iceland");
-	tesTerrain->setHeightMap("iceland_height", 25.0f);
-	tesTerrain->setPosition({ 0,-20,0 });
-	tesTerrain->setCamera(m_camera);
-	AddEntity(tesTerrain);
+	//TessTerrain* tesTerrain = new TessTerrain(9, 14, 80, 80); //patches de 80x80uds
+	//tesTerrain->setTexture("iceland");
+	//tesTerrain->setHeightMap("iceland_height", 25.0f);
+	//tesTerrain->setPosition({ 0,-20,0 });
+	//tesTerrain->setCamera(m_camera);
+	//AddEntity(tesTerrain);
 
 	// Información de Debug
 	Entity* debugTxt = new Entity("DebugText");
@@ -250,7 +257,7 @@ void PruebaScene::init()
 	// Componente GM
 	GameManager* gmComponent = new GameManager(this, m_camera, botonesMenu, particleSys);
 	gmComponent->setLights(dirLight, circleLight, spotLight, luzBlinn);
-	gmComponent->setTessTerrain(tesTerrain);
+	//gmComponent->setTessTerrain(tesTerrain);
 	gmComponent->setParticleSys(particleSys);
 	gm->addComponent(gmComponent);
 	// Componente CameraController
@@ -329,7 +336,6 @@ void PruebaScene::loadResources()
 	ResourceManager::Instance()->loadShader("maximize.vert", "", "fog.frag", "bigFog");
 	ResourceManager::Instance()->loadShader("default.vert", "", "movimiento.frag", "movimiento");
 	ResourceManager::Instance()->loadShader("default.vert", "", "multitexture.frag", "multitexture");
-	//ResourceManager::Instance()->loadShader("normalMap.vert", "", "normalMap.frag", "normalMap");
 	ResourceManager::Instance()->loadShader("clippable.vert", "", "default.frag", "clippable");
 	ResourceManager::Instance()->loadShader("terrain.vert", "terrain.tesc", "terrain.tese", "", "default.frag", "terreno");
 
@@ -419,12 +425,12 @@ void PruebaScene::PruebaMateriales()
 	//AddEntity(oldTer);
 
 	// Terreno Islandia
-	//Terrain* terrain = new Terrain();
-	//terrain->loadHeightMap(ResourceManager::TEXTURES_PATH + "iceland_height.bmp", 2.0);
-	//terrain->setTexture("iceland");
-	////terrain->setShader("lights");
-	//terrain->setPosition({ 0,-20,0 });
-	//AddEntity(terrain);
+	Terrain* terrain = new Terrain();
+	terrain->loadHeightMap(ResourceManager::TEXTURES_PATH + "iceland_height.bmp", 2.0);
+	terrain->setTexture("iceland");
+	terrain->setShader("lights");
+	terrain->setPosition({ 0,-20,0 });
+	AddEntity(terrain);
 
 
 	// Mar de la isla
@@ -453,7 +459,7 @@ void PruebaScene::PruebaMateriales()
 	pared->setMaterial("cromo");
 	pared->setPosition({ -5,6.5,-15 });
 	pared->rotate(PI / 2, { 1,0,0 });
-	//pared->addComponent(new RotationComp(0.5));
+	pared->addComponent(new RotationComp(0.5));
 	AddEntity(pared);
 
 	// Pared sin normal map para comparar
@@ -462,7 +468,7 @@ void PruebaScene::PruebaMateriales()
 	pared2->setShader("lights");
 	pared2->setPosition({ 10,6.5,-15 });
 	pared2->rotate(PI / 2, { 1,0,0 });
-	//pared2->addComponent(new RotationComp(0.5));
+	pared2->addComponent(new RotationComp(0.5));
 	AddEntity(pared2);
 
 	//pared->rotate(-PI / 2, { 1,0,0 });
@@ -471,7 +477,7 @@ void PruebaScene::PruebaMateriales()
 
 	// Plano para iluminación Blinn-Phong
 	Grid* plano = new Grid(1, 1, 30, 30);
-	plano->setTexture("wall");
+	plano->setTexture("cobre");
 	plano->setMaterial("blinn");
 	plano->setShader("lights");
 	plano->setPosition({ 60,0,0 });
@@ -485,9 +491,9 @@ void PruebaScene::PruebaMateriales()
 
 	// Esfera HD
 	Esfera* esf = new Esfera(10, 30, 40);
-	esf->setTexture("earthHD");
+	//esf->setTexture("earthHD");
 	esf->setPosition({ 0,10,25 });
-	esf->setMaterial("cromo");
+	esf->setMaterial("cristal");
 	esf->setShader("lights");
 	esf->addComponent(new RotationComp(0.25));
 	AddEntity(esf);

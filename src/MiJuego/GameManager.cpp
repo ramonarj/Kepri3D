@@ -63,6 +63,9 @@ void GameManager::update(GLuint deltaTime)
 	// Controlar la torre
 	controlTorre(deltaTime);
 
+	// Controlar el terreno
+	controlTerreno(deltaTime);
+
 
 	// Desbloquear el ratón con el clic izquierdo
 	if (InputManager::Instance()->getMouseKey(LEFT))
@@ -108,12 +111,6 @@ void GameManager::update(GLuint deltaTime)
 	// Fijar la cámara en la luz circular
 	if (InputManager::Instance()->getKey('k'))
 		cam->lookAt(circleLight->getPosition());
-
-	// Decirle al terreno en cuántos parches dividirse
-	if (InputManager::Instance()->getKeyDown('o'))
-	{
-		tessTerrain->useEyedir = !tessTerrain->useEyedir;
-	}
 }
 
 
@@ -199,6 +196,22 @@ void GameManager::controlTorre(GLuint deltaTime)
 	movTorre = movTorre * velTorre * (deltaTime / 1000.0);
 	//pSystem->translate(movTorre, GLOBAL);
 	luzBlinn->setPosition(luzBlinn->getPosition() + glm::vec3(movTorre));
+}
+
+void GameManager::controlTerreno(GLuint deltaTime)
+{
+	if (tessTerrain == nullptr)
+		return;
+
+	// Decirle al terreno en cuántos parches dividirse
+	if (InputManager::Instance()->getKeyDown('o'))
+		tessTerrain->useEyedir = !tessTerrain->useEyedir;
+
+	// Modificar la elevación máxima del terreno
+	if (InputManager::Instance()->getKey('h'))
+		tessTerrain->elevacion += deltaTime / 1000.0 * 5.0;
+	if (InputManager::Instance()->getKey('b'))
+		tessTerrain->elevacion -= deltaTime / 1000.0 * 5.0;
 }
 
 void GameManager::centerMouse()

@@ -268,6 +268,11 @@ void Entity::bindTextures()
 	}
 
 	// Booleanos extra
+	if (m_textures[0] != nullptr)
+		m_shader->setInt("use_diff_map", true);
+	else
+		m_shader->setInt("use_diff_map", false);
+
 	if(m_textures[2] != nullptr)
 		m_shader->setInt("use_spec_map", true);
 	else 
