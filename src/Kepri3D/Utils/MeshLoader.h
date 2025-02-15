@@ -22,13 +22,14 @@ public:
 	MeshLoader() : mesh(nullptr) {}
 
 	/* Carga la información de un archivo Wavefront (.obj) y rellena la malla con ella */
-	void loadOBJ(const std::string& fileName);
+	void loadOBJ(const std::string& fileName, float scale);
 
 	// Devuelve la malla ya creada
 	inline IndexMesh* getMesh() { return mesh; }
 private:
 	// Malla a devolver
 	IndexMesh* mesh;
+	float scale;
 
 	// Número de línea por el que vamos leyendo
 	unsigned int lineNo;

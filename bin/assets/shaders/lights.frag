@@ -132,7 +132,7 @@ vec3 CalcDirLight(Light light, vec3 normal, vec3 viewDir)
 	vec3 lightDir = normalize(light.dir);
 	
 	// - - Componentes ambient  y diffuse -- //
-	vec3 ambient = light.ambient * diffColor; // material.ambient ¿?
+	vec3 ambient = light.ambient * material.ambient * diffColor; // material.ambient ¿?
 	// Producto escalar de la normal con la dirección de la luz
 	float diff = max(dot(normal, lightDir), 0.0);
 	vec3 diffuse = light.diffuse * diff * diffColor;
@@ -162,7 +162,7 @@ vec3 CalcPointLight(Light light, vec3 normal, vec3 viewDir)
     float attenuation = 1.0 / (light.constant + light.linear * distance + light.quadratic * (distance * distance));    
 				 
     // Combinar los resultados
-	vec3 ambient = light.ambient * diffColor;
+	vec3 ambient = light.ambient * material.ambient * diffColor;
     vec3 diffuse  = light.diffuse  * diff * diffColor;
     vec3 specular = light.specular * spec * specColor;
 
@@ -205,7 +205,7 @@ vec3 CalcSpotlight(Light light, vec3 normal, vec3 viewDir)
     float attenuation = 1.0 / (light.constant + light.linear * distance + light.quadratic * (distance * distance));    
 				 
     // Combinar los resultados
-	vec3 ambient = light.ambient * diffColor;
+	vec3 ambient = light.ambient * material.ambient * diffColor;
     vec3 diffuse  = light.diffuse  * diff * diffColor;
 	vec3 specular = light.specular * spec * diff * specColor;
 	

@@ -169,6 +169,9 @@ protected:
 	void bindTextures();
 	/* Limpia los atributos */
 	void unbindTextures();
+
+	/* Manda la información del material al shader */
+	void sendUniforms();
 };
 
 template<typename T>

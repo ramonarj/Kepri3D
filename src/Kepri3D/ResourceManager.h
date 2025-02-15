@@ -55,7 +55,7 @@ public:
 
 	// Carga de recursos
 	/* Carga una malla de archivo y le asigna el ID dado */
-	bool loadMesh(const std::string& meshName, const std::string& id);
+	bool loadMesh(const std::string& meshName, const std::string& id, float scale = 1.0f);
 
 	/* Carga una textura de archivo y le asigna el ID dado */
 	bool loadTexture(const std::string& textureName, const std::string& id, 

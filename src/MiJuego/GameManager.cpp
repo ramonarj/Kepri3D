@@ -194,8 +194,8 @@ void GameManager::controlTorre(GLuint deltaTime)
 
 	// Mover la luz Blinn
 	movTorre = movTorre * velTorre * (deltaTime / 1000.0);
-	//pSystem->translate(movTorre, GLOBAL);
-	luzBlinn->setPosition(luzBlinn->getPosition() + glm::vec3(movTorre));
+	pSystem->translate(movTorre, GLOBAL);
+	//luzBlinn->setPosition(luzBlinn->getPosition() + glm::vec3(movTorre));
 }
 
 void GameManager::controlTerreno(GLuint deltaTime)

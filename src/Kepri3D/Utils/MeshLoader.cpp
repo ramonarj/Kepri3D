@@ -8,8 +8,10 @@
 using namespace glm;
 
 
-void MeshLoader::loadOBJ(const std::string& filename)
+void MeshLoader::loadOBJ(const std::string& filename, float scale)
 {
+	this->scale = scale;
+
 	// Abrir el archivo (lectura porque solo vamos a leer)
 	std::ifstream stream(filename.c_str(), std::ios::in);
 	if (!stream.is_open())
@@ -107,7 +109,7 @@ void MeshLoader::readVertices(std::ifstream& stream)
 		stream >> vX >> vY >> vZ;
 
 		// Añadirlo a la lista
-		mesh->vertices[i] = { vX, vY, vZ };
+		mesh->vertices[i] = { vX * scale, vY * scale, vZ * scale };
 		lineNo++;
 	}
 }

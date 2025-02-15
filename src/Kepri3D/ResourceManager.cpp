@@ -24,14 +24,14 @@ std::string ResourceManager::MATERIALS_PATH;
 std::string ResourceManager::SHADERS_PATH;
 std::string ResourceManager::COMPOSITES_PATH;
 
-bool ResourceManager::loadMesh(const std::string& meshName, const std::string& id)
+bool ResourceManager::loadMesh(const std::string& meshName, const std::string& id, float scale)
 {
 	std::cout << "Loading mesh " << meshName << std::endl;
 	try
 	{
 		// Cargamos la malla gracias a MeshLoader
 		MeshLoader meshLoader;
-		meshLoader.loadOBJ(MESHES_PATH + meshName);
+		meshLoader.loadOBJ(MESHES_PATH + meshName, scale);
 		IndexMesh* m = meshLoader.getMesh();
 
 		// la guardamos en el diccionario

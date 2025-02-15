@@ -56,11 +56,11 @@ void PruebaScene::init()
 	AddLight(luzBlinn);
 
 	// Luz turquesa
-	Light* luzSuelo = new Light(DIRECTIONAL_LIGHT);
-	luzSuelo->setDirection({ 0 ,1 , 0 });
-	luzSuelo->setDiffuse({ 0, 0.7, 0.7, 1.0 });
-	//luzSuelo->setAmbient({ 0, 0.05, 0.1, 0.0 });
-	AddLight(luzSuelo);
+	//Light* luzSuelo = new Light(DIRECTIONAL_LIGHT);
+	//luzSuelo->setDirection({ 0 ,1 , 0 });
+	//luzSuelo->setDiffuse({ 0, 0.7, 0.7, 1.0 });
+	////luzSuelo->setAmbient({ 0, 0.05, 0.1, 0.0 });
+	//AddLight(luzSuelo);
 
 
 	// ENTIDADES
@@ -83,18 +83,18 @@ void PruebaScene::init()
 	Entity* estrella = new Entity("Estrella");
 	estrella->setMesh("star");
 	estrella->setTexture("star");
-	estrella->setShader("default");
+	//estrella->setShader("lights");
 	estrella->setPosition({ -5,2,-6 });
 	AddEntity(estrella);
 	estrella->addComponent(new RotationComp(1.0));
 
 	// Redead del Zelda OoT
-	Entity* redead = new Entity("Estrella");
+	Entity* redead = new Entity("Redead");
 	redead->setMesh("redead");
 	redead->setTexture("redead");
-	redead->setShader("default");
+	redead->setMaterial("cristal");
+	redead->setShader("lights");
 	redead->setPosition({ -8,2,-6 });
-	redead->scale({ 0.1, 0.1, 0.1 });
 	AddEntity(redead);
 
 	// Peon de ajedrez
@@ -110,6 +110,7 @@ void PruebaScene::init()
 	torre->setMesh("torre");
 	//torre->setTexture("cobre");
 	torre->setMaterial("ruby");
+	torre->setShader("lights");
 	torre->setPosition({ 0,-1,-2 });
 	AddEntity(torre);
 	// Para que el blending del rubí funcione bien (de momento), 
@@ -117,8 +118,8 @@ void PruebaScene::init()
 
 	// Esferita hija de la torre
 	Esfera* esferita = new Esfera(0.5, 5, 10);
-	//esferita->setTexture("earth");
-	esferita->setPosition({ 0,3.5,-2 });
+	esferita->setTexture("earth");
+	esferita->setPosition({ 0,2,-4 });
 	esferita->setParent(torre);
 	//AddEntity(esferita);
 
@@ -238,12 +239,13 @@ void PruebaScene::init()
 	AddEntity(particleSys);
 
 	// Terreno teselado
-	//TessTerrain* tesTerrain = new TessTerrain(9, 14, 80, 80); //patches de 80x80uds
-	//tesTerrain->setTexture("iceland");
-	//tesTerrain->setHeightMap("iceland_height", 25.0f);
-	//tesTerrain->setPosition({ 0,-20,0 });
-	//tesTerrain->setCamera(m_camera);
-	//AddEntity(tesTerrain);
+	TessTerrain* tesTerrain = new TessTerrain(9, 14, 80, 80); //patches de 80x80uds
+	tesTerrain->setTexture("iceland");
+	tesTerrain->setHeightMap("iceland_height", 25.0f);
+	tesTerrain->setPosition({ 0,-20,0 });
+	tesTerrain->setCamera(m_camera);
+	tesTerrain->setPolygonMode(GL_FILL, GL_LINE);
+	AddEntity(tesTerrain);
 
 	// Información de Debug
 	Entity* debugTxt = new Entity("DebugText");
@@ -255,9 +257,9 @@ void PruebaScene::init()
 	/* - - GameManager - - */
 	Entity* gm = new Entity("GameManager");
 	// Componente GM
-	GameManager* gmComponent = new GameManager(this, m_camera, botonesMenu, particleSys);
+	GameManager* gmComponent = new GameManager(this, m_camera, botonesMenu, torre);
 	gmComponent->setLights(dirLight, circleLight, spotLight, luzBlinn);
-	//gmComponent->setTessTerrain(tesTerrain);
+	gmComponent->setTessTerrain(tesTerrain);
 	gmComponent->setParticleSys(particleSys);
 	gm->addComponent(gmComponent);
 	// Componente CameraController
@@ -279,7 +281,7 @@ void PruebaScene::loadResources()
 	ResourceManager::Instance()->loadMesh("Torre.obj", "torre");
 	ResourceManager::Instance()->loadMesh("Peon.obj", "peon");
 	ResourceManager::Instance()->loadMesh("star.obj", "star");
-	ResourceManager::Instance()->loadMesh("redead.obj", "redead");
+	ResourceManager::Instance()->loadMesh("redead.obj", "redead", 0.1f);
 
 	/* Texturas */
 	ResourceManager::Instance()->loadTexture("earth24.bmp", "earth");
@@ -337,7 +339,7 @@ void PruebaScene::loadResources()
 	ResourceManager::Instance()->loadShader("default.vert", "", "movimiento.frag", "movimiento");
 	ResourceManager::Instance()->loadShader("default.vert", "", "multitexture.frag", "multitexture");
 	ResourceManager::Instance()->loadShader("clippable.vert", "", "default.frag", "clippable");
-	ResourceManager::Instance()->loadShader("terrain.vert", "terrain.tesc", "terrain.tese", "", "default.frag", "terreno");
+	ResourceManager::Instance()->loadShader("terrain.vert", "terrain.tesc", "terrain.tese", "", "lights.frag", "terreno");
 
 
 	/* Efectos de postprocesado ('composites') */
@@ -425,12 +427,12 @@ void PruebaScene::PruebaMateriales()
 	//AddEntity(oldTer);
 
 	// Terreno Islandia
-	Terrain* terrain = new Terrain();
-	terrain->loadHeightMap(ResourceManager::TEXTURES_PATH + "iceland_height.bmp", 2.0);
-	terrain->setTexture("iceland");
-	terrain->setShader("lights");
-	terrain->setPosition({ 0,-20,0 });
-	AddEntity(terrain);
+	//Terrain* terrain = new Terrain();
+	//terrain->loadHeightMap(ResourceManager::TEXTURES_PATH + "iceland_height.bmp", 2.0);
+	//terrain->setTexture("iceland");
+	//terrain->setShader("lights");
+	//terrain->setPosition({ 0,-20,0 });
+	//AddEntity(terrain);
 
 
 	// Mar de la isla
@@ -459,7 +461,7 @@ void PruebaScene::PruebaMateriales()
 	pared->setMaterial("cromo");
 	pared->setPosition({ -5,6.5,-15 });
 	pared->rotate(PI / 2, { 1,0,0 });
-	pared->addComponent(new RotationComp(0.5));
+	//pared->addComponent(new RotationComp(0.5));
 	AddEntity(pared);
 
 	// Pared sin normal map para comparar
@@ -468,7 +470,7 @@ void PruebaScene::PruebaMateriales()
 	pared2->setShader("lights");
 	pared2->setPosition({ 10,6.5,-15 });
 	pared2->rotate(PI / 2, { 1,0,0 });
-	pared2->addComponent(new RotationComp(0.5));
+	//pared2->addComponent(new RotationComp(0.5));
 	AddEntity(pared2);
 
 	//pared->rotate(-PI / 2, { 1,0,0 });

@@ -13,7 +13,9 @@ out DATA
 } data_out;
 
 // Variables uniform
-uniform dmat4 mvpMat;
+uniform dmat4 model;
+uniform dmat4 view;
+uniform dmat4 projection;
 
 // Planos de corte
 const int MAX_PLANOS = 8;
@@ -24,7 +26,7 @@ out float gl_ClipDistance[MAX_PLANOS];
 
 void main()
 {
-	gl_Position = vec4(mvpMat * vertex);
+	gl_Position = vec4(projection * view * model * vertex);
 	
 	data_out.TexCoords = uv0;
 	data_out.normals = aNormals;

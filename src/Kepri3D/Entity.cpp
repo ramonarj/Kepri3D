@@ -112,6 +112,9 @@ void Entity::render()
 	glPolygonMode(GL_BACK, m_polyModeBack);
 
 	// 1) Renderizar la propia entidad
+	// Uniforms necesarios
+	sendUniforms();
+
 	// Enviar las texturas necesarias al shader
 	bindTextures();
 
@@ -126,6 +129,18 @@ void Entity::render()
 	for (Entity* e : m_children)
 		if (e->isActive())
 			e->render();
+}
+
+void Entity::sendUniforms()
+{
+	if (m_shader == nullptr)
+		return;
+	m_shader->setMat4d("model", modelMat);
+
+	m_shader->setVec3("material.ambient", m_material.getAmbient());
+	m_shader->setVec3("material.diffuse", m_material.getDiffuse());
+	m_shader->setVec3("material.specular", m_material.getSpecular());
+	m_shader->setFloat("material.brillo", m_material.getBrillo());
 }
 
 void Entity::update(GLuint deltaTime)
@@ -201,6 +216,8 @@ void Entity::setParent(Entity* e)
 	m_parent = e;
 	// Añadirnos a sus hijos
 	e->m_children.push_back(this);
+	// Solución temporal
+	m_shader = m_parent->m_shader;
 }
 
 void Entity::setMesh(const std::string& meshID)
@@ -563,8 +580,6 @@ TessTerrain::TessTerrain(GLuint filas, GLuint columnas, GLdouble tamFila, GLdoub
 {
 	m_name = "TessTerrain";
 	m_mesh = IndexMesh::generateTessGrid(filas, columnas, tamFila, tamColumna);
-	// Para depurarlo
-	setPolygonMode(GL_LINE, GL_LINE);
 
 	setShader("terreno");
 	useEyedir = false;

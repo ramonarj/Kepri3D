@@ -14,9 +14,14 @@ out DATA
 {
 	vec2 TexCoords; 
 	vec3 normals;
+	vec3 fragPos;
+	mat3 TBN;
 } data_out;
 
-uniform dmat4 mvpMat;
+// Uniforms
+uniform dmat4 model;
+uniform dmat4 view;
+uniform dmat4 projection;
 // Reutilizamos este nombre
 uniform sampler2D dispMap;
 
@@ -54,5 +59,10 @@ void main()
 	float y = texture(dispMap, coord).r;
 	pos.y += (y * elevacion);
 
-    gl_Position = vec4(mvpMat * pos);
+    gl_Position = vec4(projection * view * model * pos);
+	
+	data_out.fragPos = vec3(model * pos);
+	
+	// TODO
+	data_out.normals = vec3(0, 1, 0);
 }

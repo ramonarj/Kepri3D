@@ -114,7 +114,6 @@ void Scene::renderSkybox(const glm::dmat4& projViewMat)
 void Scene::renderEntities(const glm::dmat4& projViewMat)
 {
 	// Pintar todas las entidades activas
-	const Shader* activeShader = nullptr;
 	for (Entity* e : m_entities)
 	{
 		if (e->isActive())
@@ -227,17 +226,11 @@ void Scene::sendUniforms(Entity* e)
 	const Shader* sh = e->getShader();
 
 	// pasar las matrices necesarias al VS
-	sh->setMat4d("model", e->getModelMat());
 	sh->setMat4d("view", m_camera->getViewMat());
 	sh->setMat4d("projection", m_camera->getProjMat());
-
-	// pasar las propiedades del material al FS
 	sh->setVec3("viewPos", m_camera->getPosition());
-	sh->setVec3("material.ambient", e->getMaterial()->getAmbient());
-	sh->setVec3("material.diffuse", e->getMaterial()->getDiffuse());
-	sh->setVec3("material.specular", e->getMaterial()->getSpecular());
-	sh->setFloat("material.brillo", e->getMaterial()->getBrillo());
 
+	// tipo de reflejos especulares
 	sh->setInt("blinn", blinn);
 
 	// por cada luz activa, pasamos sus propiedades al fragment shader
@@ -278,10 +271,6 @@ void Scene::sendUniforms(Entity* e)
 			sh->setVec3(str + ".specular", { 0, 0, 0 });
 		}
 	}
-
-
-	// provisional
-	sh->setMat4d("mvpMat", m_camera->getProjMat() * m_camera->getViewMat() * e->getModelMat());
 }
 
 void Scene::AddComposite(Shader* sh, bool active)
