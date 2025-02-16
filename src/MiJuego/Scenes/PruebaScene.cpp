@@ -111,23 +111,27 @@ void PruebaScene::init()
 	//torre->setTexture("cobre");
 	torre->setMaterial("ruby");
 	torre->setShader("lights");
-	torre->setPosition({ 0,-1,-2 });
+	torre->setPosition({ 0,15,-15 });
+	torre->addComponent(new RotationComp(0.5));
 	AddEntity(torre);
 	// Para que el blending del rubí funcione bien (de momento), 
 	// tiene que estar la última de las entidades
 
 	// Esferita hija de la torre
-	Esfera* esferita = new Esfera(0.5, 5, 10);
+	Esfera* esferita = new Esfera(1.0, 5, 10);
 	esferita->setTexture("earth");
-	esferita->setPosition({ 0,2,-4 });
+	esferita->setPosition({ 0,2,-6 });
+	esferita->addComponent(new RotationComp(1));
 	esferita->setParent(torre);
 	//AddEntity(esferita);
 
 	// Un toro
-	Toro* toro = new Toro(0.75, 0.4, 30, 10);
-	toro->setPosition({ 20,-0.4,6 });
+	Toro* toro = new Toro(0.5, 0.25, 20, 10);
+	toro->setPosition({ 2,0,-2 });
 	toro->setMaterial("fluorescente");
-	AddEntity(toro);
+	toro->setParent(esferita);
+	//toro->setShader("lights");
+	//AddEntity(toro);
 
 	// Un cilindro
 	Cilindro* cilindro = new Cilindro(2, 4);

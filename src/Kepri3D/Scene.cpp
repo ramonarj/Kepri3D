@@ -283,6 +283,9 @@ void Scene::resize(int width, int height)
 	delete frameBuf; delete frameBuf2;
 	frameBuf = new Framebuffer(width, height);
 	frameBuf2 = new Framebuffer(width, height);
+#ifdef __DEBUG_INFO__
+	fbSize = { width, height };
+#endif
 }
 
 Scene::~Scene()

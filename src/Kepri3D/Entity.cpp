@@ -135,8 +135,18 @@ void Entity::sendUniforms()
 {
 	if (m_shader == nullptr)
 		return;
-	m_shader->setMat4d("model", modelMat);
 
+	// Deshacer la posición de los hijos relativa al padre
+	glm::dmat4 model = modelMat;
+	Entity* parent = m_parent;
+	while(parent != nullptr)
+	{
+		model = parent->modelMat * model;
+		parent = parent->m_parent;
+	}
+
+	m_shader->setMat4d("model", model);
+	// Propiedades del material
 	m_shader->setVec3("material.ambient", m_material.getAmbient());
 	m_shader->setVec3("material.diffuse", m_material.getDiffuse());
 	m_shader->setVec3("material.specular", m_material.getSpecular());

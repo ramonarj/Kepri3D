@@ -6,6 +6,7 @@
 #include <glew.h>
 #include <glm.hpp>
 #include "Framebuffer.h"
+#include "Game.h"
 
 class Entity;
 class Camera;
@@ -61,9 +62,6 @@ public:
 	/* Cambia entre el modelo Phong y el Blinn-Phong */
 	inline void switchBlinnPhong() { blinn = !blinn; }
 
-	/* Número de luces en la escena */
-	GLuint numberOfLights() const { return m_lights.size(); }
-
 	// Para ser accesibles desde callbacks
 	static bool skyboxActive;
 	static bool mipmapsActive;
@@ -71,6 +69,12 @@ public:
 
 	/* Lista de efectos de postprocesado que se aplicarán (en este orden) a la escena */
 	static std::vector<Shader*> m_composites;
+
+#ifdef __DEBUG_INFO__
+	/* Número de luces en la escena */
+	GLuint numberOfLights() const { return m_lights.size(); }
+	glm::ivec2 fbSize;
+#endif
 
 protected:
 	/* Nombre de la escena */

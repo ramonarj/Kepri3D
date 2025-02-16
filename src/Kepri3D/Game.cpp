@@ -80,6 +80,7 @@ void Game::render()
 	debugInfo.numTris = Mesh::numTris;
 	debugInfo.numTextureBinds = Texture::numBinds;
 	debugInfo.numLuces = scene->numberOfLights();
+	debugInfo.fbSize = scene->fbSize;
 
 	Mesh::numVerts = Mesh::numTris = Texture::numBinds = 0;
 #endif
