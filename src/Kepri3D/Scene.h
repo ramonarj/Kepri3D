@@ -65,10 +65,8 @@ public:
 	// Para ser accesibles desde callbacks
 	static bool skyboxActive;
 	static bool mipmapsActive;
+	static bool compositesActive;
 	static Shader* normalsShader;
-
-	/* Lista de efectos de postprocesado que se aplicarán (en este orden) a la escena */
-	static std::vector<Shader*> m_composites;
 
 #ifdef __DEBUG_INFO__
 	/* Número de luces en la escena */
@@ -98,9 +96,14 @@ protected:
 	/* Malla para pintar los efectos */
 	Mesh* m_effectsMesh;
 
-	// Framebuffer usado para los efectos
+	/* Lista de efectos de postprocesado que se aplicarán (en este orden) a la escena */
+	std::vector<Shader*> m_composites;
+
+	// Framebuffers usados para los efectos
 	Framebuffer* frameBuf;
 	Framebuffer* frameBuf2;
+	// Framebuffer usado para el multisampling
+	Framebuffer* msBuf;
 
 private:
 	// Sub-métodos del render() para que sea más legible

@@ -277,8 +277,8 @@ void PruebaScene::init()
 	/* - - - Efectos de postprocesado (el orden importa) - - - */
 	//AddComposite((Shader*)&ResourceManager::Instance()->getComposite("byn"));
 	//AddComposite((Shader*)&ResourceManager::Instance()->getComposite("waves"));
-	//AddComposite((Shader*)&ResourceManager::Instance()->getComposite("bordes"));
-	//AddComposite((Shader*)&ResourceManager::Instance()->getComposite("interference"));
+	AddComposite((Shader*)&ResourceManager::Instance()->getComposite("bordes"));
+	AddComposite((Shader*)&ResourceManager::Instance()->getComposite("interference"));
 }
 
 void PruebaScene::loadResources()

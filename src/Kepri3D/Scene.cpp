@@ -14,10 +14,10 @@
 
 #include <freeglut.h>
 
+bool Scene::compositesActive = false;
 bool Scene::skyboxActive = true;
 bool Scene::mipmapsActive = false;
 Shader* Scene::normalsShader = nullptr;
-std::vector<Shader*> Scene::m_composites;
 
 
 Scene::Scene() : m_canvas(nullptr), m_skybox(nullptr)
@@ -27,12 +27,15 @@ Scene::Scene() : m_canvas(nullptr), m_skybox(nullptr)
 	// Crear la malla de rectángulo para el postprocesado. ({2, 2} para que ocupe la pantalla entera)
 	m_effectsMesh = Mesh::generateRectangle(2, 2);
 
-	// Crear los 2 FrameBuffers para el renderizado
-	frameBuf = new Framebuffer(m_camera->getVP()->getW(), m_camera->getVP()->getH());
+	// Crear los 2 FrameBuffers para  efectos
+	frameBuf = new Framebuffer(m_camera->getVP()->getW(), m_camera->getVP()->getH(), false);
 	frameBuf2 = new Framebuffer(m_camera->getVP()->getW(), m_camera->getVP()->getH(), false);
 
+	// Crear el framebuffer para el multisampling
+	msBuf = new Framebuffer(m_camera->getVP()->getW(), m_camera->getVP()->getH(), true);
+
 	// Composite por defecto
-	AddComposite((Shader*)&ResourceManager::Instance()->getComposite("defaultComposite"));
+	//AddComposite((Shader*)&ResourceManager::Instance()->getComposite("defaultComposite"));
 }
 
 void Scene::AddEntity(Entity* e, bool isTranslucid)
@@ -50,7 +53,7 @@ void Scene::render()
 		std::cout << "ERROR OPENGL" << std::endl;
 
 	// Activar este framebuffer; todo lo que se pinte se guardará en su textura
-	frameBuf->bind();
+	if (compositesActive) { msBuf->bind(); }
 	// 0) Limpiar el color y depth buffer
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
@@ -71,14 +74,7 @@ void Scene::render()
 	renderCanvas();
 
 	// 6) Post-procesar la imagen del color buffer
-	glBindFramebuffer(GL_READ_FRAMEBUFFER, frameBuf->id);
-	glBindFramebuffer(GL_DRAW_FRAMEBUFFER, 0);
-	glBlitFramebuffer(0, 0, m_camera->getVP()->getW(), m_camera->getVP()->getH(),
-		0, 0, m_camera->getVP()->getW(), m_camera->getVP()->getH(), GL_COLOR_BUFFER_BIT, GL_NEAREST);
-
-	glBindFramebuffer(GL_FRAMEBUFFER, 0);
-	//Framebuffer::unbind();
-	//renderEffects();
+	renderEffects();
 
 	// 7) Hacer swap de buffers
 	// Hay 2 buffers; uno se está mostrando por ventana, y el otro es el que usamos
@@ -180,6 +176,15 @@ void Scene::renderCanvas()
 
 void Scene::renderEffects()
 {
+	// No hacemos nada
+	if(!compositesActive){ return; }
+
+	// Blit del Framebuffer con múltiples samples a uno normal
+	msBuf->bind(GL_READ_FRAMEBUFFER);
+	frameBuf->bind(GL_DRAW_FRAMEBUFFER);
+	glBlitFramebuffer(0, 0, m_camera->getVP()->getW(), m_camera->getVP()->getH(),
+		0, 0, m_camera->getVP()->getW(), m_camera->getVP()->getH(), GL_COLOR_BUFFER_BIT, GL_NEAREST);
+
 	glDepthFunc(GL_ALWAYS);
 
 	Framebuffer* fbo1 = frameBuf;
@@ -280,9 +285,10 @@ void Scene::AddComposite(Shader* sh, bool active)
 
 void Scene::resize(int width, int height)
 {
-	delete frameBuf; delete frameBuf2;
-	frameBuf = new Framebuffer(width, height);
-	frameBuf2 = new Framebuffer(width, height);
+	delete frameBuf; delete frameBuf2; delete msBuf;
+	frameBuf = new Framebuffer(width, height, false);
+	frameBuf2 = new Framebuffer(width, height, false);
+	msBuf = new Framebuffer(width, height, true);
 #ifdef __DEBUG_INFO__
 	fbSize = { width, height };
 #endif
@@ -314,4 +320,7 @@ Scene::~Scene()
 	// FB para el postprocesado
 	delete frameBuf;
 	delete frameBuf2;
+
+	//FB para multisampling
+	delete msBuf;
 }

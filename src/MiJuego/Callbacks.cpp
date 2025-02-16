@@ -88,9 +88,8 @@ void normalsButtonPressed()
 
 void compositeButtonPressed()
 {
-	// Quitar todos los efectos de composite menos el predet.
-	while (Scene::m_composites.size() > 1)
-		Scene::m_composites.pop_back();
+	// Activar / desactivar los efectos composite
+	Scene::compositesActive = !Scene::compositesActive;
 
 	GameManager::centerMouse();
 }
