@@ -584,6 +584,7 @@ TessTerrain::TessTerrain(GLuint filas, GLuint columnas, GLdouble tamFila, GLdoub
 	setShader("terreno");
 	useEyedir = false;
 	patchSize = tamFila * 2;
+	this->elevacion = 1.0f;
 }
 
 void TessTerrain::setHeightMap(const std::string& texID, float elevacion)

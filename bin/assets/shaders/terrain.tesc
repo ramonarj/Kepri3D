@@ -25,8 +25,8 @@ uniform bool use_eyeDir = false;
 
 // Constantes
 uniform int patch_size = 25;
-const int MIN_TESS = 2;
-const int MAX_TESS = 20;
+const int MIN_TESS = 4;
+const int MAX_TESS = 32;
 
 void main()
 {

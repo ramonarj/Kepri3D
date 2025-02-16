@@ -10,7 +10,7 @@ Material::Material()
 	m_diffuse = { 0.8, 0.8, 0.8, 1.0 };
 	m_specular = { 0.1, 0.1, 0.1, 1.0 };
 	m_emission = { 0.0, 0.0, 0.0, 1.0 };
-	m_brillo = 64;
+	m_brillo = 8;
 	m_face = GL_FRONT;
 }
 

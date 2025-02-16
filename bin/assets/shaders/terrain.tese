@@ -22,7 +22,7 @@ out DATA
 uniform dmat4 model;
 uniform dmat4 view;
 uniform dmat4 projection;
-// Reutilizamos este nombre
+// Reutilizamos este nombre aunque lo usemos para alturas
 uniform sampler2D dispMap;
 
 uniform float elevacion = 1.0f;
@@ -63,6 +63,13 @@ void main()
 	
 	data_out.fragPos = vec3(model * pos);
 	
-	// TODO
-	data_out.normals = vec3(0, 1, 0);
+	// Aplicar la rotación del modelo a las normales
+	mat3 normalMatrix = transpose(inverse(mat3(model)));
+	data_out.normals = normalMatrix * vec3(0, 1, 0);
+	
+	// Tangente, bitangente y normal
+	vec3 N = normalize(normalMatrix * vec3(0, 1, 0));
+	vec3 T = normalize(normalMatrix * vec3(1, 0, 0));
+	vec3 B = normalize(cross(N, T));
+	data_out.TBN = mat3(T, B, N);
 }

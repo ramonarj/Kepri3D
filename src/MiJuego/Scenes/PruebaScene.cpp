@@ -41,7 +41,7 @@ void PruebaScene::init()
 	Light* circleLight = new Light(POINT_LIGHT, { 1, 1, 0, 1 });
 	circleLight->setPosition({ 3,3,-3 });
 	circleLight->setAmbient({ 0.1, 0.3, 0.1, 1.0 });
-	circleLight->setSpecular({ 1, 1, 0, 1.0 });
+	circleLight->setSpecular({ 0.8, 0.8, 0, 1.0 });
 	AddLight(circleLight);
 
 	// Foco (linterna)
@@ -242,6 +242,8 @@ void PruebaScene::init()
 	TessTerrain* tesTerrain = new TessTerrain(9, 14, 80, 80); //patches de 80x80uds
 	tesTerrain->setTexture("iceland");
 	tesTerrain->setHeightMap("iceland_height", 25.0f);
+	tesTerrain->setSpecularMap("iceland_spec");
+	tesTerrain->setNormalMap("iceland_normal");  // obligatorio usar un mapa de normales por el momento
 	tesTerrain->setPosition({ 0,-20,0 });
 	tesTerrain->setCamera(m_camera);
 	tesTerrain->setPolygonMode(GL_FILL, GL_LINE);
@@ -290,7 +292,6 @@ void PruebaScene::loadResources()
 	ResourceManager::Instance()->loadTexture("orientacion.bmp", "orientacion");
 	ResourceManager::Instance()->loadTexture("Zelda.bmp", "zelda");
 	ResourceManager::Instance()->loadTexture("terrenoTex.bmp", "terreno");
-	ResourceManager::Instance()->loadTexture("iceland.bmp", "iceland", { 4, 65, 137 });
 	ResourceManager::Instance()->loadTexture("Caja.bmp", "caja");
 	ResourceManager::Instance()->loadTexture("cajaPrueba.png", "cajaPrueba");
 	ResourceManager::Instance()->loadTexture("caja_specular.bmp", "caja_spec");
@@ -302,13 +303,19 @@ void PruebaScene::loadResources()
 	ResourceManager::Instance()->loadTexture("grass.bmp", "hierba", { 0,0,0 });
 	ResourceManager::Instance()->loadTexture("tree.png", "tree");
 	ResourceManager::Instance()->loadTexture("brickwall.jpg", "wall");
-	// Los mapas de normales no pueden cargarse con SRGB_ALPHA
+	// Los mapas de normales/alturas no deben cargarse con SRGB_ALPHA (los que no representen colores)
 	ResourceManager::Instance()->loadTexture("brickwall_normal.png", "wall_normal", 255, GL_RGBA);
-	ResourceManager::Instance()->loadTexture("iceland_height.bmp", "iceland_height", 255, GL_RGBA);
 	ResourceManager::Instance()->loadTexture("star.png", "star");
 	ResourceManager::Instance()->loadTexture("redead.png", "redead");
 	ResourceManager::Instance()->loadTexture("windows.bmp", "windows");
 	ResourceManager::Instance()->loadTexture("coke.jpg", "coke");
+
+	// Texturas del terreno
+	//ResourceManager::Instance()->loadTexture("iceland.bmp", "iceland", { 4, 65, 137 });
+	ResourceManager::Instance()->loadTexture("iceland.bmp", "iceland");
+	ResourceManager::Instance()->loadTexture("iceland_height_highres.png", "iceland_height", 255, GL_RGBA);
+	ResourceManager::Instance()->loadTexture("iceland_normal.png", "iceland_normal", 255, GL_RGBA);
+	ResourceManager::Instance()->loadTexture("iceland_spec.png", "iceland_spec");
 
 	// Canvas
 	ResourceManager::Instance()->loadTexture("UI\\boton.png", "boton");
