@@ -405,6 +405,7 @@ void PruebaScene::PruebaMateriales()
 
 	// Tierra
 	Esfera* tierra = new Esfera(3);
+	tierra->setName("TierraCruces");
 	tierra->addComponent(new RotationComp(1.0));
 	tierra->setTexture("earth");
 	tierra->setPosition({ 6,15,0 });

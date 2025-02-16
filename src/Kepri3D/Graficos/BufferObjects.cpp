@@ -1,4 +1,4 @@
-#include "Framebuffer.h"
+#include "BufferObjects.h"
 
 #include "Texture.h"
 #include <freeglut.h>
@@ -54,4 +54,18 @@ Framebuffer::Framebuffer(GLuint width, GLuint height, bool multisampling)
 Framebuffer::~Framebuffer()
 {
 
+}
+
+// - - - - - - - - - - - - - - - 
+
+Uniformbuffer::Uniformbuffer(GLuint index, GLsizeiptr bufSize)
+{
+    // Crea el UBO
+    glGenBuffers(1, &id);
+    glBindBuffer(GL_UNIFORM_BUFFER, id);
+    // Reserva el espacio necesario para el buffer
+    glBufferData(GL_UNIFORM_BUFFER, bufSize, NULL, GL_STATIC_DRAW);
+    glBindBuffer(GL_UNIFORM_BUFFER, 0);
+    // Unir el UBO creado al punto de unión dado por 'index'
+    glBindBufferRange(GL_UNIFORM_BUFFER, index, id, 0, bufSize);
 }

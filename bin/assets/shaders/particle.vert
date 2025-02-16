@@ -7,9 +7,12 @@ layout(location = 2) in vec2 uv0;
 
 layout(location = 10) in vec3 position;
 
-// Variables uniform
-uniform dmat4 view;
-uniform dmat4 projection;
+// Uniform block
+layout (std140) uniform Matrices
+{
+    dmat4 projection;
+    dmat4 view;
+};
 
 // Para el siguiente shader
 out DATA

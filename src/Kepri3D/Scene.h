@@ -5,7 +5,7 @@
 #include <string>
 #include <glew.h>
 #include <glm.hpp>
-#include "Framebuffer.h"
+#include "BufferObjects.h"
 #include "Game.h"
 
 class Entity;
@@ -105,17 +105,20 @@ protected:
 	// Framebuffer usado para el multisampling
 	Framebuffer* msBuf;
 
+	/* Uniform Buffer Objects para uniforms comunes a muchos shaders (luces, cámara) */
+	Uniformbuffer* m_uboMatrices;
+
 private:
 	// Sub-métodos del render() para que sea más legible
 	void loadLights();
-	void renderSkybox(const glm::dmat4& projViewMat);
-	void renderEntities(const glm::dmat4& projViewMat);
-	void renderNormals(const glm::dmat4& projViewMat);
+	void renderSkybox();
+	void renderEntities();
+	void renderNormals();
 	void renderCanvas();
 	void renderEffects();
 
 	/* Manda todos los uniforms necesarios al shader de la entidad dada */
-	void sendUniforms(Entity* e);
+	void sendUniforms(Shader* sh);
 
 	// Modelo de iluminación. 0 = Phong, 1 = Blinn-phong
 	bool blinn = false;

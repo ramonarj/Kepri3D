@@ -44,6 +44,9 @@ public:
 	/* Pasa un uniform de tipo DMAT4 al shader */
 	void setMat4d(const std::string& name, const glm::dmat4 value) const; // TODO por referencia
 
+	// - - - Configurar los Uniform blocks - - - //
+	void bindUniformBlock(const std::string& name, unsigned int bindingPoint);
+
 private:
 	/* IDs del Vertex, Tess. Control, Tess. Eval., Geometry y Fragment shader (en ese orden) */
 	unsigned int shadersIds[5];

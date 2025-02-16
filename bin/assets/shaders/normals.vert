@@ -4,8 +4,13 @@
 in vec4 vertex;
 layout(location = 3) in vec3 aNormals;
 
-// Variables uniform
-uniform dmat4 mvpMat;
+// Uniform block
+layout (std140) uniform Matrices
+{
+    dmat4 projection;
+    dmat4 view;
+};
+uniform dmat4 model;
 
 // Para el siguiente shader
 out DATA
@@ -18,7 +23,7 @@ out DATA
 void main()
 {
 	// Inicio y fin del vector normal (ya en 'clip space' para el Geometry Shader)
-	gl_Position = vec4(mvpMat * vertex);
+	gl_Position = vec4(projection * view * model * vertex);
 	
-	data_out.normalEnd = vec4(mvpMat * (vertex + vec4(aNormals * 0.25, 0.0)));
+	data_out.normalEnd = vec4(projection * view * model * (vertex + vec4(aNormals * 0.25, 0.0)));
 }

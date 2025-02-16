@@ -5,10 +5,13 @@ in vec4 vertex;
 layout(location = 1) in vec4 aColores;
 layout(location = 2) in vec2 uv0;
 
-// Variables uniform
+// Uniform block
+layout (std140) uniform Matrices
+{
+    dmat4 projection;
+    dmat4 view;
+};
 uniform dmat4 model;
-uniform dmat4 view;
-uniform dmat4 projection;
 
 uniform vec2 ancla;
 

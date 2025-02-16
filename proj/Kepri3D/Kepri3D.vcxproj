@@ -176,7 +176,7 @@
     <ClCompile Include="..\..\src\Kepri3D\Fisica\Rigid.cpp" />
     <ClCompile Include="..\..\src\Kepri3D\Game.cpp" />
     <ClCompile Include="..\..\src\Kepri3D\Graficos\Camera.cpp" />
-    <ClCompile Include="..\..\src\Kepri3D\Graficos\Framebuffer.cpp" />
+    <ClCompile Include="..\..\src\Kepri3D\Graficos\BufferObjects.cpp" />
     <ClCompile Include="..\..\src\Kepri3D\Graficos\Light.cpp" />
     <ClCompile Include="..\..\src\Kepri3D\Graficos\Material.cpp" />
     <ClCompile Include="..\..\src\Kepri3D\Graficos\Mesh.cpp" />
@@ -200,7 +200,7 @@
     <ClInclude Include="..\..\src\Kepri3D\Fisica\Rigid.h" />
     <ClInclude Include="..\..\src\Kepri3D\Game.h" />
     <ClInclude Include="..\..\src\Kepri3D\Graficos\Camera.h" />
-    <ClInclude Include="..\..\src\Kepri3D\Graficos\Framebuffer.h" />
+    <ClInclude Include="..\..\src\Kepri3D\Graficos\BufferObjects.h" />
     <ClInclude Include="..\..\src\Kepri3D\Graficos\Light.h" />
     <ClInclude Include="..\..\src\Kepri3D\Graficos\Material.h" />
     <ClInclude Include="..\..\src\Kepri3D\Graficos\Mesh.h" />

@@ -39,7 +39,7 @@
     <ClCompile Include="..\..\src\Kepri3D\Graficos\Camera.cpp">
       <Filter>Graficos</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\src\Kepri3D\Graficos\Framebuffer.cpp">
+    <ClCompile Include="..\..\src\Kepri3D\Graficos\BufferObjects.cpp">
       <Filter>Graficos</Filter>
     </ClCompile>
     <ClCompile Include="..\..\src\Kepri3D\Graficos\Light.cpp">
@@ -113,7 +113,7 @@
     <ClInclude Include="..\..\src\Kepri3D\Graficos\Camera.h">
       <Filter>Graficos</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\src\Kepri3D\Graficos\Framebuffer.h">
+    <ClInclude Include="..\..\src\Kepri3D\Graficos\BufferObjects.h">
       <Filter>Graficos</Filter>
     </ClInclude>
     <ClInclude Include="..\..\src\Kepri3D\Graficos\Light.h">

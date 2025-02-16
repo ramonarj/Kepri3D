@@ -36,6 +36,21 @@ Scene::Scene() : m_canvas(nullptr), m_skybox(nullptr)
 
 	// Composite por defecto
 	//AddComposite((Shader*)&ResourceManager::Instance()->getComposite("defaultComposite"));
+
+	// 1) Crear los UBO para las matrices View y Projection
+	m_uboMatrices = new Uniformbuffer(0, sizeof(glm::dmat4) * 2);
+	// 2) Establecer el punto de enlace de los shaders que usen el UBO
+	std::cout << glGetError() << std::endl;
+	for (Entity* e : m_entities)
+	{
+		Shader* sh = (Shader*)e->getShader();
+		if (sh != nullptr && e->getName() == "TierraCruces")
+		{
+			sh->bindUniformBlock("Matrices", 0);
+		}
+	}
+	std::cout << glGetError() << std::endl;
+	// 3) Mandar los datos al buffer (se hace en 'renderEntities()')
 }
 
 void Scene::AddEntity(Entity* e, bool isTranslucid)
@@ -61,14 +76,13 @@ void Scene::render()
 	loadLights();
 
 	// 2) Pintar el skybox, si lo hay
-	const glm::dmat4 projViewMat = m_camera->getProjMat() * m_camera->getViewMat();
-	renderSkybox(projViewMat);
+	renderSkybox();
 
 	// 3) Pintar todas las entidades activas
-	renderEntities(projViewMat);
+	renderEntities();
 
 	// 4) Pintar los vectores normales, si están activos
-	renderNormals(projViewMat);
+	renderNormals();
 
 	// 5) Pintar el canvas
 	renderCanvas();
@@ -90,8 +104,10 @@ void Scene::loadLights()
 			l->load(m_camera->getViewMat());
 }
 
-void Scene::renderSkybox(const glm::dmat4& projViewMat)
+void Scene::renderSkybox()
 {
+	const glm::dmat4 projViewMat = m_camera->getProjMat() * m_camera->getViewMat();
+
 	// Comprobar que haya un skybox activo
 	if (skyboxActive && m_skybox != nullptr)
 	{
@@ -102,30 +118,38 @@ void Scene::renderSkybox(const glm::dmat4& projViewMat)
 
 		// Pintar el skybox
 		m_skybox->render();
-
-		//Shader::turnOff();
 	}
 }
 
-void Scene::renderEntities(const glm::dmat4& projViewMat)
+void Scene::renderEntities()
 {
-	// Pintar todas las entidades activas
+	// 1) Enviar uniforms comunes a todas las entidades
+	// Matrices V y P
+	glm::dmat4 proj = m_camera->getProjMat();
+	glm::dmat4 view = m_camera->getViewMat();
+	m_uboMatrices->bind();
+	glBufferSubData(GL_UNIFORM_BUFFER, 0, sizeof(glm::dmat4), glm::value_ptr(proj));
+	glBufferSubData(GL_UNIFORM_BUFFER, sizeof(glm::dmat4), sizeof(glm::dmat4), glm::value_ptr(view));
+	Uniformbuffer::unbind();
+
+	// 2) Pintar todas las entidades activas
 	for (Entity* e : m_entities)
 	{
 		if (e->isActive())
 		{
+			Shader* shader = (Shader*)e->getShader();
 			// No usa shaders; los 'apagamos'
-			if (e->getShader() == nullptr) 
+			if (shader == nullptr)
 			{
 				Shader::turnOff();
 				// render s/shaders
-				e->render(m_camera->getViewMat());
+				e->render(view);
 			}
 			// Usa shaders; lo activamos y pasamos los valores uniform necesarios
 			else
 			{
-				e->getShader()->use();
-				sendUniforms(e);
+				shader->use();
+				sendUniforms(shader);
 				// render c/shaders
 				e->render();
 			}
@@ -135,7 +159,7 @@ void Scene::renderEntities(const glm::dmat4& projViewMat)
 	glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
 }
 
-void Scene::renderNormals(const glm::dmat4& projViewMat)
+void Scene::renderNormals()
 {
 	if (normalsShader != nullptr)
 	{
@@ -144,8 +168,8 @@ void Scene::renderNormals(const glm::dmat4& projViewMat)
 		{
 			if(e->getMesh() != nullptr)
 			{
-				// Pasar la matriz MVP al vertex shader y pintar
-				normalsShader->setMat4d("mvpMat", projViewMat * e->getModelMat());
+				// Pasar la matriz de modelado al VS y pintar
+				normalsShader->setMat4d("model", e->getModelMat());
 				e->render();
 			}
 		}
@@ -226,13 +250,12 @@ void Scene::update(GLuint deltaTime)
 	InputManager::Instance()->Update();
 }
 
-void Scene::sendUniforms(Entity* e)
+void Scene::sendUniforms(Shader* sh)
 {
-	const Shader* sh = e->getShader();
-
-	// pasar las matrices necesarias al VS
-	sh->setMat4d("view", m_camera->getViewMat());
-	sh->setMat4d("projection", m_camera->getProjMat());
+	// esto ahora se pasa con UBOs
+	//sh->setMat4d("view", m_camera->getViewMat());
+	//sh->setMat4d("projection", m_camera->getProjMat());
+	// posición de la cámara
 	sh->setVec3("viewPos", m_camera->getPosition());
 
 	// tipo de reflejos especulares
@@ -323,4 +346,7 @@ Scene::~Scene()
 
 	//FB para multisampling
 	delete msBuf;
+
+	// UBO para matrices y luces
+	delete m_uboMatrices;
 }

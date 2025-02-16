@@ -137,3 +137,10 @@ void Shader::setMat4d(const std::string& name, const glm::dmat4 matValue) const
 	GLint loc = glGetUniformLocation(programId, name.c_str());
 	glUniformMatrix4dv(loc, 1, GL_FALSE, glm::value_ptr(matValue));
 }
+
+// - - - - - - - - - - - - - - -
+void Shader::bindUniformBlock(const std::string& name, unsigned int bindingPoint)
+{
+	GLuint uboIndex = glGetUniformBlockIndex(programId, name.c_str());
+	glUniformBlockBinding(programId, uboIndex, bindingPoint);
+}

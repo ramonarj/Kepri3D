@@ -6,10 +6,13 @@ layout(location = 2) in vec2 uv0;
 layout(location = 3) in vec3 aNormals;
 layout(location = 4) in vec3 aTangents;
 
-// Variables uniform
+// Uniform block
+layout (std140) uniform Matrices
+{
+    dmat4 projection;
+    dmat4 view;
+};
 uniform dmat4 model;
-uniform dmat4 view;
-uniform dmat4 projection;
 
 // Para el siguiente shader
 out DATA

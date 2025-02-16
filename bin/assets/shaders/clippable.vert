@@ -12,10 +12,13 @@ out DATA
 	vec3 normals;
 } data_out;
 
-// Variables uniform
+// Uniform block
+layout (std140) uniform Matrices
+{
+    dmat4 projection;
+    dmat4 view;
+};
 uniform dmat4 model;
-uniform dmat4 view;
-uniform dmat4 projection;
 
 // Planos de corte
 const int MAX_PLANOS = 8;

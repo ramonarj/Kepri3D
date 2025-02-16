@@ -18,10 +18,14 @@ out DATA
 	mat3 TBN;
 } data_out;
 
-// Uniforms
+// Uniform block
+layout (std140) uniform Matrices
+{
+    dmat4 projection;
+    dmat4 view;
+};
 uniform dmat4 model;
-uniform dmat4 view;
-uniform dmat4 projection;
+
 // Reutilizamos este nombre aunque lo usemos para alturas
 uniform sampler2D dispMap;
 

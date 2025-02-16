@@ -3,9 +3,13 @@
 in vec4 vertex;
 layout(location = 2) in vec2 uv0;
 
+// Uniform block
+layout (std140) uniform Matrices
+{
+    dmat4 projection;
+    dmat4 view;
+};
 uniform dmat4 model;
-uniform dmat4 view;
-uniform dmat4 projection;
 
 out vec2 TexCoords; 
 
