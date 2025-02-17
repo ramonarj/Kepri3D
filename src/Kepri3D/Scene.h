@@ -107,6 +107,7 @@ protected:
 
 	/* Uniform Buffer Objects para uniforms comunes a muchos shaders (luces, cámara) */
 	Uniformbuffer* m_uboMatrices;
+	Uniformbuffer* m_uboLuces;
 
 private:
 	// Sub-métodos del render() para que sea más legible
@@ -119,6 +120,7 @@ private:
 
 	/* Manda todos los uniforms necesarios al shader de la entidad dada */
 	void sendUniforms(Shader* sh);
+	void sendUniformBlocks();
 
 	// Modelo de iluminación. 0 = Phong, 1 = Blinn-phong
 	bool blinn = false;

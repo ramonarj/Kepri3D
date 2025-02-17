@@ -279,6 +279,18 @@ void PruebaScene::init()
 	//AddComposite((Shader*)&ResourceManager::Instance()->getComposite("waves"));
 	AddComposite((Shader*)&ResourceManager::Instance()->getComposite("bordes"));
 	AddComposite((Shader*)&ResourceManager::Instance()->getComposite("interference"));
+
+	// Temporal
+	// Establecer el punto de enlace de los shaders que usen el UBO
+	for (Entity* e : m_entities)
+	{
+		Shader* sh = (Shader*)e->getShader();
+		if (sh != nullptr)
+		{
+			sh->bindUniformBlock("Matrices", 0);
+			sh->bindUniformBlock("Lights", 1);
+		}
+	}
 }
 
 void PruebaScene::loadResources()

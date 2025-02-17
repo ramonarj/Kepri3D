@@ -30,6 +30,8 @@ struct Light
 	vec3 spotDir;
 	float spotCutoff;
 	float spotExp;
+	
+	bool on;
 };
 
 // - - - - - - - - - - - - - - - - - -  - - - - - - - - - - - - - - - //
@@ -52,14 +54,21 @@ uniform sampler2D normalMap;
 
 // - - Luces - - //
 // Tipo de iluminación | 0 = Phong, 1 = Bling-Phong
-uniform bool blinn;
+//uniform bool blinn;
 // Permitiremos un máximo de 5 luces por el momento
 const int MAX_LIGHTS = 5;
+// Uniform block
+layout (std140) uniform Lights
+{
+	Light blockLuces; // [MAX_LIGHTS]
+	vec3 camPos;
+	bool blinn;
+};
 uniform Light luces[MAX_LIGHTS];
 
 // - - Material - - //
 uniform Material material;
-uniform vec3 viewPos;
+//uniform vec3 viewPos;
 
 uniform bool use_diff_map;
 uniform bool use_spec_map;
@@ -89,7 +98,7 @@ void main()
 	else {specColor = material.specular; }
 	
 	// Vector que va del fragmento a la cámara. NOTA: todos los vectores salen del fragmento (N, V, L, R...)
-	vec3 viewDir = normalize(viewPos - data_in.fragPos);
+	vec3 viewDir = normalize(camPos - data_in.fragPos);
 	
 	vec3 normal;
 	// Usamos el valor del normal map y no del vértice
@@ -110,8 +119,11 @@ void main()
 
 	// 2) Iteramos todas las luces y vamos sumando el color que aportan al fragmento
 	vec3 color = vec3(0.0);
-	for(int i = 0; i < MAX_LIGHTS; i++)
+	for(int i = 0; i < 1; i++)
 	{
+		if(!blockLuces.on)
+			continue;
+		/*
 		// 0 = Direccionales, 1 = Puntuales, 2 = Focos
 		if(luces[i].type == 0)
 			color += CalcDirLight(luces[i], normal, viewDir);
@@ -119,6 +131,21 @@ void main()
 			color += CalcPointLight(luces[i], normal, viewDir);
 		else if(luces[i].type == 2)
 			color += CalcSpotlight(luces[i], normal, viewDir);
+		*/
+		if(blockLuces.type == 0)
+		{
+			color += CalcDirLight(blockLuces, normal, viewDir);
+		}
+			
+		else if(blockLuces.type == 1)
+		{
+			color += CalcPointLight(blockLuces, normal, viewDir);
+		}
+			
+		else if(blockLuces.type == 2)
+		{
+			color += CalcSpotlight(blockLuces, normal, viewDir);
+		}
 	}
 
 	// De momento no hay transparencias

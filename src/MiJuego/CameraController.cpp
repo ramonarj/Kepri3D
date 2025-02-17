@@ -79,7 +79,7 @@ void CameraController::rotacionesCamara(GLuint deltaTime)
 
 	// Aplicarle la sensibilidad
 	rotCamara -= diff;
-	rotCamara *= (deltaTime / 1000.0 * sensibilidad);
+	rotCamara *= (5 / 1000.0 * sensibilidad);
 
 	// Cámara tipo FPS; las rotaciones en Y son globales y en X son locales.
 	cam->rotate(rotCamara.x, { 0,1,0 }, GLOBAL);
