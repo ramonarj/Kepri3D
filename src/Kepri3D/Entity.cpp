@@ -270,6 +270,13 @@ void Entity::setDisplacementMap(const std::string& textureID)
 	m_textures[4] = (Texture*)&ResourceManager::Instance()->getTexture(textureID);
 }
 
+void Entity::enableReflections(const std::string& reflectionMapID, const std::string& cubemapID)
+{
+	m_textures[5] = (Texture*)&ResourceManager::Instance()->getTexture(reflectionMapID);
+	m_textures[6] = (Texture*)&ResourceManager::Instance()->getTexture(cubemapID);
+}
+
+
 void Entity::setPolygonMode(GLenum front, GLenum back)
 {
 	m_polyModeFront = front;
@@ -281,7 +288,8 @@ void Entity::bindTextures()
 	if (m_shader == nullptr)
 		return;
 	// Nombre que deben tener las respectivas variables 'sampler2D' del shader
-	std::string texNames[NUM_TEXTURES] = { "textura", "textura2", "material.specular_map", "normalMap", "dispMap"};
+	std::string texNames[NUM_TEXTURES] = { "textura", "textura2", "material.specular_map", "normalMap", 
+		"dispMap", "reflectionMap", "skybox"};
 
 	// Activar cada textura existente
 	for(int i = 0; i < NUM_TEXTURES; i++)
@@ -603,3 +611,5 @@ void TessTerrain::render()
 	m_shader->setFloat("elevacion", elevacion);
 	Entity::render();
 }
+
+// - - - - - - - - - - - - - - - - - 

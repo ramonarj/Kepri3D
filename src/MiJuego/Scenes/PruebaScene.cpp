@@ -51,7 +51,7 @@ void PruebaScene::init()
 
 	// Nueva luz para el Blinn
 	Light* luzBlinn = new Light(POINT_LIGHT, { 0.4, 0.4, 0.3, 1 });
-	luzBlinn->setPosition({ 60, 4, 0 });
+	luzBlinn->setPosition({ 60, 4, -40 });
 	luzBlinn->setAttenuationFactors(0.3, 0.3, 0.02);
 	AddLight(luzBlinn);
 
@@ -325,6 +325,9 @@ void PruebaScene::loadResources()
 	ResourceManager::Instance()->loadTexture("redead.png", "redead");
 	ResourceManager::Instance()->loadTexture("windows.bmp", "windows");
 	ResourceManager::Instance()->loadTexture("coke.jpg", "coke");
+	ResourceManager::Instance()->loadTexture("espejo.png", "espejo");
+	ResourceManager::Instance()->loadTexture("espejo_reflection.png", "espejo_reflection");
+	ResourceManager::Instance()->loadTexture("blanco.png", "blanco"); //1px blanco
 
 	// Texturas del terreno
 	//ResourceManager::Instance()->loadTexture("iceland.bmp", "iceland", { 4, 65, 137 });
@@ -363,6 +366,7 @@ void PruebaScene::loadResources()
 	ResourceManager::Instance()->loadShader("default.vert", "", "multitexture.frag", "multitexture");
 	ResourceManager::Instance()->loadShader("clippable.vert", "", "default.frag", "clippable");
 	ResourceManager::Instance()->loadShader("terrain.vert", "terrain.tesc", "terrain.tese", "", "lights.frag", "terreno");
+	ResourceManager::Instance()->loadShader("reflejos.vert", "", "reflejos.frag", "reflejos");
 
 
 	/* Efectos de postprocesado ('composites') */
@@ -506,7 +510,7 @@ void PruebaScene::PruebaMateriales()
 	plano->setTexture("cobre");
 	plano->setMaterial("blinn");
 	plano->setShader("lights");
-	plano->setPosition({ 60,0,0 });
+	plano->setPosition({ 60,0,-40 });
 	AddEntity(plano);
 
 	// Toro para clip planes
@@ -523,6 +527,33 @@ void PruebaScene::PruebaMateriales()
 	esf->setShader("lights");
 	esf->addComponent(new RotationComp(0.25));
 	AddEntity(esf);
+
+	// Cubo con reflejos
+	Cubo* cuboReflejos = new Cubo(6.0);
+	cuboReflejos->setTexture("citySkybox");
+	cuboReflejos->enableReflections("blanco", "citySkybox");
+	cuboReflejos->setPosition({ 40,3,0 });
+	cuboReflejos->setShader("reflejos");
+	cuboReflejos->addComponent(new RotationComp(0.5));
+	AddEntity(cuboReflejos);
+
+	// Esfera con reflejos
+	Esfera* esfReflejos = new Esfera(6, 30, 40);
+	esfReflejos->setTexture("lakeSkybox");
+	esfReflejos->enableReflections("blanco", "lakeSkybox");
+	esfReflejos->setPosition({ 40,25,0 });
+	esfReflejos->setShader("reflejos");
+	AddEntity(esfReflejos);
+
+	// Espejo
+	Grid* espejo = new Grid(1, 1, 4, 2);
+	espejo->setName("espejo");
+	espejo->setTexture("espejo");
+	espejo->enableReflections("espejo_reflection", "citySkybox");
+	espejo->setPosition({ 25,3,0 });
+	espejo->setShader("reflejos");
+	espejo->rotate(PI / 2.0, { 1, 0, 0 });
+	AddEntity(espejo);
 }
 
 void PruebaScene::ViewportTest()

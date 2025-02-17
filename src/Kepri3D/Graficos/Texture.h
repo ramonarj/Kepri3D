@@ -29,10 +29,10 @@ public:
 	->REPLACE: no se tienen en cuenta las luces
 	->MODULATE: luz * textura
 	->ADD: luz + textura (efecto quemado) */
-	virtual void bind(GLuint mix = GL_MODULATE);
+	void bind(GLuint mix = GL_MODULATE);
 
 	/* Desactiva cualquier textura que estuviera activa */
-	virtual void unbind();
+	void unbind();
 
 	/* Salva el contenido del color buffer dado en un archivo BMP */
 	static void save(const std::string& BMP_Name, GLenum buf = GL_BACK);
@@ -53,6 +53,9 @@ public:
 #endif
 
 protected:
+	// Tipo de textura que es
+	GLenum texType;
+
 	// Dimensiones de la textura (en píxeles)
 	GLuint w;
 	GLuint h;
@@ -70,15 +73,11 @@ protected:
 
 // - - - - - - - - - - - - -
 
-// Clase específica para cubemaps
+// Clase específica para cubemaps. TODO: unificar
 class CubemapTexture : public Texture
 {
 public:
 	bool load(std::vector<std::string> faces);
-
-	// Activar/desactivar la textura
-	void bind(GLuint mix = GL_REPLACE) override;
-	void unbind() override;
 };
 
 #endif

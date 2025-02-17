@@ -13,7 +13,7 @@ class Component;
 #include <iostream>
 #include "Utils.h"
 
-const unsigned int NUM_TEXTURES = 5;
+const unsigned int NUM_TEXTURES = 7;
 
 class Entity
 {
@@ -85,6 +85,10 @@ public:
 
 	/* Establece el mapa de desplazamiento (textura en B/N) que desplazará las coordenadas de textura de la malla */
 	void setDisplacementMap(const std::string& textureID);
+
+	/* Activa los reflejos para esta entidad, dando el mapa de reflejos (textura en B/N) que indica qué partes
+	* son reflectantes, y la textura del Cubemap que reflejará */
+	void enableReflections(const std::string& reflectionMapID, const std::string& cubemapID);
 
 	/* Cómo debe pintarse la entidad por delante y detrás (GL_FILL/GL_LINE/GL_POINT) */
 	void setPolygonMode(GLenum front, GLenum back);
@@ -379,5 +383,6 @@ private:
 	int patchSize;
 };
 
+// - - - - - - - - - - - - 
 
 #endif
