@@ -19,7 +19,6 @@ bool Scene::skyboxActive = true;
 bool Scene::mipmapsActive = false;
 Shader* Scene::normalsShader = nullptr;
 
-
 Scene::Scene() : m_canvas(nullptr), m_skybox(nullptr)
 {
 	m_camera = Game::Instance()->getCamera();
@@ -41,7 +40,8 @@ Scene::Scene() : m_canvas(nullptr), m_skybox(nullptr)
 	m_uboMatrices = new Uniformbuffer(0, sizeof(glm::dmat4) * 2);
 
 	// Crear el UBO para las luces. Tamaño = 144 por temas de alineamiento
-	m_uboLuces = new Uniformbuffer(1, 144);
+	// 16 = viewPos + blinn | 120 = lo que ocupa una luz | 8 = relleno para que la siguiente luz empiece en múltiplo de 16
+	m_uboLuces = new Uniformbuffer(1, 16 + LIGHT_STRUCT_SIZE * MAX_LUCES);
 }
 
 void Scene::AddEntity(Entity* e, bool isTranslucid)
@@ -246,61 +246,70 @@ void Scene::sendUniformBlocks()
 	Uniformbuffer::unbind();
 
 	// - - - - - - Luces - - - - - - - //
-	Light* l = m_lights[0];
-	int type = l->getType();
-	glm::vec3 posDir = l->getPosition();
-	glm::vec3 ambient = l->getAmbient();
-	glm::vec3 diffuse = l->getDiffuse();
-	glm::vec3 specular = l->getSpecular();
 
-
+	// a) Común a todas las luces
 	m_uboLuces->bind();
-	// Tipo de luz
-	glBufferSubData(GL_UNIFORM_BUFFER, 0, sizeof(int), &type);
-	// Posición / dirección
-	glBufferSubData(GL_UNIFORM_BUFFER, 16, sizeof(glm::vec3), glm::value_ptr(posDir));
-	// Componentes de la luz
-	glBufferSubData(GL_UNIFORM_BUFFER, 32, sizeof(glm::vec3), glm::value_ptr(ambient));
-	glBufferSubData(GL_UNIFORM_BUFFER, 48, sizeof(glm::vec3), glm::value_ptr(diffuse));
-	glBufferSubData(GL_UNIFORM_BUFFER, 64, sizeof(glm::vec3), glm::value_ptr(specular));
-	// Factores de atenuación
-	if (type != DIRECTIONAL_LIGHT)
-	{
-		float attConst = l->getAttenuation(0);
-		float attLin = l->getAttenuation(1);
-		float attQuad = l->getAttenuation(2);
-		glBufferSubData(GL_UNIFORM_BUFFER, 76, sizeof(float), &attConst);
-		glBufferSubData(GL_UNIFORM_BUFFER, 80, sizeof(float), &attLin);
-		glBufferSubData(GL_UNIFORM_BUFFER, 84, sizeof(float), &attQuad);
-		// Para focos necesitamos parámetros extra (dirección, apertura y exponente)
-		if (type == SPOT_LIGHT)
-		{
-			glm::vec3 spotDir = l->getSpotDirection();
-			float cutoff = l->getSpotCutoff();
-			float spotExp = l->getSpotExponent();
-			glBufferSubData(GL_UNIFORM_BUFFER, 96, sizeof(glm::vec3), glm::value_ptr(spotDir));
-			glBufferSubData(GL_UNIFORM_BUFFER, 108, sizeof(float), &cutoff);
-			glBufferSubData(GL_UNIFORM_BUFFER, 112, sizeof(float), &spotExp);
-		}
-	}
-	// Indicar si la luz está encendida o no
-	bool active = l->isActive();
-	glBufferSubData(GL_UNIFORM_BUFFER, 116, sizeof(bool), &active);
-
-	// Posición de la cámara (la metemos en el mismo UBO)
+	// Posición de la cámara
 	glm::vec3 viewPos = m_camera->getPosition();
-	glBufferSubData(GL_UNIFORM_BUFFER, 128, sizeof(glm::vec3), &viewPos);
-	
+	glBufferSubData(GL_UNIFORM_BUFFER, 0, sizeof(glm::vec3), &viewPos);
+
 	// Reflejos blinn / blinn-phong
-	glBufferSubData(GL_UNIFORM_BUFFER, 140, sizeof(bool), &blinn);
+	glBufferSubData(GL_UNIFORM_BUFFER, 12, sizeof(bool), &blinn);
+
+	// b) Array de luces
+	GLintptr offset = 16;
+	for(int i = 0; i < m_lights.size(); i++)
+	{
+		Light* l = m_lights[i];
+		int type = l->getType();
+		glm::vec3 posDir = l->getPosition();
+		glm::vec3 ambient = l->getAmbient();
+		glm::vec3 diffuse = l->getDiffuse();
+		glm::vec3 specular = l->getSpecular();
+
+		// Tipo de luz
+		glBufferSubData(GL_UNIFORM_BUFFER, offset, sizeof(int), &type);
+		// Posición / dirección
+		glBufferSubData(GL_UNIFORM_BUFFER, offset + 16, sizeof(glm::vec3), glm::value_ptr(posDir));
+		// Componentes de la luz
+		glBufferSubData(GL_UNIFORM_BUFFER, offset + 32, sizeof(glm::vec3), glm::value_ptr(ambient));
+		glBufferSubData(GL_UNIFORM_BUFFER, offset + 48, sizeof(glm::vec3), glm::value_ptr(diffuse));
+		glBufferSubData(GL_UNIFORM_BUFFER, offset + 64, sizeof(glm::vec3), glm::value_ptr(specular));
+		// Factores de atenuación
+		if (type != DIRECTIONAL_LIGHT)
+		{
+			float attConst = l->getAttenuation(0);
+			float attLin = l->getAttenuation(1);
+			float attQuad = l->getAttenuation(2);
+			glBufferSubData(GL_UNIFORM_BUFFER, offset + 76, sizeof(float), &attConst);
+			glBufferSubData(GL_UNIFORM_BUFFER, offset + 80, sizeof(float), &attLin);
+			glBufferSubData(GL_UNIFORM_BUFFER, offset + 84, sizeof(float), &attQuad);
+			// Para focos necesitamos parámetros extra (dirección, apertura y exponente)
+			if (type == SPOT_LIGHT)
+			{
+				glm::vec3 spotDir = l->getSpotDirection();
+				float cutoff = l->getSpotCutoff();
+				float spotExp = l->getSpotExponent();
+				glBufferSubData(GL_UNIFORM_BUFFER, offset + 96, sizeof(glm::vec3), glm::value_ptr(spotDir));
+				glBufferSubData(GL_UNIFORM_BUFFER, offset + 108, sizeof(float), &cutoff);
+				glBufferSubData(GL_UNIFORM_BUFFER, offset + 112, sizeof(float), &spotExp);
+			}
+		}
+		// Indicar si la luz está encendida o no
+		bool active = l->isActive();
+		glBufferSubData(GL_UNIFORM_BUFFER, offset + 116, sizeof(bool), &active);
+
+		// Hay que desperdiciar 8 bytes al final (del 120 - 128)
+		offset += LIGHT_STRUCT_SIZE;
+	}
 
 	Uniformbuffer::unbind();
 }
 
 void Scene::sendUniforms(Shader* sh)
 {
-	// posición de la cámara
-	sh->setVec3("viewPos", m_camera->getPosition());
+	// posición de la cámara; sigue siendo necesario para el terreno, que lo usa en el TCS
+	//sh->setVec3("viewPos", m_camera->getPosition());
 
 	//// todo esto ahora se pasa con UBOs
 	//sh->setMat4d("view", m_camera->getViewMat());

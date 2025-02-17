@@ -56,11 +56,11 @@ void PruebaScene::init()
 	AddLight(luzBlinn);
 
 	// Luz turquesa
-	//Light* luzSuelo = new Light(DIRECTIONAL_LIGHT);
-	//luzSuelo->setDirection({ 0 ,1 , 0 });
-	//luzSuelo->setDiffuse({ 0, 0.7, 0.7, 1.0 });
-	////luzSuelo->setAmbient({ 0, 0.05, 0.1, 0.0 });
-	//AddLight(luzSuelo);
+	Light* luzSuelo = new Light(DIRECTIONAL_LIGHT);
+	luzSuelo->setDirection({ 0 ,1 , 0 });
+	luzSuelo->setDiffuse({ 0, 0.7, 0.7, 1.0 });
+	//luzSuelo->setAmbient({ 0, 0.05, 0.1, 0.0 });
+	AddLight(luzSuelo);
 
 
 	// ENTIDADES

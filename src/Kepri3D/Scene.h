@@ -16,6 +16,10 @@ class Shader;
 class Mesh;
 class Skybox;
 
+const int MAX_LUCES = 5;
+// Lo que ocupa el struct "Light" del FS teniendo en cuenta alineamiento
+const int LIGHT_STRUCT_SIZE = 128;
+
 // Clase abstracta que representa una escena de juego, con sus entidades, luces, etc.
 class Scene
 {

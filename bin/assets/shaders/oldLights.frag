@@ -30,8 +30,6 @@ struct Light
 	vec3 spotDir;
 	float spotCutoff;
 	float spotExp;
-	
-	bool on;
 };
 
 // - - - - - - - - - - - - - - - - - -  - - - - - - - - - - - - - - - //
@@ -48,38 +46,36 @@ in DATA
 // Obligatorio darle un valor al fragmento actual
 out vec4 FragColor;
 
+// Texturas
+uniform sampler2D textura;
+uniform sampler2D normalMap;
+
 // - - Luces - - //
-// Debe coincidir con Scene::MAX_LUCES
+// Tipo de iluminación | 0 = Phong, 1 = Bling-Phong
+uniform bool blinn;
+// Permitiremos un máximo de 5 luces por el momento
 const int MAX_LIGHTS = 5;
-// Uniform block
-layout (std140) uniform Lights
-{
-	vec3 camPos;
-	bool blinn; // 0 = Phong, 1 = Bling-Phong
-	Light luces[MAX_LIGHTS];
-};
+uniform Light luces[MAX_LIGHTS];
 
 // - - Material - - //
 uniform Material material;
-
-uniform sampler2D textura;
-uniform sampler2D normalMap;
+uniform vec3 viewPos;
 
 uniform bool use_diff_map;
 uniform bool use_spec_map;
 uniform bool use_normal_map;
 
-// Variables globales
-const float PI = 3.141593;
-vec3 diffColor;
-vec3 specColor;
-
 // Prototipos para las funciones
 vec3 CalcDirLight(Light light, vec3 normal, vec3 viewDir);
 vec3 CalcPointLight(Light light, vec3 normal, vec3 viewDir);
 vec3 CalcSpotlight(Light light, vec3 normal, vec3 viewDir);
+
 float SpecFactor(vec3 lightDir, vec3 viewDir, vec3 normal, float brillo, bool useBlinn);
 
+const float PI = 3.141593;
+
+vec3 diffColor;
+vec3 specColor;
 
 void main()
 {
@@ -93,7 +89,7 @@ void main()
 	else {specColor = material.specular; }
 	
 	// Vector que va del fragmento a la cámara. NOTA: todos los vectores salen del fragmento (N, V, L, R...)
-	vec3 viewDir = normalize(camPos - data_in.fragPos);
+	vec3 viewDir = normalize(viewPos - data_in.fragPos);
 	
 	vec3 normal;
 	// Usamos el valor del normal map y no del vértice
@@ -111,13 +107,11 @@ void main()
 	else
 		normal = normalize(data_in.normals);
 
+
 	// 2) Iteramos todas las luces y vamos sumando el color que aportan al fragmento
 	vec3 color = vec3(0.0);
 	for(int i = 0; i < MAX_LIGHTS; i++)
 	{
-		// Está apagada
-		if(!luces[i].on)
-			continue;
 		// 0 = Direccionales, 1 = Puntuales, 2 = Focos
 		if(luces[i].type == 0)
 			color += CalcDirLight(luces[i], normal, viewDir);
