@@ -287,8 +287,6 @@ public:
 	/* Crea un skybox con la textura tipo Cubemap previamente cargada */
 	Skybox(const std::string& cubemapTextureID);
 	~Skybox() { };
-
-	void render();
 };
 
 // - - - - - - - - - - - - 

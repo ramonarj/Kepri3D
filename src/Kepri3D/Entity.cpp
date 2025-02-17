@@ -436,14 +436,6 @@ Skybox::Skybox(const std::string& cubemapTextureID)
 	setShader("skybox");
 }
 
-void Skybox::render()
-{
-	// No escribimos en el Z-buffer para no interferir con otras entidades
-	glDepthMask(GL_FALSE);
-	Entity::render();
-	glDepthMask(GL_TRUE);
-}
-
 // - - - - - - - - - - - - - - - - -
 
 Billboard::Billboard(const std::string& textureID, GLfloat width, GLfloat height)

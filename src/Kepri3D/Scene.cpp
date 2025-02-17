@@ -66,8 +66,8 @@ void Scene::render()
 	// 1) Cargar las luces; IMPORTANTE hacerlo antes de pintar los objetos a los que puedan iluminar
 	loadLights();
 
-	// 2) Pintar el skybox, si lo hay
-	renderSkybox();
+	// 2) Enviar uniforms comunes a todas las entidades (matrices y luces)
+	sendUniformBlocks();
 
 	// 3) Pintar todas las entidades activas
 	renderEntities();
@@ -78,10 +78,15 @@ void Scene::render()
 	// 5) Pintar el canvas
 	renderCanvas();
 
-	// 6) Post-procesar la imagen del color buffer
+	// 6) Pintar el skybox, si lo hay
+	renderSkybox();
+
+	// 6.5)Los objetos transparentes irían aquí
+
+	// 7) Post-procesar la imagen del color buffer
 	renderEffects();
 
-	// 7) Hacer swap de buffers
+	// 8) Hacer swap de buffers
 	// Hay 2 buffers; uno se está mostrando por ventana, y el otro es el que usamos
 	// para dibujar con la GPU. Cuando se ha terminado de dibujar y llega el siguiente 
 	// frame, se intercambian las referencias y se repite el proceso
@@ -97,27 +102,25 @@ void Scene::loadLights()
 
 void Scene::renderSkybox()
 {
-	const glm::dmat4 projViewMat = m_camera->getProjMat() * m_camera->getViewMat();
-
 	// Comprobar que haya un skybox activo
 	if (skyboxActive && m_skybox != nullptr)
 	{
-		// Activar el shader y pasarle la MVP
+		glDepthFunc(GL_LEQUAL);
+
+		// Activar el shader y pasarle la posición de la cámara
 		m_skybox->getShader()->use();
 		m_skybox->getShader()->setVec3("viewPos", m_camera->getPosition());
-		m_skybox->getShader()->setMat4("projViewMat", projViewMat);
 
 		// Pintar el skybox
 		m_skybox->render();
+
+		glDepthFunc(GL_LESS);
 	}
 }
 
 void Scene::renderEntities()
 {
-	// 1) Enviar uniforms comunes a todas las entidades
-	sendUniformBlocks();
-
-	// 2) Pintar todas las entidades activas
+	// Pintar todas las entidades activas
 	for (Entity* e : m_entities)
 	{
 		if (e->isActive())
@@ -309,7 +312,7 @@ void Scene::sendUniformBlocks()
 void Scene::sendUniforms(Shader* sh)
 {
 	// posición de la cámara; sigue siendo necesario para el terreno, que lo usa en el TCS
-	//sh->setVec3("viewPos", m_camera->getPosition());
+	sh->setVec3("viewPos", m_camera->getPosition());
 
 	//// todo esto ahora se pasa con UBOs
 	//sh->setMat4d("view", m_camera->getViewMat());
