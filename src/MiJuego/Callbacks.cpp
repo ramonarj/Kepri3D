@@ -125,6 +125,12 @@ void stencilButtonPressed()
 	GameManager::centerMouse();
 }
 
+void shadowsButtonPressed()
+{
+	Game::Instance()->getScene()->toggleShadows();
+	GameManager::centerMouse();
+}
+
 void logicOpButtonPressed()
 {
 	// Activar las operaciones lógicas implica desactivar totalmente el 'Blending'

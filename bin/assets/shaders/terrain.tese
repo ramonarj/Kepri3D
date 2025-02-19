@@ -26,6 +26,7 @@ layout (std140) uniform Matrices
     dmat4 view;
 };
 uniform dmat4 model;
+uniform dmat4 lightSpaceMatrix;
 
 // Reutilizamos este nombre aunque lo usemos para alturas
 uniform sampler2D dispMap;
@@ -77,4 +78,7 @@ void main()
 	vec3 T = normalize(normalMatrix * vec3(1, 0, 0));
 	vec3 B = normalize(cross(N, T));
 	data_out.TBN = mat3(T, B, N);
+	
+	// Posición del fragmento respecto a la luz
+	data_out.FragPosLightSpace = vec4(lightSpaceMatrix * model * pos);
 }

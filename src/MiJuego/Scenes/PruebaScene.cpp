@@ -18,12 +18,12 @@ std::vector<std::string> buttonNames = { "botonCulling", "botonBlending", "boton
 
 std::vector<std::string> buttonTexts = { "CULLING", "BLENDING", "LIGHTING", "TEXTURES", "FLAT\nSHADING",
 "ALPHA\nTEST", "MULTI\nSAMPLING", "MIPMAPS", "VER\nNORMALES", "POST\nPROCESADO", "SCISSOR\nTEST",
-"SKYBOX", "GAMMA\nCORRECTION", "INSTANCING", "STENCIL\nTEST", "LOGIC\nOP" };
+"SKYBOX", "GAMMA\nCORRECTION", "INSTANCING", "SOMBRAS", "LOGIC\nOP" };
 
 std::vector<void(*)()> PruebaScene::callbacks = { cullingButtonPressed, blendingButtonPressed, lightingButtonPressed,
 texturesButtonPressed, shadingButtonPressed, alphaButtonPressed, multisamplingButtonPressed, mipmapButtonPressed,
 normalsButtonPressed, compositeButtonPressed, scissorButtonPressed, skyboxButtonPressed, gammaButtonPressed, 
-instancingButtonPressed, stencilButtonPressed, logicOpButtonPressed };
+instancingButtonPressed, shadowsButtonPressed, logicOpButtonPressed };
 
 
 void PruebaScene::init()
@@ -237,15 +237,15 @@ void PruebaScene::init()
 	AddEntity(particleSys);
 
 	// Terreno teselado
-	//TessTerrain* tesTerrain = new TessTerrain(9, 14, 80, 80); //patches de 80x80uds
-	//tesTerrain->setTexture("iceland");
-	//tesTerrain->setHeightMap("iceland_height", 25.0f);
-	//tesTerrain->setSpecularMap("iceland_spec");
-	//tesTerrain->setNormalMap("iceland_normal");  // obligatorio usar un mapa de normales por el momento
-	//tesTerrain->setPosition({ 0,-20,0 });
-	//tesTerrain->setCamera(m_camera);
-	//tesTerrain->setPolygonMode(GL_FILL, GL_LINE);
-	//AddEntity(tesTerrain);
+	TessTerrain* tesTerrain = new TessTerrain(9, 14, 80, 80); //patches de 80x80uds
+	tesTerrain->setTexture("iceland");
+	tesTerrain->setHeightMap("iceland_height", 25.0f);
+	tesTerrain->setSpecularMap("iceland_spec");
+	tesTerrain->setNormalMap("iceland_normal");  // obligatorio usar un mapa de normales por el momento
+	tesTerrain->setPosition({ 0,-20,0 });
+	tesTerrain->setCamera(m_camera);
+	tesTerrain->setPolygonMode(GL_FILL, GL_LINE);
+	AddEntity(tesTerrain);
 
 	// Información de Debug
 	Entity* debugTxt = new Entity("DebugText");
@@ -259,7 +259,7 @@ void PruebaScene::init()
 	// Componente GM
 	GameManager* gmComponent = new GameManager(this, m_camera, botonesMenu, torre);
 	gmComponent->setLights(dirLight, circleLight, spotLight, luzBlinn);
-	//gmComponent->setTessTerrain(tesTerrain);
+	gmComponent->setTessTerrain(tesTerrain);
 	gmComponent->setParticleSys(particleSys);
 	gm->addComponent(gmComponent);
 	// Componente CameraController
@@ -449,12 +449,12 @@ void PruebaScene::PruebaMateriales()
 	//AddEntity(oldTer);
 
 	// Terreno Islandia
-	Terrain* terrain = new Terrain();
-	terrain->loadHeightMap(ResourceManager::TEXTURES_PATH + "iceland_height.bmp", 2.0);
-	terrain->setTexture("iceland");
-	terrain->setShader("lights");
-	terrain->setPosition({ 0,-20,0 });
-	AddEntity(terrain);
+	//Terrain* terrain = new Terrain();
+	//terrain->loadHeightMap(ResourceManager::TEXTURES_PATH + "iceland_height.bmp", 2.0);
+	//terrain->setTexture("iceland");
+	//terrain->setShader("lights");
+	//terrain->setPosition({ 0,-20,0 });
+	//AddEntity(terrain);
 
 
 	// Mar de la isla

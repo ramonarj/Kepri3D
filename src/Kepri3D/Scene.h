@@ -66,6 +66,8 @@ public:
 	/* Cambia entre el modelo Phong y el Blinn-Phong */
 	inline void switchBlinnPhong() { blinn = !blinn; }
 
+	void toggleShadows();
+
 	// Para ser accesibles desde callbacks
 	static bool skyboxActive;
 	static bool mipmapsActive;
@@ -116,26 +118,30 @@ protected:
 	// Shadow mapping
 	const unsigned int SHADOW_WIDTH = 1024, SHADOW_HEIGHT = 1024;
 	Framebuffer* m_shadowFB;
+	Shader* defaultSh;
 	Shader* m_shadowComp;
 	glm::dmat4 lightView, lightProj;
 	float nearPlane, farPlane;
+	float distOrigen = 75.0f;
 
 private:
 	// Sub-métodos del render() para que sea más legible
 	void loadLights();
-	void renderSkybox();
+	void renderShadowMaps();
 	void renderEntities();
 	void renderNormals();
 	void renderCanvas();
+	void renderSkybox();
 	void renderEffects();
-	void shadowPass();
 
 	/* Manda todos los uniforms necesarios al shader de la entidad dada */
 	void sendUniforms(Shader* sh);
 	void sendUniformBlocks();
+	void debugShadowMap();
 
 	// Modelo de iluminación. 0 = Phong, 1 = Blinn-phong
 	bool blinn = false;
+	bool shadowsEnabled = true;
 };
 
 #endif

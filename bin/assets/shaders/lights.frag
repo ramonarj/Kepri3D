@@ -145,7 +145,7 @@ void main()
 	if(receive_shadows)
 	{
 		float sombra = 1.0 - ShadowCalculation(shadowMap, data_in.FragPosLightSpace);
-		FragColor = vec4(color * sombra + ambColor, 1.0); // si quitamos el ambient, la sombra es totalmente negra
+		FragColor = vec4(color * min(1.0, sombra + 0.25), 1.0); // si quitamos el ambient, la sombra es totalmente negra
 	}
 	// Sombreado normal
 	else

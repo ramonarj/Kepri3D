@@ -47,6 +47,8 @@ Scene::Scene() : m_canvas(nullptr), m_skybox(nullptr)
 	m_shadowFB = Framebuffer::createShadowMap(SHADOW_WIDTH, SHADOW_HEIGHT);
 
 	//
+	defaultSh = (Shader*)&ResourceManager::Instance()->getShader("default");
+	//
 	ResourceManager::Instance()->loadComposite("shadowDebug.frag", "shadowComp");
 	m_shadowComp = ((Shader*)&ResourceManager::Instance()->getComposite("shadowComp"));
 	m_shadowComp->use();
@@ -55,8 +57,8 @@ Scene::Scene() : m_canvas(nullptr), m_skybox(nullptr)
 	//
 	lightView = glm::lookAt(glm::vec3(10, 10, 0), glm::vec3(0.0f), glm::vec3(0.0, 1.0, 0.0));
 	//glm::dmat4 lightProj = m_camera->getProjMat();
-	nearPlane = 1.0; farPlane = 40.0f;
-	float ortoSize = 15.0f;
+	nearPlane = 1.0; farPlane = 100.0f;
+	float ortoSize = 50.0f;
 	lightProj = glm::ortho(-ortoSize, ortoSize, -ortoSize, ortoSize, nearPlane, farPlane);
 }
 
@@ -82,32 +84,28 @@ void Scene::render()
 	// 1) Cargar las luces; IMPORTANTE hacerlo antes de pintar los objetos a los que puedan iluminar
 	loadLights();
 
-	// Fabricar los mapas de sombras
-	shadowPass();
+	// 2) Fabricar los mapas de profundidad de las luces
+	renderShadowMaps();
+	//debugShadowMap();
 
-	// 2) Enviar uniforms comunes a todas las entidades (matrices y luces)
+	// 3) Enviar uniforms comunes a todas las entidades (matrices y luces)
 	sendUniformBlocks();
 
-	// 3) Pintar todas las entidades activas
+	// 4) Pintar todas las entidades activas
 	renderEntities();
 
-	// 4) Pintar los vectores normales, si están activos
+	// 5) Pintar los vectores normales, si están activos
 	renderNormals();
 
-	// 5) Pintar el canvas
+	// 6) Pintar el canvas
 	renderCanvas();
 
-	// 6) Pintar el skybox, si lo hay
+	// 7) Pintar el skybox, si lo hay
 	renderSkybox();
 
-	// 6.5)Los objetos transparentes irían aquí
-	//m_shadowComp->use();
-	//m_shadowComp->setFloat("near_plane", nearPlane);
-	//m_shadowComp->setFloat("far_plane", farPlane);
-	//m_shadowFB->bindTexture();
-	//m_effectsMesh->draw();
+	// 7.5)Los objetos transparentes irían aquí
 
-	// 7) Post-procesar la imagen del color buffer
+	// 8) Post-procesar la imagen del color buffer
 	renderEffects();
 
 	// 8) Hacer swap de buffers
@@ -124,13 +122,22 @@ void Scene::loadLights()
 			l->load(m_camera->getViewMat());
 }
 
-void Scene::shadowPass()
+void Scene::debugShadowMap()
+{
+	m_shadowComp->use();
+	m_shadowComp->setFloat("near_plane", nearPlane);
+	m_shadowComp->setFloat("far_plane", farPlane);
+	m_shadowFB->bindTexture();
+	m_effectsMesh->draw();
+}
+
+void Scene::renderShadowMaps()
 {
 	// 1) Actualizar la matriz de vista y ponerla donde la luz
 	// Luces direccionales
 	glm::vec3 origen = { 0, 0, 0 };
 	glm::vec3 dirLuz = m_lights[0]->getPosition();
-	lightView = glm::lookAt(origen + dirLuz * 20.0f, origen, glm::vec3(0.0, 1.0, 0.0));
+	lightView = glm::lookAt(origen + dirLuz * distOrigen, origen, glm::vec3(0.0, 1.0, 0.0));
 	//lightView = glm::lookAt({10, 10, 0}, origen, glm::vec3(0.0, 1.0, 0.0));
 
 	// Mandar el uniform
@@ -146,7 +153,6 @@ void Scene::shadowPass()
 	glClear(GL_DEPTH_BUFFER_BIT);
 	glDisable(GL_CULL_FACE);
 	//glCullFace(GL_FRONT);
-	Shader* defaultSh = (Shader*) & ResourceManager::Instance()->getShader("default");
 	defaultSh->use();
 	for (Entity* e : m_entities)
 	{
@@ -460,6 +466,13 @@ void Scene::resize(int width, int height)
 #ifdef __DEBUG_INFO__
 	fbSize = { width, height };
 #endif
+}
+
+void Scene::toggleShadows()
+{
+	shadowsEnabled = !shadowsEnabled;
+	for (Entity* e : m_entities)
+		e->castShadows(shadowsEnabled);
 }
 
 Scene::~Scene()

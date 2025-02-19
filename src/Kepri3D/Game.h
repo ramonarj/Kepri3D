@@ -63,6 +63,7 @@ public:
 
 	// Getters
 	inline Camera* getCamera() const { return camera; }
+	inline Scene* getScene() const { return scene; }
 
 	/* Activa/desactiva un parámetro booleano de OpenGL */
 	static void switchBoolParam(GLenum param);
