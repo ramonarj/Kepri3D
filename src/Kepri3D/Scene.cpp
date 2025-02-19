@@ -42,6 +42,30 @@ Scene::Scene() : m_canvas(nullptr), m_skybox(nullptr)
 	// Crear el UBO para las luces. Tamaño = 144 por temas de alineamiento
 	// 16 = viewPos + blinn | 120 = lo que ocupa una luz | 8 = relleno para que la siguiente luz empiece en múltiplo de 16
 	m_uboLuces = new Uniformbuffer(1, 16 + LIGHT_STRUCT_SIZE * MAX_LUCES);
+
+	// configure depth map FBO
+	// -----------------------
+	glGenFramebuffers(1, &depthMapFBO);
+	// create depth texture
+	glGenTextures(1, &depthMap);
+	glBindTexture(GL_TEXTURE_2D, depthMap);
+	glTexImage2D(GL_TEXTURE_2D, 0, GL_DEPTH_COMPONENT, SHADOW_WIDTH, SHADOW_HEIGHT, 0, GL_DEPTH_COMPONENT, GL_FLOAT, NULL);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+	// attach depth texture as FBO's depth buffer
+	glBindFramebuffer(GL_FRAMEBUFFER, depthMapFBO);
+	glFramebufferTexture2D(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_TEXTURE_2D, depthMap, 0);
+	glDrawBuffer(GL_NONE);
+	glReadBuffer(GL_NONE);
+	glBindFramebuffer(GL_FRAMEBUFFER, 0);
+
+	//
+	ResourceManager::Instance()->loadComposite("shadowDebug.frag", "shadowComp");
+	m_shadowComp = ((Shader*)&ResourceManager::Instance()->getComposite("shadowComp"));
+	m_shadowComp->use();
+	m_shadowComp->setInt("depthMap", 0);
 }
 
 void Scene::AddEntity(Entity* e, bool isTranslucid)
@@ -64,7 +88,10 @@ void Scene::render()
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
 	// 1) Cargar las luces; IMPORTANTE hacerlo antes de pintar los objetos a los que puedan iluminar
-	loadLights();
+	//loadLights();
+
+	// Fabricar los mapas de sombras
+	shadowPass();
 
 	// 2) Enviar uniforms comunes a todas las entidades (matrices y luces)
 	sendUniformBlocks();
@@ -82,6 +109,12 @@ void Scene::render()
 	renderSkybox();
 
 	// 6.5)Los objetos transparentes irían aquí
+	//float near_plane = 1.0f, far_plane = 7.5f;
+	//m_shadowComp->use();
+	//m_shadowComp->setFloat("near_plane", m_camera->getNearPlane());
+	//m_shadowComp->setFloat("far_plane", m_camera->getFarPlane());
+	//glBindTexture(GL_TEXTURE_2D, depthMap);
+	//m_effectsMesh->draw();
 
 	// 7) Post-procesar la imagen del color buffer
 	renderEffects();
@@ -98,6 +131,63 @@ void Scene::loadLights()
 	for (Light* l : m_lights)
 		if (l->isActive())
 			l->load(m_camera->getViewMat());
+}
+
+void Scene::shadowPass()
+{
+	glm::dvec3 camPos = m_camera->getPosition();
+	glm::dvec3 lightPos = m_lights[1]->getPosition();
+	glm::dmat4 view = glm::lookAt(glm::vec3(10, 10, 0), glm::vec3(0.0f), glm::vec3(0.0, 1.0, 0.0));
+	glm::dmat4 proj = m_camera->getProjMat();
+	//glm::dvec3 lightView = { 0, 5, 10 };
+	// 1) Actualizar la matriz de vista y ponerla donde la luz
+	m_uboMatrices->bind();
+	glBufferSubData(GL_UNIFORM_BUFFER, 0, sizeof(glm::dmat4), glm::value_ptr(proj));
+	glBufferSubData(GL_UNIFORM_BUFFER, sizeof(glm::dmat4), sizeof(glm::dmat4), glm::value_ptr(view));
+	Uniformbuffer::unbind();
+
+	///
+	//glm::mat4 lightProjection, lightView;
+	//glm::mat4 lightSpaceMatrix;
+	//float near_plane = 1.0f, far_plane = 7.5f;
+	//lightProjection = glm::ortho(-s10.0f, 10.0f, -10.0f, 10.0f, near_plane, far_plane);
+	//lightView = glm::lookAt(glm::vec3(-2.0f, 4.0f, -1.0f), glm::vec3(0.0f), glm::vec3(0.0, 1.0, 0.0));
+	//lightSpaceMatrix = lightProjection * lightView;
+
+	// Pintar todas las entidades activas
+	//m_shadow->use();
+	//m_shadow->setMat4("lightSpaceMatrix", lightSpaceMatrix);
+	glViewport(0, 0, SHADOW_WIDTH, SHADOW_HEIGHT);
+	glBindFramebuffer(GL_FRAMEBUFFER, depthMapFBO);
+	glClear(GL_DEPTH_BUFFER_BIT);
+	Shader* defaultSh = (Shader*) & ResourceManager::Instance()->getShader("default");
+	defaultSh->use();
+	for (Entity* e : m_entities)
+	{
+		if (e->isActive()) // && e->castShadows()
+		{
+			// Guardarnos su shader
+			Shader* shader = (Shader*)e->getShader();
+			// Ponerle uno barato y pintar
+			e->setShader(defaultSh);
+			sendUniforms(defaultSh);
+			e->render();
+			// Devolverle el suyo
+			e->setShader(shader);
+		}
+	}
+	// Valor predet.
+	glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+
+	// Volver al frameBuffer anterior
+	if (compositesActive) { msBuf->bind(); }
+	else { glBindFramebuffer(GL_FRAMEBUFFER, 0); }
+
+	// reset viewport
+	glViewport(0, 0, m_camera->getVP()->getW(), m_camera->getVP()->getH());
+	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+	// camera
+	m_camera->setPosition(camPos);
 }
 
 void Scene::renderSkybox()

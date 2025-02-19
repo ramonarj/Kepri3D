@@ -113,6 +113,12 @@ protected:
 	Uniformbuffer* m_uboMatrices;
 	Uniformbuffer* m_uboLuces;
 
+	// Shadow mapping
+	const unsigned int SHADOW_WIDTH = 1024, SHADOW_HEIGHT = 1024;
+	unsigned int depthMapFBO;
+	unsigned int depthMap;
+	Shader* m_shadowComp;
+
 private:
 	// Sub-métodos del render() para que sea más legible
 	void loadLights();
@@ -121,6 +127,7 @@ private:
 	void renderNormals();
 	void renderCanvas();
 	void renderEffects();
+	void shadowPass();
 
 	/* Manda todos los uniforms necesarios al shader de la entidad dada */
 	void sendUniforms(Shader* sh);
