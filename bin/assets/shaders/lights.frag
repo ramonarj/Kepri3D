@@ -43,6 +43,8 @@ in DATA
 	vec3 normals;
 	vec3 fragPos;
 	mat3 TBN;
+	// Para sombras
+	vec4 FragPosLightSpace;
 } data_in;
 
 // Obligatorio darle un valor al fragmento actual
@@ -64,22 +66,26 @@ uniform Material material;
 
 uniform sampler2D textura;
 uniform sampler2D normalMap;
+uniform sampler2D shadowMap;
 
 uniform bool use_diff_map;
 uniform bool use_spec_map;
 uniform bool use_normal_map;
+uniform bool receive_shadows;
 
 // Variables globales
 const float PI = 3.141593;
 vec3 diffColor;
 vec3 specColor;
+vec3 ambColor;
 
 // Prototipos para las funciones
 vec3 CalcDirLight(Light light, vec3 normal, vec3 viewDir);
 vec3 CalcPointLight(Light light, vec3 normal, vec3 viewDir);
 vec3 CalcSpotlight(Light light, vec3 normal, vec3 viewDir);
 float SpecFactor(vec3 lightDir, vec3 viewDir, vec3 normal, float brillo, bool useBlinn);
-
+float ShadowCalculation(sampler2D shMap, vec4 fragPosLightSpace);
+float LinearizeDepth(float depth, float near_plane, float far_plane);
 
 void main()
 {
@@ -91,6 +97,9 @@ void main()
 	// Usamos el valor del specular map / no
 	if(use_spec_map) { specColor = vec3(texture(material.specular_map, data_in.TexCoords)); }
 	else {specColor = material.specular; }
+	
+	// Color ambient
+	ambColor = material.ambient * diffColor;
 	
 	// Vector que va del fragmento a la cámara. NOTA: todos los vectores salen del fragmento (N, V, L, R...)
 	vec3 viewDir = normalize(camPos - data_in.fragPos);
@@ -128,7 +137,19 @@ void main()
 	}
 
 	// De momento no hay transparencias
-	FragColor = vec4(color, 1.0);
+	//FragColor = vec4(color, 1.0);
+	//float depthValue = texture(shadowMap, data_in.TexCoords).r;
+    //FragColor = vec4(vec3(LinearizeDepth(depthValue, 1.0, 200.0) / 200.0), 1.0); // perspective
+	
+	// La entidad recibe sombras del shadowmap
+	if(receive_shadows)
+	{
+		float sombra = 1.0 - ShadowCalculation(shadowMap, data_in.FragPosLightSpace);
+		FragColor = vec4(color * sombra + ambColor, 1.0); // si quitamos el ambient, la sombra es totalmente negra
+	}
+	// Sombreado normal
+	else
+		FragColor = vec4(color, 1.0);
 }
 
 /* Calcula la cantidad de luz que recibe el fragmento de una luz direccional */
@@ -138,7 +159,7 @@ vec3 CalcDirLight(Light light, vec3 normal, vec3 viewDir)
 	vec3 lightDir = normalize(light.dir);
 	
 	// - - Componentes ambient  y diffuse -- //
-	vec3 ambient = light.ambient * material.ambient * diffColor; // material.ambient ¿?
+	vec3 ambient = light.ambient * ambColor; // material.ambient ¿?
 	// Producto escalar de la normal con la dirección de la luz
 	float diff = max(dot(normal, lightDir), 0.0);
 	vec3 diffuse = light.diffuse * diff * diffColor;
@@ -168,7 +189,7 @@ vec3 CalcPointLight(Light light, vec3 normal, vec3 viewDir)
     float attenuation = 1.0 / (light.constant + light.linear * distance + light.quadratic * (distance * distance));    
 				 
     // Combinar los resultados
-	vec3 ambient = light.ambient * material.ambient * diffColor;
+	vec3 ambient = light.ambient * ambColor;
     vec3 diffuse  = light.diffuse  * diff * diffColor;
     vec3 specular = light.specular * spec * specColor;
 
@@ -211,7 +232,7 @@ vec3 CalcSpotlight(Light light, vec3 normal, vec3 viewDir)
     float attenuation = 1.0 / (light.constant + light.linear * distance + light.quadratic * (distance * distance));    
 				 
     // Combinar los resultados
-	vec3 ambient = light.ambient * material.ambient * diffColor;
+	vec3 ambient = light.ambient * ambColor;
     vec3 diffuse  = light.diffuse  * diff * diffColor;
 	vec3 specular = light.specular * spec * diff * specColor;
 	
@@ -241,4 +262,29 @@ float SpecFactor(vec3 lightDir, vec3 viewDir, vec3 normal, float brillo, bool us
 		spec = pow(max(dot(viewDir, reflectDir), 0.0), brillo);
 	}
 	return spec;
+}
+
+float ShadowCalculation(sampler2D shMap, vec4 fragPosLightSpace)
+{
+    // perform perspective divide
+    vec3 projCoords = fragPosLightSpace.xyz / fragPosLightSpace.w;
+    // transform to [0,1] range
+    projCoords = projCoords * 0.5 + 0.5;
+    // get closest depth value from light's perspective (using [0,1] range fragPosLight as coords)
+    float closestDepth = texture(shMap, projCoords.xy).r; 
+    // get depth of current fragment from light's perspective
+    float currentDepth = projCoords.z;
+	// para paliar el acné
+	float bias = 0.001;
+    // check whether current frag pos is in shadow
+    float shadow = currentDepth - bias > closestDepth  ? 1.0 : 0.0;
+
+    return shadow;
+} 
+
+// required when using a perspective projection matrix
+float LinearizeDepth(float depth, float near_plane, float far_plane)
+{
+    float z = depth * 2.0 - 1.0; // Back to NDC 
+    return (2.0 * near_plane * far_plane) / (far_plane + near_plane - z * (far_plane - near_plane));	
 }

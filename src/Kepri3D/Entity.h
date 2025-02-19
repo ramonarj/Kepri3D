@@ -125,6 +125,11 @@ public:
 	template<typename T>
 	T* getComponent();
 
+	// Sombras
+	inline void castShadows(bool b) { m_castShadows = b; }
+	inline void receiveShadows(bool b) { m_receiveShadows = b; }
+	inline bool castShadows() const { return m_castShadows; }
+
 private:
 	/* Establece los valores por defecto de la entidad */
 	void defaultValues();
@@ -168,6 +173,10 @@ protected:
 	/* Forma en que debe pintarse */
 	GLenum m_polyModeFront;
 	GLenum m_polyModeBack;
+
+	/* Sombras (si emite / recibe) */
+	bool m_receiveShadows;
+	bool m_castShadows;
 
 	// Métodos auxiliares
 	/* Manda las texturas al shader */

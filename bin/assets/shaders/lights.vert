@@ -13,6 +13,7 @@ layout (std140) uniform Matrices
     dmat4 view;
 };
 uniform dmat4 model;
+uniform dmat4 lightSpaceMatrix;
 
 // Para el siguiente shader
 out DATA
@@ -21,6 +22,8 @@ out DATA
 	vec3 normals;
 	vec3 fragPos;
 	mat3 TBN;
+	// Para sombras
+	vec4 FragPosLightSpace;
 } data_out;
 
 void main()
@@ -43,4 +46,7 @@ void main()
 	vec3 T = normalize(normalMatrix * aTangents);
 	vec3 B = normalize(cross(N, T));
 	data_out.TBN = mat3(T, B, N);
+	
+	// Posición del fragmento respecto a la luz
+	data_out.FragPosLightSpace = vec4(lightSpaceMatrix * model * vertex);
 }

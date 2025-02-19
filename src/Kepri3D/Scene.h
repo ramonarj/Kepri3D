@@ -115,8 +115,7 @@ protected:
 
 	// Shadow mapping
 	const unsigned int SHADOW_WIDTH = 1024, SHADOW_HEIGHT = 1024;
-	unsigned int depthMapFBO;
-	unsigned int depthMap;
+	Framebuffer* m_shadowFB;
 	Shader* m_shadowComp;
 
 private:

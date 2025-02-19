@@ -16,6 +16,7 @@ out DATA
 	vec3 normals;
 	vec3 fragPos;
 	mat3 TBN;
+	vec4 FragPosLightSpace;
 } data_out;
 
 // Uniform block

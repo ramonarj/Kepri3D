@@ -146,6 +146,7 @@ void PruebaScene::init()
 	cuboMT->setPosition({ -15, 0, 6 });
 	cuboMT->setTexture("lego");
 	cuboMT->setSecondTex("emoji");
+	cuboMT->castShadows(false);
 	AddEntity(cuboMT);
 
 	// Una caja con mapa especular
@@ -153,6 +154,7 @@ void PruebaScene::init()
 	cuboSpec->setPosition({ 0, 0, 5 });
 	cuboSpec->setTexture("caja");
 	cuboSpec->setSpecularMap("caja_spec");
+	cuboSpec->receiveShadows(false);
 	//cuboSpec->setMaterial("cromo");
 	AddEntity(cuboSpec);
 

@@ -60,6 +60,9 @@ void Entity::defaultValues()
 
 	m_polyModeFront = GL_FILL;
 	m_polyModeBack = GL_LINE;
+
+	m_receiveShadows = true;
+	m_castShadows = true;
 }
 
 void Entity::addComponent(Component* c)
@@ -139,7 +142,7 @@ void Entity::sendUniforms()
 	// Deshacer la posición de los hijos relativa al padre
 	glm::dmat4 model = modelMat;
 	Entity* parent = m_parent;
-	while(parent != nullptr)
+	while (parent != nullptr)
 	{
 		model = parent->modelMat * model;
 		parent = parent->m_parent;
@@ -151,6 +154,8 @@ void Entity::sendUniforms()
 	m_shader->setVec3("material.diffuse", m_material.getDiffuse());
 	m_shader->setVec3("material.specular", m_material.getSpecular());
 	m_shader->setFloat("material.brillo", m_material.getBrillo());
+	// Sombras
+	m_shader->setInt("receive_shadows", m_receiveShadows);
 }
 
 void Entity::update(GLuint deltaTime)
@@ -397,7 +402,7 @@ MovingGrid::MovingGrid(GLuint filas, GLuint columnas, GLdouble tamFila, GLdouble
 {
 	m_name = "MovingGrid";
 
-	setShader("movimiento");
+	setShader("lights");
 
 	velDisp = { -1, -1 };
 	velTex = { 2, 0 };

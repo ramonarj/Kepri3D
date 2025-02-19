@@ -6,6 +6,7 @@
 class Framebuffer
 {
 public:
+	Framebuffer(){}
 	Framebuffer(GLuint width, GLuint height, bool multisampling = true);
 	~Framebuffer();
 
@@ -17,6 +18,9 @@ public:
 
 	/* Desactiva el framebuffer, volviendo a dejar el predeterminado */
 	void bindTexture() { glBindTexture(GL_TEXTURE_2D, textureId); }
+
+	/* Crea un mapa de sombras con la resolución dada */
+	static Framebuffer* createShadowMap(unsigned int width, unsigned int height);
 
 private:
 	unsigned int id;
