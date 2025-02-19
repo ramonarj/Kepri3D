@@ -75,7 +75,7 @@ void PruebaScene::init()
 	Entity* estrella = new Entity("Estrella");
 	estrella->setMesh("star");
 	estrella->setTexture("star");
-	//estrella->setShader("lights");
+	estrella->setShader("default");
 	estrella->setPosition({ -5,2,-6 });
 	AddEntity(estrella);
 	estrella->addComponent(new RotationComp(1.0));
@@ -83,8 +83,8 @@ void PruebaScene::init()
 	// Redead del Zelda OoT
 	Entity* redead = new Entity("Redead");
 	redead->setMesh("redead");
-	redead->setTexture("redead");
 	redead->setMaterial("cristal");
+	redead->setTexture("redead");
 	redead->setShader("lights");
 	redead->setPosition({ -8,2,-6 });
 	AddEntity(redead);
@@ -128,8 +128,8 @@ void PruebaScene::init()
 	// Un cilindro
 	Cilindro* cilindro = new Cilindro(2, 4);
 	cilindro->setPosition({ 24,-0.9,-10 });
-	cilindro->setTexture("coke");
 	cilindro->setMaterial("cromo");
+	cilindro->setTexture("coke");
 	cilindro->setShader("lights");
 	AddEntity(cilindro);
 
@@ -142,20 +142,18 @@ void PruebaScene::init()
 	AddEntity(cuboMT);
 
 	// Una caja con mapa especular
-	CuboSpecmap* cuboSpec = new CuboSpecmap(2);
+	Cubo* cuboSpec = new Cubo(2);
+	cuboSpec->setName("CuboSpecmap");
 	cuboSpec->setPosition({ 0, 0, 5 });
 	cuboSpec->setTexture("caja");
 	cuboSpec->setSpecularMap("caja_spec");
-	//cuboSpec->receiveShadows(false);
-	//cuboSpec->setMaterial("cromo");
+	cuboSpec->setShader("lights");
 	AddEntity(cuboSpec);
 
 	// Hierba
-	Hierba* hierba = new Hierba(2.5, 3);
+	Hierba* hierba = new Hierba(2.5, 3, "hierba");
 	hierba->setPosition({ 15, 0.5, 5 });
 	hierba->rotate(-PI / 2, { 0, 1, 0 }, GLOBAL);
-	hierba->setTexture("hierba");
-	//hierba->setShader("lights");
 	hierba->addComponent(new RotationComp(0.75));
 	AddEntity(hierba);
 
@@ -382,9 +380,10 @@ void PruebaScene::PruebaMateriales()
 
 	// Cubo de orientación (distintas texturas)
 	Cubo* c2 = new Cubo(2, false);
-	c2->setTexture("orientacion");
 	c2->setMaterial("fluorescente");
+	c2->setTexture("orientacion");
 	c2->setPosition({ -5,0,0 });
+	c2->setShader("default");
 	AddEntity(c2);
 
 	// Cubo default
@@ -395,7 +394,7 @@ void PruebaScene::PruebaMateriales()
 
 	// Cubo de cromo
 	Cubo* cuboCromo = new Cubo(2);
-	cuboCromo->setMaterial("cromo");
+	//cuboCromo->setMaterial("cromo");
 	cuboCromo->setPosition({ 5,0,0 });
 	AddEntity(cuboCromo);
 
@@ -477,10 +476,12 @@ void PruebaScene::PruebaMateriales()
 	//AddEntity(miniTer);
 
 	// Pared de ladrillos (normal maps)
-	NormalMapWall* pared = new NormalMapWall(1, 1, 15, 15);
+	Grid* pared = new Grid(1, 1, 15, 15);
+	pared->setName("NormalMapWall");
+	pared->setMaterial("cromo");
 	pared->setTexture("wall");
 	pared->setNormalMap("wall_normal");
-	pared->setMaterial("cromo");
+	pared->setShader("lights");
 	pared->setPosition({ -5,6.5,-15 });
 	pared->rotate(PI / 2, { 1,0,0 });
 	//pared->addComponent(new RotationComp(0.5));
@@ -495,14 +496,10 @@ void PruebaScene::PruebaMateriales()
 	//pared2->addComponent(new RotationComp(0.5));
 	AddEntity(pared2);
 
-	//pared->rotate(-PI / 2, { 1,0,0 });
-	//pared2->rotate(PI / 2, { 0,1,0 });
-
-
 	// Plano para iluminación Blinn-Phong
 	Grid* plano = new Grid(1, 1, 30, 30);
-	plano->setTexture("cobre");
 	plano->setMaterial("blinn");
+	plano->setTexture("cobre");
 	plano->setShader("lights");
 	plano->setPosition({ 60,0,-40 });
 	AddEntity(plano);

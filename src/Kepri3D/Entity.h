@@ -13,8 +13,6 @@ class Component;
 #include <iostream>
 #include "Utils.h"
 
-const unsigned int NUM_TEXTURES = 7;
-
 class Entity
 {
 public:
@@ -156,14 +154,6 @@ protected:
 	(traslaciones, rotaciones, escalados) hechas a la entidad */
 	glm::dmat4 modelMat;
 
-	/* Texturas utilizada por la entidad */
-	// 0 = Textura Principal
-	// 1 = Textura Secundaria
-	// 2 = Specular Map
-	// 3 = Normal Map
-	// 4 = Displacement Map
-	Texture* m_textures[NUM_TEXTURES];
-
 	/* Material usado por la entidad */
 	Material m_material;
 
@@ -178,13 +168,7 @@ protected:
 	bool m_receiveShadows;
 	bool m_castShadows;
 
-	// Métodos auxiliares
-	/* Manda las texturas al shader */
-	void bindTextures();
-	/* Limpia los atributos */
-	void unbindTextures();
-
-	/* Manda la información del material al shader */
+	/* Manda la información de la entidad al shader */
 	void sendUniforms();
 };
 
@@ -262,20 +246,6 @@ public:
 	~Grid() { };
 };
 
-class MovingGrid : public Grid
-{
-public:
-	MovingGrid(GLuint filas, GLuint columnas, GLdouble tamFila, GLdouble tamColumna);
-	~MovingGrid() { };
-	void render() override;
-
-	void setSpeeds(glm::vec2 texSpeed, glm::vec2 dispSpeed) { velTex = texSpeed; velDisp = dispSpeed; }
-private:
-	glm::vec2 velTex;
-	// Útil para simular la dirección y fuerza del viento en la superficie del agua
-	glm::vec2 velDisp;
-};
-
 // - - - - - - - - - - - - 
 
 class Terrain : public Entity
@@ -320,6 +290,22 @@ private:
 
 // - - - - - - - - - - - - 
 
+class MovingGrid : public Grid
+{
+public:
+	MovingGrid(GLuint filas, GLuint columnas, GLdouble tamFila, GLdouble tamColumna);
+	~MovingGrid() { };
+	void render() override;
+
+	void setSpeeds(glm::vec2 texSpeed, glm::vec2 dispSpeed) { velTex = texSpeed; velDisp = dispSpeed; }
+private:
+	glm::vec2 velTex;
+	// Útil para simular la dirección y fuerza del viento en la superficie del agua
+	glm::vec2 velDisp;
+};
+
+// - - - - - - - - - - - - 
+
 class CuboMultitex : public Entity
 {
 public:
@@ -331,31 +317,15 @@ public:
 
 // - - - - - - - - - - - - 
 
-class CuboSpecmap : public Entity
-{
-public:
-	CuboSpecmap(GLdouble size);
-	~CuboSpecmap() { };
-};
-
-// - - - - - - - - - - - - 
-
 class Hierba : public Entity
 {
 public:
-	Hierba(GLdouble widh, GLdouble height);
+	Hierba(GLdouble widh, GLdouble height, const std::string& textureID);
 	~Hierba() { };
 
 	void render(glm::dmat4 const& viewMat) override;
-};
-
-// - - - - - - - - - - - - 
-
-class NormalMapWall : public Entity
-{
-public:
-	NormalMapWall(GLuint filas, GLuint columnas, GLdouble tamFila, GLdouble tamColumna);
-	~NormalMapWall() { };
+private:
+	Texture* texture;
 };
 
 // - - - - - - - - - - - - 

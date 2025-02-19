@@ -4,6 +4,11 @@
 #include <glm.hpp>
 #include <glew.h>
 
+class Shader;
+class Texture;
+
+const unsigned int NUM_TEXTURES = 7;
+
 class Material
 {
 public: 
@@ -12,8 +17,15 @@ public:
 	Material(glm::fvec4 ambient, glm::fvec4 diffuse, glm::fvec4 specular,
 		glm::fvec4 emission = { 0, 0, 0, 1 }, GLfloat brillo = 0);
 
-	/* Carga el material */
+	/* Carga el material en la Fixed Pipeline */
 	virtual void load();
+
+	// Lo mismo pero con shaders
+	void loadToShader(Shader* sh);
+	/* Limpia los atributos */
+	void unload();
+
+	inline void setTexture(unsigned int i, Texture* tex) { m_textures[i] = tex; }
 
 	// Setters
 	/* Indica el tipo de sombreado que se usará para TODOS los materiales */
@@ -32,11 +44,9 @@ public:
 	/* Devuelve el brillo especular del material (0 - 128)*/
 	inline GLfloat getBrillo() const { return m_brillo; }
 private:
-	/* Componente ambiente del material */
+	/* Componentes del material */
 	glm::fvec4 m_ambient;
-	/* Componente difusa del material */
 	glm::fvec4 m_diffuse;
-	/* Componente especular del material */
 	glm::fvec4 m_specular;
 
 	/* Exponente especular { 0 - 128 } */
@@ -50,6 +60,18 @@ private:
 
 	/* Tipo de sombreado para los materiales (compartido) */
 	static GLuint m_shading;
+
+	/* Texturas utilizadas por el material*/
+	// 0 = Textura Principal
+	// 1 = Textura Secundaria
+	// 2 = Specular Map
+	// 3 = Normal Map
+	// 4 = Displacement Map
+	Texture* m_textures[NUM_TEXTURES];
+
+	// Métodos auxiliares
+	/* Manda las texturas al shader */
+	void bindTextures(Shader* sh);
 };
 
 #endif

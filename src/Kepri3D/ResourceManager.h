@@ -85,7 +85,7 @@ public:
 	const Texture& getTexture(const std::string& id);
 
 	/* Devuelve un material dado */
-	const Material& getMaterial(const std::string& id);
+	const Material getMaterial(const std::string& id);
 
 	/* Devuelve un shader dado */
 	const Shader& getShader(const std::string& id);

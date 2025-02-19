@@ -2,14 +2,14 @@
 #include "Texture.h"
 
 #include "InputManager.h"
-
+#include "ResourceManager.h"
 
 Button::Button(const std::string& textureName, Canvas* canvas) : m_callback(nullptr)
 {
 	// Coger el tamaño en píxeles de la textura
-	setTexture(textureName);
-	width = m_textures[0]->getWidth();
-	height = m_textures[0]->getHeight();
+	texture = (Texture*)&ResourceManager::Instance()->getTexture(textureName);
+	width = texture->getWidth();
+	height = texture->getHeight();
 
 	// 
 	double aspectRatio = (double)canvas->getWidth() / canvas->getHeight();

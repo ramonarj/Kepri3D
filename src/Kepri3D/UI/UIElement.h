@@ -44,6 +44,9 @@ protected:
 	/* Dimensiones, en píxeles, que ocupa respecto al tamaño de referencia del canvas */
 	int width;
 	int height;
+
+	// Textura
+	Texture* texture;
 };
 
 #endif

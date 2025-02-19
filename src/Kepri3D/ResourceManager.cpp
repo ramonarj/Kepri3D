@@ -150,7 +150,7 @@ bool ResourceManager::loadMaterial(const std::string& materialName, const std::s
 	}
 }
 
-const Material& ResourceManager::getMaterial(const std::string& id)
+const Material ResourceManager::getMaterial(const std::string& id)
 {
 	// Si no se encuentra el material dado, se devuelve el predeterminado
 	if (materials.find(id) != materials.end())

@@ -5,7 +5,7 @@
 
 #include <gtc/type_ptr.hpp>
 
-UIElement::UIElement() : x(0), y(0), width(0), height(0), canvas(nullptr)
+UIElement::UIElement() : x(0), y(0), width(0), height(0), canvas(nullptr), texture(nullptr)
 {
 	// Para estar siempre visible por la cámara
 	setPosition({ 0, 0, -1.0001}); // tiene que coincir con -nearPlane
@@ -33,8 +33,8 @@ void UIElement::setScaleUI(float x, float y)
 void UIElement::render(glm::dmat4 const& viewMat)
 {
 	// 1) Renderizarme yo mismo
-	if(m_textures[0] != nullptr)
-		m_textures[0]->bind(GL_REPLACE); // a los elementos del canvas NO les afecta la iluminación (no usamos MODULATE)
+	if(texture != nullptr)
+		texture->bind(GL_REPLACE); // a los elementos del canvas NO les afecta la iluminación (no usamos MODULATE)
 
 	// Cargar la matriz de modelado
 	glMatrixMode(GL_MODELVIEW);
@@ -44,8 +44,8 @@ void UIElement::render(glm::dmat4 const& viewMat)
 	if (m_mesh != nullptr)
 		m_mesh->draw();
 
-	if (m_textures[0] != nullptr)
-		m_textures[0]->unbind();
+	if (texture != nullptr)
+		texture->unbind();
 
 	// 2) Renderizar mis hijos
 	for (Entity* e : m_children)

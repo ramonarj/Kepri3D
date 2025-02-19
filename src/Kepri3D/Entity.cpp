@@ -52,8 +52,7 @@ void Entity::defaultValues()
 	m_active = true;
 	m_parent = nullptr;
 	m_mesh = nullptr;
-	for (int i = 0; i < NUM_TEXTURES; i++)
-		m_textures[i] = nullptr;
+
 	// Pone la matriz de modelado a la matriz identidad de grado 4 (1 0 0 0 / 0 1 0 0 ...)
 	modelMat = (1.0);
 	m_shader = nullptr;
@@ -83,8 +82,8 @@ void Entity::render(glm::dmat4 const& viewMat)
 
 	// 1) Renderizar la propia entidad
 	// Activar la textura si la tiene
-	if (m_textures[0] != nullptr)
-		m_textures[0]->bind();
+	//if (m_textures[0] != nullptr) //TODO
+	//	m_textures[0]->bind();
 
 	// 1) Cargar la matriz V*M
 	// Decirle a OpenGL que la siguiente matriz que cargaremos es de modelado/vista (no de proyección)
@@ -99,8 +98,8 @@ void Entity::render(glm::dmat4 const& viewMat)
 		m_mesh->draw();
 
 	// Desactivar la textura si la tiene
-	if (m_textures[0] != nullptr)
-		m_textures[0]->unbind();
+	//if (m_textures[0] != nullptr)
+	//	m_textures[0]->unbind();
 
 
 	// 2) Renderizar sus hijos
@@ -115,18 +114,16 @@ void Entity::render()
 	glPolygonMode(GL_BACK, m_polyModeBack);
 
 	// 1) Renderizar la propia entidad
-	// Uniforms necesarios
+	// Cargar el material
+	m_material.loadToShader(m_shader);
+
+	// Dibujar la/s malla/s
 	sendUniforms();
-
-	// Enviar las texturas necesarias al shader
-	bindTextures();
-
-	// 2) Dibujar la/s malla/s
 	if (m_mesh != nullptr)
 		m_mesh->draw();
 
 	// Desactivar texturas
-	unbindTextures();
+	m_material.unload();
 
 	// 2) Renderizar sus hijos con el mismo shader dado
 	for (Entity* e : m_children)
@@ -149,11 +146,6 @@ void Entity::sendUniforms()
 	}
 
 	m_shader->setMat4d("model", model);
-	// Propiedades del material
-	m_shader->setVec3("material.ambient", m_material.getAmbient());
-	m_shader->setVec3("material.diffuse", m_material.getDiffuse());
-	m_shader->setVec3("material.specular", m_material.getSpecular());
-	m_shader->setFloat("material.brillo", m_material.getBrillo());
 	// Sombras
 	m_shader->setInt("receive_shadows", m_receiveShadows);
 }
@@ -252,33 +244,34 @@ void Entity::setShader(const std::string& shaderID)
 
 void Entity::setTexture(const std::string& textureID)
 {
-	m_textures[0] = (Texture*)&ResourceManager::Instance()->getTexture(textureID);
+	m_material.setTexture(0, (Texture*)&ResourceManager::Instance()->getTexture(textureID));
 }
 
 void Entity::setSecondTex(const std::string& textureID)
 {
-	m_textures[1] = (Texture*)&ResourceManager::Instance()->getTexture(textureID);
+	m_material.setTexture(1, (Texture*)&ResourceManager::Instance()->getTexture(textureID));
 }
 
 void Entity::setSpecularMap(const std::string& textureID)
 {
-	m_textures[2] = (Texture*)&ResourceManager::Instance()->getTexture(textureID);
+	m_material.setTexture(2, (Texture*)&ResourceManager::Instance()->getTexture(textureID));
 }
 
 void Entity::setNormalMap(const std::string& textureID)
 {
-	m_textures[3] = (Texture*)&ResourceManager::Instance()->getTexture(textureID);
+	m_material.setTexture(3, (Texture*)&ResourceManager::Instance()->getTexture(textureID));
+	static_cast<IndexMesh*>(m_mesh)->setTangents();
 }
 
 void Entity::setDisplacementMap(const std::string& textureID)
 {
-	m_textures[4] = (Texture*)&ResourceManager::Instance()->getTexture(textureID);
+	m_material.setTexture(4, (Texture*)&ResourceManager::Instance()->getTexture(textureID));
 }
 
 void Entity::enableReflections(const std::string& reflectionMapID, const std::string& cubemapID)
 {
-	m_textures[5] = (Texture*)&ResourceManager::Instance()->getTexture(reflectionMapID);
-	m_textures[6] = (Texture*)&ResourceManager::Instance()->getTexture(cubemapID);
+	m_material.setTexture(5, (Texture*)&ResourceManager::Instance()->getTexture(reflectionMapID));
+	m_material.setTexture(6, (Texture*)&ResourceManager::Instance()->getTexture(cubemapID));
 }
 
 
@@ -286,52 +279,6 @@ void Entity::setPolygonMode(GLenum front, GLenum back)
 {
 	m_polyModeFront = front;
 	m_polyModeBack = back;
-}
-
-void Entity::bindTextures()
-{
-	if (m_shader == nullptr)
-		return;
-	// Nombre que deben tener las respectivas variables 'sampler2D' del shader
-	std::string texNames[NUM_TEXTURES] = { "textura", "textura2", "material.specular_map", "normalMap", 
-		"dispMap", "reflectionMap", "skybox"};
-
-	// Activar cada textura existente
-	for(int i = 0; i < NUM_TEXTURES; i++)
-	{
-		if(m_textures[i] != nullptr)
-		{
-			glActiveTexture(GL_TEXTURE0 + i);
-			m_textures[i]->bind();
-			m_shader->setInt(texNames[i], i);
-		}
-	}
-
-	// Booleanos extra
-	if (m_textures[0] != nullptr)
-		m_shader->setInt("use_diff_map", true);
-	else
-		m_shader->setInt("use_diff_map", false);
-
-	if(m_textures[2] != nullptr)
-		m_shader->setInt("use_spec_map", true);
-	else 
-		m_shader->setInt("use_spec_map", false);
-
-	if (m_textures[3] != nullptr)
-		m_shader->setInt("use_normal_map", true);
-	else
-		m_shader->setInt("use_normal_map", false);
-}
-
-void Entity::unbindTextures()
-{
-	// El método Texture::unbind() debería ser estático, solo hay que llamarlo 1 vez
-	if (m_textures[0] != nullptr)
-	{
-		m_textures[0]->unbind();
-		glActiveTexture(GL_TEXTURE0);
-	}
 }
 
 
@@ -397,29 +344,7 @@ Grid::Grid(GLuint filas, GLuint columnas, GLdouble tamFila, GLdouble tamColumna)
 	m_name = "Grid";
 }
 
-MovingGrid::MovingGrid(GLuint filas, GLuint columnas, GLdouble tamFila, GLdouble tamColumna) : 
-	Grid(filas, columnas, tamFila, tamColumna)
-{
-	m_name = "MovingGrid";
-
-	setShader("lights");
-
-	velDisp = { -1, -1 };
-	velTex = { 2, 0 };
-}
-
-void MovingGrid::render()
-{
-	// Pasarle el tiempo y velocidad de desplazamiento al fragment shader
-	float t = glutGet(GLUT_ELAPSED_TIME);
-	m_shader->setFloat("tiempo", t / 10000.0f);
-	m_shader->setVec2("velTex", velTex);
-	m_shader->setVec2("velDisp", velDisp);
-
-	Entity::render();
-}
-
-// - - - - - - - - - - - - - - - - - 
+// - - - - - - - - - - - - - - - - 
 
 Terrain::Terrain()
 {
@@ -471,6 +396,30 @@ void Billboard::render()
 
 // - - - - - - - - - - - - - - - - - 
 
+MovingGrid::MovingGrid(GLuint filas, GLuint columnas, GLdouble tamFila, GLdouble tamColumna) :
+	Grid(filas, columnas, tamFila, tamColumna)
+{
+	m_name = "MovingGrid";
+
+	setShader("lights");
+
+	velDisp = { -1, -1 };
+	velTex = { 2, 0 };
+}
+
+void MovingGrid::render()
+{
+	// Pasarle el tiempo y velocidad de desplazamiento al fragment shader
+	float t = glutGet(GLUT_ELAPSED_TIME);
+	m_shader->setFloat("tiempo", t / 10000.0f);
+	m_shader->setVec2("velTex", velTex);
+	m_shader->setVec2("velDisp", velDisp);
+
+	Entity::render();
+}
+
+// - - - - - - - - - - - - - - - - - 
+
 CuboMultitex::CuboMultitex(GLdouble size)
 {
 	m_mesh = IndexMesh::generateCube(size, true);
@@ -488,20 +437,12 @@ void CuboMultitex::render()
 
 // - - - - - - - - - - - - - - - - - 
 
-CuboSpecmap::CuboSpecmap(GLdouble size) 
-{
-	m_mesh = IndexMesh::generateCube(size, true);
-	m_name = "CuboSpecmap";
-
-	setShader("lights");
-}
-
-// - - - - - - - - - - - - - - - - - 
-
-Hierba::Hierba(GLdouble width, GLdouble height)
+Hierba::Hierba(GLdouble width, GLdouble height, const std::string& textureID)
 {
 	m_mesh = IndexMesh::generateRectangle(width, height);
 	m_name = "Hierba";
+
+	texture = (Texture*)&ResourceManager::Instance()->getTexture(textureID);
 }
 
 void Hierba::render(glm::dmat4 const& viewMat)
@@ -515,8 +456,7 @@ void Hierba::render(glm::dmat4 const& viewMat)
 	glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
 
 	// Activar la textura si la tiene
-	if (m_textures[0] != nullptr)
-		m_textures[0]->bind();
+	texture->bind();
 
 	// Pintar los haces
 	if (m_mesh != nullptr)
@@ -539,8 +479,7 @@ void Hierba::render(glm::dmat4 const& viewMat)
 	}
 
 	// Desactivar la textura si la tiene
-	if (m_textures[0] != nullptr)
-		m_textures[0]->unbind();
+	texture->unbind();
 
 	if(cullActivado)
 		glEnable(GL_CULL_FACE);
@@ -548,18 +487,6 @@ void Hierba::render(glm::dmat4 const& viewMat)
 
 // - - - - - - - - - - - - - - - - - 
 
-NormalMapWall::NormalMapWall(GLuint filas, GLuint columnas, GLdouble tamFila, GLdouble tamColumna)
-{
-	IndexMesh* m = IndexMesh::generateGrid(filas, columnas, tamFila, tamColumna);
-	m->setTangents();
-	m_mesh = m;
-	m_name = "Wall";
-
-	setShader("lights");
-}
-
-
-// - - - - - - - - - - - - - - - - - 
 
 ClippableEntity::ClippableEntity()
 {
