@@ -117,6 +117,8 @@ protected:
 	const unsigned int SHADOW_WIDTH = 1024, SHADOW_HEIGHT = 1024;
 	Framebuffer* m_shadowFB;
 	Shader* m_shadowComp;
+	glm::dmat4 lightView, lightProj;
+	float nearPlane, farPlane;
 
 private:
 	// Sub-métodos del render() para que sea más legible

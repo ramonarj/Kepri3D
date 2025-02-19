@@ -55,14 +55,6 @@ void PruebaScene::init()
 	luzBlinn->setAttenuationFactors(0.3, 0.3, 0.02);
 	AddLight(luzBlinn);
 
-	// Luz turquesa
-	Light* luzSuelo = new Light(DIRECTIONAL_LIGHT);
-	luzSuelo->setDirection({ 0 ,1 , 0 });
-	luzSuelo->setDiffuse({ 0, 0.7, 0.7, 1.0 });
-	//luzSuelo->setAmbient({ 0, 0.05, 0.1, 0.0 });
-	AddLight(luzSuelo);
-
-
 	// ENTIDADES
 	// Ejes RGB
 	//m_entities.push_back(new EjesRGB(0.5));
@@ -154,7 +146,7 @@ void PruebaScene::init()
 	cuboSpec->setPosition({ 0, 0, 5 });
 	cuboSpec->setTexture("caja");
 	cuboSpec->setSpecularMap("caja_spec");
-	cuboSpec->receiveShadows(false);
+	//cuboSpec->receiveShadows(false);
 	//cuboSpec->setMaterial("cromo");
 	AddEntity(cuboSpec);
 
@@ -556,6 +548,13 @@ void PruebaScene::PruebaMateriales()
 	espejo->setShader("reflejos");
 	espejo->rotate(PI / 2.0, { 1, 0, 0 });
 	AddEntity(espejo);
+
+	// Prueba para sombras
+	Grid* tejado = new Grid(1, 1, 15, 15);
+	tejado->setTexture("cobre");
+	tejado->setPosition({ 0,10,0 });
+	tejado->setShader("lights");
+	AddEntity(tejado);
 }
 
 void PruebaScene::ViewportTest()

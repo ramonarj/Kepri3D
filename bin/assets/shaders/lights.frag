@@ -264,19 +264,31 @@ float SpecFactor(vec3 lightDir, vec3 viewDir, vec3 normal, float brillo, bool us
 	return spec;
 }
 
+/* Devuelve 0 si el fragmento no está en sombra, 1 si lo está */
 float ShadowCalculation(sampler2D shMap, vec4 fragPosLightSpace)
-{
-    // perform perspective divide
+{	
+    // División de perspectiva
     vec3 projCoords = fragPosLightSpace.xyz / fragPosLightSpace.w;
-    // transform to [0,1] range
+	
+    // Pasar de rango [-1, 1] a [0, 1]
     projCoords = projCoords * 0.5 + 0.5;
-    // get closest depth value from light's perspective (using [0,1] range fragPosLight as coords)
+	
+	// Si el fragmento está fuera de los límites del shadow map, no aplicamos sombra
+	if(projCoords.z > 1.0)
+        return 0.0;
+	
+    // Profundidad mínima desde la perspectiva de la luz [0, 1]
     float closestDepth = texture(shMap, projCoords.xy).r; 
-    // get depth of current fragment from light's perspective
+    // Profundidad de este fragmento visto desde la luz
     float currentDepth = projCoords.z;
-	// para paliar el acné
-	float bias = 0.001;
-    // check whether current frag pos is in shadow
+	
+	// calculate bias (based on depth map resolution and slope)
+    vec3 normal = normalize(data_in.normals);
+    vec3 lightDir = normalize(luces[0].dir - data_in.fragPos);
+	float maxBias = 0.02; float minBias = 0.008;
+	float bias = max(maxBias * (1.0 - dot(normal, lightDir)), minBias);
+	
+    // Comprobar si el fragmento está en sombra o no
     float shadow = currentDepth - bias > closestDepth  ? 1.0 : 0.0;
 
     return shadow;

@@ -51,6 +51,13 @@ Scene::Scene() : m_canvas(nullptr), m_skybox(nullptr)
 	m_shadowComp = ((Shader*)&ResourceManager::Instance()->getComposite("shadowComp"));
 	m_shadowComp->use();
 	m_shadowComp->setInt("depthMap", 0);
+
+	//
+	lightView = glm::lookAt(glm::vec3(10, 10, 0), glm::vec3(0.0f), glm::vec3(0.0, 1.0, 0.0));
+	//glm::dmat4 lightProj = m_camera->getProjMat();
+	nearPlane = 1.0; farPlane = 40.0f;
+	float ortoSize = 15.0f;
+	lightProj = glm::ortho(-ortoSize, ortoSize, -ortoSize, ortoSize, nearPlane, farPlane);
 }
 
 void Scene::AddEntity(Entity* e, bool isTranslucid)
@@ -94,11 +101,10 @@ void Scene::render()
 	renderSkybox();
 
 	// 6.5)Los objetos transparentes irían aquí
-	//float near_plane = 1.0f, far_plane = 7.5f;
 	//m_shadowComp->use();
-	//m_shadowComp->setFloat("near_plane", m_camera->getNearPlane());
-	//m_shadowComp->setFloat("far_plane", m_camera->getFarPlane());
-	//glBindTexture(GL_TEXTURE_2D, depthMap);
+	//m_shadowComp->setFloat("near_plane", nearPlane);
+	//m_shadowComp->setFloat("far_plane", farPlane);
+	//m_shadowFB->bindTexture();
 	//m_effectsMesh->draw();
 
 	// 7) Post-procesar la imagen del color buffer
@@ -120,12 +126,14 @@ void Scene::loadLights()
 
 void Scene::shadowPass()
 {
-	glm::dvec3 lightPos = m_lights[1]->getPosition();
-	glm::dmat4 lightView = glm::lookAt(glm::vec3(10, 10, 0), glm::vec3(0.0f), glm::vec3(0.0, 1.0, 0.0));
-	glm::dmat4 lightProj = m_camera->getProjMat();
-	//glm::dmat4 lightProj = glm::ortho(-10.0f, 10.0f, -10.0f, 10.0f, 1.0f, 200.0f);
-
 	// 1) Actualizar la matriz de vista y ponerla donde la luz
+	// Luces direccionales
+	glm::vec3 origen = { 0, 0, 0 };
+	glm::vec3 dirLuz = m_lights[0]->getPosition();
+	lightView = glm::lookAt(origen + dirLuz * 20.0f, origen, glm::vec3(0.0, 1.0, 0.0));
+	//lightView = glm::lookAt({10, 10, 0}, origen, glm::vec3(0.0, 1.0, 0.0));
+
+	// Mandar el uniform
 	m_uboMatrices->bind();
 	glBufferSubData(GL_UNIFORM_BUFFER, 0, sizeof(glm::dmat4), glm::value_ptr(lightProj));
 	glBufferSubData(GL_UNIFORM_BUFFER, sizeof(glm::dmat4), sizeof(glm::dmat4), glm::value_ptr(lightView));
@@ -133,11 +141,11 @@ void Scene::shadowPass()
 
 
 	// Pintar todas las entidades activas
-	//m_shadow->use();
-	//m_shadow->setMat4("lightSpaceMatrix", lightSpaceMatrix);
 	glViewport(0, 0, SHADOW_WIDTH, SHADOW_HEIGHT);
 	m_shadowFB->bind();
 	glClear(GL_DEPTH_BUFFER_BIT);
+	glDisable(GL_CULL_FACE);
+	//glCullFace(GL_FRONT);
 	Shader* defaultSh = (Shader*) & ResourceManager::Instance()->getShader("default");
 	defaultSh->use();
 	for (Entity* e : m_entities)
@@ -156,6 +164,8 @@ void Scene::shadowPass()
 	}
 	// Valor predet.
 	glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+	glEnable(GL_CULL_FACE);
+	//glCullFace(GL_BACK);
 
 	// Volver al frameBuffer anterior
 	if (compositesActive) { msBuf->bind(); }
@@ -381,8 +391,6 @@ void Scene::sendUniforms(Shader* sh)
 
 	// matriz luz
 	glm::dvec3 lightPos = m_lights[1]->getPosition();
-	glm::dmat4 lightView = glm::lookAt(glm::vec3(10, 10, 0), glm::vec3(0.0f), glm::vec3(0.0, 1.0, 0.0));
-	glm::dmat4 lightProj = m_camera->getProjMat();
 	glm::dmat4 lightSpaceMat = lightProj * lightView;
 	sh->setMat4d("lightSpaceMatrix", lightSpaceMat);
 

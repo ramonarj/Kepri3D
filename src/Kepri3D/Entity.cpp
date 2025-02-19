@@ -59,7 +59,7 @@ void Entity::defaultValues()
 	m_shader = nullptr;
 
 	m_polyModeFront = GL_FILL;
-	m_polyModeBack = GL_LINE;
+	m_polyModeBack = GL_FILL;
 
 	m_receiveShadows = true;
 	m_castShadows = true;
