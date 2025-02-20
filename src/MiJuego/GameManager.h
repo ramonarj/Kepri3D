@@ -51,6 +51,7 @@ private:
 	// Luces
 	GLuint totalTime = 0;
 	float sunVel = 0.15;
+	float lightVel = 0.5f;
 	bool movingLights = true;
 	// Partículas
 	GLdouble velTorre = 10.0f;

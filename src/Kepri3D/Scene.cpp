@@ -45,9 +45,11 @@ Scene::Scene() : m_canvas(nullptr), m_skybox(nullptr)
 
 	// Framebuffer con componente DEPTH para el shadow map
 	m_shadowFB = Framebuffer::createShadowMap(SHADOW_WIDTH, SHADOW_HEIGHT);
+	m_pointShadowFB = Framebuffer::createShadowMap(SHADOW_WIDTH, SHADOW_HEIGHT, true);
 
 	//
-	defaultSh = (Shader*)&ResourceManager::Instance()->getShader("default");
+	shadowSh = (Shader*)&ResourceManager::Instance()->getShader("shadows");
+	pointShadowSh = (Shader*)&ResourceManager::Instance()->getShader("shadows_point");
 	//
 	ResourceManager::Instance()->loadComposite("shadowDebug.frag", "shadowComp");
 	m_shadowComp = ((Shader*)&ResourceManager::Instance()->getComposite("shadowComp"));
@@ -85,7 +87,8 @@ void Scene::render()
 	loadLights();
 
 	// 2) Fabricar los mapas de profundidad de las luces
-	renderShadowMaps();
+	//renderShadowMaps();
+	renderPointShadows();
 	//debugShadowMap();
 
 	// 3) Enviar uniforms comunes a todas las entidades (matrices y luces)
@@ -95,18 +98,18 @@ void Scene::render()
 	renderEntities();
 
 	// 5) Pintar los vectores normales, si están activos
-	renderNormals();
+	//renderNormals();
 
 	// 6) Pintar el canvas
-	renderCanvas();
+	//renderCanvas();
 
 	// 7) Pintar el skybox, si lo hay
-	renderSkybox();
+	//renderSkybox();
 
 	// 7.5)Los objetos transparentes irían aquí
 
 	// 8) Post-procesar la imagen del color buffer
-	renderEffects();
+	//renderEffects();
 
 	// 8) Hacer swap de buffers
 	// Hay 2 buffers; uno se está mostrando por ventana, y el otro es el que usamos
@@ -153,7 +156,7 @@ void Scene::renderShadowMaps()
 	glClear(GL_DEPTH_BUFFER_BIT);
 	glDisable(GL_CULL_FACE);
 	//glCullFace(GL_FRONT);
-	defaultSh->use();
+	shadowSh->use();
 	for (Entity* e : m_entities)
 	{
 		// Comprobamos que la entidad emita sombras
@@ -162,7 +165,74 @@ void Scene::renderShadowMaps()
 			// Guardarnos su shader
 			Shader* shader = (Shader*)e->getShader();
 			// Ponerle uno barato y pintar
-			e->setShader(defaultSh);
+			e->setShader(shadowSh);
+			e->render();
+			// Devolverle el suyo
+			e->setShader(shader);
+		}
+	}
+	// Valor predet.
+	glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+	glEnable(GL_CULL_FACE);
+	//glCullFace(GL_BACK);
+
+	// Volver al frameBuffer anterior
+	if (compositesActive) { msBuf->bind(); }
+	else { glBindFramebuffer(GL_FRAMEBUFFER, 0); }
+
+	// reset viewport
+	glViewport(0, 0, m_camera->getVP()->getW(), m_camera->getVP()->getH());
+}
+
+void Scene::renderPointShadows()
+{
+	// 1) Actualizar la matriz de vista y ponerla donde la luz
+	glm::vec3 lightPos =  m_lights[1]->getPosition();
+	// Luces direccionales
+	float aspect = (float)SHADOW_WIDTH / (float)SHADOW_HEIGHT;
+	float nearPl = 1.0f;
+	float farPl = 25.0f;
+	glm::mat4 shadowProj = glm::perspective(glm::radians(90.0f), aspect, nearPl, farPl);
+
+	// Matrices de vista (1 por cada cara del cubemap). Der, Izq, Arr, Aba, Fre, Atr
+	std::vector<glm::mat4> shadowTransforms;
+	shadowTransforms.push_back(shadowProj *
+		glm::lookAt(lightPos, lightPos + glm::vec3(1.0, 0.0, 0.0), glm::vec3(0.0, -1.0, 0.0)));
+	shadowTransforms.push_back(shadowProj *
+		glm::lookAt(lightPos, lightPos + glm::vec3(-1.0, 0.0, 0.0), glm::vec3(0.0, -1.0, 0.0)));
+	shadowTransforms.push_back(shadowProj *
+		glm::lookAt(lightPos, lightPos + glm::vec3(0.0, 1.0, 0.0), glm::vec3(0.0, 0.0, 1.0)));
+	shadowTransforms.push_back(shadowProj *
+		glm::lookAt(lightPos, lightPos + glm::vec3(0.0, -1.0, 0.0), glm::vec3(0.0, 0.0, -1.0)));
+	shadowTransforms.push_back(shadowProj *
+		glm::lookAt(lightPos, lightPos + glm::vec3(0.0, 0.0, 1.0), glm::vec3(0.0, -1.0, 0.0)));
+	shadowTransforms.push_back(shadowProj *
+		glm::lookAt(lightPos, lightPos + glm::vec3(0.0, 0.0, -1.0), glm::vec3(0.0, -1.0, 0.0)));
+
+	// Mandar los uniforms
+	pointShadowSh->use();
+	for (int i = 0; i < 6; i++) {
+		pointShadowSh->setMat4("shadowMatrices[" + std::to_string(i) + "]", shadowTransforms[i]);
+	}
+	pointShadowSh->setVec3("lightPos", lightPos);
+	pointShadowSh->setFloat("far_plane", farPl);
+
+
+	// Pintar todas las entidades activas
+	glViewport(0, 0, SHADOW_WIDTH, SHADOW_HEIGHT);
+	m_pointShadowFB->bind();
+	glClear(GL_DEPTH_BUFFER_BIT);
+	glDisable(GL_CULL_FACE);
+	//glCullFace(GL_FRONT);
+	for (Entity* e : m_entities)
+	{
+		// Comprobamos que la entidad emita sombras
+		if (e->isActive() && e->castShadows())
+		{
+			// Guardarnos su shader
+			Shader* shader = (Shader*)e->getShader();
+			// Ponerle uno barato y pintar
+			e->setShader(pointShadowSh);
 			e->render();
 			// Devolverle el suyo
 			e->setShader(shader);
@@ -401,9 +471,16 @@ void Scene::sendUniforms(Shader* sh)
 	sh->setMat4d("lightSpaceMatrix", lightSpaceMat);
 
 	// pasarle el shadow map
+	// Direccional
 	glActiveTexture(GL_TEXTURE0 + 8);
 	m_shadowFB->bindTexture();
 	sh->setInt("shadowMap", 8);
+
+	// Puntual
+	glActiveTexture(GL_TEXTURE0 + 9);
+	m_pointShadowFB->bindTexture(GL_TEXTURE_CUBE_MAP);
+	sh->setInt("pointShadowMap", 9);
+
 
 	//// todo esto ahora se pasa con UBOs
 	//sh->setMat4d("view", m_camera->getViewMat());
@@ -511,4 +588,5 @@ Scene::~Scene()
 
 	// FB para shadow maps
 	delete m_shadowFB;
+	delete m_pointShadowFB;
 }

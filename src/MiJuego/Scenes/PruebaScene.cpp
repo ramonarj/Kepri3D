@@ -93,6 +93,7 @@ void PruebaScene::init()
 	Entity* peon = new Entity("Peon");
 	peon->setMesh("peon");
 	peon->setMaterial("cristal");
+	peon->setShader("lights");
 	peon->setPosition({ 0,0,-2 });
 	AddEntity(peon);
 

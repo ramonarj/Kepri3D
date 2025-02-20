@@ -114,20 +114,27 @@ protected:
 	/* Uniform Buffer Objects para uniforms comunes a muchos shaders (luces, cámara) */
 	Uniformbuffer* m_uboMatrices;
 	Uniformbuffer* m_uboLuces;
+	
+	// Sombras
+	Shader* m_shadowComp;
 
-	// Shadow mapping
+	// Shadow mapping (luz direccional)
+	Shader* shadowSh;
 	const unsigned int SHADOW_WIDTH = 1024, SHADOW_HEIGHT = 1024;
 	Framebuffer* m_shadowFB;
-	Shader* defaultSh;
-	Shader* m_shadowComp;
 	glm::dmat4 lightView, lightProj;
 	float nearPlane, farPlane;
 	float distOrigen = 75.0f;
+
+	// Shadow mapping (luz puntual)
+	Shader* pointShadowSh;
+	Framebuffer* m_pointShadowFB;
 
 private:
 	// Sub-métodos del render() para que sea más legible
 	void loadLights();
 	void renderShadowMaps();
+	void renderPointShadows();
 	void renderEntities();
 	void renderNormals();
 	void renderCanvas();

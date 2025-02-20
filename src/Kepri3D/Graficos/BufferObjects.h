@@ -17,10 +17,10 @@ public:
 	inline static void unbind() { glBindFramebuffer(GL_FRAMEBUFFER, 0); }
 
 	/* Desactiva el framebuffer, volviendo a dejar el predeterminado */
-	void bindTexture() { glBindTexture(GL_TEXTURE_2D, textureId); }
+	void bindTexture(GLenum target = GL_TEXTURE_2D) { glBindTexture(target, textureId); }
 
 	/* Crea un mapa de sombras con la resolución dada */
-	static Framebuffer* createShadowMap(unsigned int width, unsigned int height);
+	static Framebuffer* createShadowMap(unsigned int width, unsigned int height, bool omnidirectional = false);
 
 private:
 	unsigned int id;

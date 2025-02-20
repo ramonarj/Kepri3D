@@ -128,8 +128,8 @@ void GameManager::controlLuces(GLuint deltaTime)
 	}
 
 	// 2) Luz puntual (trayectoria circular)
-	if (movingLights)
-		circleLight->setPosition({ 15 * cos(totalTime / 1000.0f * 1.5), 1, 5 * sin(totalTime / 1000.0f * 1.5) });
+	//if (movingLights)
+	//	circleLight->setPosition({ 20 * cos(totalTime / 1000.0f * lightVel), 1, 8 * sin(totalTime / 1000.0f * lightVel) });
 
 	// 3) Luz direccional
 	// Parar el movimiento de luces
@@ -194,8 +194,8 @@ void GameManager::controlTorre(GLuint deltaTime)
 
 	// Mover la luz Blinn
 	movTorre = movTorre * velTorre * (deltaTime / 1000.0);
-	pSystem->translate(movTorre, GLOBAL);
-	//luzBlinn->setPosition(luzBlinn->getPosition() + glm::vec3(movTorre));
+	//pSystem->translate(movTorre, GLOBAL);
+	circleLight->setPosition(circleLight->getPosition() + glm::vec3(movTorre));
 }
 
 void GameManager::controlTerreno(GLuint deltaTime)
