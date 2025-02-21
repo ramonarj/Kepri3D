@@ -51,9 +51,9 @@ void PruebaScene::init()
 
 	// Nueva luz para el Blinn
 	Light* luzBlinn = new Light(POINT_LIGHT, { 0.4, 0.4, 0.3, 1 });
-	luzBlinn->setPosition({ 60, 4, -40 });
-	luzBlinn->setAttenuationFactors(0.3, 0.3, 0.02);
-	AddLight(luzBlinn);
+	//luzBlinn->setPosition({ 60, 4, -40 });
+	//luzBlinn->setAttenuationFactors(0.3, 0.3, 0.02);
+	//AddLight(luzBlinn);
 
 	// ENTIDADES
 	// Ejes RGB
@@ -494,6 +494,7 @@ void PruebaScene::PruebaMateriales()
 	pared2->setShader("lights");
 	pared2->setPosition({ 10,6.5,-15 });
 	pared2->rotate(PI / 2, { 1,0,0 });
+	//pared2->receiveShadows(false);
 	//pared2->addComponent(new RotationComp(0.5));
 	AddEntity(pared2);
 

@@ -87,7 +87,7 @@ void Scene::render()
 	loadLights();
 
 	// 2) Fabricar los mapas de profundidad de las luces
-	//renderShadowMaps();
+	renderShadowMaps();
 	renderPointShadows();
 	//debugShadowMap();
 
@@ -98,18 +98,18 @@ void Scene::render()
 	renderEntities();
 
 	// 5) Pintar los vectores normales, si están activos
-	//renderNormals();
+	renderNormals();
 
 	// 6) Pintar el canvas
-	//renderCanvas();
+	renderCanvas();
 
 	// 7) Pintar el skybox, si lo hay
-	//renderSkybox();
+	renderSkybox();
 
 	// 7.5)Los objetos transparentes irían aquí
 
 	// 8) Post-procesar la imagen del color buffer
-	//renderEffects();
+	renderEffects();
 
 	// 8) Hacer swap de buffers
 	// Hay 2 buffers; uno se está mostrando por ventana, y el otro es el que usamos
@@ -190,9 +190,7 @@ void Scene::renderPointShadows()
 	glm::vec3 lightPos =  m_lights[1]->getPosition();
 	// Luces direccionales
 	float aspect = (float)SHADOW_WIDTH / (float)SHADOW_HEIGHT;
-	float nearPl = 1.0f;
-	float farPl = 25.0f;
-	glm::mat4 shadowProj = glm::perspective(glm::radians(90.0f), aspect, nearPl, farPl);
+	glm::mat4 shadowProj = glm::perspective(glm::radians(90.0f), aspect, pointNearPl, pointFarPl);
 
 	// Matrices de vista (1 por cada cara del cubemap). Der, Izq, Arr, Aba, Fre, Atr
 	std::vector<glm::mat4> shadowTransforms;
@@ -215,7 +213,7 @@ void Scene::renderPointShadows()
 		pointShadowSh->setMat4("shadowMatrices[" + std::to_string(i) + "]", shadowTransforms[i]);
 	}
 	pointShadowSh->setVec3("lightPos", lightPos);
-	pointShadowSh->setFloat("far_plane", farPl);
+	pointShadowSh->setFloat("far_plane", pointFarPl);
 
 
 	// Pintar todas las entidades activas
@@ -474,12 +472,13 @@ void Scene::sendUniforms(Shader* sh)
 	// Direccional
 	glActiveTexture(GL_TEXTURE0 + 8);
 	m_shadowFB->bindTexture();
-	sh->setInt("shadowMap", 8);
+	sh->setInt("shadowMap.directionalMap", 8);
 
 	// Puntual
 	glActiveTexture(GL_TEXTURE0 + 9);
 	m_pointShadowFB->bindTexture(GL_TEXTURE_CUBE_MAP);
-	sh->setInt("pointShadowMap", 9);
+	sh->setInt("shadowMap.pointMap", 9);
+	sh->setFloat("shadowMap.far_plane", pointFarPl);
 
 
 	//// todo esto ahora se pasa con UBOs

@@ -34,6 +34,14 @@ struct Light
 	bool on;
 };
 
+// Shadow maps
+struct Shadowmap
+{
+	sampler2D directionalMap;
+	samplerCube pointMap;
+	float far_plane;
+};
+
 // - - - - - - - - - - - - - - - - - -  - - - - - - - - - - - - - - - //
 
 // Variables que nos llegan desde el shader anterior
@@ -61,10 +69,7 @@ layout (std140) uniform Lights
 	Light luces[MAX_LIGHTS];
 };
 
-// Shadow maps
-uniform sampler2D shadowMap;
-uniform samplerCube pointShadowMap;
-uniform float far_plane = 25.0f;
+uniform Shadowmap shadowMap;
 
 // - - Material - - //
 uniform Material material;
@@ -88,8 +93,8 @@ vec3 CalcDirLight(Light light, vec3 normal, vec3 viewDir);
 vec3 CalcPointLight(Light light, vec3 normal, vec3 viewDir);
 vec3 CalcSpotlight(Light light, vec3 normal, vec3 viewDir);
 float SpecFactor(vec3 lightDir, vec3 viewDir, vec3 normal, float brillo, bool useBlinn);
-float ShadowCalculation(sampler2D shMap, vec4 fragPosLightSpace);
-float PointShadowCalculation(samplerCube shMap, vec3 fragPos);
+float ShadowCalculation(Shadowmap shMap, vec4 fragPosLightSpace);
+float PointShadowCalculation(Shadowmap shMap, vec3 fragPos);
 float LinearizeDepth(float depth, float near_plane, float far_plane);
 
 void main()
@@ -125,39 +130,42 @@ void main()
 	else
 		normal = normalize(data_in.normals);
 
-	// 2) Iteramos todas las luces y vamos sumando el color que aportan al fragmento
-	vec3 color = vec3(0.0);
-	for(int i = 1; i < 2; i++)
+	// 2) Iteramos todas las luces y vamos sumando el color que aportan al fragmento.
+	vec3 colorTotal = vec3(0.0);
+	for(int i = 0; i < MAX_LIGHTS; i++)
 	{
 		// Está apagada
 		if(!luces[i].on)
 			continue;
+		vec3 color = vec3(0,0,0);
 		// 0 = Direccionales, 1 = Puntuales, 2 = Focos
 		if(luces[i].type == 0)
-			color += CalcDirLight(luces[i], normal, viewDir);
+		{
+			color = CalcDirLight(luces[i], normal, viewDir);
+			// La entidad recibe sombras del shadowmap
+			if(receive_shadows)
+			{
+				float sombra = 1.0 - ShadowCalculation(shadowMap, data_in.FragPosLightSpace);
+				color *= min(1.0, sombra + 0.25); // si quitamos el ambient, la sombra es totalmente negra
+			}
+		}
 		else if(luces[i].type == 1)
-			color += CalcPointLight(luces[i], normal, viewDir);
+		{
+			color = CalcPointLight(luces[i], normal, viewDir);
+			if(receive_shadows)
+			{
+				float sombra = 1.0 - PointShadowCalculation(shadowMap, data_in.fragPos);
+				color *= min(1.0, sombra + 0.25);
+			}
+		}
 		else if(luces[i].type == 2)
-			color += CalcSpotlight(luces[i], normal, viewDir);
+			color = CalcSpotlight(luces[i], normal, viewDir);
+		
+		colorTotal += color;
 	}
 
 	// De momento no hay transparencias
-	//FragColor = vec4(color, 1.0);
-	//float depthValue = texture(shadowMap, data_in.TexCoords).r;
-    //FragColor = vec4(vec3(LinearizeDepth(depthValue, 1.0, 200.0) / 200.0), 1.0); // perspective
-	
-	// La entidad recibe sombras del shadowmap
-	if(receive_shadows)
-	{
-		// Direccionales
-		//float sombra = 1.0 - ShadowCalculation(shadowMap, data_in.FragPosLightSpace);
-		// Puntuales
-		float sombra = 1.0 - PointShadowCalculation(pointShadowMap, data_in.fragPos);
-		FragColor = vec4(color * min(1.0, sombra + 0.25), 1.0); // si quitamos el ambient, la sombra es totalmente negra
-	}
-	// Sombreado normal
-	else
-		FragColor = vec4(color, 1.0);
+	FragColor = vec4(colorTotal, 1.0);
 }
 
 /* Calcula la cantidad de luz que recibe el fragmento de una luz direccional */
@@ -273,7 +281,7 @@ float SpecFactor(vec3 lightDir, vec3 viewDir, vec3 normal, float brillo, bool us
 }
 
 /* Devuelve 0 si el fragmento no está en sombra, 1 si lo está */
-float ShadowCalculation(sampler2D shMap, vec4 fragPosLightSpace)
+float ShadowCalculation(Shadowmap shMap, vec4 fragPosLightSpace)
 {	
     // División de perspectiva
     vec3 projCoords = fragPosLightSpace.xyz / fragPosLightSpace.w;
@@ -286,7 +294,7 @@ float ShadowCalculation(sampler2D shMap, vec4 fragPosLightSpace)
         return 0.0;
 	
     // Profundidad mínima desde la perspectiva de la luz [0, 1]
-    float closestDepth = texture(shMap, projCoords.xy).r; 
+    float closestDepth = texture(shMap.directionalMap, projCoords.xy).r; 
     // Profundidad de este fragmento visto desde la luz
     float currentDepth = projCoords.z;
 	
@@ -303,15 +311,20 @@ float ShadowCalculation(sampler2D shMap, vec4 fragPosLightSpace)
 } 
 
 // Para luces puntuales
-float PointShadowCalculation(samplerCube shMap, vec3 fragPos)
+float PointShadowCalculation(Shadowmap shMap, vec3 fragPos)
 {	
 	vec3 lightPos = luces[1].dir;
     // get vector between fragment position and light position
     vec3 fragToLight = fragPos - lightPos;
+	
+	// Si el fragmento está fuera de los límites del shadow map, no aplicamos sombra
+	if(length(fragToLight) > shMap.far_plane)
+		return 0.0;
+	
     // use the light to fragment vector to sample from the depth map    
-    float closestDepth = texture(shMap, fragToLight).r;
+    float closestDepth = texture(shMap.pointMap, fragToLight).r;
     // it is currently in linear range between [0,1]. Re-transform back to original value
-    closestDepth *= 25.0f;
+    closestDepth *= shMap.far_plane;
     // now get current linear depth as the length between the fragment and light position
     float currentDepth = length(fragToLight);
     // now test for shadows

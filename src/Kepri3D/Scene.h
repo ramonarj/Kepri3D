@@ -129,6 +129,8 @@ protected:
 	// Shadow mapping (luz puntual)
 	Shader* pointShadowSh;
 	Framebuffer* m_pointShadowFB;
+	float pointNearPl = 1.0f;
+	float pointFarPl = 50.0f;
 
 private:
 	// Sub-métodos del render() para que sea más legible
