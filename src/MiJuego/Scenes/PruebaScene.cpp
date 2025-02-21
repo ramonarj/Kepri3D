@@ -84,7 +84,7 @@ void PruebaScene::init()
 	// Redead del Zelda OoT
 	Entity* redead = new Entity("Redead");
 	redead->setMesh("redead");
-	redead->setMaterial("cristal");
+	redead->setMaterial("fluorescente");
 	redead->setTexture("redead");
 	redead->setShader("lights");
 	redead->setPosition({ -8,2,-6 });
@@ -325,7 +325,7 @@ void PruebaScene::loadResources()
 
 	// Texturas del terreno
 	//ResourceManager::Instance()->loadTexture("iceland.bmp", "iceland", { 4, 65, 137 });
-	ResourceManager::Instance()->loadTexture("iceland.bmp", "iceland");
+	ResourceManager::Instance()->loadTexture("iceland.bmp", "iceland", { 4, 65, 137 });
 	ResourceManager::Instance()->loadTexture("iceland_height_highres.png", "iceland_height", 255, GL_RGBA);
 	ResourceManager::Instance()->loadTexture("iceland_normal.png", "iceland_normal", 255, GL_RGBA);
 	ResourceManager::Instance()->loadTexture("iceland_spec.png", "iceland_spec");
@@ -348,6 +348,7 @@ void PruebaScene::loadResources()
 	ResourceManager::Instance()->loadMaterial("fluorescente.material", "fluorescente");
 	ResourceManager::Instance()->loadMaterial("blinn.material", "blinn");
 	ResourceManager::Instance()->loadMaterial("oceano.material", "oceano");
+	ResourceManager::Instance()->loadMaterial("emerald.material", "emerald");
 
 	// Prueba excepciones
 	ResourceManager::Instance()->loadTexture("ladrillo.bmp", "ladrillo");
@@ -373,12 +374,6 @@ void PruebaScene::loadResources()
 
 void PruebaScene::PruebaMateriales()
 {
-	// Cubo con la misma textura en todas las caras
-	Cubo* c = new Cubo(2);
-	c->setTexture("caja");
-	c->setPosition({ -10,0,0 });
-	c->setShader("lights");
-	AddEntity(c);
 
 	// Cubo de orientación (distintas texturas)
 	Cubo* c2 = new Cubo(2, false);
@@ -387,6 +382,13 @@ void PruebaScene::PruebaMateriales()
 	c2->setPosition({ -5,0,0 });
 	c2->setShader("default");
 	AddEntity(c2);
+
+	// Cubo con la misma textura en todas las caras
+	Cubo* c = new Cubo(2);
+	c->setTexture("cajaPrueba");
+	c->setPosition({ -10,0,0 });
+	c->setShader("lights");
+	AddEntity(c);
 
 	// Cubo default
 	//Cubo* cuboDef = new Cubo(2);
@@ -426,10 +428,11 @@ void PruebaScene::PruebaMateriales()
 
 	// Rejilla (suelo)
 	MovingGrid* grid = new MovingGrid(1, 1, 30, 60);
+	//grid->setMaterial("emerald");
 	grid->setTexture("agua");
 	grid->setDisplacementMap("agua_disp");
+	grid->setShader("lights");
 	grid->setSpeeds({ 2.0, 0.0 }, { -2, 0 });
-	//grid->setMaterial("cromo");
 	grid->setPosition({ 0,-1,0 });
 	AddEntity(grid);
 
@@ -460,11 +463,10 @@ void PruebaScene::PruebaMateriales()
 
 	// Mar de la isla
 	MovingGrid* mar = new MovingGrid(1, 1, 723, 1087);
-	mar->setTexture("agua");
 	mar->setMaterial("oceano");
+	mar->setTexture("agua");
 	mar->setDisplacementMap("agua_disp");
 	mar->setSpeeds({ 0.0, 0.0 }, { -0.2, -0.2 });
-	//grid->setMaterial("cromo");
 	mar->setPosition({ 0,-20.01,0 });
 	AddEntity(mar);
 
@@ -517,7 +519,7 @@ void PruebaScene::PruebaMateriales()
 	Esfera* esf = new Esfera(10, 30, 40);
 	//esf->setTexture("earthHD");
 	esf->setPosition({ 0,10,25 });
-	esf->setMaterial("cristal");
+	esf->setMaterial("emerald");
 	esf->setShader("lights");
 	esf->addComponent(new RotationComp(0.25));
 	AddEntity(esf);

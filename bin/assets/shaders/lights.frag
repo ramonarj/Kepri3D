@@ -4,7 +4,7 @@
 struct Material
 {
 	vec3 ambient;
-	vec3 diffuse;
+	vec4 diffuse;
 	vec3 specular;
 	sampler2D specular_map;
 	float brillo;
@@ -84,7 +84,7 @@ uniform bool receive_shadows;
 
 // Variables globales
 const float PI = 3.141593;
-vec3 diffColor;
+vec4 diffColor;
 vec3 specColor;
 vec3 ambColor;
 
@@ -101,7 +101,7 @@ void main()
 {
 	// 1) Calcular variables comunes a todas las luces
 	// Color difuso del material en el fragmento actual
-	if(use_diff_map) { diffColor = vec3(texture(textura, data_in.TexCoords)); }
+	if(use_diff_map) { diffColor = texture(textura, data_in.TexCoords); }
 	else {diffColor = material.diffuse; }
 	
 	// Usamos el valor del specular map / no
@@ -109,7 +109,7 @@ void main()
 	else {specColor = material.specular; }
 	
 	// Color ambient
-	ambColor = material.ambient * diffColor;
+	ambColor = material.ambient * diffColor.rgb;
 	
 	// Vector que va del fragmento a la cámara. NOTA: todos los vectores salen del fragmento (N, V, L, R...)
 	vec3 viewDir = normalize(camPos - data_in.fragPos);
@@ -164,8 +164,8 @@ void main()
 		colorTotal += color;
 	}
 
-	// De momento no hay transparencias
-	FragColor = vec4(colorTotal, 1.0);
+	// Asignar el color al fragmento, incluyendo la transparencia
+	FragColor = vec4(colorTotal, diffColor.a);
 }
 
 /* Calcula la cantidad de luz que recibe el fragmento de una luz direccional */
@@ -178,7 +178,7 @@ vec3 CalcDirLight(Light light, vec3 normal, vec3 viewDir)
 	vec3 ambient = light.ambient * ambColor; // material.ambient ¿?
 	// Producto escalar de la normal con la dirección de la luz
 	float diff = max(dot(normal, lightDir), 0.0);
-	vec3 diffuse = light.diffuse * diff * diffColor;
+	vec3 diffuse = light.diffuse * diff * diffColor.rgb;
 
 	// - - Componente especular - - //
 	float spec = SpecFactor(lightDir, viewDir, normal, material.brillo, blinn);
@@ -206,7 +206,7 @@ vec3 CalcPointLight(Light light, vec3 normal, vec3 viewDir)
 				 
     // Combinar los resultados
 	vec3 ambient = light.ambient * ambColor;
-    vec3 diffuse  = light.diffuse  * diff * diffColor;
+    vec3 diffuse  = light.diffuse  * diff * diffColor.rgb;
     vec3 specular = light.specular * spec * specColor;
 
 	ambient  *= attenuation;
@@ -249,7 +249,7 @@ vec3 CalcSpotlight(Light light, vec3 normal, vec3 viewDir)
 				 
     // Combinar los resultados
 	vec3 ambient = light.ambient * ambColor;
-    vec3 diffuse  = light.diffuse  * diff * diffColor;
+    vec3 diffuse  = light.diffuse  * diff * diffColor.rgb;
 	vec3 specular = light.specular * spec * diff * specColor;
 	
 	ambient  *= attenuation;

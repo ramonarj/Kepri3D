@@ -401,7 +401,7 @@ MovingGrid::MovingGrid(GLuint filas, GLuint columnas, GLdouble tamFila, GLdouble
 {
 	m_name = "MovingGrid";
 
-	setShader("lights");
+	setShader("movimiento");
 
 	velDisp = { -1, -1 };
 	velTex = { 2, 0 };

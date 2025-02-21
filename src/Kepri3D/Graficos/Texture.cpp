@@ -44,10 +44,22 @@ bool Texture::load(const std::string& filePath, GLubyte alpha, GLint intFormat)
 	// Dar la transparencia indicada
 	if(alpha != 255)
 	{
+		m_hasAlpha = true;
+		float alphaFl = alpha / 255.0f;
 		for (int i = 0; i < (w * h); i++)
-			data[i * 4 + 3] = alpha;
+			data[i * 4 + 3] *= alphaFl;
 	}
-		
+	// Comprobar si tiene transparencias. TODO: tendría que haber una forma mejor que recorrer los píxeles de nuevo
+	if(!m_hasAlpha)
+	{
+		int i = 0;
+		while(i < (w * h) && !m_hasAlpha)
+		{
+			if (data[i * 4 + 3] < 255)
+				m_hasAlpha = true;
+			i++;
+		}
+	}
 
 	// Rellena la ya creada textura con el array de píxeles
 	glBindTexture(texType, id);

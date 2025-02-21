@@ -36,13 +36,15 @@ public:
 	inline const glm::vec3& getAmbient() const { return m_ambient; }
 
 	/* Devuelve la componente difusa del material */
-	inline const glm::vec3& getDiffuse() const { return m_diffuse; }
+	inline const glm::vec4& getDiffuse() const { return m_diffuse; }
 
 	/* Devuelve la componente especular del material */
 	inline const glm::vec3& getSpecular() const { return m_specular; }
 
 	/* Devuelve el brillo especular del material (0 - 128)*/
 	inline GLfloat getBrillo() const { return m_brillo; }
+
+	inline const Texture* getTexture(GLuint i) const { return m_textures[i]; }
 private:
 	/* Componentes del material */
 	glm::fvec4 m_ambient;

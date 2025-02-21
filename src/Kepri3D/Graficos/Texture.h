@@ -15,7 +15,7 @@ class Texture
 {
 public:
 	/* Constructora por defecto */
-	Texture() : w(0), h(0), id(0), hasMipmap(false) {}
+	Texture() : w(0), h(0), id(0), hasMipmap(false), m_hasAlpha(false) {}
 	/* Borra la textura asociada si tenía alguna */
 	virtual ~Texture() { if (id != 0) glDeleteTextures(1, &id); };
 
@@ -48,6 +48,9 @@ public:
 	/* Activa o desactiva el uso de mipmaps */
 	void useMipmaps(bool b);
 
+	//
+	inline bool hasAlpha() const { return m_hasAlpha; }
+
 #ifdef __DEBUG_INFO__
 	static GLuint numBinds;
 #endif
@@ -65,6 +68,9 @@ protected:
 
 	/* Indica si la textura puede usar mipmaps o no */
 	bool hasMipmap;
+
+	/* Indica si la textura contiene transparencias */
+	bool m_hasAlpha = false;
 
 	// Métodos privados
 	/* Inicializa la textura si no se había creado ya */

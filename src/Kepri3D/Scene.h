@@ -87,6 +87,8 @@ protected:
 
 	/* Lista de entidades */
 	std::vector<Entity*> m_entities;
+	std::vector<Entity*> m_opaqueEntities;
+	std::vector<Entity*> m_transEntities;
 
 	/* Lista de luces */
 	std::vector<Light*> m_lights;
@@ -130,7 +132,7 @@ private:
 	// Sub-métodos del render() para que sea más legible
 	void loadLights();
 	void renderShadows();
-	void renderEntities();
+	void renderEntities(const std::vector<Entity*>& entityList);
 	void renderNormals();
 	void renderCanvas();
 	void renderSkybox();

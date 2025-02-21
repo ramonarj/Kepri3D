@@ -72,6 +72,7 @@ public:
 
 	/* Establece la textura principal (diffuse) que usará la entidad */
 	void setTexture(const std::string& textureID);
+	inline const Texture* getTexture() const { return m_material.getTexture(0); }
 
 	/* Establece la textura secundaria a usar, que se mezclará con la principal en la medida dada */
 	void setSecondTex(const std::string& textureID);

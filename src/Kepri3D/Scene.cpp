@@ -66,11 +66,18 @@ Scene::Scene() : m_canvas(nullptr), m_skybox(nullptr)
 
 void Scene::AddEntity(Entity* e, bool isTranslucid)
 {
-	//if (!isTranslucid)
-	//	m_opaqueEntities.push_back(e);
-	//else
-	//	m_translucentEntities.push_back(e);
+	// Vector general
 	m_entities.push_back(e);
+
+	// Una entidad puede ser tranlúcida por: a) Material con diffuse.a < 1 | b) Textura difusa con transparencias
+	bool trans = e->getMaterial()->getDiffuse().a < 1.0 ||
+		(e->getTexture() != nullptr && e->getTexture()->hasAlpha());
+	
+	// Diferenciar entre entidades opacas y translúcidas
+	if (trans)
+		m_transEntities.push_back(e);
+	else
+		m_opaqueEntities.push_back(e);
 }
 
 void Scene::render()
@@ -93,8 +100,8 @@ void Scene::render()
 	// 3) Enviar uniforms comunes a todas las entidades (matrices y luces)
 	sendUniformBlocks();
 
-	// 4) Pintar todas las entidades activas
-	renderEntities();
+	// 4) Pintar todas las entidades opacas
+	renderEntities(m_opaqueEntities);
 
 	// 5) Pintar los vectores normales, si están activos
 	renderNormals();
@@ -105,7 +112,10 @@ void Scene::render()
 	// 7) Pintar el skybox, si lo hay
 	renderSkybox();
 
-	// 7.5)Los objetos transparentes irían aquí
+	// 7.5) Pintar todas las entidades transparentes
+	glDepthMask(GL_FALSE);
+	renderEntities(m_transEntities);
+	glDepthMask(GL_TRUE);
 
 	// 8) Post-procesar la imagen del color buffer
 	renderEffects();
@@ -192,10 +202,10 @@ void Scene::renderSkybox()
 	}
 }
 
-void Scene::renderEntities()
+void Scene::renderEntities(const std::vector<Entity*>& entityList)
 {
 	// Pintar todas las entidades activas
-	for (Entity* e : m_entities)
+	for (Entity* e : entityList)
 	{
 		if (e->isActive())
 		{

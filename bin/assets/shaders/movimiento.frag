@@ -4,7 +4,7 @@
 struct Material
 {
 	vec3 ambient;
-	vec3 diffuse;
+	vec4 diffuse;
 	vec3 specular;
 	float brillo;
 };
@@ -52,5 +52,5 @@ void main()
 	// b) Desplazamiento extra (dado por dispMap)
 	vec4 color = texture(textura, data_in.TexCoords - desp - tiempo * velTex);
 
-	FragColor = color * vec4(material.diffuse, 1.0);
+	FragColor = color * material.diffuse;
 }

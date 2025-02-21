@@ -55,10 +55,10 @@ void Material::loadToShader(Shader* sh)
 		return;
 
 	// Propiedades del material
-	sh->setVec3("material.ambient", getAmbient());
-	sh->setVec3("material.diffuse", getDiffuse());
-	sh->setVec3("material.specular", getSpecular());
-	sh->setFloat("material.brillo", getBrillo());
+	sh->setVec3("material.ambient", m_ambient);
+	sh->setVec4("material.diffuse", m_diffuse);
+	sh->setVec3("material.specular", m_specular);
+	sh->setFloat("material.brillo", m_brillo);
 
 	// Enviar las texturas necesarias al shader
 	bindTextures(sh);
