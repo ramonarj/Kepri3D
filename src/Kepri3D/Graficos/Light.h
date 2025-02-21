@@ -125,4 +125,38 @@ protected:
 	GLfloat spotExp;
 };
 
+// - - - - - - - - - - - - - - - - - 
+
+class Framebuffer;
+class Shader;
+
+struct Shadowmap
+{
+	Shadowmap() : depthBuf(nullptr), shader(nullptr), nearPlane(1.0), farPlane(15.0) {}
+	Shadowmap(Framebuffer* depthBuf, Shader* shader, unsigned int width, unsigned int height, 
+		float nearPlane, float farPlane)
+	{
+		this->depthBuf = depthBuf;
+		this->shader = shader;
+		this->width = width;
+		this->height = height;
+		this->nearPlane = nearPlane;
+		this->farPlane = farPlane;
+	}
+	~Shadowmap(){}
+
+	void clean() { if (depthBuf != nullptr) delete depthBuf; }
+
+	// El buffer con la textura donde ese guardan los datos de profundidad
+	Framebuffer* depthBuf;
+	// El shader con el que debe hacerse el pase de sombras
+	Shader* shader;
+	// La resolución del mapa
+	unsigned int width;
+	unsigned int height;
+	// Planos cercano y lejano
+	float nearPlane;
+	float farPlane;
+};
+
 #endif

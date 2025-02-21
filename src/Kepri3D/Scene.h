@@ -7,6 +7,7 @@
 #include <glm.hpp>
 #include "BufferObjects.h"
 #include "Game.h"
+#include "Light.h"
 
 class Entity;
 class Camera;
@@ -119,24 +120,16 @@ protected:
 	Shader* m_shadowComp;
 
 	// Shadow mapping (luz direccional)
-	Shader* shadowSh;
-	const unsigned int SHADOW_WIDTH = 1024, SHADOW_HEIGHT = 1024;
-	Framebuffer* m_shadowFB;
 	glm::dmat4 lightView, lightProj;
-	float nearPlane, farPlane;
 	float distOrigen = 75.0f;
 
-	// Shadow mapping (luz puntual)
-	Shader* pointShadowSh;
-	Framebuffer* m_pointShadowFB;
-	float pointNearPl = 1.0f;
-	float pointFarPl = 50.0f;
+	// Array de shadow maps
+	Shadowmap shadowMaps[2];
 
 private:
 	// Sub-métodos del render() para que sea más legible
 	void loadLights();
-	void renderShadowMaps();
-	void renderPointShadows();
+	void renderShadows();
 	void renderEntities();
 	void renderNormals();
 	void renderCanvas();
@@ -146,6 +139,7 @@ private:
 	/* Manda todos los uniforms necesarios al shader de la entidad dada */
 	void sendUniforms(Shader* sh);
 	void sendUniformBlocks();
+	void sendShadowUniforms(Shadowmap map, glm::vec3 lightPos, bool point);
 	void debugShadowMap();
 
 	// Modelo de iluminación. 0 = Phong, 1 = Blinn-phong

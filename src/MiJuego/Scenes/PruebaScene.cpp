@@ -54,6 +54,7 @@ void PruebaScene::init()
 	//luzBlinn->setPosition({ 60, 4, -40 });
 	//luzBlinn->setAttenuationFactors(0.3, 0.3, 0.02);
 	//AddLight(luzBlinn);
+	delete luzBlinn;
 
 	// ENTIDADES
 	// Ejes RGB

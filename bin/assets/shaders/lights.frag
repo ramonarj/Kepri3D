@@ -93,8 +93,8 @@ vec3 CalcDirLight(Light light, vec3 normal, vec3 viewDir);
 vec3 CalcPointLight(Light light, vec3 normal, vec3 viewDir);
 vec3 CalcSpotlight(Light light, vec3 normal, vec3 viewDir);
 float SpecFactor(vec3 lightDir, vec3 viewDir, vec3 normal, float brillo, bool useBlinn);
-float ShadowCalculation(Shadowmap shMap, vec4 fragPosLightSpace);
-float PointShadowCalculation(Shadowmap shMap, vec3 fragPos);
+float ShadowCalculation(Shadowmap shMap, vec3 lightPos, vec4 fragPosLightSpace);
+float PointShadowCalculation(Shadowmap shMap, vec3 lightPos, vec3 fragPos);
 float LinearizeDepth(float depth, float near_plane, float far_plane);
 
 void main()
@@ -145,7 +145,7 @@ void main()
 			// La entidad recibe sombras del shadowmap
 			if(receive_shadows)
 			{
-				float sombra = 1.0 - ShadowCalculation(shadowMap, data_in.FragPosLightSpace);
+				float sombra = 1.0 - ShadowCalculation(shadowMap, luces[i].dir, data_in.FragPosLightSpace);
 				color *= min(1.0, sombra + 0.25); // si quitamos el ambient, la sombra es totalmente negra
 			}
 		}
@@ -154,7 +154,7 @@ void main()
 			color = CalcPointLight(luces[i], normal, viewDir);
 			if(receive_shadows)
 			{
-				float sombra = 1.0 - PointShadowCalculation(shadowMap, data_in.fragPos);
+				float sombra = 1.0 - PointShadowCalculation(shadowMap, luces[i].dir, data_in.fragPos);
 				color *= min(1.0, sombra + 0.25);
 			}
 		}
@@ -281,7 +281,7 @@ float SpecFactor(vec3 lightDir, vec3 viewDir, vec3 normal, float brillo, bool us
 }
 
 /* Devuelve 0 si el fragmento no está en sombra, 1 si lo está */
-float ShadowCalculation(Shadowmap shMap, vec4 fragPosLightSpace)
+float ShadowCalculation(Shadowmap shMap, vec3 lightPos, vec4 fragPosLightSpace)
 {	
     // División de perspectiva
     vec3 projCoords = fragPosLightSpace.xyz / fragPosLightSpace.w;
@@ -300,7 +300,7 @@ float ShadowCalculation(Shadowmap shMap, vec4 fragPosLightSpace)
 	
 	// calculate bias (based on depth map resolution and slope)
     vec3 normal = normalize(data_in.normals);
-    vec3 lightDir = normalize(luces[0].dir - data_in.fragPos);
+    vec3 lightDir = normalize(lightPos - data_in.fragPos);
 	float maxBias = 0.02; float minBias = 0.008;
 	float bias = max(maxBias * (1.0 - dot(normal, lightDir)), minBias);
 	
@@ -311,9 +311,8 @@ float ShadowCalculation(Shadowmap shMap, vec4 fragPosLightSpace)
 } 
 
 // Para luces puntuales
-float PointShadowCalculation(Shadowmap shMap, vec3 fragPos)
+float PointShadowCalculation(Shadowmap shMap, vec3 lightPos, vec3 fragPos)
 {	
-	vec3 lightPos = luces[1].dir;
     // get vector between fragment position and light position
     vec3 fragToLight = fragPos - lightPos;
 	
