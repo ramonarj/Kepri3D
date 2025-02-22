@@ -46,9 +46,6 @@ public:
 	/* Añade una entidad a la escena */
 	void AddEntity(Entity* e, bool isTranslucid = false);
 
-	/* Añade una luz a la escena */
-	inline void AddLight(Light* l) { m_lights.push_back(l); }
-
 	/* Añade un efecto de postprocesado a la escena */
 	void AddComposite(Shader* sh, bool active = true);
 
@@ -76,8 +73,8 @@ public:
 	static Shader* normalsShader;
 
 #ifdef __DEBUG_INFO__
-	/* Número de luces en la escena */
-	GLuint numberOfLights() const { return m_lights.size(); }
+	/* Número de entidades translúcidas */
+	GLuint numberOfTrans() const { return m_transEntities.size(); }
 	glm::ivec2 fbSize;
 #endif
 
@@ -141,7 +138,7 @@ private:
 	/* Manda todos los uniforms necesarios al shader de la entidad dada */
 	void sendUniforms(Shader* sh);
 	void sendUniformBlocks();
-	void sendShadowUniforms(Shadowmap map, glm::vec3 lightPos, bool point);
+	void sendShadowUniforms(Shadowmap map, Light* l, bool point);
 	void debugShadowMap();
 
 	// Modelo de iluminación. 0 = Phong, 1 = Blinn-phong

@@ -4,7 +4,7 @@
 
 GLuint Light::cont = 0;
 
-Light::Light(LightType type, glm::fvec4 diffuse) : id(GL_MAX_LIGHTS), m_active(true), posDir({0,0,0,0})
+Light::Light(LightType type, glm::fvec4 diffuse) : id(GL_MAX_LIGHTS), m_active(true), direction({0,0,0,0})
 {
 	this->type = type;
 
@@ -37,6 +37,10 @@ Light::~Light()
 	setActive(false);
 }
 
+void Light::update(GLuint deltaTime)
+{
+}
+
 void Light::load(glm::dmat4 viewMat)
 {
 	// La luz tiene que moverse a la inversa de la cámara igual que las entidades
@@ -44,8 +48,11 @@ void Light::load(glm::dmat4 viewMat)
 	glLoadMatrixd(value_ptr(viewMat));
 
 	// Posición /dirección de la luz
-	glLightfv(id, GL_POSITION, value_ptr(posDir));
-
+	if(type != DIRECTIONAL_LIGHT)
+		glLightfv(id, GL_POSITION, value_ptr(glm::vec4(entity->getPosition(), 1.0)));
+	else
+		glLightfv(id, GL_POSITION, value_ptr(glm::vec4(direction.x, direction.y, direction.z, 0.0)));
+	
 	//fv = float vector (puntero a)
 	// Valores de la luz
 	glLightfv(id, GL_AMBIENT, value_ptr(ambient));

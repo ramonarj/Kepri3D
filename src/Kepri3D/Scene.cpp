@@ -78,6 +78,11 @@ void Scene::AddEntity(Entity* e, bool isTranslucid)
 		m_transEntities.push_back(e);
 	else
 		m_opaqueEntities.push_back(e);
+
+	// Ver si tiene un componente Light
+	Light* l = e->getComponent<Light>();
+	if (l != nullptr)
+		m_lights.push_back(l);
 }
 
 void Scene::render()
@@ -148,7 +153,7 @@ void Scene::renderShadows()
 	for(int i = 0; i < 2; i++) // Light* l : m_lights
 	{
 		// Mandar los uniforms de las matrices
-		sendShadowUniforms(shadowMaps[i], m_lights[i]->getPosition(), m_lights[i]->getType());
+		sendShadowUniforms(shadowMaps[i], m_lights[i], m_lights[i]->getType());
 
 		// Pintar todas las entidades activas con la resolución del depth map
 		glViewport(0, 0, shadowMaps[i].width, shadowMaps[i].height);
@@ -349,7 +354,7 @@ void Scene::sendUniformBlocks()
 	{
 		Light* l = m_lights[i];
 		int type = l->getType();
-		glm::vec3 posDir = l->getPosition();
+		glm::vec3 posDir = (type == DIRECTIONAL_LIGHT) ? l->getDirection() : (glm::vec3)l->getEntity()->getPosition();
 		glm::vec3 ambient = l->getAmbient();
 		glm::vec3 diffuse = l->getDiffuse();
 		glm::vec3 specular = l->getSpecular();
@@ -393,14 +398,15 @@ void Scene::sendUniformBlocks()
 	Uniformbuffer::unbind();
 }
 
-void Scene::sendShadowUniforms(Shadowmap map, glm::vec3 lightPos, bool point)
+void Scene::sendShadowUniforms(Shadowmap map, Light* l, bool point)
 {
 	// Luces direccionales
 	if(!point)
 	{
+		glm::vec3 lightDir = l->getDirection();
 		// Actualizar la matriz de vista y ponerla donde la luz
 		glm::vec3 origen = { 0, 0, 0 };
-		lightView = glm::lookAt(origen + lightPos * distOrigen, origen, glm::vec3(0.0, 1.0, 0.0));
+		lightView = glm::lookAt(origen + lightDir * distOrigen, origen, glm::vec3(0.0, 1.0, 0.0));
 
 		// Mandar el uniform
 		m_uboMatrices->bind();
@@ -411,6 +417,7 @@ void Scene::sendShadowUniforms(Shadowmap map, glm::vec3 lightPos, bool point)
 	// Luces puntuales
 	else
 	{
+		glm::vec3 lightPos = l->getEntity()->getPosition();
 		// Actualizar la matriz de vista y ponerla donde la luz
 		float aspect = (float)map.width / (float)map.height;
 		glm::mat4 shadowProj = glm::perspective(glm::radians(90.0f), aspect,
@@ -447,7 +454,6 @@ void Scene::sendUniforms(Shader* sh)
 	sh->setVec3("viewPos", m_camera->getPosition());
 
 	// matriz luz
-	glm::dvec3 lightPos = m_lights[0]->getPosition();
 	glm::dmat4 lightSpaceMat = lightProj * lightView;
 	sh->setMat4d("lightSpaceMatrix", lightSpaceMat);
 
@@ -539,11 +545,8 @@ Scene::~Scene()
 	// Borrar el canvas
 	delete m_canvas;
 
-	// Borrar las entidades
+	// Borrar las entidades y sus componentes
 	CleanVector(m_entities);
-
-	// Borrar las luces
-	CleanVector(m_lights);
 
 	// Borrar managers
 	InputManager::Instance()->Clean();

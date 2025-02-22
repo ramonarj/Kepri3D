@@ -35,19 +35,26 @@ void PruebaScene::init()
 	dirLight->setDiffuse({ 1, 1, 1, 1.0 });
 	dirLight->setAmbient({ 0.05, 0.05, 0.2, 0.0 });
 	dirLight->setActive(true);
-	AddLight(dirLight);
+	Entity* dirLightEnt = new Entity();
+	dirLightEnt->addComponent(dirLight);
+	AddEntity(dirLightEnt);
 
 	// Puntual (va en círculos)
 	Light* circleLight = new Light(POINT_LIGHT, { 1, 1, 0, 1 });
-	circleLight->setPosition({ 3,3,-3 });
 	circleLight->setAmbient({ 0.1, 0.3, 0.1, 1.0 });
 	circleLight->setSpecular({ 0.8, 0.8, 0, 1.0 });
-	AddLight(circleLight);
+	Entity* circleLightEnt = new Esfera(0.5);
+	circleLightEnt->setTexture("blanco");
+	circleLightEnt->setShader("default");
+	circleLightEnt->addComponent(circleLight);
+	AddEntity(circleLightEnt);
 
 	// Foco (linterna)
 	Light* spotLight = new Light(SPOT_LIGHT, { 0.7, 0.7, 0.7, 1 });
 	spotLight->setSpecular({ 0.6, 0.6, 0.6, 1.0 });
-	AddLight(spotLight);
+	Entity* spotLightEnt = new Entity();
+	spotLightEnt->addComponent(spotLight);
+	AddEntity(spotLightEnt);
 
 	// Nueva luz para el Blinn
 	Light* luzBlinn = new Light(POINT_LIGHT, { 0.4, 0.4, 0.3, 1 });
@@ -255,17 +262,14 @@ void PruebaScene::init()
 	debugTxt->setActive(true);
 
 	/* - - GameManager - - */
-	Entity* gm = new Entity("GameManager");
 	// Componente GM
 	GameManager* gmComponent = new GameManager(this, m_camera, botonesMenu, torre);
 	gmComponent->setLights(dirLight, circleLight, spotLight, luzBlinn);
 	gmComponent->setTessTerrain(tesTerrain);
 	gmComponent->setParticleSys(particleSys);
-	gm->addComponent(gmComponent);
 	// Componente CameraController
 	CameraController* camComp = new CameraController(m_camera);
-	gm->addComponent(camComp);
-
+	Entity* gm = new Entity({ gmComponent, camComp }, "GameManager");
 	AddEntity(gm);
 
 	/* - - - Efectos de postprocesado (el orden importa) - - - */

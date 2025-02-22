@@ -3,6 +3,7 @@
 
 #include <glew.h>
 #include <glm.hpp>
+#include "Component.h"
 
 enum LightType
 {
@@ -11,7 +12,7 @@ enum LightType
 	SPOT_LIGHT = 2 // foco; tiene un ángulo concreto de emisión
 };
 
-class Light
+class Light : public Component
 {
 public:
 	/* Constructora por defecto */
@@ -19,6 +20,8 @@ public:
 
 	/* Destructora */
 	~Light();
+
+	void update(GLuint deltaTime) override;
 
 	/* Carga las propiedades de la luz en OpenGL */
 	virtual void load(glm::dmat4 viewMat);
@@ -30,9 +33,6 @@ public:
 
 	/* Devuelve el tipo de luz que es */
 	inline LightType getType() const { return type; }
-
-	/* Devuelve la posición */
-	inline const glm::fvec3& getPosition() const { return posDir; }
 
 	/* Devuelve la componente ambient de la luz */
 	inline const glm::fvec3& getAmbient() const { return ambient; }
@@ -59,11 +59,9 @@ public:
 	/* Cambia la luz difusa */
 	inline void setSpecular(glm::fvec4 specular) { this->specular = specular; }
 
-	/* Cambia la posición de la luz, y la convierte en puntual */
-	inline void setPosition(glm::fvec3 pos) { posDir = glm::fvec4(pos, 1.0f); }
-
 	/* Cambia la dirección de la luz, y la convierte en direccional */
-	inline void setDirection(glm::fvec3 dir) { posDir = glm::fvec4(-dir, 0.0f); } //-dir
+	inline void setDirection(glm::fvec3 dir) { direction = glm::fvec4(-dir, 0.0f); } //-dir
+	inline const glm::fvec3& getDirection() const { return direction; }
 
 	/* Establece los factores de atenuación de esta luz (EXCLUSIVO PARA PUNTUALES) */
 	void setAttenuationFactors(float constant, float linear, float quadratic);
@@ -83,11 +81,10 @@ public:
 	inline float getSpotCutoff() const { return spotCutoff; }
 	inline float getSpotExponent() const { return spotExp; }
 
-
-protected:
 	/* Número de luces totales en la escena */
 	static GLuint cont;
 
+protected:
 	/* Tipo de luz que es (direccional / puntual / foco) */
 	LightType type;
 
@@ -97,9 +94,8 @@ protected:
 	/* Si la luz está encendida o no */
 	bool m_active;
 
-	/* Posición / dirección de la luz; si la componente w = 1, es una posición. Si w = 0, es un vector.
-	(coordenadas homogéneas) */
-	glm::fvec4 posDir;
+	/* Dirección de la luz, para direccionales */
+	glm::fvec4 direction;
 
 	//Usamos floats para las distintas componentes de la luz
 	/* Componente ambiente de la luz */

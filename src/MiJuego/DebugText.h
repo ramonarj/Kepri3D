@@ -15,6 +15,7 @@ public:
 
 	void update(GLuint deltaTime) override;
 private:
+	bool visible;
 	Text* text;
 	Button* fondo;
 };

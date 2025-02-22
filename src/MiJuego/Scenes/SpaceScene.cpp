@@ -15,7 +15,7 @@ void SpaceScene::init()
 	Light* dirLight = new Light(DIRECTIONAL_LIGHT);
 	dirLight->setDirection({ 0,-1 , 0 });
 	dirLight->setAmbient({0.6, 0, 0, 0});
-	AddLight(dirLight);
+	//AddLight(dirLight);
 
 	// Venus
 	Esfera* venus = new Esfera(3, 20, true);

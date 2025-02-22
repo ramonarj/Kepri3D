@@ -17,8 +17,8 @@ class Entity
 {
 public:
 	/* Constructora por defecto */
-	Entity();
-	Entity(const std::string& name);
+	Entity(const std::string& name = "- Entidad s/n - ");
+	Entity(std::vector<Component*> comps, const std::string& name = "- Entidad s/n - ");
 	
 	/* Destructora virtual */
 	virtual ~Entity();

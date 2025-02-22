@@ -21,7 +21,7 @@ void GameManager::setLights(Light* dirLight, Light* circleLight, Light* spotLigh
 	
 	//this->dirLight->setActive(false);
 
-	this->spotLight->setPosition(cam->getPosition());
+	this->spotLight->getEntity()->setPosition(cam->getPosition());
 	this->spotLight->setSpotlightDir(cam->forward());
 	this->spotLight->setSpotlightCutoff(65.0f);
 	this->spotLight->setSpotlightHardness(100);
@@ -110,7 +110,7 @@ void GameManager::update(GLuint deltaTime)
 
 	// Fijar la cámara en la luz circular
 	if (InputManager::Instance()->getKey('k'))
-		cam->lookAt(circleLight->getPosition());
+		cam->lookAt(circleLight->getEntity()->getPosition());
 }
 
 
@@ -118,7 +118,7 @@ void GameManager::controlLuces(GLuint deltaTime)
 {
 	// 1) Luz de foco (linterna)
 	// Posición y dirección
-	spotLight->setPosition(cam->getPosition());
+	spotLight->getEntity()->setPosition(cam->getPosition());
 	// Un poco feo pero funciona
 	spotLight->setSpotlightDir(cam->forward());
 	// Encenderla / apagarla
@@ -149,7 +149,7 @@ void GameManager::controlLuces(GLuint deltaTime)
 		dirLight->setDirection({ -cos(totalTime / 1000.0 * sunVel),
 			-sin(totalTime / 1000.0 * sunVel), 0 });
 		// Cambiar el color del cielo y de la luz
-		float luminosidad = (dirLight->getPosition().y + 1) / 2.0f;
+		float luminosidad = (dirLight->getDirection().y + 1) / 2.0f;
 		Camera::setBackgroundColor(luminosidad, luminosidad, luminosidad);
 		//dirLight->setDiffuse({ luminosidad, luminosidad, luminosidad, 1.0 });
 	}
@@ -195,7 +195,7 @@ void GameManager::controlTorre(GLuint deltaTime)
 	// Mover la luz Blinn
 	movTorre = movTorre * velTorre * (deltaTime / 1000.0);
 	//pSystem->translate(movTorre, GLOBAL);
-	circleLight->setPosition(circleLight->getPosition() + glm::vec3(movTorre));
+	circleLight->getEntity()->translate(movTorre);
 }
 
 void GameManager::controlTerreno(GLuint deltaTime)

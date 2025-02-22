@@ -10,16 +10,18 @@ void PruebaFisicas::init()
 	// LUCES
 	// Direccional
 	Light* dirLight = new Light(DIRECTIONAL_LIGHT);
-	dirLight->setDirection({ 0, -1 , 0 });
+	dirLight->setDirection({ 0,-1 , 0 });
 	dirLight->setDiffuse({ 1, 1, 1, 1.0 });
-	dirLight->setAmbient({ 0.2, 0.2, 0.2, 0.0 });
-	AddLight(dirLight);
+	dirLight->setAmbient({ 0.05, 0.05, 0.2, 0.0 });
+	Entity* dirLightEnt = new Entity({ dirLight });
+	AddEntity(dirLightEnt);
 
 	// ENTIDADES
 
 	// Esfera con componente Rigid
 	Esfera* esf = new Esfera(1.0);
 	esf->setTexture("default");
+	esf->setShader("lights");
 	esf->setPosition({ 0, 100, 0 });
 	Rigid* rigidEsfera = new Rigid(esf->getModelMat());
 	rigidEsfera->useGravity(true);
@@ -29,12 +31,14 @@ void PruebaFisicas::init()
 	// Suelo sin componente rigid
 	Cubo* c = new Cubo(1);
 	c->setTexture("cobre");
+	c->setShader("default");
 	c->scale({ 100, 1, 100 });
 	AddEntity(c);
 
 	// Sombra de la pelota
 	Entity* sombra = new Poligono(40, 3.0, true);
 	sombra->setTexture("sombra");
+	sombra->setShader("default");
 	sombra->rotate(-PI / 2, { 1, 0, 0 });
 	AddEntity(sombra);
 
@@ -61,6 +65,17 @@ void PruebaFisicas::init()
 
 
 	/* - - - Efectos de postprocesado (el orden importa) - - - */
+
+	// Temporal
+	for (Entity* e : m_entities)
+	{
+		Shader* sh = (Shader*)e->getShader();
+		if (sh != nullptr)
+		{
+			sh->bindUniformBlock("Matrices", 0);
+			sh->bindUniformBlock("Lights", 1);
+		}
+	}
 }
 
 void PruebaFisicas::loadResources()

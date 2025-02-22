@@ -79,8 +79,9 @@ void Game::render()
 	debugInfo.numVerts = Mesh::numVerts;
 	debugInfo.numTris = Mesh::numTris;
 	debugInfo.numTextureBinds = Texture::numBinds;
-	debugInfo.numLuces = scene->numberOfLights();
+	debugInfo.numLuces = Light::cont;
 	debugInfo.fbSize = scene->fbSize;
+	debugInfo.numTrans = scene->numberOfTrans();
 
 	Mesh::numVerts = Mesh::numTris = Texture::numBinds = 0;
 #endif

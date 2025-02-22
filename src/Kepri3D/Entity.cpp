@@ -17,22 +17,19 @@
 
 using namespace glm;
 
-Entity::Entity()
+Entity::Entity(const std::string& name)
 {
 	// Valores por defecto de la entidad
 	defaultValues();
-
-	m_name = "- Entidad s/n - ";
-	
-	//PrintMatrix<double, 4>(&modelMat);
-	//NOMBRE(modelMat);
-}
-
-Entity::Entity(const std::string& name)
-{
-	defaultValues();
 	m_name = name;
 }
+
+Entity::Entity(std::vector<Component*> comps, const std::string& name) : Entity(name)
+{
+	for (Component* c : comps)
+		addComponent(c);
+}
+
 
 Entity::~Entity()
 {

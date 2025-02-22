@@ -84,6 +84,7 @@ public:
 		GLuint numTextureBinds;
 		GLuint fps;
 		GLuint numLuces;
+		GLuint numTrans;
 		glm::ivec2 fbSize;
 	};
 	DebugInfo debugInfo;
