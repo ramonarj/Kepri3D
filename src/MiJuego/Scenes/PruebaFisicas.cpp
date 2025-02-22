@@ -26,6 +26,8 @@ void PruebaFisicas::init()
 	Rigid* rigidEsfera = new Rigid(esf->getModelMat());
 	rigidEsfera->useGravity(true);
 	esf->addComponent(rigidEsfera);
+	Collider* colEsfera = new Collider(Collider::Esfera, 1.0);
+	esf->addComponent(colEsfera);
 	AddEntity(esf);
 
 	// Suelo sin componente rigid

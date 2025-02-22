@@ -90,6 +90,9 @@ protected:
 	/* Lista de luces */
 	std::vector<Light*> m_lights;
 
+	/* Lista de renderers */
+	std::vector<Renderer*> m_renderers;
+
 	/* Cámara activa */
 	Camera* m_camera;
 

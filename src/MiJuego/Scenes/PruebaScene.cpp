@@ -147,7 +147,7 @@ void PruebaScene::init()
 	cuboMT->setPosition({ -15, 0, 6 });
 	cuboMT->setTexture("lego");
 	cuboMT->setSecondTex("emoji");
-	cuboMT->castShadows(false);
+	cuboMT->getRenderer()->castShadows(false);
 	AddEntity(cuboMT);
 
 	// Una caja con mapa especular
@@ -251,7 +251,7 @@ void PruebaScene::init()
 	tesTerrain->setNormalMap("iceland_normal");  // obligatorio usar un mapa de normales por el momento
 	tesTerrain->setPosition({ 0,-20,0 });
 	tesTerrain->setCamera(m_camera);
-	tesTerrain->setPolygonMode(GL_FILL, GL_LINE);
+	tesTerrain->getRenderer()->setPolygonMode(GL_FILL, GL_LINE);
 	AddEntity(tesTerrain);
 
 	// Información de Debug

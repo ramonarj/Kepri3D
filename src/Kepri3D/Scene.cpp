@@ -11,6 +11,7 @@
 #include "ResourceManager.h"
 #include "InputManager.h"
 #include "UI/Canvas.h"
+#include "Renderer.h"
 
 #include <freeglut.h>
 
@@ -78,6 +79,11 @@ void Scene::AddEntity(Entity* e, bool isTranslucid)
 		m_transEntities.push_back(e);
 	else
 		m_opaqueEntities.push_back(e);
+
+	// Ver si tiene un componente Renderer
+	Renderer* r = e->getComponent<Renderer>();
+	if (r != nullptr)
+		m_renderers.push_back(r);
 
 	// Ver si tiene un componente Light
 	Light* l = e->getComponent<Light>();
@@ -155,17 +161,20 @@ void Scene::renderShadows()
 		// Mandar los uniforms de las matrices
 		sendShadowUniforms(shadowMaps[i], m_lights[i], m_lights[i]->getType());
 
-		// Pintar todas las entidades activas con la resolución del depth map
+		// Cambiar a la resolución del depth map
 		glViewport(0, 0, shadowMaps[i].width, shadowMaps[i].height);
 		shadowMaps[i].depthBuf->bind();
 		glClear(GL_DEPTH_BUFFER_BIT);
+		// Culling desactivado
+		GLboolean cull = glIsEnabled(GL_CULL_FACE);
 		glDisable(GL_CULL_FACE);
-		//glCullFace(GL_FRONT);
+		// Pintar todas las entidades activas con la resolución del depth map
 		shadowMaps[i].shader->use();
-		for (Entity* e : m_entities)
+		for (Renderer* r : m_renderers)
 		{
+			Entity* e = r->getEntity();
 			// Comprobamos que la entidad emita sombras
-			if (e->isActive() && e->castShadows())
+			if (e->isActive() && r != nullptr && r->castShadows())
 			{
 				// Guardamos su shader y le ponemos el barato
 				Shader* shader = (Shader*)e->getShader();
@@ -177,8 +186,7 @@ void Scene::renderShadows()
 			}
 		}
 		// Valores prederminados
-		glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
-		glEnable(GL_CULL_FACE);
+		if (cull) { glEnable(GL_CULL_FACE); }
 		//glCullFace(GL_BACK);
 
 		// Volver al frameBuffer anterior
@@ -212,6 +220,7 @@ void Scene::renderEntities(const std::vector<Entity*>& entityList)
 	// Pintar todas las entidades activas
 	for (Entity* e : entityList)
 	{
+		//Entity* e = r->getEntity();
 		if (e->isActive())
 		{
 			Shader* shader = (Shader*)e->getShader();
@@ -238,18 +247,16 @@ void Scene::renderEntities(const std::vector<Entity*>& entityList)
 
 void Scene::renderNormals()
 {
-	if (normalsShader != nullptr)
+	if (normalsShader == nullptr)
+		return;
+
+	// Pintar todas las entidades con el shader de las normales
+	normalsShader->use();
+	for (Renderer* r : m_renderers)
 	{
-		normalsShader->use();
-		for (Entity* e : m_entities)
-		{
-			if(e->getMesh() != nullptr)
-			{
-				// Pasar la matriz de modelado al VS y pintar
-				normalsShader->setMat4d("model", e->getModelMat());
-				e->render();
-			}
-		}
+		// Pasar la matriz de modelado al VS y pintar
+		normalsShader->setMat4d("model", r->getEntity()->getModelMat());
+		r->getEntity()->render();
 	}
 }
 
@@ -536,8 +543,8 @@ void Scene::resize(int width, int height)
 void Scene::toggleShadows()
 {
 	shadowsEnabled = !shadowsEnabled;
-	for (Entity* e : m_entities)
-		e->castShadows(shadowsEnabled);
+	for (Renderer* r : m_renderers)
+		r->castShadows(shadowsEnabled);
 }
 
 Scene::~Scene()

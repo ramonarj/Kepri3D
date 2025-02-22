@@ -12,6 +12,7 @@
 #include "Shader.h"
 #include "Component.h"
 #include "Camera.h"
+#include "Renderer.h"
 
 #include <freeglut.h>
 
@@ -33,8 +34,6 @@ Entity::Entity(std::vector<Component*> comps, const std::string& name) : Entity(
 
 Entity::~Entity()
 {
-	delete m_mesh;
-
 	// Destruir los hijos
 	for (Entity* e : m_children)
 		delete e;
@@ -48,17 +47,11 @@ void Entity::defaultValues()
 {
 	m_active = true;
 	m_parent = nullptr;
-	m_mesh = nullptr;
+	m_renderer = nullptr;
 
 	// Pone la matriz de modelado a la matriz identidad de grado 4 (1 0 0 0 / 0 1 0 0 ...)
 	modelMat = (1.0);
 	m_shader = nullptr;
-
-	m_polyModeFront = GL_FILL;
-	m_polyModeBack = GL_FILL;
-
-	m_receiveShadows = true;
-	m_castShadows = true;
 }
 
 void Entity::addComponent(Component* c)
@@ -74,9 +67,6 @@ void Entity::addComponent(Component* c)
 
 void Entity::render(glm::dmat4 const& viewMat)
 {
-	glPolygonMode(GL_FRONT, m_polyModeFront);
-	glPolygonMode(GL_BACK, m_polyModeBack);
-
 	// 1) Renderizar la propia entidad
 	// Activar la textura si la tiene
 	//if (m_textures[0] != nullptr) //TODO
@@ -91,8 +81,8 @@ void Entity::render(glm::dmat4 const& viewMat)
 
 	// 2) Dibujar la/s malla/s
 	m_material.load();
-	if (m_mesh != nullptr)
-		m_mesh->draw();
+	if (m_renderer != nullptr)
+		m_renderer->draw();
 
 	// Desactivar la textura si la tiene
 	//if (m_textures[0] != nullptr)
@@ -107,17 +97,14 @@ void Entity::render(glm::dmat4 const& viewMat)
 
 void Entity::render()
 {
-	glPolygonMode(GL_FRONT, m_polyModeFront);
-	glPolygonMode(GL_BACK, m_polyModeBack);
-
 	// 1) Renderizar la propia entidad
 	// Cargar el material
 	m_material.loadToShader(m_shader);
 
 	// Dibujar la/s malla/s
 	sendUniforms();
-	if (m_mesh != nullptr)
-		m_mesh->draw();
+	if (m_renderer != nullptr)
+		m_renderer->draw();
 
 	// Desactivar texturas
 	m_material.unload();
@@ -144,7 +131,7 @@ void Entity::sendUniforms()
 
 	m_shader->setMat4d("model", model);
 	// Sombras
-	m_shader->setInt("receive_shadows", m_receiveShadows);
+	m_shader->setInt("receive_shadows", m_renderer->receiveShadows());
 }
 
 void Entity::update(GLuint deltaTime)
@@ -226,7 +213,10 @@ void Entity::setParent(Entity* e)
 
 void Entity::setMesh(const std::string& meshID)
 {
-	m_mesh = (Mesh*) & ResourceManager::Instance()->getMesh(meshID);
+	if (m_renderer != nullptr)
+		delete m_renderer;
+	m_renderer = new Renderer((Mesh*) & ResourceManager::Instance()->getMesh(meshID));
+	addComponent(m_renderer);
 }
 
 void Entity::setMaterial(const std::string& materialID)
@@ -257,7 +247,7 @@ void Entity::setSpecularMap(const std::string& textureID)
 void Entity::setNormalMap(const std::string& textureID)
 {
 	m_material.setTexture(3, (Texture*)&ResourceManager::Instance()->getTexture(textureID));
-	static_cast<IndexMesh*>(m_mesh)->setTangents();
+	static_cast<IndexMesh*>(m_renderer->getMesh())->setTangents();
 }
 
 void Entity::setDisplacementMap(const std::string& textureID)
@@ -272,18 +262,12 @@ void Entity::enableReflections(const std::string& reflectionMapID, const std::st
 }
 
 
-void Entity::setPolygonMode(GLenum front, GLenum back)
-{
-	m_polyModeFront = front;
-	m_polyModeBack = back;
-}
-
-
 // - - - - - - - - - - - - - - - - - 
 
 EjesRGB::EjesRGB(GLdouble l)
 {
-	m_mesh = Mesh::generateAxesRGB(l);
+	m_renderer = new Renderer(Mesh::generateAxesRGB(l));
+	addComponent(m_renderer);
 	m_name = "EjesRGB";
 }
 
@@ -292,9 +276,10 @@ EjesRGB::EjesRGB(GLdouble l)
 Poligono::Poligono(GLint sides, GLdouble size, bool relleno)
 {
 	if(relleno)
-		m_mesh = Mesh::generateFilledPolygon(sides, size);
+		m_renderer = new Renderer(Mesh::generateFilledPolygon(sides, size));
 	else
-		m_mesh = Mesh::generatePolygon(sides, size);
+		m_renderer = new Renderer(Mesh::generatePolygon(sides, size));
+	addComponent(m_renderer);
 	m_name = "Poligono";
 }
 
@@ -303,7 +288,8 @@ Poligono::Poligono(GLint sides, GLdouble size, bool relleno)
 
 Cubo::Cubo(GLdouble size, bool equalFaces)
 {
-	m_mesh = IndexMesh::generateCube(size, equalFaces);
+	m_renderer = new Renderer(IndexMesh::generateCube(size, equalFaces));
+	addComponent(m_renderer);
 	m_name = "Cubo";
 }
 
@@ -312,7 +298,8 @@ Cubo::Cubo(GLdouble size, bool equalFaces)
 
 Esfera::Esfera(GLdouble radio, GLuint paralelos, GLuint meridianos)
 {
-	m_mesh = IndexMesh::generateSphere(radio, paralelos, meridianos);
+	m_renderer = new Renderer(IndexMesh::generateSphere(radio, paralelos, meridianos));
+	addComponent(m_renderer);
 	m_name = "Esfera";
 }
 
@@ -320,7 +307,8 @@ Esfera::Esfera(GLdouble radio, GLuint paralelos, GLuint meridianos)
 
 Cilindro::Cilindro(GLdouble radio, GLdouble altura, GLuint lados)
 {
-	m_mesh = IndexMesh::generateCilindro(radio, altura, lados);
+	m_renderer = new Renderer(IndexMesh::generateCilindro(radio, altura, lados));
+	addComponent(m_renderer);
 	m_name = "Cilindro";
 }
 
@@ -329,7 +317,8 @@ Cilindro::Cilindro(GLdouble radio, GLdouble altura, GLuint lados)
 
 Toro::Toro(GLdouble radExt, GLdouble radInt, GLuint anillos, GLuint lineas)
 {
-	m_mesh = IndexMesh::generateToro(radExt, radInt, anillos, lineas);
+	m_renderer = new Renderer(IndexMesh::generateToro(radExt, radInt, anillos, lineas));
+	addComponent(m_renderer);
 	m_name = "Toro";
 }
 
@@ -337,7 +326,8 @@ Toro::Toro(GLdouble radExt, GLdouble radInt, GLuint anillos, GLuint lineas)
 
 Grid::Grid(GLuint filas, GLuint columnas, GLdouble tamFila, GLdouble tamColumna)
 {
-	m_mesh = IndexMesh::generateGrid(filas, columnas, tamFila, tamColumna);
+	m_renderer = new Renderer(IndexMesh::generateGrid(filas, columnas, tamFila, tamColumna));
+	addComponent(m_renderer);
 	m_name = "Grid";
 }
 
@@ -350,12 +340,14 @@ Terrain::Terrain()
 
 void Terrain::loadRAW(const std::string& rawFile, GLdouble scale)
 {
-	m_mesh = IndexMesh::generateTerrain(rawFile, scale, true);
+	m_renderer = new Renderer(IndexMesh::generateTerrain(rawFile, scale, true));
+	addComponent(m_renderer);
 }
 
 void Terrain::loadHeightMap(const std::string& heightMap, GLdouble scale)
 {
-	m_mesh = IndexMesh::generateTerrain(heightMap, scale, false);
+	m_renderer = new Renderer(IndexMesh::generateTerrain(heightMap, scale, false));
+	addComponent(m_renderer);
 }
 
 // - - - - - - - - - - - - - - - - - 
@@ -363,7 +355,8 @@ void Terrain::loadHeightMap(const std::string& heightMap, GLdouble scale)
 Skybox::Skybox(const std::string& cubemapTextureID)
 {
 	// Generar la malla y cargar la textura y el shader
-	m_mesh = IndexMesh::generateCubemap(4.0);
+	m_renderer = new Renderer(IndexMesh::generateCubemap(4.0));
+	addComponent(m_renderer);
 	m_name = "Skybox_" + cubemapTextureID;
 
 	// Las caras están puestas para que miren hacia dentro del cubo
@@ -375,7 +368,8 @@ Skybox::Skybox(const std::string& cubemapTextureID)
 
 Billboard::Billboard(const std::string& textureID, GLfloat width, GLfloat height)
 {
-	m_mesh = IndexMesh::generateRectangle(width, height);
+	m_renderer = new Renderer(IndexMesh::generateRectangle(width, height));
+	addComponent(m_renderer);
 	m_name = "Billboard";
 	setTexture(textureID);
 
@@ -419,7 +413,8 @@ void MovingGrid::render()
 
 CuboMultitex::CuboMultitex(GLdouble size)
 {
-	m_mesh = IndexMesh::generateCube(size, true);
+	m_renderer = new Renderer(IndexMesh::generateCube(size, true));
+	addComponent(m_renderer);
 	m_name = "CuboMT";
 
 	setShader("multitexture");
@@ -436,7 +431,8 @@ void CuboMultitex::render()
 
 Hierba::Hierba(GLdouble width, GLdouble height, const std::string& textureID)
 {
-	m_mesh = IndexMesh::generateRectangle(width, height);
+	m_renderer = new Renderer(IndexMesh::generateRectangle(width, height));
+	addComponent(m_renderer);
 	m_name = "Hierba";
 
 	texture = (Texture*)&ResourceManager::Instance()->getTexture(textureID);
@@ -450,13 +446,11 @@ void Hierba::render(glm::dmat4 const& viewMat)
 	if(cullActivado)
 		glDisable(GL_CULL_FACE);
 
-	glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
-
 	// Activar la textura si la tiene
 	texture->bind();
 
 	// Pintar los haces
-	if (m_mesh != nullptr)
+	if (m_renderer != nullptr)
 	{
 		// En una dirección
 		glMatrixMode(GL_MODELVIEW);
@@ -464,7 +458,7 @@ void Hierba::render(glm::dmat4 const& viewMat)
 		glLoadMatrixd(value_ptr(modelViewMat));
 
 		m_material.load();
-		m_mesh->draw();
+		m_renderer->draw();
 
 		// En la otra
 		glMatrixMode(GL_MODELVIEW);
@@ -472,7 +466,7 @@ void Hierba::render(glm::dmat4 const& viewMat)
 		glLoadMatrixd(value_ptr(modelViewMat));
 
 		m_material.load();
-		m_mesh->draw();
+		m_renderer->draw();
 	}
 
 	// Desactivar la textura si la tiene
@@ -487,7 +481,8 @@ void Hierba::render(glm::dmat4 const& viewMat)
 
 ClippableEntity::ClippableEntity()
 {
-	m_mesh = IndexMesh::generateToro(2.5, 1.25, 20, 6);
+	m_renderer = new Renderer(IndexMesh::generateToro(2.5, 1.25, 20, 6));
+	addComponent(m_renderer);
 	setShader("clippable");
 
 	// 3 planos de corte de prueba
@@ -518,7 +513,8 @@ void ClippableEntity::render()
 TessTerrain::TessTerrain(GLuint filas, GLuint columnas, GLdouble tamFila, GLdouble tamColumna)
 {
 	m_name = "TessTerrain";
-	m_mesh = IndexMesh::generateTessGrid(filas, columnas, tamFila, tamColumna);
+	m_renderer = new Renderer(IndexMesh::generateTessGrid(filas, columnas, tamFila, tamColumna));
+	addComponent(m_renderer);
 
 	setShader("terreno");
 	useEyedir = false;

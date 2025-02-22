@@ -2,6 +2,7 @@
 
 #include "Mesh.h"
 #include "Texture.h"
+#include "Renderer.h"
 
 #include <gtc/type_ptr.hpp>
 
@@ -41,8 +42,8 @@ void UIElement::render(glm::dmat4 const& viewMat)
 	glLoadMatrixd(value_ptr(modelMat));
 
 	// Dibujar la/s malla/s
-	if (m_mesh != nullptr)
-		m_mesh->draw();
+	if (m_renderer != nullptr)
+		m_renderer->draw();
 
 	if (texture != nullptr)
 		texture->unbind();

@@ -3,6 +3,7 @@
 
 #include "InputManager.h"
 #include "ResourceManager.h"
+#include "Renderer.h"
 
 Button::Button(const std::string& textureName, Canvas* canvas) : m_callback(nullptr)
 {
@@ -13,8 +14,9 @@ Button::Button(const std::string& textureName, Canvas* canvas) : m_callback(null
 
 	// 
 	double aspectRatio = (double)canvas->getWidth() / canvas->getHeight();
-	m_mesh = Mesh::generateRectangle((double)width / canvas->getWidth() * 2,
-		(double)height / canvas->getHeight() * 2 / aspectRatio);
+	m_renderer = new Renderer(Mesh::generateRectangle((double)width / canvas->getWidth() * 2,
+		(double)height / canvas->getHeight() * 2 / aspectRatio));
+	addComponent(m_renderer);
 
 	// Referencia al canvas
 	setCanvas(canvas);

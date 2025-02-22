@@ -2,6 +2,7 @@
 
 // Gráficos
 #include "Mesh.h"
+#include "Renderer.h"
 #include "Texture.h"
 #include "Entity.h"
 #include "Camera.h"
@@ -10,6 +11,7 @@
 #include "ParticleSystem.h"
 // Físicas
 #include "Rigid.h"
+#include "Collider.h"
 // Managers
 #include "Game.h"
 #include "Scene.h"

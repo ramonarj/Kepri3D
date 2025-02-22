@@ -4,15 +4,17 @@
 #include "Texture.h"
 #include "Camera.h"
 #include "Shader.h"
+#include "Renderer.h"
 #include <gtc/type_ptr.hpp>
 
 ParticleSystem::ParticleSystem(GLdouble size, GLuint maxParticles, PARTICLE_TYPE partType)
 {
 	// Generar la malla
 	if (partType == PARTICLE_2D) // 'círculo'
-		m_mesh = Mesh::generateRectangle(size, size);
+		m_renderer = new Renderer(Mesh::generateRectangle(size, size));
 	else // esfera
-		m_mesh = IndexMesh::generateToro(size, size / 3.0, 15, 5);
+		m_renderer = new Renderer(IndexMesh::generateToro(size, size / 3.0, 15, 5));
+	addComponent(m_renderer);
 
 	m_name = "ParticleSystem";
 
@@ -77,7 +79,7 @@ void ParticleSystem::render()
 	m_material.loadToShader(m_shader);
 
 	// 2) Dibujar las mallas de todas las partículas a la vez
-	if (m_mesh != nullptr)
+	if (m_renderer != nullptr)
 	{
 		// Para el vertex shader; posición de cada partícula
 		glVertexAttribPointer(10, 3, GL_DOUBLE, GL_FALSE, 0, m_positions);
@@ -87,7 +89,7 @@ void ParticleSystem::render()
 		// (0 = cada vértice, 1 = cada instancia, 2 = cada 2 instancias, etc.)
 		glVertexAttribDivisor(10, 1); 
 
-		m_mesh->drawInstanced(maxParticles);
+		m_renderer->getMesh()->drawInstanced(maxParticles);
 
 		glDisableVertexAttribArray(10);
 	}

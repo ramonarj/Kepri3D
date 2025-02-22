@@ -1,10 +1,10 @@
 #ifndef __ENTITY__
 #define __ENTITY__
 
-class Mesh;
 class Texture;
 class Shader;
 class Component;
+class Renderer;
 
 #include "Material.h"
 
@@ -90,9 +90,6 @@ public:
 	* son reflectantes, y la textura del Cubemap que reflejará */
 	void enableReflections(const std::string& reflectionMapID, const std::string& cubemapID);
 
-	/* Cómo debe pintarse la entidad por delante y detrás (GL_FILL/GL_LINE/GL_POINT) */
-	void setPolygonMode(GLenum front, GLenum back);
-
 	// Getters
 	/* Devuelve el nombre de la entidad */
 	const std::string& getName() const { return m_name; }
@@ -103,8 +100,8 @@ public:
 	/* Devuelve la matriz de modelado de la entidad */
 	const glm::dmat4& getModelMat() const { return modelMat; }
 
-	/* Devuelve el material que usa la entidad */
-	const Mesh* getMesh() const { return m_mesh; }
+	/* Devuelve el renderer que usa la entidad */
+	Renderer* getRenderer() const { return m_renderer; }
 
 	/* Devuelve el material que usa la entidad */
 	const Material* getMaterial() const { return &m_material; }
@@ -124,11 +121,6 @@ public:
 	template<typename T>
 	T* getComponent();
 
-	// Sombras
-	inline void castShadows(bool b) { m_castShadows = b; }
-	inline void receiveShadows(bool b) { m_receiveShadows = b; }
-	inline bool castShadows() const { return m_castShadows; }
-
 private:
 	/* Establece los valores por defecto de la entidad */
 	void defaultValues();
@@ -142,14 +134,14 @@ protected:
 	/* Lista de componentes */
 	std::vector<Component*> m_componentes;
 
+	/* Componente renderer */
+	Renderer* m_renderer;
+
 	/* Hijos de la entidad */
 	std::vector<Entity*> m_children;
 
 	/* Padre de la entidad */
 	Entity* m_parent;
-
-	/* Malla/s que usará la entidad para pintarse */
-	Mesh* m_mesh;
 
 	/* Matriz de modelado de la entidad; recoge las transformaciones 
 	(traslaciones, rotaciones, escalados) hechas a la entidad */
@@ -160,14 +152,6 @@ protected:
 
 	/* Shader usado por la entidad */
 	Shader* m_shader;
-
-	/* Forma en que debe pintarse */
-	GLenum m_polyModeFront;
-	GLenum m_polyModeBack;
-
-	/* Sombras (si emite / recibe) */
-	bool m_receiveShadows;
-	bool m_castShadows;
 
 	/* Manda la información de la entidad al shader */
 	void sendUniforms();

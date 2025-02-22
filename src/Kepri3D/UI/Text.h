@@ -2,6 +2,7 @@
 #define __TEXT__
 
 #include "UIElement.h"
+class Mesh;
 
 const float SPACING = 0.25f;
 const float SPACING_Y = 0.7f;
