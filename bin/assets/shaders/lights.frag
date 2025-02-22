@@ -37,9 +37,13 @@ struct Light
 // Shadow maps
 struct Shadowmap
 {
+	// Luces direccionales
 	sampler2D directionalMap;
+	// Luces puntuales
 	samplerCube pointMap;
 	float far_plane;
+	// PCF
+	bool soft_shadows;
 };
 
 // - - - - - - - - - - - - - - - - - -  - - - - - - - - - - - - - - - //
@@ -68,8 +72,10 @@ layout (std140) uniform Lights
 	bool blinn; // 0 = Phong, 1 = Bling-Phong
 	Light luces[MAX_LIGHTS];
 };
-
-uniform Shadowmap shadowMap;
+// Shadowmaps
+uniform Shadowmap shadowMaps[MAX_LIGHTS];
+const int filter_size = 3;
+const int filter_size_point = 2;
 
 // - - Material - - //
 uniform Material material;
@@ -145,7 +151,7 @@ void main()
 			// La entidad recibe sombras del shadowmap
 			if(receive_shadows)
 			{
-				float sombra = 1.0 - ShadowCalculation(shadowMap, luces[i].dir, data_in.FragPosLightSpace);
+				float sombra = 1.0 - ShadowCalculation(shadowMaps[i], luces[i].dir, data_in.FragPosLightSpace);
 				color *= min(1.0, sombra + 0.25); // si quitamos el ambient, la sombra es totalmente negra
 			}
 		}
@@ -154,7 +160,7 @@ void main()
 			color = CalcPointLight(luces[i], normal, viewDir);
 			if(receive_shadows)
 			{
-				float sombra = 1.0 - PointShadowCalculation(shadowMap, luces[i].dir, data_in.fragPos);
+				float sombra = 1.0 - PointShadowCalculation(shadowMaps[i], luces[i].dir, data_in.fragPos);
 				color *= min(1.0, sombra + 0.25);
 			}
 		}
@@ -293,19 +299,39 @@ float ShadowCalculation(Shadowmap shMap, vec3 lightPos, vec4 fragPosLightSpace)
 	if(projCoords.z > 1.0)
         return 0.0;
 	
-    // Profundidad mínima desde la perspectiva de la luz [0, 1]
-    float closestDepth = texture(shMap.directionalMap, projCoords.xy).r; 
-    // Profundidad de este fragmento visto desde la luz
-    float currentDepth = projCoords.z;
+	// Profundidad de este fragmento visto desde la luz
+	float currentDepth = projCoords.z;
 	
 	// calculate bias (based on depth map resolution and slope)
     vec3 normal = normalize(data_in.normals);
     vec3 lightDir = normalize(lightPos - data_in.fragPos);
 	float maxBias = 0.02; float minBias = 0.008;
 	float bias = max(maxBias * (1.0 - dot(normal, lightDir)), minBias);
-	
-    // Comprobar si el fragmento está en sombra o no
-    float shadow = currentDepth - bias > closestDepth  ? 1.0 : 0.0; 
+ 
+	// Usar varios samples del shadowMap (sombras "suaves")
+	float shadow = 0.0;
+	if(shMap.soft_shadows)
+	{
+		vec2 texelSize = 1.0 / textureSize(shMap.directionalMap, 0);
+		int halfFilter = filter_size / 2;
+		for(int x = -halfFilter; x < -halfFilter + filter_size; ++x)
+		{
+			for(int y = -halfFilter; y < -halfFilter + filter_size; ++y)
+			{
+				float pcfDepth = texture(shMap.directionalMap, projCoords.xy + vec2(x, y) * texelSize).r; 
+				shadow += currentDepth - bias > pcfDepth ? 1.0 : 0.0;        
+			}    
+		}	
+		shadow /= (filter_size * filter_size);
+	}
+	// Solo 1 sample (sombras "duras")
+	else
+	{
+		// Profundidad mínima desde la perspectiva de la luz [0, 1]
+		float closestDepth = texture(shMap.directionalMap, projCoords.xy).r; 
+		// Comprobar si el fragmento está en sombra o no
+		shadow = currentDepth - bias > closestDepth  ? 1.0 : 0.0; 
+	}
 
     return shadow;
 } 
@@ -320,17 +346,45 @@ float PointShadowCalculation(Shadowmap shMap, vec3 lightPos, vec3 fragPos)
 	if(length(fragToLight) > shMap.far_plane)
 		return 0.0;
 	
-    // use the light to fragment vector to sample from the depth map    
-    float closestDepth = texture(shMap.pointMap, fragToLight).r;
-    // it is currently in linear range between [0,1]. Re-transform back to original value
-    closestDepth *= shMap.far_plane;
     // now get current linear depth as the length between the fragment and light position
     float currentDepth = length(fragToLight);
-    // now test for shadows
-    float bias = 0.05; 
-    float shadow = currentDepth -  bias > closestDepth ? 1.0 : 0.0;
+	
+	// calculate bias (based on depth map resolution and slope)
+    vec3 normal = normalize(data_in.normals);
+    vec3 lightDir = normalize(lightPos - data_in.fragPos);
+	float maxBias = 0.5; float minBias = 0.02;
+	float bias = max(maxBias * (1.0 - dot(normal, lightDir)), minBias);
 	
 	//FragColor = vec4(vec3(closestDepth / far_plane), 1.0); //depuracion
+	
+	float shadow = 0.0;
+	if(shMap.soft_shadows)
+	{
+		float offset  = 0.1;
+		for(float x = -offset; x < offset; x += offset / (filter_size_point * 0.5))
+		{
+			for(float y = -offset; y < offset; y += offset / (filter_size_point * 0.5))
+			{
+				for(float z = -offset; z < offset; z += offset / (filter_size_point * 0.5))
+				{
+					float pcfDepth = texture(shMap.pointMap, fragToLight + vec3(x, y, z)).r; 
+					pcfDepth *= shMap.far_plane;   // undo mapping [0;1]
+					shadow += currentDepth - bias > pcfDepth ? 1.0 : 0.0; 
+				}
+			}
+		}
+		shadow /= (filter_size_point * filter_size_point * filter_size_point);
+	}
+	// Solo 1 sample (sombras "duras")
+	else
+	{
+		// use the light to fragment vector to sample from the depth map    
+		float closestDepth = texture(shMap.pointMap, fragToLight).r;
+		// it is currently in linear range between [0,1]. Re-transform back to original value
+		closestDepth *= shMap.far_plane;
+		
+		shadow = currentDepth -  bias > closestDepth ? 1.0 : 0.0;
+	}
 
     return shadow;
 } 

@@ -123,7 +123,7 @@ protected:
 
 	// Shadow mapping (luz direccional)
 	glm::dmat4 lightView, lightProj;
-	float distOrigen = 75.0f;
+	float distOrigen = 60.0f;
 
 	// Array de shadow maps
 	Shadowmap shadowMaps[2];
@@ -141,12 +141,13 @@ private:
 	/* Manda todos los uniforms necesarios al shader de la entidad dada */
 	void sendUniforms(Shader* sh);
 	void sendUniformBlocks();
-	void sendShadowUniforms(Shadowmap map, Light* l, bool point);
+	void sendShadowUniforms(Shadowmap map, Light* l);
 	void debugShadowMap();
 
 	// Modelo de iluminación. 0 = Phong, 1 = Blinn-phong
 	bool blinn = false;
-	bool shadowsEnabled = true;
+	// 0 = sin sombras, 1 = sombras duras, 2 = sombras suaves
+	int shadowsState = 0;
 };
 
 #endif

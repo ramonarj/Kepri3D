@@ -153,6 +153,9 @@ struct Shadowmap
 	// Planos cercano y lejano
 	float nearPlane;
 	float farPlane;
+	// PCF. Esto conlleva un golpe importante al rendimiento, sobre todo en luces puntuales 
+	// si el tam.filtro es >= 3 (~-40 fps)
+	bool softShadows = true;
 };
 
 #endif

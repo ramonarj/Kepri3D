@@ -49,8 +49,8 @@ Scene::Scene() : m_canvas(nullptr), m_skybox(nullptr)
 	// a) Luz direccional
 	Framebuffer* shadowFB = Framebuffer::createShadowMap(SHADOW_SIZE, SHADOW_SIZE);
 	Shader* shadowSh = (Shader*)&ResourceManager::Instance()->getShader("shadows");
-	shadowMaps[0] = Shadowmap(shadowFB, shadowSh, SHADOW_SIZE, SHADOW_SIZE, 1.0f, 100.0f);
-	float ortoSize = 50.0f;
+	shadowMaps[0] = Shadowmap(shadowFB, shadowSh, SHADOW_SIZE, SHADOW_SIZE, 1.0f, 80.0f);
+	float ortoSize = 40.0f;
 	lightProj = glm::ortho(-ortoSize, ortoSize, -ortoSize, ortoSize, shadowMaps[0].nearPlane, shadowMaps[0].farPlane);
 
 	// b) Luz puntual
@@ -159,7 +159,7 @@ void Scene::renderShadows()
 	for(int i = 0; i < 2; i++) // Light* l : m_lights
 	{
 		// Mandar los uniforms de las matrices
-		sendShadowUniforms(shadowMaps[i], m_lights[i], m_lights[i]->getType());
+		sendShadowUniforms(shadowMaps[i], m_lights[i]);
 
 		// Cambiar a la resolución del depth map
 		glViewport(0, 0, shadowMaps[i].width, shadowMaps[i].height);
@@ -405,8 +405,9 @@ void Scene::sendUniformBlocks()
 	Uniformbuffer::unbind();
 }
 
-void Scene::sendShadowUniforms(Shadowmap map, Light* l, bool point)
+void Scene::sendShadowUniforms(Shadowmap map, Light* l)
 {
+	bool point = l->getType();
 	// Luces direccionales
 	if(!point)
 	{
@@ -460,68 +461,37 @@ void Scene::sendUniforms(Shader* sh)
 	// posición de la cámara; sigue siendo necesario para el terreno, que lo usa en el TCS
 	sh->setVec3("viewPos", m_camera->getPosition());
 
+	if (shadowsState == 0)
+		return;
+
 	// matriz luz
 	glm::dmat4 lightSpaceMat = lightProj * lightView;
 	sh->setMat4d("lightSpaceMatrix", lightSpaceMat);
 
-	// pasarle el shadow map
-	// Direccional
-	glActiveTexture(GL_TEXTURE0 + 8);
-	shadowMaps[0].depthBuf->bindTexture();
-	sh->setInt("shadowMap.directionalMap", 8);
+	// shadowmaps
+	int ini_index = 8;
+	for(int i = 0; i < 2; i++)
+	{
+		std::string str = "shadowMaps[" + std::to_string(i) + "]";
+		glActiveTexture(GL_TEXTURE0 + ini_index + i);
+		// direccional
+		if(m_lights[i]->getType() == DIRECTIONAL_LIGHT)
+		{
+			shadowMaps[i].depthBuf->bindTexture();
+			sh->setInt(str + ".directionalMap", ini_index + i);
+		}
+		// puntual
+		else
+		{
+			shadowMaps[i].depthBuf->bindTexture(GL_TEXTURE_CUBE_MAP);
+			sh->setInt(str + ".pointMap", ini_index + i);
 
-	// Puntual
-	glActiveTexture(GL_TEXTURE0 + 9);
-	shadowMaps[1].depthBuf->bindTexture(GL_TEXTURE_CUBE_MAP);
-	sh->setInt("shadowMap.pointMap", 9);
-	sh->setFloat("shadowMap.far_plane", shadowMaps[1].farPlane);
+			sh->setFloat(str + ".far_plane", shadowMaps[i].farPlane);
+		}
+		sh->setInt(str + ".soft_shadows", shadowMaps[i].softShadows);
+	}
 
-
-	//// todo esto ahora se pasa con UBOs
-	//sh->setMat4d("view", m_camera->getViewMat());
-	//sh->setMat4d("projection", m_camera->getProjMat());
-
-	//// tipo de reflejos especulares
-	//sh->setInt("blinn", blinn);
-
-	//// por cada luz activa, pasamos sus propiedades al fragment shader
-	//for (int i = 0; i < m_lights.size(); i++)
-	//{
-	//	Light* l = m_lights[i];
-	//	std::string str = "luces[" + std::to_string(i) + "]";
-	//	if (l->isActive())
-	//	{
-	//		//tipo de luz
-	//		sh->setInt(str + ".type", l->getType());
-
-	//		// pasar la información de las luces al fragment shader
-	//		sh->setVec3(str + ".dir", l->getPosition());
-	//		sh->setVec3(str + ".ambient", l->getAmbient());
-	//		sh->setVec3(str + ".diffuse", l->getDiffuse());
-	//		sh->setVec3(str + ".specular", l->getSpecular());
-
-	//		// para luces NO direccionales exclusivamente (factores de atenuación)
-	//		if (l->getType() != DIRECTIONAL_LIGHT)
-	//		{
-	//			sh->setFloat(str + ".constant", l->getAttenuation(0));
-	//			sh->setFloat(str + ".linear", l->getAttenuation(1));
-	//			sh->setFloat(str + ".quadratic", l->getAttenuation(2));
-	//			// Para focos necesitamos parámetros extra
-	//			if(l->getType() == SPOT_LIGHT)
-	//			{
-	//				sh->setVec3(str + ".spotDir", l->getSpotDirection());
-	//				sh->setFloat(str + ".spotCutoff", l->getSpotCutoff());
-	//				sh->setFloat(str + ".spotExp", l->getSpotExponent());
-	//			}
-	//		}
-	//	}
-	//	else // 
-	//	{
-	//		sh->setVec3(str + ".ambient", { 0, 0, 0 });
-	//		sh->setVec3(str + ".diffuse", { 0, 0, 0 });
-	//		sh->setVec3(str + ".specular", { 0, 0, 0 });
-	//	}
-	//}
+	// Las luces ahora se pasan con UBOs
 }
 
 void Scene::AddComposite(Shader* sh, bool active)
@@ -542,9 +512,24 @@ void Scene::resize(int width, int height)
 
 void Scene::toggleShadows()
 {
-	shadowsEnabled = !shadowsEnabled;
-	for (Renderer* r : m_renderers)
-		r->castShadows(shadowsEnabled);
+	shadowsState = (shadowsState + 1) % 3;
+	if(shadowsState == 0)
+	{
+		for (Renderer* r : m_renderers)
+			r->castShadows(false);
+	}
+	else if(shadowsState == 1)
+	{
+		for (Renderer* r : m_renderers)
+			r->castShadows(true);
+		for (int i = 0; i < 2; i++)
+			shadowMaps[i].softShadows = false;
+	}
+	else if(shadowsState == 2)
+	{
+		for (int i = 0; i < 2; i++)
+			shadowMaps[i].softShadows = true;
+	}
 }
 
 Scene::~Scene()
