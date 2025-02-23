@@ -1,8 +1,27 @@
 #include "Light.h"
 
+#include "BufferObjects.h"
+#include "ResourceManager.h"
+
 #include <gtc/type_ptr.hpp>
 
 GLuint Light::cont = 0;
+
+Shadowmap::Shadowmap(Shader* shader, unsigned int width, unsigned int height,
+	float nearPlane, float farPlane, bool omnidirectional)
+{
+	this->shader = shader;
+	this->width = width;
+	this->height = height;
+	this->nearPlane = nearPlane;
+	this->farPlane = farPlane;
+
+	this->depthBuf = Framebuffer::createShadowMap(width, height, omnidirectional);
+}
+
+Shadowmap::~Shadowmap() { clean(); }
+
+// - - - - - - - - - - - - - - - - - - 
 
 Light::Light(LightType type, glm::fvec4 diffuse) : id(GL_MAX_LIGHTS), m_active(true), direction({0,0,0,0})
 {
@@ -30,11 +49,32 @@ Light::Light(LightType type, glm::fvec4 diffuse) : id(GL_MAX_LIGHTS), m_active(t
 		this->diffuse = diffuse;
 		this->specular = { 1,1,1,1 };
 	}
+
+	// Crear el mapa de sombras
+	Framebuffer* shadowFB; Shader* shadowSh;
+	if (type == DIRECTIONAL_LIGHT)
+	{
+		shadowSh = (Shader*)&ResourceManager::Instance()->getShader("shadows");
+		m_shadowMap = new Shadowmap(shadowSh, SHADOW_SIZE, SHADOW_SIZE, 1.0f, 80.0f, false);
+
+		float ortoSize = 40.0f;
+		m_shadowMap->lightProj = glm::ortho(-ortoSize, ortoSize, -ortoSize, ortoSize,
+			m_shadowMap->nearPlane, m_shadowMap->farPlane);
+	}
+	else if (type == POINT_LIGHT)
+	{
+		shadowSh = (Shader*)&ResourceManager::Instance()->getShader("shadows_point");
+		m_shadowMap = new Shadowmap(shadowSh, SHADOW_SIZE, SHADOW_SIZE, 1.0f, 50.0f, true);
+	}
+	else
+		m_shadowMap = nullptr;
 }
 
 Light::~Light()
 {
 	setActive(false);
+	if(m_shadowMap != nullptr)
+		delete m_shadowMap;
 }
 
 void Light::update(GLuint deltaTime)
@@ -119,4 +159,14 @@ void Light::setSpotlightCutoff(GLfloat angle)
 void Light::setSpotlightHardness(GLfloat hardness)
 {
 	spotExp = 128.0 - hardness;
+}
+
+void Light::emitShadows(bool b)
+{
+	if (!b && m_shadowMap != nullptr)
+	{
+		delete m_shadowMap;
+		m_shadowMap = nullptr;
+	}
+		
 }

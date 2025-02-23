@@ -44,20 +44,6 @@ Scene::Scene() : m_canvas(nullptr), m_skybox(nullptr)
 	// 16 = viewPos + blinn | 120 = lo que ocupa una luz | 8 = relleno para que la siguiente luz empiece en múltiplo de 16
 	m_uboLuces = new Uniformbuffer(1, 16 + LIGHT_STRUCT_SIZE * MAX_LUCES);
 
-	// Shadow maps
-	const unsigned int SHADOW_SIZE = 1024;
-	// a) Luz direccional
-	Framebuffer* shadowFB = Framebuffer::createShadowMap(SHADOW_SIZE, SHADOW_SIZE);
-	Shader* shadowSh = (Shader*)&ResourceManager::Instance()->getShader("shadows");
-	shadowMaps[0] = Shadowmap(shadowFB, shadowSh, SHADOW_SIZE, SHADOW_SIZE, 1.0f, 80.0f);
-	float ortoSize = 40.0f;
-	lightProj = glm::ortho(-ortoSize, ortoSize, -ortoSize, ortoSize, shadowMaps[0].nearPlane, shadowMaps[0].farPlane);
-
-	// b) Luz puntual
-	Framebuffer* pointShadowFB = Framebuffer::createShadowMap(SHADOW_SIZE, SHADOW_SIZE, true);
-	Shader* pointShadowSh = (Shader*)&ResourceManager::Instance()->getShader("shadows_point");
-	shadowMaps[1] = Shadowmap(pointShadowFB, pointShadowSh, SHADOW_SIZE, SHADOW_SIZE, 1.0f, 50.0f);
-
 	// Debug
 	ResourceManager::Instance()->loadComposite("shadowDebug.frag", "shadowComp");
 	m_shadowComp = ((Shader*)&ResourceManager::Instance()->getComposite("shadowComp"));
@@ -147,29 +133,32 @@ void Scene::loadLights()
 
 void Scene::debugShadowMap()
 {
+	Shadowmap* map = m_lights[0]->getShadowMap();
 	m_shadowComp->use();
-	m_shadowComp->setFloat("near_plane", shadowMaps[0].nearPlane);
-	m_shadowComp->setFloat("far_plane", shadowMaps[0].farPlane);
-	shadowMaps[0].depthBuf->bindTexture();
+	m_shadowComp->setFloat("near_plane", map->nearPlane);
+	m_shadowComp->setFloat("far_plane", map->farPlane);
+	map->depthBuf->bindTexture();
 	m_effectsMesh->draw();
 }
 
 void Scene::renderShadows()
 {
-	for(int i = 0; i < 2; i++) // Light* l : m_lights
+	for(Light* l : m_lights) // Light* l : m_lights
 	{
+		Shadowmap* map = l->getShadowMap();
+		if (map == nullptr) { continue; }
 		// Mandar los uniforms de las matrices
-		sendShadowUniforms(shadowMaps[i], m_lights[i]);
+		sendShadowUniforms(l);
 
 		// Cambiar a la resolución del depth map
-		glViewport(0, 0, shadowMaps[i].width, shadowMaps[i].height);
-		shadowMaps[i].depthBuf->bind();
+		glViewport(0, 0, map->width, map->height);
+		map->depthBuf->bind();
 		glClear(GL_DEPTH_BUFFER_BIT);
 		// Culling desactivado
 		GLboolean cull = glIsEnabled(GL_CULL_FACE);
 		glDisable(GL_CULL_FACE);
 		// Pintar todas las entidades activas con la resolución del depth map
-		shadowMaps[i].shader->use();
+		map->shader->use();
 		for (Renderer* r : m_renderers)
 		{
 			Entity* e = r->getEntity();
@@ -178,7 +167,7 @@ void Scene::renderShadows()
 			{
 				// Guardamos su shader y le ponemos el barato
 				Shader* shader = (Shader*)e->getShader();
-				e->setShader(shadowMaps[i].shader);
+				e->setShader(map->shader);
 				// Pintar
 				e->render();
 				// Devolverle el suyo
@@ -405,8 +394,9 @@ void Scene::sendUniformBlocks()
 	Uniformbuffer::unbind();
 }
 
-void Scene::sendShadowUniforms(Shadowmap map, Light* l)
+void Scene::sendShadowUniforms(Light* l)
 {
+	Shadowmap* map = l->getShadowMap();
 	bool point = l->getType();
 	// Luces direccionales
 	if(!point)
@@ -414,12 +404,12 @@ void Scene::sendShadowUniforms(Shadowmap map, Light* l)
 		glm::vec3 lightDir = l->getDirection();
 		// Actualizar la matriz de vista y ponerla donde la luz
 		glm::vec3 origen = { 0, 0, 0 };
-		lightView = glm::lookAt(origen + lightDir * distOrigen, origen, glm::vec3(0.0, 1.0, 0.0));
+		map->lightView = glm::lookAt(origen + lightDir * map->distOrigen, origen, glm::vec3(0.0, 1.0, 0.0));
 
 		// Mandar el uniform
 		m_uboMatrices->bind();
-		glBufferSubData(GL_UNIFORM_BUFFER, 0, sizeof(glm::dmat4), glm::value_ptr(lightProj));
-		glBufferSubData(GL_UNIFORM_BUFFER, sizeof(glm::dmat4), sizeof(glm::dmat4), glm::value_ptr(lightView));
+		glBufferSubData(GL_UNIFORM_BUFFER, 0, sizeof(glm::dmat4), glm::value_ptr(map->lightProj));
+		glBufferSubData(GL_UNIFORM_BUFFER, sizeof(glm::dmat4), sizeof(glm::dmat4), glm::value_ptr(map->lightView));
 		Uniformbuffer::unbind();
 	}
 	// Luces puntuales
@@ -427,32 +417,32 @@ void Scene::sendShadowUniforms(Shadowmap map, Light* l)
 	{
 		glm::vec3 lightPos = l->getEntity()->getPosition();
 		// Actualizar la matriz de vista y ponerla donde la luz
-		float aspect = (float)map.width / (float)map.height;
+		float aspect = (float)map->width / (float)map->height;
 		glm::mat4 shadowProj = glm::perspective(glm::radians(90.0f), aspect,
-			map.nearPlane, map.farPlane);
+			map->nearPlane, map->farPlane);
 
 		// Matrices de vista (1 por cada cara del cubemap). Der, Izq, Arr, Aba, Fre, Atr
-		std::vector<glm::mat4> shadowTransforms;
-		shadowTransforms.push_back(shadowProj *
-			glm::lookAt(lightPos, lightPos + glm::vec3(1.0, 0.0, 0.0), glm::vec3(0.0, -1.0, 0.0)));
-		shadowTransforms.push_back(shadowProj *
-			glm::lookAt(lightPos, lightPos + glm::vec3(-1.0, 0.0, 0.0), glm::vec3(0.0, -1.0, 0.0)));
-		shadowTransforms.push_back(shadowProj *
-			glm::lookAt(lightPos, lightPos + glm::vec3(0.0, 1.0, 0.0), glm::vec3(0.0, 0.0, 1.0)));
-		shadowTransforms.push_back(shadowProj *
-			glm::lookAt(lightPos, lightPos + glm::vec3(0.0, -1.0, 0.0), glm::vec3(0.0, 0.0, -1.0)));
-		shadowTransforms.push_back(shadowProj *
-			glm::lookAt(lightPos, lightPos + glm::vec3(0.0, 0.0, 1.0), glm::vec3(0.0, -1.0, 0.0)));
-		shadowTransforms.push_back(shadowProj *
-			glm::lookAt(lightPos, lightPos + glm::vec3(0.0, 0.0, -1.0), glm::vec3(0.0, -1.0, 0.0)));
+		std::vector<glm::mat4> shadowTransforms(6);
+		shadowTransforms[0] = shadowProj * 
+			glm::lookAt(lightPos, lightPos + glm::vec3(1.0, 0.0, 0.0), glm::vec3(0.0, -1.0, 0.0));
+		shadowTransforms[1] = shadowProj *
+			glm::lookAt(lightPos, lightPos + glm::vec3(-1.0, 0.0, 0.0), glm::vec3(0.0, -1.0, 0.0));
+		shadowTransforms[2] = shadowProj *
+			glm::lookAt(lightPos, lightPos + glm::vec3(0.0, 1.0, 0.0), glm::vec3(0.0, 0.0, 1.0));
+		shadowTransforms[3] = shadowProj *
+			glm::lookAt(lightPos, lightPos + glm::vec3(0.0, -1.0, 0.0), glm::vec3(0.0, 0.0, -1.0));
+		shadowTransforms[4] = shadowProj *
+			glm::lookAt(lightPos, lightPos + glm::vec3(0.0, 0.0, 1.0), glm::vec3(0.0, -1.0, 0.0));
+		shadowTransforms[5] = shadowProj *
+			glm::lookAt(lightPos, lightPos + glm::vec3(0.0, 0.0, -1.0), glm::vec3(0.0, -1.0, 0.0));
 
 		// Mandar los uniforms
-		map.shader->use();
+		map->shader->use();
 		for (int i = 0; i < 6; i++) {
-			map.shader->setMat4("shadowMatrices[" + std::to_string(i) + "]", shadowTransforms[i]);
+			map->shader->setMat4("shadowMatrices[" + std::to_string(i) + "]", shadowTransforms[i]);
 		}
-		map.shader->setVec3("lightPos", lightPos);
-		map.shader->setFloat("far_plane", map.farPlane);
+		map->shader->setVec3("lightPos", lightPos);
+		map->shader->setFloat("far_plane", map->farPlane);
 	}
 }
 
@@ -464,31 +454,31 @@ void Scene::sendUniforms(Shader* sh)
 	if (shadowsState == 0)
 		return;
 
-	// matriz luz
-	glm::dmat4 lightSpaceMat = lightProj * lightView;
-	sh->setMat4d("lightSpaceMatrix", lightSpaceMat);
-
 	// shadowmaps
 	int ini_index = 8;
-	for(int i = 0; i < 2; i++)
+	for(int i = 0; i < m_lights.size(); i++)
 	{
+		Shadowmap* map = m_lights[i]->getShadowMap();
+		if (map == nullptr) { continue; }
+
 		std::string str = "shadowMaps[" + std::to_string(i) + "]";
 		glActiveTexture(GL_TEXTURE0 + ini_index + i);
 		// direccional
 		if(m_lights[i]->getType() == DIRECTIONAL_LIGHT)
 		{
-			shadowMaps[i].depthBuf->bindTexture();
+			map->depthBuf->bindTexture();
 			sh->setInt(str + ".directionalMap", ini_index + i);
+			glm::dmat4 lightSpaceMat = map->lightProj * map->lightView;
+			sh->setMat4d("lightSpaceMatrix", lightSpaceMat);
 		}
 		// puntual
 		else
 		{
-			shadowMaps[i].depthBuf->bindTexture(GL_TEXTURE_CUBE_MAP);
+			map->depthBuf->bindTexture(GL_TEXTURE_CUBE_MAP);
 			sh->setInt(str + ".pointMap", ini_index + i);
-
-			sh->setFloat(str + ".far_plane", shadowMaps[i].farPlane);
+			sh->setFloat(str + ".far_plane", map->farPlane);
 		}
-		sh->setInt(str + ".soft_shadows", shadowMaps[i].softShadows);
+		sh->setInt(str + ".soft_shadows", map->softShadows);
 	}
 
 	// Las luces ahora se pasan con UBOs
@@ -522,13 +512,21 @@ void Scene::toggleShadows()
 	{
 		for (Renderer* r : m_renderers)
 			r->castShadows(true);
-		for (int i = 0; i < 2; i++)
-			shadowMaps[i].softShadows = false;
+		for (int i = 0; i < m_lights.size(); i++)
+		{
+			Shadowmap* shMap = m_lights[i]->getShadowMap();
+			if (shMap != nullptr)
+				shMap->softShadows = false;
+		}
 	}
 	else if(shadowsState == 2)
 	{
-		for (int i = 0; i < 2; i++)
-			shadowMaps[i].softShadows = true;
+		for (int i = 0; i < m_lights.size(); i++)
+		{
+			Shadowmap* shMap = m_lights[i]->getShadowMap();
+			if(shMap != nullptr)
+				shMap->softShadows = true;
+		}
 	}
 }
 
@@ -562,8 +560,4 @@ Scene::~Scene()
 	// UBO para matrices y luces
 	delete m_uboMatrices;
 	delete m_uboLuces;
-
-	// Shadow maps
-	for (int i = 0; i < 2; i++)
-		shadowMaps[i].clean();
 }

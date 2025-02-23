@@ -43,6 +43,7 @@ void PruebaScene::init()
 	Light* circleLight = new Light(POINT_LIGHT, { 1, 1, 0, 1 });
 	circleLight->setAmbient({ 0.1, 0.3, 0.1, 1.0 });
 	circleLight->setSpecular({ 0.8, 0.8, 0, 1.0 });
+	circleLight->emitShadows(false);
 	Entity* circleLightEnt = new Esfera(0.5);
 	circleLightEnt->setTexture("blanco");
 	circleLightEnt->setShader("default");
@@ -58,10 +59,10 @@ void PruebaScene::init()
 
 	// Nueva luz para el Blinn
 	Light* luzBlinn = new Light(POINT_LIGHT, { 0.4, 0.4, 0.3, 1 });
-	//luzBlinn->setPosition({ 60, 4, -40 });
-	//luzBlinn->setAttenuationFactors(0.3, 0.3, 0.02);
-	//AddLight(luzBlinn);
-	delete luzBlinn;
+	luzBlinn->setAttenuationFactors(0.3, 0.3, 0.02);
+	Entity* e = new Entity({ luzBlinn }, "LuzBlinn");
+	e->setPosition({ 60, 4, -40 });
+	AddEntity(e);
 
 	// ENTIDADES
 	// Ejes RGB

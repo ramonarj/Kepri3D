@@ -118,15 +118,8 @@ protected:
 	Uniformbuffer* m_uboMatrices;
 	Uniformbuffer* m_uboLuces;
 	
-	// Sombras
+	/* Composite para debug de shadow maps */
 	Shader* m_shadowComp;
-
-	// Shadow mapping (luz direccional)
-	glm::dmat4 lightView, lightProj;
-	float distOrigen = 60.0f;
-
-	// Array de shadow maps
-	Shadowmap shadowMaps[2];
 
 private:
 	// Sub-métodos del render() para que sea más legible
@@ -141,7 +134,7 @@ private:
 	/* Manda todos los uniforms necesarios al shader de la entidad dada */
 	void sendUniforms(Shader* sh);
 	void sendUniformBlocks();
-	void sendShadowUniforms(Shadowmap map, Light* l);
+	void sendShadowUniforms(Light* l);
 	void debugShadowMap();
 
 	// Modelo de iluminación. 0 = Phong, 1 = Blinn-phong

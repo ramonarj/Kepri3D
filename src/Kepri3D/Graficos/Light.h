@@ -5,12 +5,50 @@
 #include <glm.hpp>
 #include "Component.h"
 
+class Framebuffer;
+class Shader;
+
+const unsigned int SHADOW_SIZE = 1024;
+
 enum LightType
 {
 	DIRECTIONAL_LIGHT = 0, // direccional; simula una luz remota uniforme (Sol/Luna)
 	POINT_LIGHT = 1, // luz puntual; emite en todas direcciones
 	SPOT_LIGHT = 2 // foco; tiene un ángulo concreto de emisión
 };
+
+// - - - - - - - - - - - - - - - - - - - - 
+
+struct Shadowmap
+{
+	Shadowmap() : depthBuf(nullptr), shader(nullptr), nearPlane(1.0), farPlane(15.0) {}
+	Shadowmap(Shader* shader, unsigned int width, unsigned int height, 
+		float nearPlane, float farPlane, bool omnidirectional);
+
+	~Shadowmap();
+
+	void clean() { if (depthBuf != nullptr) delete depthBuf; }
+
+	// El buffer con la textura donde ese guardan los datos de profundidad
+	Framebuffer* depthBuf;
+	// El shader con el que debe hacerse el pase de sombras
+	Shader* shader;
+	// La resolución del mapa
+	unsigned int width;
+	unsigned int height;
+	// Planos cercano y lejano
+	float nearPlane;
+	float farPlane;
+	// PCF. Esto conlleva un golpe importante al rendimiento, sobre todo en luces puntuales 
+	// si el tam.filtro es >= 3 (~-40 fps)
+	bool softShadows = true;
+
+	// Solo para luces direccionales //
+	float distOrigen = 60.0f;
+	glm::dmat4 lightView, lightProj;
+};
+
+// - - - - - - - - - - - - - - - - - - - - 
 
 class Light : public Component
 {
@@ -26,6 +64,7 @@ public:
 	/* Carga las propiedades de la luz en OpenGL */
 	virtual void load(glm::dmat4 viewMat);
 
+	void emitShadows(bool b);
 
 	// Getters
 	/* Devuelve 'true' si la luz está encendida, false e.o.c. */
@@ -45,6 +84,9 @@ public:
 
 	/* Devuelve el factor de atenuación de la luz (0 = constante, 1 = lineal, 2 = cuadrático) */
 	float getAttenuation(GLuint i) const;
+
+	/* Devuelve el mapa de sombras */
+	inline Shadowmap* getShadowMap() { return m_shadowMap; }
 
 	// Setters
 	/* Enciende/apaga la luz */
@@ -119,43 +161,9 @@ protected:
 
 	/* Intensidad en la distribución de luz del foco */
 	GLfloat spotExp;
-};
 
-// - - - - - - - - - - - - - - - - - 
-
-class Framebuffer;
-class Shader;
-
-struct Shadowmap
-{
-	Shadowmap() : depthBuf(nullptr), shader(nullptr), nearPlane(1.0), farPlane(15.0) {}
-	Shadowmap(Framebuffer* depthBuf, Shader* shader, unsigned int width, unsigned int height, 
-		float nearPlane, float farPlane)
-	{
-		this->depthBuf = depthBuf;
-		this->shader = shader;
-		this->width = width;
-		this->height = height;
-		this->nearPlane = nearPlane;
-		this->farPlane = farPlane;
-	}
-	~Shadowmap(){}
-
-	void clean() { if (depthBuf != nullptr) delete depthBuf; }
-
-	// El buffer con la textura donde ese guardan los datos de profundidad
-	Framebuffer* depthBuf;
-	// El shader con el que debe hacerse el pase de sombras
-	Shader* shader;
-	// La resolución del mapa
-	unsigned int width;
-	unsigned int height;
-	// Planos cercano y lejano
-	float nearPlane;
-	float farPlane;
-	// PCF. Esto conlleva un golpe importante al rendimiento, sobre todo en luces puntuales 
-	// si el tam.filtro es >= 3 (~-40 fps)
-	bool softShadows = true;
+	// MAPA DE SOMBRAS
+	Shadowmap* m_shadowMap;
 };
 
 #endif
