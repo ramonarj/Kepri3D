@@ -5,6 +5,7 @@ class Texture;
 class Shader;
 class Component;
 class Renderer;
+class Collider;
 
 #include "Material.h"
 
@@ -134,8 +135,11 @@ protected:
 	/* Lista de componentes */
 	std::vector<Component*> m_componentes;
 
-	/* Componente renderer */
+	/* Componente renderer (acceso directo) */
 	Renderer* m_renderer;
+
+	/* Componente collider (acceso directo) */
+	Collider* m_collider;
 
 	/* Hijos de la entidad */
 	std::vector<Entity*> m_children;

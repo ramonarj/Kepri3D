@@ -15,13 +15,20 @@ public:
 	};
 public:
 	Collider(Shape forma, float radio);
-	~Collider(){}
+	~Collider();
 
 	void update(GLuint deltaTime) override {};
+	void render();
 
+	inline void setVisible(bool visible) { m_visible = visible; }
 private:
+	/* Forma y radio */
 	Shape shape;
 	float radio;
+
+	/* Componente renderer para depurar */
+	Renderer* m_renderer;
+	bool m_visible;
 };
 
 #endif

@@ -13,6 +13,7 @@
 #include "Component.h"
 #include "Camera.h"
 #include "Renderer.h"
+#include "Collider.h"
 
 #include <freeglut.h>
 
@@ -52,6 +53,7 @@ void Entity::defaultValues()
 	// Pone la matriz de modelado a la matriz identidad de grado 4 (1 0 0 0 / 0 1 0 0 ...)
 	modelMat = (1.0);
 	m_shader = nullptr;
+	m_collider = nullptr;
 }
 
 void Entity::addComponent(Component* c)
@@ -63,6 +65,14 @@ void Entity::addComponent(Component* c)
 	// Añadirlo a la lista y darle nuestra referencia
 	m_componentes.push_back(c);
 	c->setEntity(this);
+
+	// Comprobar si es un Collider
+	Collider* col = dynamic_cast<Collider*>(c);
+	if (col != nullptr) { m_collider = col; }
+
+	// Comprobar si es un Renderer
+	Renderer* rend = dynamic_cast<Renderer*>(c);
+	if (rend != nullptr) { m_renderer = rend; }
 }
 
 void Entity::render(glm::dmat4 const& viewMat)
@@ -105,6 +115,8 @@ void Entity::render()
 	sendUniforms();
 	if (m_renderer != nullptr)
 		m_renderer->draw();
+	// Debug del collider
+	if (m_collider != nullptr) { m_collider->render(); }
 
 	// Desactivar texturas
 	m_material.unload();
@@ -266,8 +278,8 @@ void Entity::enableReflections(const std::string& reflectionMapID, const std::st
 
 EjesRGB::EjesRGB(GLdouble l)
 {
-	m_renderer = new Renderer(Mesh::generateAxesRGB(l));
-	addComponent(m_renderer);
+	Renderer* rend = new Renderer(Mesh::generateAxesRGB(l));
+	addComponent(rend);
 	m_name = "EjesRGB";
 }
 
@@ -275,11 +287,12 @@ EjesRGB::EjesRGB(GLdouble l)
 
 Poligono::Poligono(GLint sides, GLdouble size, bool relleno)
 {
+	Renderer* rend;
 	if(relleno)
-		m_renderer = new Renderer(Mesh::generateFilledPolygon(sides, size));
+		rend = new Renderer(Mesh::generateFilledPolygon(sides, size));
 	else
-		m_renderer = new Renderer(Mesh::generatePolygon(sides, size));
-	addComponent(m_renderer);
+		rend = new Renderer(Mesh::generatePolygon(sides, size));
+	addComponent(rend);
 	m_name = "Poligono";
 }
 
@@ -288,8 +301,8 @@ Poligono::Poligono(GLint sides, GLdouble size, bool relleno)
 
 Cubo::Cubo(GLdouble size, bool equalFaces)
 {
-	m_renderer = new Renderer(IndexMesh::generateCube(size, equalFaces));
-	addComponent(m_renderer);
+	Renderer* rend = new Renderer(IndexMesh::generateCube(size, equalFaces));
+	addComponent(rend);
 	m_name = "Cubo";
 }
 
@@ -298,8 +311,8 @@ Cubo::Cubo(GLdouble size, bool equalFaces)
 
 Esfera::Esfera(GLdouble radio, GLuint paralelos, GLuint meridianos)
 {
-	m_renderer = new Renderer(IndexMesh::generateSphere(radio, paralelos, meridianos));
-	addComponent(m_renderer);
+	Renderer* r = new Renderer(IndexMesh::generateSphere(radio, paralelos, meridianos));
+	addComponent(r);
 	m_name = "Esfera";
 }
 
@@ -307,8 +320,8 @@ Esfera::Esfera(GLdouble radio, GLuint paralelos, GLuint meridianos)
 
 Cilindro::Cilindro(GLdouble radio, GLdouble altura, GLuint lados)
 {
-	m_renderer = new Renderer(IndexMesh::generateCilindro(radio, altura, lados));
-	addComponent(m_renderer);
+	Renderer* rend = new Renderer(IndexMesh::generateCilindro(radio, altura, lados));
+	addComponent(rend);
 	m_name = "Cilindro";
 }
 
@@ -317,8 +330,8 @@ Cilindro::Cilindro(GLdouble radio, GLdouble altura, GLuint lados)
 
 Toro::Toro(GLdouble radExt, GLdouble radInt, GLuint anillos, GLuint lineas)
 {
-	m_renderer = new Renderer(IndexMesh::generateToro(radExt, radInt, anillos, lineas));
-	addComponent(m_renderer);
+	Renderer* rend = new Renderer(IndexMesh::generateToro(radExt, radInt, anillos, lineas));
+	addComponent(rend);
 	m_name = "Toro";
 }
 
@@ -326,8 +339,8 @@ Toro::Toro(GLdouble radExt, GLdouble radInt, GLuint anillos, GLuint lineas)
 
 Grid::Grid(GLuint filas, GLuint columnas, GLdouble tamFila, GLdouble tamColumna)
 {
-	m_renderer = new Renderer(IndexMesh::generateGrid(filas, columnas, tamFila, tamColumna));
-	addComponent(m_renderer);
+	Renderer* rend = new Renderer(IndexMesh::generateGrid(filas, columnas, tamFila, tamColumna));
+	addComponent(rend);
 	m_name = "Grid";
 }
 
@@ -340,14 +353,14 @@ Terrain::Terrain()
 
 void Terrain::loadRAW(const std::string& rawFile, GLdouble scale)
 {
-	m_renderer = new Renderer(IndexMesh::generateTerrain(rawFile, scale, true));
-	addComponent(m_renderer);
+	Renderer* rend = new Renderer(IndexMesh::generateTerrain(rawFile, scale, true));
+	addComponent(rend);
 }
 
 void Terrain::loadHeightMap(const std::string& heightMap, GLdouble scale)
 {
-	m_renderer = new Renderer(IndexMesh::generateTerrain(heightMap, scale, false));
-	addComponent(m_renderer);
+	Renderer* rend = new Renderer(IndexMesh::generateTerrain(heightMap, scale, false));
+	addComponent(rend);
 }
 
 // - - - - - - - - - - - - - - - - - 
@@ -355,8 +368,8 @@ void Terrain::loadHeightMap(const std::string& heightMap, GLdouble scale)
 Skybox::Skybox(const std::string& cubemapTextureID)
 {
 	// Generar la malla y cargar la textura y el shader
-	m_renderer = new Renderer(IndexMesh::generateCubemap(4.0));
-	addComponent(m_renderer);
+	Renderer* rend = new Renderer(IndexMesh::generateCubemap(4.0));
+	addComponent(rend);
 	m_name = "Skybox_" + cubemapTextureID;
 
 	// Las caras están puestas para que miren hacia dentro del cubo
@@ -368,8 +381,8 @@ Skybox::Skybox(const std::string& cubemapTextureID)
 
 Billboard::Billboard(const std::string& textureID, GLfloat width, GLfloat height)
 {
-	m_renderer = new Renderer(IndexMesh::generateRectangle(width, height));
-	addComponent(m_renderer);
+	Renderer* rend = new Renderer(IndexMesh::generateRectangle(width, height));
+	addComponent(rend);
 	m_name = "Billboard";
 	setTexture(textureID);
 
@@ -413,8 +426,8 @@ void MovingGrid::render()
 
 CuboMultitex::CuboMultitex(GLdouble size)
 {
-	m_renderer = new Renderer(IndexMesh::generateCube(size, true));
-	addComponent(m_renderer);
+	Renderer* rend = new Renderer(IndexMesh::generateCube(size, true));
+	addComponent(rend);
 	m_name = "CuboMT";
 
 	setShader("multitexture");
@@ -431,8 +444,8 @@ void CuboMultitex::render()
 
 Hierba::Hierba(GLdouble width, GLdouble height, const std::string& textureID)
 {
-	m_renderer = new Renderer(IndexMesh::generateRectangle(width, height));
-	addComponent(m_renderer);
+	Renderer* rend = new Renderer(IndexMesh::generateRectangle(width, height));
+	addComponent(rend);
 	m_name = "Hierba";
 
 	texture = (Texture*)&ResourceManager::Instance()->getTexture(textureID);
@@ -481,8 +494,8 @@ void Hierba::render(glm::dmat4 const& viewMat)
 
 ClippableEntity::ClippableEntity()
 {
-	m_renderer = new Renderer(IndexMesh::generateToro(2.5, 1.25, 20, 6));
-	addComponent(m_renderer);
+	Renderer* rend = new Renderer(IndexMesh::generateToro(2.5, 1.25, 20, 6));
+	addComponent(rend);
 	setShader("clippable");
 
 	// 3 planos de corte de prueba
@@ -513,8 +526,8 @@ void ClippableEntity::render()
 TessTerrain::TessTerrain(GLuint filas, GLuint columnas, GLdouble tamFila, GLdouble tamColumna)
 {
 	m_name = "TessTerrain";
-	m_renderer = new Renderer(IndexMesh::generateTessGrid(filas, columnas, tamFila, tamColumna));
-	addComponent(m_renderer);
+	Renderer* rend = new Renderer(IndexMesh::generateTessGrid(filas, columnas, tamFila, tamColumna));
+	addComponent(rend);
 
 	setShader("terreno");
 	useEyedir = false;

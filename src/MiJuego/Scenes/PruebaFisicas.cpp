@@ -18,15 +18,17 @@ void PruebaFisicas::init()
 
 	// ENTIDADES
 
-	// Esfera con componente Rigid
+	// Esfera con componente Rigid y Collider visible
 	Esfera* esf = new Esfera(1.0);
 	esf->setTexture("default");
 	esf->setShader("lights");
 	esf->setPosition({ 0, 100, 0 });
+	esf->getComponent<Renderer>()->setActive(false);
 	Rigid* rigidEsfera = new Rigid(esf->getModelMat());
 	rigidEsfera->useGravity(true);
 	esf->addComponent(rigidEsfera);
 	Collider* colEsfera = new Collider(Collider::Esfera, 1.0);
+	colEsfera->setVisible(true);
 	esf->addComponent(colEsfera);
 	AddEntity(esf);
 

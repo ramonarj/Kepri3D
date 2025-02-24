@@ -21,6 +21,8 @@ Renderer::~Renderer()
 
 void Renderer::draw()
 {
+	if (!m_active) { return; }
+
 	glPolygonMode(GL_FRONT, m_polyModeFront);
 	glPolygonMode(GL_BACK, m_polyModeBack);
 

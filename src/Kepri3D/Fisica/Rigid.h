@@ -21,6 +21,9 @@ public:
 
 	/* Ejerce una fuerza con la dirección y magnitud dadas sobre el Rigid */
 	void addForce(const glm::vec3& force);
+
+	/* Cambia la masa del Rigidbody */
+	inline void setMass(float mass) { m_mass = mass; }
 private:
 	/* Puntero a la posición del Rigid */
 	glm::dvec3* m_position;
