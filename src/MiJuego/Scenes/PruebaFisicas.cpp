@@ -18,26 +18,48 @@ void PruebaFisicas::init()
 
 	// ENTIDADES
 
+	// NOTA: hay que añadir el componente Collider antes de añadir el Rigid.
 	// Esfera con componente Rigid y Collider visible
 	Esfera* esf = new Esfera(1.0);
 	esf->setTexture("default");
 	esf->setShader("lights");
-	esf->setPosition({ 0, 100, 0 });
+	esf->setPosition({ 1, 100, 0 });
 	esf->getComponent<Renderer>()->setActive(false);
-	Rigid* rigidEsfera = new Rigid(esf->getModelMat());
-	rigidEsfera->useGravity(true);
-	esf->addComponent(rigidEsfera);
 	Collider* colEsfera = new Collider(Collider::Esfera, 1.0);
 	colEsfera->setVisible(true);
 	esf->addComponent(colEsfera);
+	Rigid* rigidEsfera = new Rigid(esf->getModelMat());
+	rigidEsfera->useGravity(true);
+	esf->addComponent(rigidEsfera);
 	AddEntity(esf);
 
-	// Suelo sin componente rigid
-	Cubo* c = new Cubo(1);
-	c->setTexture("cobre");
-	c->setShader("default");
-	c->scale({ 100, 1, 100 });
-	AddEntity(c);
+	// Esfera 2
+	Esfera* esf2 = new Esfera(1.0);
+	esf2->setTexture("default");
+	esf2->setShader("lights");
+	esf2->setPosition({ 0, 60, 0 });
+	esf2->getComponent<Renderer>()->setActive(false);
+	Collider* colEsfera2 = new Collider(Collider::Esfera, 1.0);
+	colEsfera2->setVisible(true);
+	esf2->addComponent(colEsfera2);
+	Rigid* rigidEsfera2 = new Rigid(esf2->getModelMat());
+	rigidEsfera2->useGravity(true);
+	esf2->addComponent(rigidEsfera2);
+	AddEntity(esf2);
+
+	// Suelo estático
+	Cubo* suelo = new Cubo(1);
+	suelo->setTexture("cobre");
+	suelo->setShader("default");
+	suelo->scale({ 100, 3, 100 });
+	//suelo->getComponent<Renderer>()->setActive(false);
+	Collider* colSuelo = new Collider(Collider::Cubo, 1.0);
+	//colSuelo->setVisible(true);
+	suelo->addComponent(colSuelo);
+	Rigid* rigidSuelo = new Rigid(suelo->getModelMat());
+	rigidSuelo->useGravity(false);
+	suelo->addComponent(rigidSuelo);
+	AddEntity(suelo);
 
 	// Sombra de la pelota
 	Entity* sombra = new Poligono(40, 3.0, true);

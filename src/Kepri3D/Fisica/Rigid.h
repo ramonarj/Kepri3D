@@ -4,6 +4,8 @@
 #include "Component.h"
 #include <glm.hpp>
 
+class Collider;
+
 class Rigid : public Component
 {
 public:
@@ -24,7 +26,12 @@ public:
 
 	/* Cambia la masa del Rigidbody */
 	inline void setMass(float mass) { m_mass = mass; }
+
+	/* Enlaza el rigid a su collider */
+	inline void setCollider(Collider* col) { m_collider = col; }
 private:
+	friend class PhysicsSystem;
+
 	/* Puntero a la posición del Rigid */
 	glm::dvec3* m_position;
 
@@ -42,6 +49,9 @@ private:
 
 	/* Masa del Rigid */
 	float m_mass;
+
+	/* Puntero al collider de la entidad */
+	Collider* m_collider;
 };
 
 #endif

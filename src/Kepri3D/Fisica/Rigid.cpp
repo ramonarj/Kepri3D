@@ -14,6 +14,8 @@ Rigid::Rigid(const glm::dmat4& modelMat)
 	m_acceleration = { 0, 0 ,0 };
 	m_mass = 1.0;
 	m_drag = 0.0;
+
+	m_collider = nullptr;
 }
 
 void Rigid::update(GLuint deltaTime)

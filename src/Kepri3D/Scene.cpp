@@ -10,6 +10,7 @@
 #include "Shader.h"
 #include "ResourceManager.h"
 #include "InputManager.h"
+#include "PhysicsSystem.h"
 #include "UI/Canvas.h"
 #include "Renderer.h"
 
@@ -321,6 +322,8 @@ void Scene::update(GLuint deltaTime)
 
 	// Limpiar el input para el siguiente frame
 	InputManager::Instance()->Update();
+	// Detectar y resolver colisiones
+	PhysicsSystem::Instance()->update();
 }
 
 void Scene::sendUniformBlocks()
@@ -540,6 +543,7 @@ Scene::~Scene()
 
 	// Borrar managers
 	InputManager::Instance()->Clean();
+	PhysicsSystem::Instance()->Clean();
 
 	// Borrar las mallas, texturas, materiales y shaders cargados a la escena
 	ResourceManager::Instance()->Clean();

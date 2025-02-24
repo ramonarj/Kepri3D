@@ -22,6 +22,8 @@ public:
 
 	inline void setVisible(bool visible) { m_visible = visible; }
 private:
+	friend class PhysicsSystem;
+
 	/* Forma y radio */
 	Shape shape;
 	float radio;
