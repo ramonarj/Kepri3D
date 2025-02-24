@@ -16,8 +16,9 @@ void PhysicsSystem::addRigid(Rigid* r)
 	m_rigids.push_back(r);
 }
 
-void PhysicsSystem::update()
+void PhysicsSystem::update(GLuint deltaTime)
 {
+	m_deltaTime = deltaTime;
 	// Comprobar que esté bien el bucle añadiendo más rigids
 	for(int i = 0; i < m_rigids.size(); i++)
 	{
@@ -26,7 +27,7 @@ void PhysicsSystem::update()
 		{
 			Rigid* r2 = m_rigids[j];
 			// Hay colisión -> la resolvemos
-			if(checkCollision(r1, r2))
+			if(checkCollision(r1->m_collider, r2->m_collider))
 			{
 				//std::cout << "Colisión entre " << r1->getEntity()->getName() << " y " << r2->getEntity()->getName() << std::endl;
 				solveCollision(r1, r2);
@@ -37,32 +38,52 @@ void PhysicsSystem::update()
 	//std::cout << m_rigids.size() << std::endl;
 }
 
-bool PhysicsSystem::checkCollision(Rigid* r1, Rigid* r2)
+bool PhysicsSystem::checkCollision(Collider* c1, Collider* c2)
 {
-	// Colisión entre 2 esferas
-	//if(r1->m_collider->shape == Collider::Esfera && r2->m_collider->shape == Collider::Esfera)
-	float dist = glm::length(r1->getEntity()->getPosition() - r2->getEntity()->getPosition());
-	if (dist <= (r1->m_collider->radio + r2->m_collider->radio))
-		return true;
+	float dist = glm::length(c1->getEntity()->getPosition() - c2->getEntity()->getPosition());
+
+	// Colisión Esfera-Esfera
+	if(c1->shape == Collider::Esfera && c2->shape == Collider::Esfera)
+	{
+		if (dist < (c1->radio + c2->radio))
+			return true;	
+	}
+	// Colisión Cubo-Cubo (AABB)
+	else if(c1->shape == Collider::Cubo && c2->shape == Collider::Cubo)
+	{
+		// En el caso de los cubos, 'radio' se refiere a la longitud del lado
+		float r1 = c1->radio / 2.0f;
+		float r2 = c2->radio / 2.0f;
+		glm::dvec3 posC1 = c1->getEntity()->getPosition();
+		glm::dvec3 posC2 = c2->getEntity()->getPosition();
+		
+		if(posC1.x + r1 > posC2.x - r2 && posC1.x - r1 < posC2.x + r2 && // Eje X
+			posC1.y + r1 > posC2.y - r2 && posC1.y - r1 < posC2.y + r2 && // Eje Y
+			posC1.z + r1 > posC2.z - r2 && posC1.z - r1 < posC2.z + r2) // Eje Z
+			return true;
+	}
 
 	return false;
 }
 
 void PhysicsSystem::solveCollision(Rigid* r1, Rigid* r2)
 {
-	// Hasta que no dejen de solaparse; tirar para afuera
+	// 1) Hasta que no dejen de solaparse; tirar para afuera
+	unsigned int iter = 0;
 	do
 	{
-		r1->getEntity()->translate(-r1->m_velocity * 0.05);
-		r2->getEntity()->translate(-r2->m_velocity * 0.05);
-	} while (checkCollision(r1, r2));
+		// TODO: dejar de detectar colisiones cuando ambos objetos ya están quietos
+		r1->getEntity()->translate(-r1->m_velocity * (m_deltaTime / 1000.0));
+		r2->getEntity()->translate(-r2->m_velocity * (m_deltaTime / 1000.0));
+		iter++;
+	} while (iter < MAX_ITER && checkCollision(r1->m_collider, r2->m_collider));
 
-	// Calcular el punto de contacto y asignar las velocidades correspondientes
-	glm::vec3 R1toR2 = r2->getEntity()->getPosition() - r1->getEntity()->getPosition();
+	// 2) Calcular el punto de contacto y asignar las velocidades correspondientes
+	glm::vec3 R1toR2 = glm::normalize(r2->getEntity()->getPosition() - r1->getEntity()->getPosition());
 	if (r1->m_useGravity)
-		r1->m_velocity = -R1toR2;
+		r1->m_velocity = -R1toR2 * (float)glm::length(r1->m_velocity) * COEF_RESTITUCION;
 	if(r2->m_useGravity)
-		r2->m_velocity = R1toR2;
+		r2->m_velocity = R1toR2 * (float)glm::length(r2->m_velocity) * COEF_RESTITUCION;
 	
 	// TODO conservación del momento lineal
 }

@@ -323,7 +323,7 @@ void Scene::update(GLuint deltaTime)
 	// Limpiar el input para el siguiente frame
 	InputManager::Instance()->Update();
 	// Detectar y resolver colisiones
-	PhysicsSystem::Instance()->update();
+	PhysicsSystem::Instance()->update(deltaTime);
 }
 
 void Scene::sendUniformBlocks()

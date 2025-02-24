@@ -16,8 +16,8 @@ private:
 	Rigid* rigid;
 	Entity* sombra;
 
-	float movForce = 10.0f;
-	float jumpForce = 7000.0f;
+	float movForce = 15.0f;
+	float jumpForce = 6000.0f;
 };
 
 #endif
