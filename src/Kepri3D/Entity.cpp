@@ -193,6 +193,7 @@ void Entity::translate(const glm::dvec3& transVector, ReferenceSystem refSys)
 
 void Entity::rotate(GLdouble alpha, const glm::dvec3& axis, ReferenceSystem refSys)
 {
+	if (alpha == 0) { return; }
 	// Rotación local: postmultiplicamos la matriz de rotación
 	if(refSys == LOCAL)
 	{

@@ -24,6 +24,17 @@ void PhysicsMan::update(GLuint deltaTime)
 	if (InputManager::Instance()->getMouseKeyDown(LEFT))
 		rigid->addForce({ 0, jumpForce, 0 });
 
+	// Torque
+	if (InputManager::Instance()->getMouseKeyDown(RIGHT))
+		rigid->addTorque({ 0, torque, 0 });
+
+	// Rozamientos
+	if (InputManager::Instance()->getKeyDown('t'))
+		rigid->setDrag(5.0);
+
+	if (InputManager::Instance()->getKeyDown('r'))
+		rigid->setAngularDrag(0.8);
+
 	// Sombra
 	glm::dvec3 rigidPos = rigid->getEntity()->getPosition();
 	sombra->setPosition({ rigidPos.x, 0.51, rigidPos.z });

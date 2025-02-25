@@ -18,6 +18,7 @@ private:
 
 	float movForce = 15.0f;
 	float jumpForce = 6000.0f;
+	float torque = 1.0f;
 };
 
 #endif

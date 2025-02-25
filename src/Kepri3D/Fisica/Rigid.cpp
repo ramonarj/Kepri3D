@@ -12,8 +12,10 @@ Rigid::Rigid(const glm::dmat4& modelMat)
 	m_useGravity = true;
 	m_velocity = { 0, 0, 0 };
 	m_acceleration = { 0, 0 ,0 };
+	m_torque = { 0, 0, 0 };
 	m_mass = 1.0;
 	m_drag = 0.0;
+	m_angularDrag = 0.0;
 
 	m_collider = nullptr;
 }
@@ -26,21 +28,29 @@ void Rigid::update(GLuint deltaTime)
 
 	// Actualizar velocidad en función de la aceleración
 	m_velocity += m_acceleration * (deltaTime / 1000.0);
-	// Capar la velocidad máxima
-	//if(glm::length(m_velocity) > 20.0)
-	//{
-	//	//std::cout << "Velocidad máxima" << std::endl;
-	//	m_velocity = glm::normalize(m_velocity) * 20.0;
-	//}
 
 	// Actualizar la posición en función de la velocidad
 	*m_position += m_velocity * (deltaTime / 1000.0);
 
+	// Rozamiento
+	m_velocity *= (1 - (m_drag * deltaTime / 1000.0));
+
 	// Limpiar la aceleración
 	m_acceleration = { 0, 0, 0 };
+
+	// Aplicar el torque acumulado
+	entity->rotate(glm::length(m_torque) * (deltaTime / 1000.0), glm::normalize(m_torque));
+
+	// Rozamiento angular
+	m_torque *= (1 - (m_angularDrag * deltaTime / 1000.0));
 }
 
 void Rigid::addForce(const glm::vec3& force)
 {
 	m_acceleration += force / m_mass;
+}
+
+void Rigid::addTorque(const glm::vec3& torque)
+{
+	m_torque += torque;
 }

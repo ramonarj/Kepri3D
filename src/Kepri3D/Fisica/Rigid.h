@@ -18,14 +18,25 @@ public:
 	/* Actualiza la posición y velocidad del Rigid */
 	void update(GLuint deltaTime) override;
 
-	/* Indica si el objeto será afectado por la fuerza de la Gravedad */
-	inline void useGravity(bool use) { m_useGravity = use; }
-
+	// Aplicación de fuerzas
 	/* Ejerce una fuerza con la dirección y magnitud dadas sobre el Rigid */
 	void addForce(const glm::vec3& force);
 
+	/* Aplica un torque al Rigid (t = r x F) */
+	void addTorque(const glm::vec3& torque);
+
+	// Setters
+	/* Indica si el objeto será afectado por la fuerza de la Gravedad */
+	inline void useGravity(bool use) { m_useGravity = use; }
+
 	/* Cambia la masa del Rigidbody */
 	inline void setMass(float mass) { m_mass = mass; }
+
+	/* Cambia el rozamiento estático/dinámico del Rigidbody */
+	inline void setDrag(float drag) { m_drag = drag; }
+
+	/* Cambia el rozamiento angular del Rigidbody */
+	inline void setAngularDrag(float angDrag) { m_angularDrag = angDrag; }
 
 	/* Enlaza el rigid a su collider */
 	inline void setCollider(Collider* col) { m_collider = col; }
@@ -41,11 +52,17 @@ private:
 	/* Aceleración del Rigid */
 	glm::dvec3 m_acceleration;
 
+	/* Torque acumulado del Rigid */
+	glm::dvec3 m_torque;
+
 	/* ¿Le afecta la gravedad? */
 	bool m_useGravity;
 
 	/* Rozamiento (=resistencia a moverse) del Rigid */
 	float m_drag;
+
+	/* Rozamiento angular (=resistencia a rotar) del Rigid */
+	float m_angularDrag;
 
 	/* Masa del Rigid */
 	float m_mass;
