@@ -16,6 +16,19 @@
 
 #include <freeglut.h>
 
+// Miembros estáticos
+Camera* Scene::m_camera = nullptr;
+Mesh* Scene::m_effectsMesh = nullptr;
+Framebuffer* Scene::frameBuf = nullptr;
+Framebuffer* Scene::frameBuf2 = nullptr;
+Framebuffer* Scene::msBuf = nullptr;
+Uniformbuffer* Scene::m_uboMatrices = nullptr;
+Uniformbuffer* Scene::m_uboLuces = nullptr;
+Shader* Scene::m_shadowComp = nullptr;
+#ifdef __DEBUG_INFO__
+glm::ivec2 Scene::fbSize;
+#endif
+// - - //
 bool Scene::compositesActive = false;
 bool Scene::skyboxActive = true;
 bool Scene::mipmapsActive = false;
@@ -23,36 +36,10 @@ Shader* Scene::normalsShader = nullptr;
 
 Scene::Scene() : m_canvas(nullptr), m_skybox(nullptr)
 {
-	m_camera = Game::Instance()->getCamera();
 
-	// Crear la malla de rectángulo para el postprocesado. ({2, 2} para que ocupe la pantalla entera)
-	m_effectsMesh = Mesh::generateRectangle(2, 2);
-
-	// Crear los 2 FrameBuffers para  efectos
-	frameBuf = new Framebuffer(m_camera->getVP()->getW(), m_camera->getVP()->getH(), false);
-	frameBuf2 = new Framebuffer(m_camera->getVP()->getW(), m_camera->getVP()->getH(), false);
-
-	// Crear el framebuffer para el multisampling
-	msBuf = new Framebuffer(m_camera->getVP()->getW(), m_camera->getVP()->getH(), true);
-
-	// Composite por defecto
-	//AddComposite((Shader*)&ResourceManager::Instance()->getComposite("defaultComposite"));
-
-	// Crear los UBO para las matrices VP
-	m_uboMatrices = new Uniformbuffer(0, sizeof(glm::dmat4) * 2);
-
-	// Crear el UBO para las luces. Tamaño = 144 por temas de alineamiento
-	// 16 = viewPos + blinn | 120 = lo que ocupa una luz | 8 = relleno para que la siguiente luz empiece en múltiplo de 16
-	m_uboLuces = new Uniformbuffer(1, 16 + LIGHT_STRUCT_SIZE * MAX_LUCES);
-
-	// Debug
-	ResourceManager::Instance()->loadComposite("shadowDebug.frag", "shadowComp");
-	m_shadowComp = ((Shader*)&ResourceManager::Instance()->getComposite("shadowComp"));
-	m_shadowComp->use();
-	m_shadowComp->setInt("depthMap", 0);
 }
 
-void Scene::AddEntity(Entity* e, bool isTranslucid)
+void Scene::AddEntity(Entity* e)
 {
 	// Vector general
 	m_entities.push_back(e);
@@ -89,7 +76,7 @@ void Scene::render()
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
 	// 1) Cargar las luces; IMPORTANTE hacerlo antes de pintar los objetos a los que puedan iluminar
-	loadLights();
+	//loadLights();
 
 	// 2) Fabricar los mapas de profundidad de las luces
 	renderShadows();
@@ -533,23 +520,10 @@ void Scene::toggleShadows()
 	}
 }
 
-Scene::~Scene()
+void Scene::clean()
 {
-	// Borrar el canvas
-	delete m_canvas;
-
-	// Borrar las entidades y sus componentes
-	CleanVector(m_entities);
-
 	// Borrar managers
 	InputManager::Instance()->Clean();
-	PhysicsSystem::Instance()->Clean();
-
-	// Borrar las mallas, texturas, materiales y shaders cargados a la escena
-	ResourceManager::Instance()->Clean();
-
-	// Skybox
-	delete m_skybox;
 
 	// Malla para el postprocesado
 	delete m_effectsMesh;
@@ -564,4 +538,23 @@ Scene::~Scene()
 	// UBO para matrices y luces
 	delete m_uboMatrices;
 	delete m_uboLuces;
+}
+
+Scene::~Scene()
+{
+	/* Borrar solo las cosas no estáticas */ 
+	// Borrar el canvas
+	delete m_canvas;
+
+	// Borrar las entidades y sus componentes
+	CleanVector(m_entities);
+
+	// Borrar managers
+	PhysicsSystem::Instance()->Clean();
+
+	// Borrar las mallas, texturas, materiales y shaders cargados a la escena
+	ResourceManager::Instance()->Clean();
+
+	// Skybox
+	delete m_skybox;
 }

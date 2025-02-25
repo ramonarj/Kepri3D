@@ -91,13 +91,16 @@ public:
 #endif
 
 private:
-	Game() : camera(nullptr), scene(nullptr), viewport(nullptr){}
+	Game() : camera(nullptr), scene(nullptr), viewport(nullptr), nextScene(nullptr){}
 
 	/* Instancia del singleton */
 	static Game* instance;
 
 	/* Escena actual */
 	Scene* scene;
+
+	/* Escena demandada */
+	Scene* nextScene;
 
 	/* Cámara y puerto de vista para mostrar la escena */
 	Camera* camera;
@@ -124,6 +127,12 @@ private:
 
 	/* Registra los callbacks para los eventos de GLUT */
 	void registerGlutCallbacks();
+
+	/* Lo que antes iba en el constructor de Scene */
+	void setupScenes();
+
+	/* Carga la escena y quita la actual */
+	void loadScenePriv(Scene* scene);
 };
 
 #endif

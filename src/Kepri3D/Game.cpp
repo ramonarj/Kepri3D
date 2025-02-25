@@ -6,6 +6,8 @@
 #include "Camera.h"
 #include "Material.h"
 #include "InputManager.h"
+#include "ResourceManager.h"
+#include "Shader.h"
 
 #include <freeglut.h>
 #include <glew.h>
@@ -30,7 +32,7 @@ unsigned int fps = 0;
 
 void Game::init(int argc, char* argv[], int windowWidth, int windowHeight, const std::string& windowName)
 {
-	// 1) Iniciar GLUT y GLEW
+	// 1) Iniciar GLUT (la ventana) y GLEW (el contexto de OpenGL)
 	iniciarGlut(argc, argv, windowWidth, windowHeight);
 	iniciarGLEW();
 	this->windowName = windowName;
@@ -38,7 +40,7 @@ void Game::init(int argc, char* argv[], int windowWidth, int windowHeight, const
 	// Para que se inicialicen las variables estáticas
 	InputManager::Instance();
 
-	// 2) Crear el puerto de vista, la cámara y la escena
+	// 2) Crear el puerto de vista y la cámara
 	viewport = new Viewport(windowWidth, windowHeight);
 	camera = new Camera(viewport);
 
@@ -47,17 +49,40 @@ void Game::init(int argc, char* argv[], int windowWidth, int windowHeight, const
 
 	// 4) Iniciar subsistemas de OpenGL (texturas, luz, blending, etc)
 	initGLSubsystems();
+
+	// 5) Crear Framebuffers y asignar referencias necesarias para las escenas
+	setupScenes();
 }
 
-void Game::loadScene(Scene* scene)
+void Game::loadScene(Scene* sc)
 {
-	// Iniciar la escena(cargar recursos necesarios, crear entidades y colocarlas)
-	this->scene = scene;
+	// Primera escena que cargamos (no hay ninguna ejecutándose)
+	if(scene == nullptr)
+	{
+		// Iniciar la escena(cargar recursos necesarios, crear entidades y colocarlas)
+		scene = sc;
+		scene->loadResources();
+		scene->init();
+
+		std::cout << "Cargada escena '" << scene->getName() << "'" << std::endl;
+		// TODO StateMachine
+	}
+	// Guardarnos la petición para ponerla al terminar el frame
+	else
+	{
+		nextScene = sc;
+	}
+}
+
+void Game::loadScenePriv(Scene* sc)
+{
+	delete scene;
+
+	scene = sc;
 	scene->loadResources();
 	scene->init();
 
 	std::cout << "Cargada escena '" << scene->getName() << "'" << std::endl;
-	// TODO StateMachine
 }
 
 void Game::exitGame()
@@ -108,6 +133,14 @@ void Game::update()
 #endif
 		fps = 0;
 	}
+
+	// ¿Nos han pedido cambiar de escena?
+	if (nextScene != nullptr)
+	{
+		glutSetWindowTitle("Cargando escena . . .");
+		loadScenePriv(nextScene);
+		nextScene = nullptr;
+	}
 }
 
 void Game::clean()
@@ -134,6 +167,7 @@ Game::~Game()
 	delete scene;
 	delete camera;
 	delete viewport;
+	Scene::clean();
 }
 
 void Game::iniciarGlut(int argc, char* argv[], int windowW, int windowH)
@@ -269,6 +303,37 @@ void Game::initGLSubsystems()
 	/* Teselación */
 	// Número de vértices que conforman un parche
 	glPatchParameteri(GL_PATCH_VERTICES, 4);
+}
+
+void Game::setupScenes()
+{
+	Scene::m_camera = camera;
+
+	// Crear la malla de rectángulo para el postprocesado. ({2, 2} para que ocupe la pantalla entera)
+	Scene::m_effectsMesh = Mesh::generateRectangle(2, 2);
+
+	// Crear los 2 FrameBuffers para  efectos
+	Scene::frameBuf = new Framebuffer(camera->getVP()->getW(), camera->getVP()->getH(), false);
+	Scene::frameBuf2 = new Framebuffer(camera->getVP()->getW(), camera->getVP()->getH(), false);
+
+	// Crear el framebuffer para el multisampling
+	Scene::msBuf = new Framebuffer(camera->getVP()->getW(), camera->getVP()->getH(), true);
+
+	// Composite por defecto
+	//AddComposite((Shader*)&ResourceManager::Instance()->getComposite("defaultComposite"));
+
+	// Crear los UBO para las matrices VP
+	Scene::m_uboMatrices = new Uniformbuffer(0, sizeof(glm::dmat4) * 2);
+
+	// Crear el UBO para las luces. Tamaño = 144 por temas de alineamiento
+	// 16 = viewPos + blinn | 120 = lo que ocupa una luz | 8 = relleno para que la siguiente luz empiece en múltiplo de 16
+	Scene::m_uboLuces = new Uniformbuffer(1, 16 + LIGHT_STRUCT_SIZE * MAX_LUCES);
+
+	// Debug
+	ResourceManager::Instance()->loadComposite("shadowDebug.frag", "shadowComp");
+	Scene::m_shadowComp = ((Shader*)&ResourceManager::Instance()->getComposite("shadowComp"));
+	Scene::m_shadowComp->use();
+	Scene::m_shadowComp->setInt("depthMap", 0);
 }
 
 void Game::resize(int newWidth, int newHeight)

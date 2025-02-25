@@ -31,6 +31,8 @@ public:
 	/* Destructora */
 	~Scene();
 
+	static void clean();
+
 	/* Carga todos los recursos necesarios para esta escena */
 	virtual void loadResources() = 0;
 
@@ -44,7 +46,7 @@ public:
 	void update(GLuint deltaTime);
 
 	/* Añade una entidad a la escena */
-	void AddEntity(Entity* e, bool isTranslucid = false);
+	void AddEntity(Entity* e);
 
 	/* Añade un efecto de postprocesado a la escena */
 	void AddComposite(Shader* sh, bool active = true);
@@ -75,7 +77,7 @@ public:
 #ifdef __DEBUG_INFO__
 	/* Número de entidades translúcidas */
 	GLuint numberOfTrans() const { return m_transEntities.size(); }
-	glm::ivec2 fbSize;
+	static glm::ivec2 fbSize;
 #endif
 
 protected:
@@ -94,7 +96,7 @@ protected:
 	std::vector<Renderer*> m_renderers;
 
 	/* Cámara activa */
-	Camera* m_camera;
+	static Camera* m_camera;
 
 	/* Skybox */
 	Skybox* m_skybox;
@@ -103,25 +105,26 @@ protected:
 	Canvas* m_canvas;
 
 	/* Malla para pintar los efectos */
-	Mesh* m_effectsMesh;
+	static Mesh* m_effectsMesh;
 
 	/* Lista de efectos de postprocesado que se aplicarán (en este orden) a la escena */
 	std::vector<Shader*> m_composites;
 
 	// Framebuffers usados para los efectos
-	Framebuffer* frameBuf;
-	Framebuffer* frameBuf2;
+	static Framebuffer* frameBuf;
+	static Framebuffer* frameBuf2;
 	// Framebuffer usado para el multisampling
-	Framebuffer* msBuf;
+	static Framebuffer* msBuf;
 
 	/* Uniform Buffer Objects para uniforms comunes a muchos shaders (luces, cámara) */
-	Uniformbuffer* m_uboMatrices;
-	Uniformbuffer* m_uboLuces;
+	static Uniformbuffer* m_uboMatrices;
+	static Uniformbuffer* m_uboLuces;
 	
 	/* Composite para debug de shadow maps */
-	Shader* m_shadowComp;
+	static Shader* m_shadowComp;
 
 private:
+	friend class Game;
 	// Sub-métodos del render() para que sea más legible
 	void loadLights();
 	void renderShadows();

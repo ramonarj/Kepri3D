@@ -1,6 +1,8 @@
 #include "CameraController.h"
 
 #include "Kepri3D.h"
+#include "Scenes/PruebaFisicas.h"
+#include "Scenes/PruebaScene.h"
 
 CameraController::CameraController(Camera* cam)
 {
@@ -14,6 +16,12 @@ CameraController::CameraController(Camera* cam)
 
 void CameraController::update(GLuint deltaTime)
 {
+	// Cambiar/recargar la escena
+	if (InputManager::Instance()->getSpecialKeyDown(GLUT_KEY_F1))
+		Game::Instance()->loadScene(new PruebaScene());
+	else if (InputManager::Instance()->getSpecialKeyDown(GLUT_KEY_F2))
+		Game::Instance()->loadScene(new PruebaFisicas());
+
 	// Cambiar la perspectiva
 	if (InputManager::Instance()->getKeyDown('p'))
 	{
