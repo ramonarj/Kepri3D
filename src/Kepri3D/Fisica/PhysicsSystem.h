@@ -45,6 +45,7 @@ private:
 	// Métodos privados
 	bool checkCollision(Collider* r1, Collider* r2);
 	void solveCollision(Rigid* r1, Rigid* r2);
+	void notifyCollision(Collider* c1, Collider* c2);
 };
 
 #endif

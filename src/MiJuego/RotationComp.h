@@ -11,6 +11,8 @@ public:
 
 	void update(GLuint deltaTime) override;
 
+	void onCollision(Collider* other);
+
 private:
 	GLdouble rotSpeed;
 	glm::vec3 rotAxis;

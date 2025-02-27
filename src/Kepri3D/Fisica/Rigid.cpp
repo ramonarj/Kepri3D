@@ -9,6 +9,7 @@ Rigid::Rigid(const glm::dmat4& modelMat)
 	m_position = (glm::dvec3*) &ptr[12];
 
 	// Valores por defecto
+	m_type = Dynamic;
 	m_useGravity = true;
 	m_velocity = { 0, 0, 0 };
 	m_acceleration = { 0, 0 ,0 };

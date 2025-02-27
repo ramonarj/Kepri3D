@@ -26,16 +26,18 @@ void PhysicsSystem::update(GLuint deltaTime)
 		for(int j = i + 1; j < m_rigids.size(); j++)
 		{
 			Rigid* r2 = m_rigids[j];
-			// Hay colisión -> la resolvemos
+			// Hay colisión
 			if(checkCollision(r1->m_collider, r2->m_collider))
 			{
 				//std::cout << "Colisión entre " << r1->getEntity()->getName() << " y " << r2->getEntity()->getName() << std::endl;
+				// La resolvemos
 				solveCollision(r1, r2);
+
+				// Notificamos a los involucrados
+				notifyCollision(r1->m_collider, r2->m_collider);
 			}
 		}
 	}
-	for(Rigid* r : m_rigids){}
-	//std::cout << m_rigids.size() << std::endl;
 }
 
 bool PhysicsSystem::checkCollision(Collider* c1, Collider* c2)
@@ -62,7 +64,6 @@ bool PhysicsSystem::checkCollision(Collider* c1, Collider* c2)
 			posC1.z + r1 > posC2.z - r2 && posC1.z - r1 < posC2.z + r2) // Eje Z
 			return true;
 	}
-
 	return false;
 }
 
@@ -78,12 +79,31 @@ void PhysicsSystem::solveCollision(Rigid* r1, Rigid* r2)
 		iter++;
 	} while (iter < MAX_ITER && checkCollision(r1->m_collider, r2->m_collider));
 
-	// 2) Calcular el punto de contacto y asignar las velocidades correspondientes
+	// 2) Calcular el punto de contacto y ver qué tipo de colisión es
 	glm::vec3 R1toR2 = glm::normalize(r2->getEntity()->getPosition() - r1->getEntity()->getPosition());
-	if (r1->m_useGravity)
-		r1->m_velocity = -R1toR2 * (float)glm::length(r1->m_velocity) * COEF_RESTITUCION;
-	if(r2->m_useGravity)
+
+	// Ambos dinámicos
+	if(r1->m_type == Dynamic && r2->m_type == Dynamic)
+	{
+		// Intercambiar velocidades y multiplicar por coef.rest.
+		glm::vec3 auxVel = r1->m_velocity;
+		r1->m_velocity = -R1toR2 * (float)glm::length(r2->m_velocity) * COEF_RESTITUCION;
+		r2->m_velocity = R1toR2 * (float)glm::length(auxVel) * COEF_RESTITUCION;
+	}
+	// Uno estático; se quedan con su velocidad
+	else if(r1->m_type == Static)
 		r2->m_velocity = R1toR2 * (float)glm::length(r2->m_velocity) * COEF_RESTITUCION;
-	
+	else if(r2->m_type == Static)
+		r1->m_velocity = -R1toR2 * (float)glm::length(r1->m_velocity) * COEF_RESTITUCION;
+
 	// TODO conservación del momento lineal
+}
+
+void PhysicsSystem::notifyCollision(Collider* c1, Collider* c2)
+{
+	// Notificamos a las entidades involucradas (a cada componente)
+	for (Component* c : c1->getEntity()->getComponents())
+		c->onCollision(c2);
+	for (Component* c : c2->getEntity()->getComponents())
+		c->onCollision(c1);
 }

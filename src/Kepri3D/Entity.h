@@ -118,6 +118,9 @@ public:
 	inline glm::dvec3 up() { return modelMat[1]; }
 	inline glm::dvec3 forward() { return modelMat[2]; }
 
+	/* Devuelve la lista de componentes de la entidad */
+	inline std::vector<Component*> getComponents() { return m_componentes; }
+
 	/* Devuelve un componente del tipo requerido */
 	template<typename T>
 	T* getComponent();

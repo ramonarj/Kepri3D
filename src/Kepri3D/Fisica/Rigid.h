@@ -6,6 +6,12 @@
 
 class Collider;
 
+enum RigidType
+{
+	Dynamic = 0,
+	Static = 1
+};
+
 class Rigid : public Component
 {
 public:
@@ -43,8 +49,14 @@ public:
 
 	/* Enlaza el rigid a su collider */
 	inline void setCollider(Collider* col) { m_collider = col; }
+
+	/* Cambia el tipo del Rigidbody entre dinámico y estático */
+	inline void setType(RigidType type) { m_type = type; }
 private:
 	friend class PhysicsSystem;
+
+	/* Tipo de Rigidbody */
+	RigidType m_type;
 
 	/* Puntero a la posición del Rigid */
 	glm::dvec3* m_position;

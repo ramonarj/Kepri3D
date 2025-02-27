@@ -20,6 +20,7 @@ public:
 	void update(GLuint deltaTime) override {};
 	void render();
 
+	// Setters
 	inline void setVisible(bool visible) { m_visible = visible; }
 private:
 	friend class PhysicsSystem;

@@ -27,6 +27,9 @@ public:
 
 	/* Método virtual puro que debe implementar cada tipo de componente */
 	virtual void update(GLuint deltaTime) = 0;
+
+	/* Callback para cuando la entidad colisione con otra */
+	virtual void onCollision(Collider* other) {}
 protected:
 	bool m_active;
 

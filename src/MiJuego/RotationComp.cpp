@@ -18,3 +18,9 @@ void RotationComp::update(GLuint deltaTime)
 	}
 	entity->rotate(deltaTime / 1000.0 * rotSpeed, rotAxis, LOCAL);
 }
+
+void RotationComp::onCollision(Collider* other)
+{
+	//entity->scale({ 0.9, 0.9, 0.9});
+	//std::cout << "Me choque con " << other->getEntity()->getName() << std::endl;
+}
