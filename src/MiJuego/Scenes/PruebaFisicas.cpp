@@ -80,13 +80,13 @@ void PruebaFisicas::init()
 	Cubo* cubo3 = new Cubo(2.0);
 	cubo3->setTexture("default");
 	cubo3->setShader("lights");
-	cubo3->setPosition({ 10, 50, 0 });
+	cubo3->setPosition({ 10, 15, 0 });
 	cubo3->getComponent<Renderer>()->setActive(false);
 	Collider* colcubo3 = new Collider(Collider::Cubo, 1.0);
 	colcubo3->setVisible(true);
 	cubo3->addComponent(colcubo3);
 	Rigid* rigidcubo3 = new Rigid(cubo3->getModelMat());
-	rigidcubo3->useGravity(true);
+	rigidcubo3->useGravity(false);
 	cubo3->addComponent(rigidcubo3);
 	AddEntity(cubo3);
 

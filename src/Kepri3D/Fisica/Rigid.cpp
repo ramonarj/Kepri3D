@@ -54,3 +54,22 @@ void Rigid::addTorque(const glm::vec3& torque)
 {
 	m_torque += torque;
 }
+
+void Rigid::addForce(const glm::vec3& force, const glm::vec3& point)
+{
+	if (glm::length(point) == 0) { addForce(force); return; }
+
+	// Ángulo entre el vector posición y el vector fuerza
+	double cosAngle = glm::dot(glm::normalize(force), glm::normalize(point));
+	
+	// Aplicar el torque necesario usando la componente tangencial de la fuerza. L = r x F
+	m_torque += (0.005f * glm::cross(point, force));
+
+	// Por descomposición de fuerzas, una vez quitada la tangencial (que va al torque),
+	// nos queda la que apunta desde el punto al centro de masas
+	float fuerzaNoTang = glm::length(force) * cosAngle;
+
+	// Si angle > 90 está "tirando", si es menor, está "empujando"
+
+	m_acceleration += (fuerzaNoTang * point / m_mass);
+}

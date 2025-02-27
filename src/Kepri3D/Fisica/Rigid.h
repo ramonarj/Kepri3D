@@ -22,6 +22,9 @@ public:
 	/* Ejerce una fuerza con la dirección y magnitud dadas sobre el Rigid */
 	void addForce(const glm::vec3& force);
 
+	/* Ejerce una fuerza sobre el Rigid en el punto dado (coords. locales respecto al centro de masa) */
+	void addForce(const glm::vec3& force, const glm::vec3& point);
+
 	/* Aplica un torque al Rigid (t = r x F) */
 	void addTorque(const glm::vec3& torque);
 

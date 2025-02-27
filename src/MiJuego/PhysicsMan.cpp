@@ -30,10 +30,28 @@ void PhysicsMan::update(GLuint deltaTime)
 
 	// Rozamientos
 	if (InputManager::Instance()->getKeyDown('t'))
-		rigid->setDrag(5.0);
+		rigid->setDrag(2.0);
 
 	if (InputManager::Instance()->getKeyDown('r'))
 		rigid->setAngularDrag(0.8);
+
+	// Fuerzas en un punto concreto h, j, u, n
+	if (InputManager::Instance()->getKey('h'))
+	{
+		rigid->addForce(10.0 * -rigid->getEntity()->forward(),
+			rigid->getEntity()->forward() / 2.0 + rigid->getEntity()->up() / 2.0);
+	}
+	if (InputManager::Instance()->getKey('j'))
+	{
+		rigid->addForce(10.0 * -rigid->getEntity()->forward(), 
+			-rigid->getEntity()->forward() / 2.0 - rigid->getEntity()->up() / 2.0);
+	}
+
+	/*if (InputManager::Instance()->getKey('h'))
+		rigid->addForce(10.0 * -rigid->getEntity()->forward());*/
+
+	//if (InputManager::Instance()->getKeyDown('h'))
+	//	rigid->addForce(1000.0f * glm::normalize(glm::vec3(-20, 0, -20)), {0, -0.5, 0.5});
 
 	// Sombra
 	glm::dvec3 rigidPos = rigid->getEntity()->getPosition();
