@@ -51,7 +51,7 @@ void Game::init(int argc, char* argv[], int windowWidth, int windowHeight, const
 	initGLSubsystems();
 
 	// 5) Crear Framebuffers y asignar referencias necesarias para las escenas
-	setupScenes();
+	Scene::setupStatics(camera);
 }
 
 void Game::loadScene(Scene* sc)
@@ -176,11 +176,15 @@ void Game::iniciarGlut(int argc, char* argv[], int windowW, int windowH)
 	std::cout << "Starting console..." << '\n';
 	glutInit(&argc, argv);
 
+	// Versión 3.3
 	glutInitContextVersion(3, 3);
-	glutInitContextProfile(GLUT_COMPATIBILITY_PROFILE);
+	// + 'GLUT_CORE_PROFILE' requiere que todo lo que se pinte se haga a través de VAOs 
+	// + 'GLUT_COMPATIBILITY_PROFILE' permite usar VBOs independientes, paso de info CPU-GPU cada frame,
+	// y todas las funciones del Fixed Pipeline
+	glutInitContextProfile(GLUT_COMPATIBILITY_PROFILE); 
 	glutSetOption(GLUT_ACTION_ON_WINDOW_CLOSE, GLUT_ACTION_GLUTMAINLOOP_RETURNS);
 	glutInitWindowSize(windowW, windowH);   // window size
-	//glutInitWindowPosition (140, 140);
+	glutInitWindowPosition (250, 100);
 
 	glutInitDisplayMode(GLUT_RGBA | GLUT_DOUBLE | GLUT_DEPTH | GLUT_MULTISAMPLE | GLUT_STENCIL); // | GLUT_STENCIL
 	// Número de samples
@@ -303,37 +307,6 @@ void Game::initGLSubsystems()
 	/* Teselación */
 	// Número de vértices que conforman un parche
 	glPatchParameteri(GL_PATCH_VERTICES, 4);
-}
-
-void Game::setupScenes()
-{
-	Scene::m_camera = camera;
-
-	// Crear la malla de rectángulo para el postprocesado. ({2, 2} para que ocupe la pantalla entera)
-	Scene::m_effectsMesh = Mesh::generateRectangle(2, 2);
-
-	// Crear los 2 FrameBuffers para  efectos
-	Scene::frameBuf = new Framebuffer(camera->getVP()->getW(), camera->getVP()->getH(), false);
-	Scene::frameBuf2 = new Framebuffer(camera->getVP()->getW(), camera->getVP()->getH(), false);
-
-	// Crear el framebuffer para el multisampling
-	Scene::msBuf = new Framebuffer(camera->getVP()->getW(), camera->getVP()->getH(), true);
-
-	// Composite por defecto
-	//AddComposite((Shader*)&ResourceManager::Instance()->getComposite("defaultComposite"));
-
-	// Crear los UBO para las matrices VP
-	Scene::m_uboMatrices = new Uniformbuffer(0, sizeof(glm::dmat4) * 2);
-
-	// Crear el UBO para las luces. Tamaño = 144 por temas de alineamiento
-	// 16 = viewPos + blinn | 120 = lo que ocupa una luz | 8 = relleno para que la siguiente luz empiece en múltiplo de 16
-	Scene::m_uboLuces = new Uniformbuffer(1, 16 + LIGHT_STRUCT_SIZE * MAX_LUCES);
-
-	// Debug
-	ResourceManager::Instance()->loadComposite("shadowDebug.frag", "shadowComp");
-	Scene::m_shadowComp = ((Shader*)&ResourceManager::Instance()->getComposite("shadowComp"));
-	Scene::m_shadowComp->use();
-	Scene::m_shadowComp->setInt("depthMap", 0);
 }
 
 void Game::resize(int newWidth, int newHeight)

@@ -27,6 +27,7 @@ public:
 
 	// Getters (TEMPORAL)
 	inline const void* getVertices() { return vertices; }
+	inline const void* getNormals() { return normales; }
 	unsigned int getVerticesNum() const { return numVertices; }
 	GLuint getType() const { return type; }
 

@@ -130,7 +130,7 @@ Uniformbuffer::Uniformbuffer(GLuint index, GLsizeiptr bufSize)
 
 // - - - - - - - - - - - - - - - 
 
-Vertexbuffer::Vertexbuffer(void* vertices, unsigned int numVertices)
+Vertexbuffer::Vertexbuffer(void* vertices, unsigned int numVertices, unsigned int indice)
 {
     // Crea el VBO
     glGenBuffers(1, &id);
@@ -142,10 +142,10 @@ Vertexbuffer::Vertexbuffer(void* vertices, unsigned int numVertices)
     // Tipos de buffer: GL_STREAM_DRAW | GL_STATIC_DRAW | GL_DYNAMIC_DRAW
     
     // Indica el formato de la información dada y activa el atributo 0 del VS, que es donde irá
-    glVertexAttribPointer(0, 3, GL_DOUBLE, GL_FALSE, 0, (void*)0); // stride-> 3 * sizeof(double)
-    glEnableVertexAttribArray(0);
+    glVertexAttribPointer(indice, 3, GL_DOUBLE, GL_FALSE, 0, (void*)0); // stride-> 3 * sizeof(double)
+    glEnableVertexAttribArray(indice);
 
-    glBindBuffer(GL_ARRAY_BUFFER, 0);   
+    //glBindBuffer(GL_ARRAY_BUFFER, 0);   
 }
 
 void Vertexbuffer::updateData(void* vertices)
@@ -162,8 +162,21 @@ Elementbuffer::Elementbuffer(void* indices, unsigned int numIndices)
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, id);
 
     // Le da un espacio concreto y lo rellena con la información de los índices
-    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, id);
     glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(GLuint) * numIndices, indices, GL_STATIC_DRAW);
 
-    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
+    // Importante NO llamar al unbind del EBO cuando estemos creando un VAO hasta hacer unbind del VAO mismo
+    //glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
+}
+
+// - - - - - - - - - - - - - - - 
+
+VertexArray::VertexArray()
+{
+    // Crea el VAO (y ya)
+    glGenVertexArrays(1, &id);
+    glBindVertexArray(id);
+
+    //
+
+    glBindVertexArray(0);
 }

@@ -39,6 +39,37 @@ Scene::Scene() : m_canvas(nullptr), m_skybox(nullptr)
 
 }
 
+void Scene::setupStatics(Camera* cam)
+{
+	m_camera = cam;
+
+	// Crear la malla de rectángulo para el postprocesado. ({2, 2} para que ocupe la pantalla entera)
+	m_effectsMesh = Mesh::generateRectangle(2, 2);
+
+	// Crear los 2 FrameBuffers para  efectos
+	frameBuf = new Framebuffer(m_camera->getVP()->getW(), m_camera->getVP()->getH(), false);
+	frameBuf2 = new Framebuffer(m_camera->getVP()->getW(), m_camera->getVP()->getH(), false);
+
+	// Crear el framebuffer para el multisampling
+	msBuf = new Framebuffer(m_camera->getVP()->getW(), m_camera->getVP()->getH(), true);
+
+	// Composite por defecto
+	//AddComposite((Shader*)&ResourceManager::Instance()->getComposite("defaultComposite"));
+
+	// Crear los UBO para las matrices VP
+	m_uboMatrices = new Uniformbuffer(0, sizeof(glm::dmat4) * 2);
+
+	// Crear el UBO para las luces. Tamaño = 144 por temas de alineamiento
+	// 16 = viewPos + blinn | 120 = lo que ocupa una luz | 8 = relleno para que la siguiente luz empiece en múltiplo de 16
+	m_uboLuces = new Uniformbuffer(1, 16 + LIGHT_STRUCT_SIZE * MAX_LUCES);
+
+	// Debug
+	ResourceManager::Instance()->loadComposite("shadowDebug.frag", "shadowComp");
+	m_shadowComp = ((Shader*)&ResourceManager::Instance()->getComposite("shadowComp"));
+	m_shadowComp->use();
+	m_shadowComp->setInt("depthMap", 0);
+}
+
 void Scene::AddEntity(Entity* e)
 {
 	// Vector general
@@ -76,7 +107,7 @@ void Scene::render()
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
 	// 1) Cargar las luces; IMPORTANTE hacerlo antes de pintar los objetos a los que puedan iluminar
-	//loadLights();
+	loadLights();
 
 	// 2) Fabricar los mapas de profundidad de las luces
 	renderShadows();
@@ -545,6 +576,14 @@ Scene::~Scene()
 	/* Borrar solo las cosas no estáticas */ 
 	// Borrar el canvas
 	delete m_canvas;
+
+	// Apagar todas las luces; para que al cambiar la escena, no se quede el valor residual 'on' de las
+	// luces y el shader lo siga usando
+	m_uboLuces->bind();
+	bool on = false;
+	for (int i = 0; i < MAX_LUCES; i++)
+		glBufferSubData(GL_UNIFORM_BUFFER, 16 + 116 + i * LIGHT_STRUCT_SIZE, sizeof(bool), &on);
+	m_uboLuces->unbind();
 
 	// Borrar las entidades y sus componentes
 	CleanVector(m_entities);

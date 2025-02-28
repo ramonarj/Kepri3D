@@ -75,6 +75,7 @@ Light::~Light()
 	setActive(false);
 	if(m_shadowMap != nullptr)
 		delete m_shadowMap;
+	cont--;
 }
 
 void Light::update(GLuint deltaTime)

@@ -9,6 +9,7 @@ class Collider;
 
 class Vertexbuffer;
 class Elementbuffer;
+class VertexArray;
 
 #include "Material.h"
 
@@ -390,6 +391,24 @@ private:
 	unsigned int numIndices;
 	Vertexbuffer* vbo;
 	Elementbuffer* ebo;
+};
+
+// - - - - - - - - - - - - 
+
+class VAOEntity : public Entity
+{
+public:
+	VAOEntity();
+	~VAOEntity() { delete vao; };
+
+	void render() override;
+
+private:
+	GLenum type;
+	unsigned int numVerts;
+	unsigned int numIndices;
+
+	VertexArray* vao;
 };
 
 #endif

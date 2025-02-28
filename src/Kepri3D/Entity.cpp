@@ -648,3 +648,46 @@ void EBOEntity::render()
 	m_material.unload();
 }
 
+// - - - - - - - - - - - - - - - - - 
+
+VAOEntity::VAOEntity()
+{
+	Renderer* rend = new Renderer(IndexMesh::generateSphere(2, 20, 20));
+	addComponent(rend);
+	m_name = "VAOEntity";
+
+	type = rend->getMesh()->getType();
+	if (type != GL_TRIANGLES) { std::cout << "Quieto parao" << std::endl; }
+	numVerts = rend->getMesh()->getVerticesNum();
+	numIndices = static_cast<IndexMesh*>(rend->getMesh())->getIndicesNum();
+
+	// Crear el VAO y, mientras está enlazado, crear los VBO (y el EBO) que incluirá
+	vao = new VertexArray();
+	vao->bind();
+	Vertexbuffer vboVertices((void*)rend->getMesh()->getVertices(), numVerts);
+	Vertexbuffer vboNormales((void*)rend->getMesh()->getNormals(), numVerts, 3);
+	Elementbuffer ebo((void*)static_cast<IndexMesh*>(rend->getMesh())->getIndices(), numIndices);
+	vao->unbind();
+}
+
+void VAOEntity::render()
+{
+	// Cargar el material
+	m_material.loadToShader(m_shader);
+	sendUniforms();
+
+	glPolygonMode(GL_FRONT, GL_FILL);
+	glPolygonMode(GL_BACK, GL_LINE);
+
+	// Activar VAO solamente (no es necesaria la llamada a 'glVertexAttribPointer' porque el VAO guarda el estado)
+	vao->bind();
+
+	// Dibujar triángulos indexados
+	glDrawElements(type, numIndices, GL_UNSIGNED_INT, 0);
+
+	// Desactivar VAO
+	vao->unbind();
+
+	// Desactivar texturas
+	m_material.unload();
+}

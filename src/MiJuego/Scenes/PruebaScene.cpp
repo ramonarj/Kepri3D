@@ -576,6 +576,14 @@ void PruebaScene::PruebaMateriales()
 	eboEnt->setShader("lights");
 	eboEnt->setPosition({ 5,1,-5 });
 	AddEntity(eboEnt);
+
+	// Entidad con VAO
+	VAOEntity* vaoEnt = new VAOEntity();
+	//vaoEnt->setMaterial("ruby");
+	vaoEnt->setTexture("zelda");
+	vaoEnt->setShader("lights");
+	vaoEnt->setPosition({ 10,1,-5 });
+	AddEntity(vaoEnt);
 }
 
 void PruebaScene::ViewportTest()

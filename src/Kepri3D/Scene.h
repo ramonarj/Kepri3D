@@ -125,6 +125,10 @@ protected:
 
 private:
 	friend class Game;
+
+	/* Crea e inicializa los framebuffers correspondientes */
+	static void setupStatics(Camera* cam);
+
 	// Sub-métodos del render() para que sea más legible
 	void loadLights();
 	void renderShadows();

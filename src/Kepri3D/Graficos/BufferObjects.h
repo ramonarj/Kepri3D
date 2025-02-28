@@ -51,7 +51,7 @@ private:
 class Vertexbuffer
 {
 public:
-	Vertexbuffer(void* vertices, unsigned int numVertices);
+	Vertexbuffer(void* vertices, unsigned int numVertices, unsigned int indice = 0);
 	~Vertexbuffer() {}
 
 	/* Activa este VBO */
@@ -79,6 +79,25 @@ public:
 
 	/* Desactiva el buffer que hubiera activo*/
 	inline static void unbind() { glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0); }
+
+private:
+	unsigned int id;
+};
+
+// - - - - - - - - - - - 
+
+// Técnicamente no es un buffer object, sino un contenedor de estos
+class VertexArray
+{
+public:
+	VertexArray();
+	~VertexArray() {}
+
+	/* Activa este VAO */
+	inline void bind() { glBindVertexArray(id); }
+
+	/* Desactiva el VAO que hubiera actibo*/
+	inline static void unbind() { glBindVertexArray(0); }
 
 private:
 	unsigned int id;

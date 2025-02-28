@@ -39,7 +39,7 @@ void Mesh::enableArrays()
 		glVertexPointer(3, GL_DOUBLE, 0, vertices);
 		// Para el vertex shader
 		glVertexAttribPointer(0, 3, GL_DOUBLE, GL_FALSE, 0, vertices);
-		//glEnableVertexAttribArray(0);
+		glEnableVertexAttribArray(0);
 	}
 
 	// Colores
