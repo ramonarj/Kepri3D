@@ -7,6 +7,9 @@ class Component;
 class Renderer;
 class Collider;
 
+class Vertexbuffer;
+class Elementbuffer;
+
 #include "Material.h"
 
 #include <glm.hpp>
@@ -356,5 +359,37 @@ private:
 };
 
 // - - - - - - - - - - - - 
+
+class VBOEntity : public Entity
+{
+public:
+	VBOEntity();
+	~VBOEntity() { delete vbo; };
+
+	void render() override;
+
+private:
+	GLenum type;
+	unsigned int numVerts;
+	Vertexbuffer* vbo;
+};
+
+// - - - - - - - - - - - - 
+
+class EBOEntity : public Entity
+{
+public:
+	EBOEntity();
+	~EBOEntity() { delete ebo; delete vbo; };
+
+	void render() override;
+
+private:
+	GLenum type;
+	unsigned int numVerts;
+	unsigned int numIndices;
+	Vertexbuffer* vbo;
+	Elementbuffer* ebo;
+};
 
 #endif

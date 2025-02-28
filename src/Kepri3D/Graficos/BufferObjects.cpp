@@ -4,6 +4,8 @@
 #include <freeglut.h>
 #include <iostream>
 
+#include <gtc/type_ptr.hpp>
+
 Framebuffer::Framebuffer(GLuint width, GLuint height, bool multisampling)
 {
     // Creamos un Framebuffer. Debe tener 3 elementos atados a él: Color, Depth y Stencil buffer
@@ -124,4 +126,44 @@ Uniformbuffer::Uniformbuffer(GLuint index, GLsizeiptr bufSize)
     glBindBuffer(GL_UNIFORM_BUFFER, 0);
     // Unir el UBO creado al punto de unión dado por 'index'
     glBindBufferRange(GL_UNIFORM_BUFFER, index, id, 0, bufSize);
+}
+
+// - - - - - - - - - - - - - - - 
+
+Vertexbuffer::Vertexbuffer(void* vertices, unsigned int numVertices)
+{
+    // Crea el VBO
+    glGenBuffers(1, &id);
+    glBindBuffer(GL_ARRAY_BUFFER, id);
+
+    // Le da un espacio concreto y lo rellena con la información de los vértices
+    bufSize = sizeof(double) * 3 * numVertices;
+    glBufferData(GL_ARRAY_BUFFER, bufSize, vertices, GL_STATIC_DRAW);
+    // Tipos de buffer: GL_STREAM_DRAW | GL_STATIC_DRAW | GL_DYNAMIC_DRAW
+    
+    // Indica el formato de la información dada y activa el atributo 0 del VS, que es donde irá
+    glVertexAttribPointer(0, 3, GL_DOUBLE, GL_FALSE, 0, (void*)0); // stride-> 3 * sizeof(double)
+    glEnableVertexAttribArray(0);
+
+    glBindBuffer(GL_ARRAY_BUFFER, 0);   
+}
+
+void Vertexbuffer::updateData(void* vertices)
+{
+    glBufferSubData(GL_ARRAY_BUFFER, 0, bufSize, vertices);
+}
+
+// - - - - - - - - - - - - - - - 
+
+Elementbuffer::Elementbuffer(void* indices, unsigned int numIndices)
+{
+    // Crea el EBO
+    glGenBuffers(1, &id);
+    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, id);
+
+    // Le da un espacio concreto y lo rellena con la información de los índices
+    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, id);
+    glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(GLuint) * numIndices, indices, GL_STATIC_DRAW);
+
+    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
 }

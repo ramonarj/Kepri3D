@@ -16,6 +16,7 @@
 #include "Collider.h"
 #include "Rigid.h"
 #include "PhysicsSystem.h"
+#include "BufferObjects.h"
 
 #include <freeglut.h>
 
@@ -558,3 +559,92 @@ void TessTerrain::render()
 }
 
 // - - - - - - - - - - - - - - - - - 
+
+VBOEntity::VBOEntity()
+{
+	Renderer* rend = new Renderer(Mesh::generateFilledPolygon(6, 2.0));
+	addComponent(rend);
+	m_name = "VBOEntity";
+
+	type = rend->getMesh()->getType();
+	numVerts = rend->getMesh()->getVerticesNum();
+	vbo = new Vertexbuffer((void*)rend->getMesh()->getVertices(), numVerts);
+}
+
+void VBOEntity::render()
+{
+	// Cargar el material
+	m_material.loadToShader(m_shader);
+	sendUniforms();
+	
+	glPolygonMode(GL_FRONT, GL_FILL);
+	glPolygonMode(GL_BACK, GL_LINE);
+
+	// Activar VBO
+	vbo->bind();
+
+	// Prueba: actualizar el buffer con la nueva posición de los vértices
+	if(glutGet(GLUT_ELAPSED_TIME) % 1000 < 10)
+	{
+		int posZ = std::rand() % 10;
+		((double*)m_renderer->getMesh()->getVertices())[2] = posZ;
+		vbo->updateData((void*)m_renderer->getMesh()->getVertices());
+	}
+
+	// Esto de momento hay que llamarlo, porque en el resto de entidades, se cambia el estado del atributo 0
+	// (con el último argumento a 'vertices') en vez de activando el VBO correspondiente
+	glVertexAttribPointer(0, 3, GL_DOUBLE, GL_FALSE, 0, 0);
+
+	// Dibujar
+	glDrawArrays(type, 0, numVerts);
+
+	// Desactivar VBO
+	vbo->unbind();
+
+	// Desactivar texturas
+	m_material.unload();
+}
+
+// - - - - - - - - - - - - - - - - - 
+
+EBOEntity::EBOEntity()
+{
+	Renderer* rend = new Renderer(IndexMesh::generateToro(1.5, 0.75, 15, 8));
+	addComponent(rend);
+	m_name = "EBOEntity";
+
+	type = rend->getMesh()->getType();
+	if (type != GL_TRIANGLES) { std::cout << "Quieto parao" << std::endl; }
+	numVerts = rend->getMesh()->getVerticesNum();
+	numIndices = static_cast<IndexMesh*>(rend->getMesh())->getIndicesNum();
+
+	vbo = new Vertexbuffer((void*)rend->getMesh()->getVertices(), numVerts);
+	ebo = new Elementbuffer((void*)static_cast<IndexMesh*>(rend->getMesh())->getIndices(), numIndices);
+}
+
+void EBOEntity::render()
+{
+	// Cargar el material
+	m_material.loadToShader(m_shader);
+	sendUniforms();
+
+	glPolygonMode(GL_FRONT, GL_FILL);
+	glPolygonMode(GL_BACK, GL_LINE);
+
+	// Activar VBO y EBO
+	vbo->bind();
+	ebo->bind();
+
+	glVertexAttribPointer(0, 3, GL_DOUBLE, GL_FALSE, 0, 0);
+
+	// Dibujar triángulos indexados
+	glDrawElements(type, numIndices, GL_UNSIGNED_INT, 0);
+
+	// Desactivar VBO
+	vbo->unbind();
+	ebo->unbind();
+
+	// Desactivar texturas
+	m_material.unload();
+}
+

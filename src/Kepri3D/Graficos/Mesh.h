@@ -8,6 +8,9 @@
 #include "Game.h"
 
 
+#include <gtc/type_ptr.hpp>
+
+
 class Mesh
 {
 public:
@@ -21,6 +24,11 @@ public:
 	virtual void draw();
 	/* Dibuja la malla tantas veces como se indique, con una sola llamada a la GPU */
 	virtual void drawInstanced(GLuint numInstances);
+
+	// Getters (TEMPORAL)
+	inline const void* getVertices() { return vertices; }
+	unsigned int getVerticesNum() const { return numVertices; }
+	GLuint getType() const { return type; }
 
 	/* Creación de mallas de los distintos objetos */
 	// Ejes RGB
@@ -84,6 +92,10 @@ public:
 	/* Pinta la malla pero usando la tabla de índices, y no otras primitivas */
 	void draw() override;
 	void drawInstanced(GLuint numInstances) override;
+
+	// Getters (TEMPORAL)
+	inline const void* getIndices() { return indices; }
+	inline unsigned int getIndicesNum() const { return numIndices; }
 
 	// Creación de mallas con triángulos indexados
 

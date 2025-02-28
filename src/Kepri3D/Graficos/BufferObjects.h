@@ -2,6 +2,7 @@
 #define __BUFFER_OBJECTS__
 
 #include <glew.h>
+#include <glm.hpp>
 
 class Framebuffer
 {
@@ -37,10 +38,48 @@ public:
 	~Uniformbuffer(){}
 
 	/* Activa este Uniform Buffer */
-	inline void bind(GLenum target = GL_FRAMEBUFFER) { glBindBuffer(GL_UNIFORM_BUFFER, id); }
+	inline void bind() { glBindBuffer(GL_UNIFORM_BUFFER, id); }
 
 	/* Desactiva el Uniform Buffer  que hubiera activo*/
 	inline static void unbind() { glBindBuffer(GL_UNIFORM_BUFFER, 0); }
+private:
+	unsigned int id;
+};
+
+// - - - - - - - - - - - 
+
+class Vertexbuffer
+{
+public:
+	Vertexbuffer(void* vertices, unsigned int numVertices);
+	~Vertexbuffer() {}
+
+	/* Activa este VBO */
+	inline void bind() { glBindBuffer(GL_ARRAY_BUFFER, id); }
+
+	/* Desactiva el VBO  que hubiera activo*/
+	inline static void unbind() { glBindBuffer(GL_ARRAY_BUFFER, 0); }
+
+	void updateData(void* vertices);
+private:
+	unsigned int id;
+	unsigned int bufSize;
+};
+
+// - - - - - - - - - - - 
+
+class Elementbuffer
+{
+public:
+	Elementbuffer(void* indices, unsigned int numIndices);
+	~Elementbuffer() {}
+
+	/* Activa este buffer */
+	inline void bind() { glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, id); }
+
+	/* Desactiva el buffer que hubiera activo*/
+	inline static void unbind() { glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0); }
+
 private:
 	unsigned int id;
 };

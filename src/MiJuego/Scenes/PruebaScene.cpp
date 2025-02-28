@@ -562,6 +562,20 @@ void PruebaScene::PruebaMateriales()
 	tejado->setPosition({ 0,10,0 });
 	tejado->setShader("lights");
 	AddEntity(tejado);
+
+	// Entidad con VBO
+	VBOEntity* vboEnt = new VBOEntity();
+	vboEnt->setTexture("zelda");
+	vboEnt->setShader("lights");
+	vboEnt->setPosition({ 0,1,-5 });
+	AddEntity(vboEnt);
+
+	// Entidad con EBO
+	EBOEntity* eboEnt = new EBOEntity();
+	eboEnt->setTexture("zelda");
+	eboEnt->setShader("lights");
+	eboEnt->setPosition({ 5,1,-5 });
+	AddEntity(eboEnt);
 }
 
 void PruebaScene::ViewportTest()
