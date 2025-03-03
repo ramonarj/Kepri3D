@@ -18,12 +18,12 @@ std::vector<std::string> buttonNames = { "botonCulling", "botonBlending", "boton
 
 std::vector<std::string> buttonTexts = { "CULLING", "BLENDING", "LIGHTING", "TEXTURES", "FLAT\nSHADING",
 "ALPHA\nTEST", "MULTI\nSAMPLING", "MIPMAPS", "VER\nNORMALES", "POST\nPROCESADO", "SCISSOR\nTEST",
-"SKYBOX", "GAMMA\nCORRECTION", "INSTANCING", "SOMBRAS", "LOGIC\nOP" };
+"SKYBOX", "FRESNEL\nEFFECT", "INSTANCING", "SOMBRAS", "LOGIC\nOP" };
 
 std::vector<void(*)()> PruebaScene::callbacks = { cullingButtonPressed, blendingButtonPressed, lightingButtonPressed,
 texturesButtonPressed, shadingButtonPressed, alphaButtonPressed, multisamplingButtonPressed, mipmapButtonPressed,
-normalsButtonPressed, compositeButtonPressed, scissorButtonPressed, skyboxButtonPressed, gammaButtonPressed, 
-instancingButtonPressed, shadowsButtonPressed, logicOpButtonPressed };
+normalsButtonPressed, compositeButtonPressed, scissorButtonPressed, skyboxButtonPressed, fresnelButtonPressed, 
+instancingButtonPressed, shadowsButtonPressed, logicOpButtonPressed, gammaButtonPressed };
 
 
 void PruebaScene::init()
@@ -232,7 +232,7 @@ void PruebaScene::init()
 
 
 	/* - - Skybox - - */
-	Skybox* sky = new Skybox("citySkybox");
+	Skybox* sky = new Skybox("lakeSkybox");
 	SetSkybox(sky);
 
 	/* - - Sistema de partículas - - */
@@ -362,7 +362,7 @@ void PruebaScene::loadResources()
 	/* Shaders */
 	ResourceManager::Instance()->loadShader("default.vert", "cruces.geom", "default.frag", "cruces");
 	ResourceManager::Instance()->loadShader("maximize.vert", "", "fog.frag", "bigFog");
-	ResourceManager::Instance()->loadShader("default.vert", "", "movimiento.frag", "movimiento");
+	ResourceManager::Instance()->loadShader("movimiento.vert", "", "movimiento.frag", "movimiento");
 	ResourceManager::Instance()->loadShader("default.vert", "", "multitexture.frag", "multitexture");
 	ResourceManager::Instance()->loadShader("clippable.vert", "", "default.frag", "clippable");
 	ResourceManager::Instance()->loadShader("terrain.vert", "terrain.tesc", "terrain.tese", "", "lights.frag", "terreno");
@@ -433,18 +433,22 @@ void PruebaScene::PruebaMateriales()
 
 	// Rejilla (suelo)
 	MovingGrid* grid = new MovingGrid(1, 1, 30, 60);
+	//grid->setMaterial("oceano");
 	//grid->setMaterial("emerald");
 	grid->setTexture("agua");
 	grid->setDisplacementMap("agua_disp");
-	grid->setShader("lights");
+	grid->enableReflections("blanco", "lakeSkybox");
+	//grid->setShader("lights");
 	grid->setSpeeds({ 2.0, 0.0 }, { -2, 0 });
 	grid->setPosition({ 0,-1,0 });
 	AddEntity(grid);
 
 	// "Cascada"
 	MovingGrid* cascada = new MovingGrid(1, 1, 30, 24);
+	cascada->setMaterial("oceano");
 	cascada->setTexture("agua");
 	cascada->setDisplacementMap("agua_disp");
+	cascada->enableReflections("blanco", "lakeSkybox");
 	cascada->setSpeeds({ 5.0, 0.0 }, { 10.0, 0.0 });
 	cascada->setPosition({ 30,-13,0 });
 	cascada->rotate(-PI / 2, { 0, 0, 1 }, GLOBAL);
@@ -467,10 +471,11 @@ void PruebaScene::PruebaMateriales()
 
 
 	// Mar de la isla
-	MovingGrid* mar = new MovingGrid(1, 1, 723, 1087);
+	MovingGrid* mar = new MovingGrid(1, 1, 723 * 3, 1087 * 3);
 	mar->setMaterial("oceano");
 	mar->setTexture("agua");
 	mar->setDisplacementMap("agua_disp");
+	mar->enableReflections("blanco", "lakeSkybox");
 	mar->setSpeeds({ 0.0, 0.0 }, { -0.2, -0.2 });
 	mar->setPosition({ 0,-20.01,0 });
 	AddEntity(mar);

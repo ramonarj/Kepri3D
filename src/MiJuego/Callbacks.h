@@ -15,6 +15,7 @@ void compositeButtonPressed();
 void scissorButtonPressed();
 void skyboxButtonPressed();
 void gammaButtonPressed();
+void fresnelButtonPressed();
 void shadowsButtonPressed();
 void stencilButtonPressed();
 void logicOpButtonPressed();

@@ -119,6 +119,13 @@ void gammaButtonPressed()
 	GameManager::centerMouse();
 }
 
+void fresnelButtonPressed()
+{
+	Material::fresnel = !Material::fresnel;
+	GameManager::centerMouse();
+}
+
+
 void stencilButtonPressed()
 {
 	Game::switchBoolParam(GL_STENCIL_TEST);

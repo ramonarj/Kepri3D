@@ -45,6 +45,8 @@ public:
 	inline GLfloat getBrillo() const { return m_brillo; }
 
 	inline const Texture* getTexture(GLuint i) const { return m_textures[i]; }
+
+	static bool fresnel;
 private:
 	/* Componentes del material */
 	glm::fvec4 m_ambient;

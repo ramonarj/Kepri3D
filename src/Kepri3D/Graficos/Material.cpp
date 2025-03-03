@@ -6,6 +6,7 @@
 #include <string>
 
 GLuint Material::m_shading;
+bool Material::fresnel = true;
 
 Material::Material()
 {
@@ -53,6 +54,8 @@ void Material::loadToShader(Shader* sh)
 {
 	if (sh == nullptr)
 		return;
+	// Globales
+	sh->setInt("fresnel", fresnel);
 
 	// Propiedades del material
 	sh->setVec3("material.ambient", m_ambient);
