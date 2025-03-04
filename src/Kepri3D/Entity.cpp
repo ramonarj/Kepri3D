@@ -114,12 +114,17 @@ void Entity::render(glm::dmat4 const& viewMat)
 
 void Entity::render()
 {
+	render(m_shader);
+}
+
+void Entity::render(Shader* sh)
+{
 	// 1) Renderizar la propia entidad
 	// Cargar el material
-	m_material.loadToShader(m_shader);
+	m_material.loadToShader(sh);
 
 	// Dibujar la/s malla/s
-	sendUniforms();
+	sendUniforms(sh);
 	if (m_renderer != nullptr)
 		m_renderer->draw();
 	// Debug del collider
@@ -134,9 +139,9 @@ void Entity::render()
 			e->render();
 }
 
-void Entity::sendUniforms()
+void Entity::sendUniforms(Shader* sh)
 {
-	if (m_shader == nullptr)
+	if (sh == nullptr)
 		return;
 
 	// Deshacer la posición de los hijos relativa al padre
@@ -148,9 +153,9 @@ void Entity::sendUniforms()
 		parent = parent->m_parent;
 	}
 
-	m_shader->setMat4d("model", model);
+	sh->setMat4d("model", model);
 	// Sombras
-	m_shader->setInt("receive_shadows", m_renderer->receiveShadows());
+	sh->setInt("receive_shadows", m_renderer->receiveShadows());
 }
 
 void Entity::update(GLuint deltaTime)
@@ -575,7 +580,7 @@ void VBOEntity::render()
 {
 	// Cargar el material
 	m_material.loadToShader(m_shader);
-	sendUniforms();
+	sendUniforms(m_shader);
 	
 	glPolygonMode(GL_FRONT, GL_FILL);
 	glPolygonMode(GL_BACK, GL_LINE);
@@ -626,7 +631,7 @@ void EBOEntity::render()
 {
 	// Cargar el material
 	m_material.loadToShader(m_shader);
-	sendUniforms();
+	sendUniforms(m_shader);
 
 	glPolygonMode(GL_FRONT, GL_FILL);
 	glPolygonMode(GL_BACK, GL_LINE);
@@ -674,7 +679,7 @@ void VAOEntity::render()
 {
 	// Cargar el material
 	m_material.loadToShader(m_shader);
-	sendUniforms();
+	sendUniforms(m_shader);
 
 	glPolygonMode(GL_FRONT, GL_FILL);
 	glPolygonMode(GL_BACK, GL_LINE);

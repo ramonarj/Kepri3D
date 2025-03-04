@@ -5,6 +5,8 @@
 #include <string>
 #include <glm.hpp>
 
+#include "Game.h"
+
 class Shader
 {
 public:
@@ -17,10 +19,29 @@ public:
 	void link();
 
 	/* Activa/carga este shader */
-	inline void use() const { glUseProgram(programId); }
+	inline void use() const 
+	{
+		// Evitar llamadas innecesarias a 'glUseProgram' (da fallos)
+		if (s_activeProgram == programId) { return; }
+
+		glUseProgram(programId);
+		s_activeProgram = programId;
+#ifdef __DEBUG_INFO__
+		programChanges++;
+#endif
+	}
 
 	/* Desactiva el uso de shaders, eliminando el programa que hubiera cargado (si lo había) */
-	static void turnOff() { glUseProgram(0); }
+	static inline void turnOff() 
+	{
+		if (s_activeProgram == 0) { return; }
+
+		glUseProgram(0); 
+		s_activeProgram = 0;
+#ifdef __DEBUG_INFO__
+		programChanges++;
+#endif
+	}
 
 	// - - - Paso de uniforms - - - // 
 	/* Pasa un uniform de tipo INT al shader */
@@ -47,12 +68,19 @@ public:
 	// - - - Configurar los Uniform blocks - - - //
 	void bindUniformBlock(const std::string& name, unsigned int bindingPoint);
 
+
+#ifdef __DEBUG_INFO__
+	static unsigned int programChanges;
+#endif
 private:
 	/* IDs del Vertex, Tess. Control, Tess. Eval., Geometry y Fragment shader (en ese orden) */
 	unsigned int shadersIds[5];
 
 	/* ID del shader program */
 	unsigned int programId;
+
+	/* Shader activo actualmente */
+	static unsigned int s_activeProgram;
 };
 
 #endif

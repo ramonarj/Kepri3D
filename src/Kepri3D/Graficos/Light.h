@@ -7,6 +7,7 @@
 
 class Framebuffer;
 class Shader;
+class Uniformbuffer;
 
 const unsigned int SHADOW_SIZE = 1024;
 
@@ -64,6 +65,7 @@ public:
 	/* Carga las propiedades de la luz en OpenGL */
 	virtual void load(glm::dmat4 viewMat);
 
+	/* Activa / desactiva las sombras emitidas por esta luz */
 	void emitShadows(bool b);
 
 	// Getters
@@ -73,13 +75,9 @@ public:
 	/* Devuelve el tipo de luz que es */
 	inline LightType getType() const { return type; }
 
-	/* Devuelve la componente ambient de la luz */
+	/* Componentes de la luz */
 	inline const glm::fvec3& getAmbient() const { return ambient; }
-
-	/* Devuelve la componente difusa de la luz*/
 	inline const glm::fvec3& getDiffuse() const { return diffuse; }
-
-	/* Devuelve la componente especular de la luz */
 	inline const glm::fvec3& getSpecular() const { return specular; }
 
 	/* Devuelve el factor de atenuación de la luz (0 = constante, 1 = lineal, 2 = cuadrático) */
@@ -88,17 +86,19 @@ public:
 	/* Devuelve el mapa de sombras */
 	inline Shadowmap* getShadowMap() { return m_shadowMap; }
 
+	/* Manda los uniforms */
+	void sendShadowUniforms(Uniformbuffer* uboMatrices);
+
+	/* Rellena parte del UBO con la información de esta luz */
+	void loadToUBO(unsigned int offset);
+
 	// Setters
 	/* Enciende/apaga la luz */
 	void setActive(bool active);
 
-	/* Cambia la luz difusa */
+	/* Componentes de la luz */
 	inline void setDiffuse(glm::fvec4 diffuse) { this->diffuse = diffuse; }
-
-	/* Cambia la luz ambiente */
 	inline void setAmbient(glm::fvec4 ambient) { this->ambient = ambient; }
-
-	/* Cambia la luz difusa */
 	inline void setSpecular(glm::fvec4 specular) { this->specular = specular; }
 
 	/* Cambia la dirección de la luz, y la convierte en direccional */

@@ -39,6 +39,8 @@ public:
 	de llamar a la función */
 	virtual void render();
 
+	virtual void render(Shader* sh);
+
 	// Actualizar
 	virtual void update(GLuint deltaTime);
 
@@ -73,7 +75,6 @@ public:
 
 	/* Establece el shader (ya creado) que usará la entidad */
 	void setShader(const std::string& shaderID);
-	inline void setShader(Shader* sh) { m_shader = sh; }
 
 	/* Establece la textura principal (diffuse) que usará la entidad */
 	void setTexture(const std::string& textureID);
@@ -165,7 +166,7 @@ protected:
 	Shader* m_shader;
 
 	/* Manda la información de la entidad al shader */
-	void sendUniforms();
+	void sendUniforms(Shader* sh);
 };
 
 template<typename T>

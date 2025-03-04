@@ -106,37 +106,34 @@ void Scene::render()
 	// 0) Limpiar el color y depth buffer
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-	// 1) Cargar las luces; IMPORTANTE hacerlo antes de pintar los objetos a los que puedan iluminar
+	// 1) Cargar las luces (Fixed Pip.), fabricar los mapas de profundidad y rellenar el UBOs
 	loadLights();
-
-	// 2) Fabricar los mapas de profundidad de las luces
-	renderShadows();
 	//debugShadowMap();
 
-	// 3) Enviar uniforms comunes a todas las entidades (matrices y luces)
-	sendUniformBlocks();
+	// 2) Rellenar UBO de las matrices
+	loadMatrices();
 
-	// 4) Pintar todas las entidades opacas
+	// 3) Pintar todas las entidades opacas
 	renderEntities(m_opaqueEntities);
 
-	// 5) Pintar los vectores normales, si están activos
+	// 4) Pintar los vectores normales, si están activos
 	renderNormals();
 
-	// 6) Pintar el canvas
-	renderCanvas();
-
-	// 7) Pintar el skybox, si lo hay
+	// 5) Pintar el skybox, si lo hay
 	renderSkybox();
 
-	// 7.5) Pintar todas las entidades transparentes
+	// 6) Pintar todas las entidades transparentes
 	glDepthMask(GL_FALSE);
 	renderEntities(m_transEntities);
 	glDepthMask(GL_TRUE);
 
+	// 7) Pintar el canvas lo último
+	renderCanvas();
+
 	// 8) Post-procesar la imagen del color buffer
 	renderEffects();
 
-	// 8) Hacer swap de buffers
+	// 9) Hacer swap de buffers
 	// Hay 2 buffers; uno se está mostrando por ventana, y el otro es el que usamos
 	// para dibujar con la GPU. Cuando se ha terminado de dibujar y llega el siguiente 
 	// frame, se intercambian las referencias y se repite el proceso
@@ -145,9 +142,32 @@ void Scene::render()
 
 void Scene::loadLights()
 {
+	// 1) Fixed pipeline
 	for (Light* l : m_lights)
 		if (l->isActive())
 			l->load(m_camera->getViewMat());
+
+	// 2) Actualizar los mapas de sombras (la luces que lo requieran)
+	renderShadows();
+
+	// 3) Rellenar el UBO con la información de todas las luces
+	m_uboLuces->bind();
+
+	// a) Común a todas las luces; posición de la cámara y tipo de reflejos
+	glm::vec3 viewPos = m_camera->getPosition();
+	glBufferSubData(GL_UNIFORM_BUFFER, 0, sizeof(glm::vec3), &viewPos);
+	glBufferSubData(GL_UNIFORM_BUFFER, 12, sizeof(bool), &blinn);
+
+	// b) Array de luces; cargar cada una de ellas
+	GLintptr offset = 16;
+	for(Light* l : m_lights)
+	{
+		l->loadToUBO(offset);
+		// Hay que desperdiciar 8 bytes al final (del 120 - 128)
+		offset += LIGHT_STRUCT_SIZE;
+	}
+
+	Uniformbuffer::unbind();
 }
 
 void Scene::debugShadowMap()
@@ -165,9 +185,9 @@ void Scene::renderShadows()
 	for(Light* l : m_lights) // Light* l : m_lights
 	{
 		Shadowmap* map = l->getShadowMap();
-		if (map == nullptr) { continue; }
+		if (!l->isActive() || map == nullptr) { continue; }
 		// Mandar los uniforms de las matrices
-		sendShadowUniforms(l);
+		l->sendShadowUniforms(m_uboMatrices);
 
 		// Cambiar a la resolución del depth map
 		glViewport(0, 0, map->width, map->height);
@@ -184,13 +204,8 @@ void Scene::renderShadows()
 			// Comprobamos que la entidad emita sombras
 			if (e->isActive() && r != nullptr && r->castShadows())
 			{
-				// Guardamos su shader y le ponemos el barato
-				Shader* shader = (Shader*)e->getShader();
-				e->setShader(map->shader);
-				// Pintar
-				e->render();
-				// Devolverle el suyo
-				e->setShader(shader);
+				// Pintar con el shader del Shadow Pass
+				e->render(map->shader);
 			}
 		}
 		// Valores prederminados
@@ -262,8 +277,7 @@ void Scene::renderNormals()
 	normalsShader->use();
 	for (Renderer* r : m_renderers)
 	{
-		// Pasar la matriz de modelado al VS y pintar
-		normalsShader->setMat4d("model", r->getEntity()->getModelMat());
+		//normalsShader->setMat4d("model", r->getEntity()->getModelMat());
 		r->getEntity()->render();
 	}
 }
@@ -344,7 +358,7 @@ void Scene::update(GLuint deltaTime)
 	PhysicsSystem::Instance()->update(deltaTime);
 }
 
-void Scene::sendUniformBlocks()
+void Scene::loadMatrices()
 {
 	// - - - - - Matrices V y P - - - - - //
 	glm::dmat4 proj = m_camera->getProjMat();
@@ -353,119 +367,8 @@ void Scene::sendUniformBlocks()
 	glBufferSubData(GL_UNIFORM_BUFFER, 0, sizeof(glm::dmat4), glm::value_ptr(proj));
 	glBufferSubData(GL_UNIFORM_BUFFER, sizeof(glm::dmat4), sizeof(glm::dmat4), glm::value_ptr(view));
 	Uniformbuffer::unbind();
-
-	// - - - - - - Luces - - - - - - - //
-
-	// a) Común a todas las luces
-	m_uboLuces->bind();
-	// Posición de la cámara
-	glm::vec3 viewPos = m_camera->getPosition();
-	glBufferSubData(GL_UNIFORM_BUFFER, 0, sizeof(glm::vec3), &viewPos);
-
-	// Reflejos blinn / blinn-phong
-	glBufferSubData(GL_UNIFORM_BUFFER, 12, sizeof(bool), &blinn);
-
-	// b) Array de luces
-	GLintptr offset = 16;
-	for(int i = 0; i < m_lights.size(); i++)
-	{
-		Light* l = m_lights[i];
-		int type = l->getType();
-		glm::vec3 posDir = (type == DIRECTIONAL_LIGHT) ? l->getDirection() : (glm::vec3)l->getEntity()->getPosition();
-		glm::vec3 ambient = l->getAmbient();
-		glm::vec3 diffuse = l->getDiffuse();
-		glm::vec3 specular = l->getSpecular();
-
-		// Tipo de luz
-		glBufferSubData(GL_UNIFORM_BUFFER, offset, sizeof(int), &type);
-		// Posición / dirección
-		glBufferSubData(GL_UNIFORM_BUFFER, offset + 16, sizeof(glm::vec3), glm::value_ptr(posDir));
-		// Componentes de la luz
-		glBufferSubData(GL_UNIFORM_BUFFER, offset + 32, sizeof(glm::vec3), glm::value_ptr(ambient));
-		glBufferSubData(GL_UNIFORM_BUFFER, offset + 48, sizeof(glm::vec3), glm::value_ptr(diffuse));
-		glBufferSubData(GL_UNIFORM_BUFFER, offset + 64, sizeof(glm::vec3), glm::value_ptr(specular));
-		// Factores de atenuación
-		if (type != DIRECTIONAL_LIGHT)
-		{
-			float attConst = l->getAttenuation(0);
-			float attLin = l->getAttenuation(1);
-			float attQuad = l->getAttenuation(2);
-			glBufferSubData(GL_UNIFORM_BUFFER, offset + 76, sizeof(float), &attConst);
-			glBufferSubData(GL_UNIFORM_BUFFER, offset + 80, sizeof(float), &attLin);
-			glBufferSubData(GL_UNIFORM_BUFFER, offset + 84, sizeof(float), &attQuad);
-			// Para focos necesitamos parámetros extra (dirección, apertura y exponente)
-			if (type == SPOT_LIGHT)
-			{
-				glm::vec3 spotDir = l->getSpotDirection();
-				float cutoff = l->getSpotCutoff();
-				float spotExp = l->getSpotExponent();
-				glBufferSubData(GL_UNIFORM_BUFFER, offset + 96, sizeof(glm::vec3), glm::value_ptr(spotDir));
-				glBufferSubData(GL_UNIFORM_BUFFER, offset + 108, sizeof(float), &cutoff);
-				glBufferSubData(GL_UNIFORM_BUFFER, offset + 112, sizeof(float), &spotExp);
-			}
-		}
-		// Indicar si la luz está encendida o no
-		bool active = l->isActive();
-		glBufferSubData(GL_UNIFORM_BUFFER, offset + 116, sizeof(bool), &active);
-
-		// Hay que desperdiciar 8 bytes al final (del 120 - 128)
-		offset += LIGHT_STRUCT_SIZE;
-	}
-
-	Uniformbuffer::unbind();
 }
 
-void Scene::sendShadowUniforms(Light* l)
-{
-	Shadowmap* map = l->getShadowMap();
-	bool point = l->getType();
-	// Luces direccionales
-	if(!point)
-	{
-		glm::vec3 lightDir = l->getDirection();
-		// Actualizar la matriz de vista y ponerla donde la luz
-		glm::vec3 origen = { 0, 0, 0 };
-		map->lightView = glm::lookAt(origen + lightDir * map->distOrigen, origen, glm::vec3(0.0, 1.0, 0.0));
-
-		// Mandar el uniform
-		m_uboMatrices->bind();
-		glBufferSubData(GL_UNIFORM_BUFFER, 0, sizeof(glm::dmat4), glm::value_ptr(map->lightProj));
-		glBufferSubData(GL_UNIFORM_BUFFER, sizeof(glm::dmat4), sizeof(glm::dmat4), glm::value_ptr(map->lightView));
-		Uniformbuffer::unbind();
-	}
-	// Luces puntuales
-	else
-	{
-		glm::vec3 lightPos = l->getEntity()->getPosition();
-		// Actualizar la matriz de vista y ponerla donde la luz
-		float aspect = (float)map->width / (float)map->height;
-		glm::mat4 shadowProj = glm::perspective(glm::radians(90.0f), aspect,
-			map->nearPlane, map->farPlane);
-
-		// Matrices de vista (1 por cada cara del cubemap). Der, Izq, Arr, Aba, Fre, Atr
-		std::vector<glm::mat4> shadowTransforms(6);
-		shadowTransforms[0] = shadowProj * 
-			glm::lookAt(lightPos, lightPos + glm::vec3(1.0, 0.0, 0.0), glm::vec3(0.0, -1.0, 0.0));
-		shadowTransforms[1] = shadowProj *
-			glm::lookAt(lightPos, lightPos + glm::vec3(-1.0, 0.0, 0.0), glm::vec3(0.0, -1.0, 0.0));
-		shadowTransforms[2] = shadowProj *
-			glm::lookAt(lightPos, lightPos + glm::vec3(0.0, 1.0, 0.0), glm::vec3(0.0, 0.0, 1.0));
-		shadowTransforms[3] = shadowProj *
-			glm::lookAt(lightPos, lightPos + glm::vec3(0.0, -1.0, 0.0), glm::vec3(0.0, 0.0, -1.0));
-		shadowTransforms[4] = shadowProj *
-			glm::lookAt(lightPos, lightPos + glm::vec3(0.0, 0.0, 1.0), glm::vec3(0.0, -1.0, 0.0));
-		shadowTransforms[5] = shadowProj *
-			glm::lookAt(lightPos, lightPos + glm::vec3(0.0, 0.0, -1.0), glm::vec3(0.0, -1.0, 0.0));
-
-		// Mandar los uniforms
-		map->shader->use();
-		for (int i = 0; i < 6; i++) {
-			map->shader->setMat4("shadowMatrices[" + std::to_string(i) + "]", shadowTransforms[i]);
-		}
-		map->shader->setVec3("lightPos", lightPos);
-		map->shader->setFloat("far_plane", map->farPlane);
-	}
-}
 
 void Scene::sendUniforms(Shader* sh)
 {

@@ -86,6 +86,7 @@ public:
 		GLuint numLuces;
 		GLuint numTrans;
 		glm::ivec2 fbSize;
+		GLuint programChanges;
 	};
 	DebugInfo debugInfo;
 #endif

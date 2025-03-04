@@ -43,7 +43,7 @@ void PruebaScene::init()
 	Light* circleLight = new Light(POINT_LIGHT, { 1, 1, 0, 1 });
 	circleLight->setAmbient({ 0.1, 0.3, 0.1, 1.0 });
 	circleLight->setSpecular({ 0.8, 0.8, 0, 1.0 });
-	circleLight->emitShadows(false);
+	circleLight->emitShadows(true);
 	Entity* circleLightEnt = new Esfera(0.5);
 	circleLightEnt->setTexture("blanco");
 	circleLightEnt->setShader("default");
@@ -438,7 +438,7 @@ void PruebaScene::PruebaMateriales()
 	grid->setTexture("agua");
 	grid->setDisplacementMap("agua_disp");
 	grid->enableReflections("blanco", "lakeSkybox");
-	//grid->setShader("lights");
+	grid->setShader("lights");
 	grid->setSpeeds({ 2.0, 0.0 }, { -2, 0 });
 	grid->setPosition({ 0,-1,0 });
 	AddEntity(grid);

@@ -5,6 +5,12 @@
 
 #include <gtc/type_ptr.hpp>
 
+#ifdef __DEBUG_INFO__
+unsigned int Shader::programChanges = 0;
+#endif
+
+unsigned int Shader::s_activeProgram = 0;
+
 Shader::Shader() : programId(0)
 {
 	// Por si no están disponibles los shaders

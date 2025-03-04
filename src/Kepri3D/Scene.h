@@ -131,6 +131,7 @@ private:
 
 	// Sub-métodos del render() para que sea más legible
 	void loadLights();
+	void loadMatrices();
 	void renderShadows();
 	void renderEntities(const std::vector<Entity*>& entityList);
 	void renderNormals();
@@ -140,8 +141,6 @@ private:
 
 	/* Manda todos los uniforms necesarios al shader de la entidad dada */
 	void sendUniforms(Shader* sh);
-	void sendUniformBlocks();
-	void sendShadowUniforms(Light* l);
 	void debugShadowMap();
 
 	// Modelo de iluminación. 0 = Phong, 1 = Blinn-phong

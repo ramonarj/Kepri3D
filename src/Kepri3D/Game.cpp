@@ -107,8 +107,10 @@ void Game::render()
 	debugInfo.numLuces = Light::cont;
 	debugInfo.fbSize = scene->fbSize;
 	debugInfo.numTrans = scene->numberOfTrans();
+	debugInfo.programChanges = Shader::programChanges;
 
 	Mesh::numVerts = Mesh::numTris = Texture::numBinds = 0;
+	Shader::programChanges = 0;
 #endif
 }
 
