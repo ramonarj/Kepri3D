@@ -7,6 +7,11 @@
 
 GLuint Material::m_shading;
 bool Material::fresnel = true;
+bool Material::s_useTextures = true;
+
+// Nombre que deben tener las respectivas variables 'sampler2D/samplerCube' del shader
+std::string g_texNames[NUM_TEXTURES] = { "textura", "textura2", "material.specular_map", "normalMap",
+	"dispMap", "reflectionMap", "skybox" };
 
 Material::Material()
 {
@@ -19,6 +24,7 @@ Material::Material()
 	m_face = GL_FRONT;
 	for (int i = 0; i < NUM_TEXTURES; i++)
 		m_textures[i] = nullptr;
+	m_shader = nullptr;
 }
 
 Material::Material(glm::fvec4 ambient, glm::fvec4 diffuse, glm::fvec4 specular, glm::fvec4 emission, GLfloat brillo)
@@ -32,6 +38,7 @@ Material::Material(glm::fvec4 ambient, glm::fvec4 diffuse, glm::fvec4 specular, 
 	m_face = GL_FRONT;
 	for (int i = 0; i < NUM_TEXTURES; i++)
 		m_textures[i] = nullptr;
+	m_shader = nullptr;
 }
 
 void Material::load()
@@ -52,27 +59,28 @@ void Material::load()
 
 void Material::loadToShader(Shader* sh)
 {
-	if (sh == nullptr)
-		return;
-	// Globales
-	sh->setInt("fresnel", fresnel);
+	if (sh == nullptr) { return; }
 
-	// Propiedades del material
-	sh->setVec3("material.ambient", m_ambient);
-	sh->setVec4("material.diffuse", m_diffuse);
-	sh->setVec3("material.specular", m_specular);
-	sh->setFloat("material.brillo", m_brillo);
+	// Evitar enviar información de más a shaders que no la requieran
+	// Pensado sobre todo para el Shadow Pass
+	if(s_useTextures && sh->useTextures())
+	{
+		// Globales
+		sh->setInt("fresnel", fresnel);
 
-	// Enviar las texturas necesarias al shader
-	bindTextures(sh);
+		// Propiedades del material
+		sh->setVec3("material.ambient", m_ambient);
+		sh->setVec4("material.diffuse", m_diffuse);
+		sh->setVec3("material.specular", m_specular);
+		sh->setFloat("material.brillo", m_brillo);
+
+		// Texturas
+		bindTextures(sh);
+	}
 }
 
 void Material::bindTextures(Shader* sh)
 {
-	// Nombre que deben tener las respectivas variables 'sampler2D' del shader
-	std::string texNames[NUM_TEXTURES] = { "textura", "textura2", "material.specular_map", "normalMap",
-		"dispMap", "reflectionMap", "skybox" };
-
 	// Activar cada textura existente
 	for (int i = 0; i < NUM_TEXTURES; i++)
 	{
@@ -80,25 +88,14 @@ void Material::bindTextures(Shader* sh)
 		{
 			glActiveTexture(GL_TEXTURE0 + i);
 			m_textures[i]->bind();
-			sh->setInt(texNames[i], i);
+			sh->setInt(g_texNames[i], i);
 		}
 	}
 
 	// Booleanos extra
-	if (m_textures[0] != nullptr)
-		sh->setInt("use_diff_map", true);
-	else
-		sh->setInt("use_diff_map", false);
-
-	if (m_textures[2] != nullptr)
-		sh->setInt("use_spec_map", true);
-	else
-		sh->setInt("use_spec_map", false);
-
-	if (m_textures[3] != nullptr)
-		sh->setInt("use_normal_map", true);
-	else
-		sh->setInt("use_normal_map", false);
+	sh->setInt("use_diff_map", m_textures[0] != nullptr);
+	sh->setInt("use_spec_map", m_textures[2] != nullptr);
+	sh->setInt("use_normal_map", m_textures[3] != nullptr);
 }
 
 void Material::unload()

@@ -55,7 +55,6 @@ void Entity::defaultValues()
 
 	// Pone la matriz de modelado a la matriz identidad de grado 4 (1 0 0 0 / 0 1 0 0 ...)
 	modelMat = (1.0);
-	m_shader = nullptr;
 	m_collider = nullptr;
 }
 
@@ -114,7 +113,7 @@ void Entity::render(glm::dmat4 const& viewMat)
 
 void Entity::render()
 {
-	render(m_shader);
+	render(m_material.getShader());
 }
 
 void Entity::render(Shader* sh)
@@ -233,7 +232,7 @@ void Entity::setParent(Entity* e)
 	// Añadirnos a sus hijos
 	e->m_children.push_back(this);
 	// Solución temporal
-	m_shader = m_parent->m_shader;
+	m_material.setShader((Shader*)m_parent->getShader());
 }
 
 void Entity::setMesh(const std::string& meshID)
@@ -251,7 +250,7 @@ void Entity::setMaterial(const std::string& materialID)
 
 void Entity::setShader(const std::string& shaderID)
 {
-	m_shader = (Shader*)&ResourceManager::Instance()->getShader(shaderID);
+	m_material.setShader((Shader*)&ResourceManager::Instance()->getShader(shaderID));
 }
 
 void Entity::setTexture(const std::string& textureID)
@@ -407,7 +406,7 @@ Billboard::Billboard(const std::string& textureID, GLfloat width, GLfloat height
 void Billboard::render()
 {
 	// Uniforms necesarios
-	m_shader->setVec2("ancla", ancla);
+	m_material.getShader()->setVec2("ancla", ancla);
 	Entity::render();
 }
 
@@ -418,8 +417,6 @@ MovingGrid::MovingGrid(GLuint filas, GLuint columnas, GLdouble tamFila, GLdouble
 {
 	m_name = "MovingGrid";
 
-	setShader("movimiento");
-
 	velDisp = { -1, -1 };
 	velTex = { 2, 0 };
 }
@@ -428,9 +425,9 @@ void MovingGrid::render()
 {
 	// Pasarle el tiempo y velocidad de desplazamiento al fragment shader
 	float t = glutGet(GLUT_ELAPSED_TIME);
-	m_shader->setFloat("tiempo", t / 10000.0f);
-	m_shader->setVec2("velTex", velTex);
-	m_shader->setVec2("velDisp", velDisp);
+	m_material.getShader()->setFloat("tiempo", t / 10000.0f);
+	m_material.getShader()->setVec2("velTex", velTex);
+	m_material.getShader()->setVec2("velDisp", velDisp);
 
 	Entity::render();
 }
@@ -449,7 +446,7 @@ CuboMultitex::CuboMultitex(GLdouble size)
 
 void CuboMultitex::render()
 {
-	m_shader->setFloat("mix", (sin(glutGet(GLUT_ELAPSED_TIME) * 0.001) + 1) / 2.0f);
+	m_material.getShader()->setFloat("mix", (sin(glutGet(GLUT_ELAPSED_TIME) * 0.001) + 1) / 2.0f);
 	Entity::render();
 }
 
@@ -523,7 +520,7 @@ void ClippableEntity::render()
 	for (int i = 0; i < planos.size(); i++)
 	{
 		glEnable(GL_CLIP_DISTANCE0 + i);
-		m_shader->setVec4("planoCorte[" + std::to_string(i) + "]", planos[i]);
+		m_material.getShader()->setVec4("planoCorte[" + std::to_string(i) + "]", planos[i]);
 	}
 
 	Entity::render();
@@ -556,10 +553,10 @@ void TessTerrain::setHeightMap(const std::string& texID, float elevacion)
 
 void TessTerrain::render()
 {
-	m_shader->setInt("use_eyeDir", useEyedir);
-	m_shader->setInt("patch_size", patchSize);
-	m_shader->setVec3("camFW", cam->forward());
-	m_shader->setFloat("elevacion", elevacion);
+	m_material.getShader()->setInt("use_eyeDir", useEyedir);
+	m_material.getShader()->setInt("patch_size", patchSize);
+	m_material.getShader()->setVec3("camFW", cam->forward());
+	m_material.getShader()->setFloat("elevacion", elevacion);
 	Entity::render();
 }
 
@@ -579,8 +576,8 @@ VBOEntity::VBOEntity()
 void VBOEntity::render()
 {
 	// Cargar el material
-	m_material.loadToShader(m_shader);
-	sendUniforms(m_shader);
+	m_material.loadToShader(m_material.getShader());
+	sendUniforms(m_material.getShader());
 	
 	glPolygonMode(GL_FRONT, GL_FILL);
 	glPolygonMode(GL_BACK, GL_LINE);
@@ -630,8 +627,8 @@ EBOEntity::EBOEntity()
 void EBOEntity::render()
 {
 	// Cargar el material
-	m_material.loadToShader(m_shader);
-	sendUniforms(m_shader);
+	m_material.loadToShader(m_material.getShader());
+	sendUniforms(m_material.getShader());
 
 	glPolygonMode(GL_FRONT, GL_FILL);
 	glPolygonMode(GL_BACK, GL_LINE);
@@ -678,8 +675,8 @@ VAOEntity::VAOEntity()
 void VAOEntity::render()
 {
 	// Cargar el material
-	m_material.loadToShader(m_shader);
-	sendUniforms(m_shader);
+	m_material.loadToShader(m_material.getShader());
+	sendUniforms(m_material.getShader());
 
 	glPolygonMode(GL_FRONT, GL_FILL);
 	glPolygonMode(GL_BACK, GL_LINE);

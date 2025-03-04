@@ -137,7 +137,7 @@ protected:
 	bool m_active;
 
 	/* Dirección de la luz, para direccionales */
-	glm::fvec4 direction;
+	glm::fvec3 direction;
 
 	//Usamos floats para las distintas componentes de la luz
 	/* Componente ambiente de la luz */

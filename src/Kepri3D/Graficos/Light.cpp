@@ -24,7 +24,7 @@ Shadowmap::~Shadowmap() { clean(); }
 
 // - - - - - - - - - - - - - - - - - - 
 
-Light::Light(LightType type, glm::fvec4 diffuse) : id(GL_MAX_LIGHTS), m_active(true), direction({0,0,0,0})
+Light::Light(LightType type, glm::fvec4 diffuse) : id(GL_MAX_LIGHTS), m_active(true), direction({0,0,0})
 {
 	this->type = type;
 
@@ -56,6 +56,7 @@ Light::Light(LightType type, glm::fvec4 diffuse) : id(GL_MAX_LIGHTS), m_active(t
 	if (type == DIRECTIONAL_LIGHT)
 	{
 		shadowSh = (Shader*)&ResourceManager::Instance()->getShader("shadows");
+		shadowSh->useTextures(false); // para no pasar ni una textura de más (que no se usarían)
 		m_shadowMap = new Shadowmap(shadowSh, SHADOW_SIZE, SHADOW_SIZE, 1.0f, 80.0f, false);
 
 		float ortoSize = 40.0f;
@@ -65,6 +66,7 @@ Light::Light(LightType type, glm::fvec4 diffuse) : id(GL_MAX_LIGHTS), m_active(t
 	else if (type == POINT_LIGHT)
 	{
 		shadowSh = (Shader*)&ResourceManager::Instance()->getShader("shadows_point");
+		shadowSh->useTextures(false);
 		m_shadowMap = new Shadowmap(shadowSh, SHADOW_SIZE, SHADOW_SIZE, 1.0f, 50.0f, true);
 	}
 	else
@@ -175,14 +177,12 @@ void Light::emitShadows(bool b)
 
 void Light::sendShadowUniforms(Uniformbuffer* uboMatrices)
 {
-	bool point = getType();
 	// Luces direccionales
-	if (!point)
+	if (type != POINT_LIGHT)
 	{
-		glm::vec3 lightDir = getDirection();
 		// Actualizar la matriz de vista y ponerla donde la luz
 		glm::vec3 origen = { 0, 0, 0 };
-		m_shadowMap->lightView = glm::lookAt(origen + lightDir * m_shadowMap->distOrigen, origen, glm::vec3(0.0, 1.0, 0.0));
+		m_shadowMap->lightView = glm::lookAt(origen + direction * m_shadowMap->distOrigen, origen, glm::vec3(0.0, 1.0, 0.0));
 
 		// Mandar el uniform
 		uboMatrices->bind();
@@ -193,6 +193,7 @@ void Light::sendShadowUniforms(Uniformbuffer* uboMatrices)
 	// Luces puntuales
 	else
 	{
+		// TODO: no mandar nada si la luz no ha cambiado en el último frame
 		glm::vec3 lightPos = entity->getPosition();
 		// Actualizar la matriz de vista y ponerla donde la luz
 		float aspect = (float)m_shadowMap->width / (float)m_shadowMap->height;
@@ -226,12 +227,7 @@ void Light::sendShadowUniforms(Uniformbuffer* uboMatrices)
 
 void Light::loadToUBO(unsigned int offset)
 {
-	Light* l = this;
-	int type = l->getType();
-	glm::vec3 posDir = (type == DIRECTIONAL_LIGHT) ? l->getDirection() : (glm::vec3)l->getEntity()->getPosition();
-	glm::vec3 ambient = l->getAmbient();
-	glm::vec3 diffuse = l->getDiffuse();
-	glm::vec3 specular = l->getSpecular();
+	glm::vec3 posDir = (type == DIRECTIONAL_LIGHT) ? direction : (glm::vec3)entity->getPosition();
 
 	// Tipo de luz
 	glBufferSubData(GL_UNIFORM_BUFFER, offset, sizeof(int), &type);
@@ -244,24 +240,17 @@ void Light::loadToUBO(unsigned int offset)
 	// Factores de atenuación
 	if (type != DIRECTIONAL_LIGHT)
 	{
-		float attConst = l->getAttenuation(0);
-		float attLin = l->getAttenuation(1);
-		float attQuad = l->getAttenuation(2);
-		glBufferSubData(GL_UNIFORM_BUFFER, offset + 76, sizeof(float), &attConst);
-		glBufferSubData(GL_UNIFORM_BUFFER, offset + 80, sizeof(float), &attLin);
-		glBufferSubData(GL_UNIFORM_BUFFER, offset + 84, sizeof(float), &attQuad);
+		glBufferSubData(GL_UNIFORM_BUFFER, offset + 76, sizeof(float), &constantAtt);
+		glBufferSubData(GL_UNIFORM_BUFFER, offset + 80, sizeof(float), &linearAtt);
+		glBufferSubData(GL_UNIFORM_BUFFER, offset + 84, sizeof(float), &quadraticAtt);
 		// Para focos necesitamos parámetros extra (dirección, apertura y exponente)
 		if (type == SPOT_LIGHT)
 		{
-			glm::vec3 spotDir = l->getSpotDirection();
-			float cutoff = l->getSpotCutoff();
-			float spotExp = l->getSpotExponent();
 			glBufferSubData(GL_UNIFORM_BUFFER, offset + 96, sizeof(glm::vec3), glm::value_ptr(spotDir));
-			glBufferSubData(GL_UNIFORM_BUFFER, offset + 108, sizeof(float), &cutoff);
+			glBufferSubData(GL_UNIFORM_BUFFER, offset + 108, sizeof(float), &spotCutoff);
 			glBufferSubData(GL_UNIFORM_BUFFER, offset + 112, sizeof(float), &spotExp);
 		}
 	}
 	// Indicar si la luz está encendida o no
-	bool active = l->isActive();
-	glBufferSubData(GL_UNIFORM_BUFFER, offset + 116, sizeof(bool), &active);
+	glBufferSubData(GL_UNIFORM_BUFFER, offset + 116, sizeof(bool), &m_active);
 }

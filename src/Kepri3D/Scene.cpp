@@ -148,7 +148,7 @@ void Scene::loadLights()
 			l->load(m_camera->getViewMat());
 
 	// 2) Actualizar los mapas de sombras (la luces que lo requieran)
-	renderShadows();
+	bakeShadows();
 
 	// 3) Rellenar el UBO con la información de todas las luces
 	m_uboLuces->bind();
@@ -180,7 +180,7 @@ void Scene::debugShadowMap()
 	m_effectsMesh->draw();
 }
 
-void Scene::renderShadows()
+void Scene::bakeShadows()
 {
 	for(Light* l : m_lights) // Light* l : m_lights
 	{

@@ -28,7 +28,10 @@ void lightingButtonPressed()
 void texturesButtonPressed()
 {
 	// Activar / desactivar el uso de texturas
+	// s/shaders
 	Game::switchBoolParam(GL_TEXTURE_2D);
+	// c/shaders
+	Material::s_useTextures = !Material::s_useTextures;
 	GameManager::centerMouse();
 }
 

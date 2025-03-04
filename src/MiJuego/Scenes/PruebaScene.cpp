@@ -345,6 +345,15 @@ void PruebaScene::loadResources()
 	ResourceManager::Instance()->loadCubemapTexture({ "skyboxes/city/right.jpg", "skyboxes/city/left.jpg", "skyboxes/city/bottom.jpg",
 		"skyboxes/city/top.jpg", "skyboxes/city/front.jpg", "skyboxes/city/back.jpg" }, "citySkybox");
 
+	/* Shaders (ES IMPORTANTE CARGARLOS ANTES QUE LOS MATERIALES) */
+	ResourceManager::Instance()->loadShader("default.vert", "cruces.geom", "default.frag", "cruces");
+	ResourceManager::Instance()->loadShader("maximize.vert", "", "fog.frag", "bigFog");
+	ResourceManager::Instance()->loadShader("movimiento.vert", "", "movimiento.frag", "movimiento");
+	ResourceManager::Instance()->loadShader("default.vert", "", "multitexture.frag", "multitexture");
+	ResourceManager::Instance()->loadShader("clippable.vert", "", "default.frag", "clippable");
+	ResourceManager::Instance()->loadShader("terrain.vert", "terrain.tesc", "terrain.tese", "", "lights.frag", "terreno");
+	ResourceManager::Instance()->loadShader("reflejos.vert", "", "reflejos.frag", "reflejos");
+
 	/* Materiales */
 	ResourceManager::Instance()->loadMaterial("copper.material", "cobre");
 	ResourceManager::Instance()->loadMaterial("crome.material", "cromo");
@@ -358,16 +367,6 @@ void PruebaScene::loadResources()
 	// Prueba excepciones
 	ResourceManager::Instance()->loadTexture("ladrillo.bmp", "ladrillo");
 	ResourceManager::Instance()->loadMaterial("plata.material", "plata");
-
-	/* Shaders */
-	ResourceManager::Instance()->loadShader("default.vert", "cruces.geom", "default.frag", "cruces");
-	ResourceManager::Instance()->loadShader("maximize.vert", "", "fog.frag", "bigFog");
-	ResourceManager::Instance()->loadShader("movimiento.vert", "", "movimiento.frag", "movimiento");
-	ResourceManager::Instance()->loadShader("default.vert", "", "multitexture.frag", "multitexture");
-	ResourceManager::Instance()->loadShader("clippable.vert", "", "default.frag", "clippable");
-	ResourceManager::Instance()->loadShader("terrain.vert", "terrain.tesc", "terrain.tese", "", "lights.frag", "terreno");
-	ResourceManager::Instance()->loadShader("reflejos.vert", "", "reflejos.frag", "reflejos");
-
 
 	/* Efectos de postprocesado ('composites') */
 	ResourceManager::Instance()->loadComposite("interference.frag", "interference");
@@ -452,6 +451,7 @@ void PruebaScene::PruebaMateriales()
 	cascada->setSpeeds({ 5.0, 0.0 }, { 10.0, 0.0 });
 	cascada->setPosition({ 30,-13,0 });
 	cascada->rotate(-PI / 2, { 0, 0, 1 }, GLOBAL);
+	cascada->setShader("movimiento");
 	AddEntity(cascada);
 
 	// Terreno antiguo
@@ -478,6 +478,7 @@ void PruebaScene::PruebaMateriales()
 	mar->enableReflections("blanco", "lakeSkybox");
 	mar->setSpeeds({ 0.0, 0.0 }, { -0.2, -0.2 });
 	mar->setPosition({ 0,-20.01,0 });
+	mar->setShader("movimiento");
 	AddEntity(mar);
 
 	// Minimap

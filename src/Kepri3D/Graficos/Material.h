@@ -20,8 +20,9 @@ public:
 	/* Carga el material en la Fixed Pipeline */
 	virtual void load();
 
-	// Lo mismo pero con shaders
+	/* Carga el material al shader (lo mismo pero con shaders) */
 	void loadToShader(Shader* sh);
+
 	/* Limpia los atributos */
 	void unload();
 
@@ -31,7 +32,11 @@ public:
 	/* Indica el tipo de sombreado que se usará para TODOS los materiales */
 	static inline void setShadingType(GLuint sh) { m_shading = sh; }
 
+	void setShader(Shader* sh) { m_shader = sh; }
+
 	// Getters
+	Shader* getShader() const { return m_shader; }
+
 	/* Devuelve la componente ambiente del material */
 	inline const glm::vec3& getAmbient() const { return m_ambient; }
 
@@ -47,7 +52,11 @@ public:
 	inline const Texture* getTexture(GLuint i) const { return m_textures[i]; }
 
 	static bool fresnel;
+	static bool s_useTextures;
 private:
+	/* Shader usado por el material */
+	Shader* m_shader;
+
 	/* Componentes del material */
 	glm::fvec4 m_ambient;
 	glm::fvec4 m_diffuse;
@@ -71,6 +80,8 @@ private:
 	// 2 = Specular Map
 	// 3 = Normal Map
 	// 4 = Displacement Map
+	// 5 = Reflection Map
+	// 6 = Skybox
 	Texture* m_textures[NUM_TEXTURES];
 
 	// Métodos auxiliares

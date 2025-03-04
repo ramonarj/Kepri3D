@@ -113,7 +113,7 @@ public:
 	const Material* getMaterial() const { return &m_material; }
 
 	/* Devuelve el shader que usa la entidad */
-	const Shader* getShader() const { return m_shader; }
+	const Shader* getShader() const { return m_material.getShader(); }
 
 	/* Devuelve 'true' si la entidad debe pintarse, false e.o.c. */
 	inline bool isActive() const { return m_active; }
@@ -161,9 +161,6 @@ protected:
 
 	/* Material usado por la entidad */
 	Material m_material;
-
-	/* Shader usado por la entidad */
-	Shader* m_shader;
 
 	/* Manda la información de la entidad al shader */
 	void sendUniforms(Shader* sh);

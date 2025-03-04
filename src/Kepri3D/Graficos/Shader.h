@@ -68,19 +68,25 @@ public:
 	// - - - Configurar los Uniform blocks - - - //
 	void bindUniformBlock(const std::string& name, unsigned int bindingPoint);
 
+	// - - - Otros - - - //
+	void useTextures(bool b) { m_useTextures = b; }
+	bool useTextures() const { return m_useTextures; }
 
 #ifdef __DEBUG_INFO__
 	static unsigned int programChanges;
 #endif
 private:
+	/* Shader activo actualmente */
+	static unsigned int s_activeProgram;
+
 	/* IDs del Vertex, Tess. Control, Tess. Eval., Geometry y Fragment shader (en ese orden) */
 	unsigned int shadersIds[5];
 
 	/* ID del shader program */
 	unsigned int programId;
 
-	/* Shader activo actualmente */
-	static unsigned int s_activeProgram;
+	// Para optimizar el paso de uniforms
+	bool m_useTextures = true;
 };
 
 #endif

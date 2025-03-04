@@ -132,7 +132,6 @@ private:
 	// Sub-métodos del render() para que sea más legible
 	void loadLights();
 	void loadMatrices();
-	void renderShadows();
 	void renderEntities(const std::vector<Entity*>& entityList);
 	void renderNormals();
 	void renderCanvas();
@@ -141,10 +140,12 @@ private:
 
 	/* Manda todos los uniforms necesarios al shader de la entidad dada */
 	void sendUniforms(Shader* sh);
+	void bakeShadows();
 	void debugShadowMap();
 
 	// Modelo de iluminación. 0 = Phong, 1 = Blinn-phong
 	bool blinn = false;
+	// Sombras
 	// 0 = sin sombras, 1 = sombras duras, 2 = sombras suaves
 	int shadowsState = 0;
 };
