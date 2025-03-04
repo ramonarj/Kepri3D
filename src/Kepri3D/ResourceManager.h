@@ -42,13 +42,14 @@ public:
 			instance->loadShader("default.vert", "default.geom", "default.frag", "default");
 			instance->loadComposite("defaultComposite.frag", "defaultComposite");
 
-			// Otros shaders necesarios (skybox, partículas, normales...)
+			// Otros shaders necesarios (skybox, partículas, agua, normales...)
 			instance->loadShader("shadows.vert", "", "shadows.frag", "shadows");
 			instance->loadShader("shadows_point.vert", "shadows_point.geom", "shadows_point.frag", "shadows_point");
 			instance->loadShader("lights.vert", "", "lights.frag", "lights");
 			instance->loadShader("skybox.vert", "", "skybox.frag", "skybox");
 			instance->loadShader("billboard.vert", "", "billboard.frag", "billboard");
 			instance->loadShader("particle.vert", "", "billboard.frag", "particle");
+			instance->loadShader("agua.vert", "", "agua.frag", "agua");
 			instance->loadShader("normals.vert", "normals.geom", "normals.frag", "normals");
 		}
 			

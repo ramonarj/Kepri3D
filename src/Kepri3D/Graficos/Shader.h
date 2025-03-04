@@ -13,6 +13,9 @@ public:
 	Shader();
 
 	/* Carga un shader específico para ser usado por el programa */
+	std::string preprocess(const char* shaderSrc);
+
+	/* Carga un shader específico para ser usado por el programa */
 	void load(GLenum shaderType, const char* shaderSrc);
 
 	/* Enlaza el shader program usando todos los shaders cargados */

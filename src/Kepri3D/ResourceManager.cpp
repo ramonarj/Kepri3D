@@ -198,6 +198,7 @@ bool ResourceManager::loadShader(const std::string& vertexName, const std::strin
 		if (fragmentName != "")
 		{
 			std::string FSprogram = FileToString((SHADERS_PATH + fragmentName).c_str());
+			FSprogram = sh->preprocess(FSprogram.c_str());
 			sh->load(GL_FRAGMENT_SHADER, FSprogram.c_str());
 		}
 

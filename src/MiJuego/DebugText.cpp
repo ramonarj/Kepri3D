@@ -17,7 +17,8 @@ DebugText::DebugText(Canvas* canvas, const std::string& backgroundTexID)
 	text->setPositionUI(0.32, 0.22);
 	text->setGrosor(1.25);
 	text->setScaleUI(0.5, 0.5);
-	canvas->addElement(text);
+	text->setParent(fondo);
+	//canvas->addElement(text);
 
 	visible = true;
 }

@@ -2,6 +2,10 @@
 
 #include <glew.h>
 #include <iostream>
+#include <sstream>
+#include <vector>
+#include "Utils.h"
+#include "ResourceManager.h"
 
 #include <gtc/type_ptr.hpp>
 
@@ -25,6 +29,39 @@ Shader::Shader() : programId(0)
 		shadersIds[i] = 0;
 }
 
+std::string Shader::preprocess(const char* shaderSrc)
+{
+	std::stringstream shaderProgram(shaderSrc);
+	std::string processedProgram;
+
+	// Leer línea a línea
+	std::string s;
+	while (std::getline(shaderProgram, s, '\n'))
+	{
+		std::string s2;
+		// Buscar directivas #include y palabra clave 'uniform'
+		std::stringstream includeCheck(s);
+		std::getline(includeCheck, s2, ' ');
+		// Incluir el archivo dado
+		if (s2 == "#include")
+		{
+			// Leer el nombre del archivo
+			std::getline(includeCheck, s2, '\n');
+			std::string includedFile = FileToString((ResourceManager::SHADERS_PATH + "include\\" + s2).c_str());
+			processedProgram += includedFile; // no hace falta el salto de línea
+		}
+		// TODO
+		else if (s2 == "uniform")
+		{
+			//std::cout << "uniform" << std::endl;
+			processedProgram += s + "\n";
+		}
+		else
+			processedProgram += s + "\n";
+	}
+
+	return processedProgram;
+}
 
 void Shader::load(GLenum shaderType, const char* shaderSrc)
 {
