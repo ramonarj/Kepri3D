@@ -67,8 +67,11 @@ private:
 	/* Aceleración del Rigid */
 	glm::dvec3 m_acceleration;
 
-	/* Torque acumulado del Rigid */
-	glm::dvec3 m_torque;
+	/* Velocidad angular del Rigid */
+	glm::dvec3 m_angularVel;
+
+	/* Aceleración angular del Rigid */
+	glm::dvec3 m_angularAcc;
 
 	/* ¿Le afecta la gravedad? */
 	bool m_useGravity;

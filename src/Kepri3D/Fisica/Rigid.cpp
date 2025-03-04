@@ -11,11 +11,14 @@ Rigid::Rigid(const glm::dmat4& modelMat)
 	// Valores por defecto
 	m_type = Dynamic;
 	m_useGravity = true;
+	m_mass = 1.0;
+
 	m_velocity = { 0, 0, 0 };
 	m_acceleration = { 0, 0 ,0 };
-	m_torque = { 0, 0, 0 };
-	m_mass = 1.0;
 	m_drag = 0.0;
+
+	m_angularVel = { 0, 0, 0 };
+	m_angularAcc = { 0, 0 ,0 };
 	m_angularDrag = 0.0;
 
 	m_collider = nullptr;
@@ -27,6 +30,7 @@ void Rigid::update(GLuint deltaTime)
 	if (m_useGravity)
 		m_acceleration += s_gravity;
 
+	// - - LINEAL - - //
 	// Actualizar velocidad en función de la aceleración
 	m_velocity += m_acceleration * (deltaTime / 1000.0);
 
@@ -39,11 +43,18 @@ void Rigid::update(GLuint deltaTime)
 	// Limpiar la aceleración
 	m_acceleration = { 0, 0, 0 };
 
-	// Aplicar el torque acumulado
-	entity->rotate(glm::length(m_torque) * (deltaTime / 1000.0), glm::normalize(m_torque));
+	// - - ANGULAR - - /
+	// Actualizar velocidad angular en función de la aceleración angular
+	m_angularVel += m_angularAcc * (deltaTime / 1000.0);
+
+	// Actualizar la rotación en función de la velocidad angular
+	entity->rotate(glm::length(m_angularVel) * (deltaTime / 1000.0), glm::normalize(m_angularVel));
 
 	// Rozamiento angular
-	m_torque *= (1 - (m_angularDrag * deltaTime / 1000.0));
+	m_angularVel *= (1 - (m_angularDrag * deltaTime / 1000.0));
+
+	// Limpiar la aceleración angular
+	m_angularAcc = { 0, 0, 0 };
 }
 
 void Rigid::addForce(const glm::vec3& force)
@@ -53,7 +64,7 @@ void Rigid::addForce(const glm::vec3& force)
 
 void Rigid::addTorque(const glm::vec3& torque)
 {
-	m_torque += torque;
+	m_angularAcc += torque / m_mass;
 }
 
 void Rigid::addForce(const glm::vec3& force, const glm::vec3& point)
@@ -64,13 +75,12 @@ void Rigid::addForce(const glm::vec3& force, const glm::vec3& point)
 	double cosAngle = glm::dot(glm::normalize(force), glm::normalize(point));
 	
 	// Aplicar el torque necesario usando la componente tangencial de la fuerza. L = r x F
-	m_torque += (0.005f * glm::cross(point, force));
+	addTorque(glm::cross(point, force));
 
 	// Por descomposición de fuerzas, una vez quitada la tangencial (que va al torque),
 	// nos queda la que apunta desde el punto al centro de masas
 	float fuerzaNoTang = glm::length(force) * cosAngle;
 
 	// Si angle > 90 está "tirando", si es menor, está "empujando"
-
-	m_acceleration += (fuerzaNoTang * point / m_mass);
+	addForce(fuerzaNoTang * point);
 }

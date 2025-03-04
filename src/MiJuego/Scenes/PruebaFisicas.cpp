@@ -89,6 +89,7 @@ void PruebaFisicas::init()
 	colcubo3->setVisible(true);
 	cubo3->addComponent(colcubo3);
 	Rigid* rigidcubo3 = new Rigid(cubo3->getModelMat());
+	rigidcubo3->setMass(10.0);
 	rigidcubo3->useGravity(false);
 	cubo3->addComponent(rigidcubo3);
 	cubo3->addComponent(new RotationComp(0.0));

@@ -17,8 +17,8 @@ private:
 	Entity* sombra;
 
 	float movForce = 15.0f;
-	float jumpForce = 6000.0f;
-	float torque = 1.0f;
+	float jumpForce = 6000.0f; // impulso
+	float torque = 300.0f; //impulso
 };
 
 #endif
