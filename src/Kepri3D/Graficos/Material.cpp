@@ -43,6 +43,14 @@ Material::Material(glm::fvec4 ambient, glm::fvec4 diffuse, glm::fvec4 specular, 
 
 void Material::load()
 {
+	// Bindear la textura principal
+	if (m_textures[0] != nullptr) 
+	{
+		glActiveTexture(GL_TEXTURE0);
+		m_textures[0]->bind();
+	}
+	else { Texture::unbind(); }
+
 	//glMaterialfv(GL_FRONT, GL_AMBIENT_AND_DIFFUSE, value_ptr(m_diffuse));
 	// El "front and back" produce algunos efectos no deseados
 	glMaterialfv(m_face, GL_AMBIENT, value_ptr(m_ambient));
@@ -100,10 +108,10 @@ void Material::bindTextures(Shader* sh)
 
 void Material::unload()
 {
-	// El método Texture::unbind() debería ser estático, solo hay que llamarlo 1 vez
-	if (m_textures[0] != nullptr)
-	{
-		m_textures[0]->unbind();
-		glActiveTexture(GL_TEXTURE0);
-	}
+	// Esto debería poder quitarse
+	//if (m_textures[0] != nullptr)
+	//{
+	//	m_textures[0]->unbind();
+	//	glActiveTexture(GL_TEXTURE0);
+	//}
 }

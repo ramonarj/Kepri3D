@@ -12,6 +12,8 @@
 GLuint Texture::numBinds = 0;
 #endif
 
+GLuint Texture::s_activeTexture = 0;
+
 void Texture::Init()
 {
 	// Genera una nueva textura y devuelve un identificador para acceder a ella
@@ -108,16 +110,26 @@ bool Texture::load(const std::string& filePath, const glm::ivec3& colorTrans)
 
 void Texture::bind(GLuint mix)
 {
+	// Esto solo será útil en caso de que las entidades se pinten ordenadas por su textura
+	if (s_activeTexture == id) { return; }
+
 	glBindTexture(texType, id);
 	glTexEnvi(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, mix);
+	s_activeTexture = id;
 #ifdef __DEBUG_INFO__
 	numBinds++;
 #endif
 }
 
-void Texture::unbind()
+void Texture::unbind(GLenum type)
 {
-	glBindTexture(texType, 0);
+	if (s_activeTexture == 0) { return; }
+
+	glBindTexture(type, 0);
+	s_activeTexture = 0;
+#ifdef __DEBUG_INFO__
+	numBinds++;
+#endif
 }
 
 void Texture::useMipmaps(bool b)

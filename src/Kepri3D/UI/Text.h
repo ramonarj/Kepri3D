@@ -14,7 +14,7 @@ public:
 	Text(const std::string& text, Canvas* canvas, const glm::vec4& color = {1, 1, 1, 1});
 	~Text();
 
-	void render(glm::dmat4 const& viewMat) override;
+	void render() override;
 
 	void setGrosor(float grosor) { this->grosor = grosor; }
 

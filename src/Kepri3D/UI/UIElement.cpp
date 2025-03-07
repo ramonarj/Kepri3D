@@ -6,7 +6,7 @@
 
 #include <gtc/type_ptr.hpp>
 
-UIElement::UIElement() : x(0), y(0), width(0), height(0), canvas(nullptr), texture(nullptr)
+UIElement::UIElement() : x(0), y(0), width(0), height(0), canvas(nullptr)
 {
 	// Para estar siempre visible por la cámara
 	setPosition({ 0, 0, -1.0001}); // tiene que coincir con -nearPlane
@@ -31,29 +31,20 @@ void UIElement::setScaleUI(float x, float y)
 	height *= y;
 }
 
-void UIElement::render(glm::dmat4 const& viewMat)
+void UIElement::render()
 {
-	// 1) Renderizarme yo mismo
-	if(texture != nullptr)
-		texture->bind(GL_REPLACE); // a los elementos del canvas NO les afecta la iluminación (no usamos MODULATE)
-
+	// Exactamente igual que Entity::render, pero sin usar la matriz de vista
 	// Cargar la matriz de modelado
 	glMatrixMode(GL_MODELVIEW);
 	glLoadMatrixd(value_ptr(modelMat));
 
 	// Dibujar la/s malla/s
+	m_material.load();
 	if (m_renderer != nullptr)
 		m_renderer->draw();
 
-	if (texture != nullptr)
-		texture->unbind();
-
 	// 2) Renderizar mis hijos
 	for (Entity* e : m_children)
-	{
 		if(e->isActive())
-		{
-			e->render(viewMat);
-		}	
-	}
+			e->render();
 }

@@ -83,11 +83,6 @@ void Entity::addComponent(Component* c)
 
 void Entity::render(glm::dmat4 const& viewMat)
 {
-	// 1) Renderizar la propia entidad
-	// Activar la textura si la tiene
-	//if (m_textures[0] != nullptr) //TODO
-	//	m_textures[0]->bind();
-
 	// 1) Cargar la matriz V*M
 	// Decirle a OpenGL que la siguiente matriz que cargaremos es de modelado/vista (no de proyección)
 	glMatrixMode(GL_MODELVIEW);
@@ -95,15 +90,10 @@ void Entity::render(glm::dmat4 const& viewMat)
 	glm::dmat4 modelViewMat = viewMat * modelMat;
 	glLoadMatrixd(value_ptr(modelViewMat));
 
-	// 2) Dibujar la/s malla/s
+	// 2) Cargar el material y dibujar la malla
 	m_material.load();
 	if (m_renderer != nullptr)
 		m_renderer->draw();
-
-	// Desactivar la textura si la tiene
-	//if (m_textures[0] != nullptr)
-	//	m_textures[0]->unbind();
-
 
 	// 2) Renderizar sus hijos
 	for(Entity* e : m_children)
@@ -130,7 +120,7 @@ void Entity::render(Shader* sh)
 	if (m_collider != nullptr) { m_collider->render(); }
 
 	// Desactivar texturas
-	m_material.unload();
+	//m_material.unload();
 
 	// 2) Renderizar sus hijos con el mismo shader dado
 	for (Entity* e : m_children)
@@ -452,13 +442,11 @@ void CuboMultitex::render()
 
 // - - - - - - - - - - - - - - - - - 
 
-Hierba::Hierba(GLdouble width, GLdouble height, const std::string& textureID)
+Hierba::Hierba(GLdouble width, GLdouble height)
 {
 	Renderer* rend = new Renderer(IndexMesh::generateRectangle(width, height));
 	addComponent(rend);
 	m_name = "Hierba";
-
-	texture = (Texture*)&ResourceManager::Instance()->getTexture(textureID);
 }
 
 void Hierba::render(glm::dmat4 const& viewMat)
@@ -469,14 +457,12 @@ void Hierba::render(glm::dmat4 const& viewMat)
 	if(cullActivado)
 		glDisable(GL_CULL_FACE);
 
-	// Activar la textura si la tiene
-	texture->bind();
-
 	// Pintar los haces
 	if (m_renderer != nullptr)
 	{
-		// En una dirección
 		glMatrixMode(GL_MODELVIEW);
+
+		// En una dirección
 		glm::dmat4 modelViewMat = viewMat * modelMat;
 		glLoadMatrixd(value_ptr(modelViewMat));
 
@@ -484,16 +470,12 @@ void Hierba::render(glm::dmat4 const& viewMat)
 		m_renderer->draw();
 
 		// En la otra
-		glMatrixMode(GL_MODELVIEW);
 		modelViewMat = glm::rotate(modelViewMat, PI/2, { 0, 1, 0 });
 		glLoadMatrixd(value_ptr(modelViewMat));
 
 		m_material.load();
 		m_renderer->draw();
 	}
-
-	// Desactivar la textura si la tiene
-	texture->unbind();
 
 	if(cullActivado)
 		glEnable(GL_CULL_FACE);

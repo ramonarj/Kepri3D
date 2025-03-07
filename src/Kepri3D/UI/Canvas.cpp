@@ -13,12 +13,12 @@ void Canvas::addElement(UIElement* e)
 	e->setCanvas(this); 
 }
 
-void Canvas::render(glm::dmat4 const& viewMat)
+void Canvas::render()
 {
 	for (UIElement* e : m_elements)
 	{
 		if(e->isActive())
-			e->render(viewMat);
+			e->render();
 	}
 }
 

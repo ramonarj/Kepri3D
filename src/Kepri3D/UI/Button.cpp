@@ -8,9 +8,9 @@
 Button::Button(const std::string& textureName, Canvas* canvas) : m_callback(nullptr)
 {
 	// Coger el tamaño en píxeles de la textura
-	texture = (Texture*)&ResourceManager::Instance()->getTexture(textureName);
-	width = texture->getWidth();
-	height = texture->getHeight();
+	setTexture(textureName);
+	width = m_material.getTexture(0)->getWidth();
+	height = m_material.getTexture(0)->getHeight();
 
 	// 
 	double aspectRatio = (double)canvas->getWidth() / canvas->getHeight();

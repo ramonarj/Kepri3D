@@ -32,7 +32,7 @@ public:
 	void bind(GLuint mix = GL_MODULATE);
 
 	/* Desactiva cualquier textura que estuviera activa */
-	void unbind();
+	static void unbind(GLenum type = GL_TEXTURE_2D);
 
 	/* Salva el contenido del color buffer dado en un archivo BMP */
 	static void save(const std::string& BMP_Name, GLenum buf = GL_BACK);
@@ -56,6 +56,9 @@ public:
 #endif
 
 protected:
+	/* Textura activa actualmente */
+	static GLuint s_activeTexture;
+
 	// Tipo de textura que es
 	GLenum texType;
 

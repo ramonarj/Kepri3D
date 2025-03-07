@@ -12,7 +12,7 @@ public:
 	Canvas();
 	~Canvas();
 
-	void render(glm::dmat4 const& viewMat);
+	void render();
 	void update(GLuint deltaTime);
 
 	/* Añade un elemento al canvas */

@@ -314,12 +314,10 @@ public:
 class Hierba : public Entity
 {
 public:
-	Hierba(GLdouble widh, GLdouble height, const std::string& textureID);
+	Hierba(GLdouble widh, GLdouble height);
 	~Hierba() { };
 
 	void render(glm::dmat4 const& viewMat) override;
-private:
-	Texture* texture;
 };
 
 // - - - - - - - - - - - - 

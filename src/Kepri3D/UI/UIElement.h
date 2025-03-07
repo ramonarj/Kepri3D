@@ -32,7 +32,7 @@ public:
 
 	void setScaleUI(float x, float y);
 
-	void render(glm::dmat4 const& viewMat) override;
+	void render() override;
 protected:
 	/* Referencia al canvas que pertenece */
 	Canvas* canvas;
@@ -44,9 +44,6 @@ protected:
 	/* Dimensiones, en píxeles, que ocupa respecto al tamaño de referencia del canvas */
 	int width;
 	int height;
-
-	// Textura
-	Texture* texture;
 };
 
 #endif

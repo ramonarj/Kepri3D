@@ -296,7 +296,7 @@ void Scene::renderCanvas()
 	// Cambiar la función del Z-test para pasarlo siempre
 	glDepthFunc(GL_ALWAYS);
 	// Pintar el canvas
-	m_canvas->render(m_camera->getViewMat());
+	m_canvas->render();
 
 	// Dejarlo todo como estaba
 	glDepthFunc(GL_LESS); // valor predet.

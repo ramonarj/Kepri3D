@@ -161,7 +161,8 @@ void PruebaScene::init()
 	AddEntity(cuboSpec);
 
 	// Hierba
-	Hierba* hierba = new Hierba(2.5, 3, "hierba");
+	Hierba* hierba = new Hierba(2.5, 3);
+	hierba->setTexture("hierba");
 	hierba->setPosition({ 15, 0.5, 5 });
 	hierba->rotate(-PI / 2, { 0, 1, 0 }, GLOBAL);
 	hierba->addComponent(new RotationComp(0.75));
@@ -383,7 +384,7 @@ void PruebaScene::PruebaMateriales()
 	c2->setMaterial("fluorescente");
 	c2->setTexture("orientacion");
 	c2->setPosition({ -5,0,0 });
-	c2->setShader("default");
+	//c2->setShader("lights");
 	AddEntity(c2);
 
 	// Cubo con la misma textura en todas las caras

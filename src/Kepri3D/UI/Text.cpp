@@ -2,6 +2,7 @@
 
 #include "Mesh.h"
 #include "Camera.h"
+#include "Texture.h"
 
 void Text::setText(const std::string& text)
 {
@@ -44,12 +45,13 @@ Text::~Text()
 	clearText();
 }
 
-void Text::render(glm::dmat4 const& viewMat)
+void Text::render()
 {
 	glLineWidth(grosor);
 
 	// Cargar la matriz de modelado
 	glMatrixMode(GL_MODELVIEW);
+	Texture::unbind(); //no usamos texturas
 
 	// Dibujar las mallas de cada una de las letras
 	int col = 0;
@@ -73,11 +75,10 @@ void Text::render(glm::dmat4 const& viewMat)
 		else
 			col++;
 	}
+	glLineWidth(1.0);
 
 	// 2) Renderizar mis hijos
 	for (Entity* e : m_children)
 		if (e->isActive())
-			e->render(viewMat);
-	
-	glLineWidth(1.0);
+			e->render();
 }
