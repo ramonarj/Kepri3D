@@ -284,33 +284,6 @@ private:
 
 // - - - - - - - - - - - - 
 
-class MovingGrid : public Grid
-{
-public:
-	MovingGrid(GLuint filas, GLuint columnas, GLdouble tamFila, GLdouble tamColumna);
-	~MovingGrid() { };
-	void render() override;
-
-	void setSpeeds(glm::vec2 texSpeed, glm::vec2 dispSpeed) { velTex = texSpeed; velDisp = dispSpeed; }
-private:
-	glm::vec2 velTex;
-	// Útil para simular la dirección y fuerza del viento en la superficie del agua
-	glm::vec2 velDisp;
-};
-
-// - - - - - - - - - - - - 
-
-class CuboMultitex : public Entity
-{
-public:
-	CuboMultitex(GLdouble size);
-	~CuboMultitex() { };
-
-	void render() override;
-};
-
-// - - - - - - - - - - - - 
-
 class Hierba : public Entity
 {
 public:

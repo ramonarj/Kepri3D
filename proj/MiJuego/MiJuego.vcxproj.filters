@@ -40,6 +40,12 @@
     <ClCompile Include="..\..\src\MiJuego\PhysicsMan.cpp">
       <Filter>Archivos de origen</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\src\MiJuego\MultitexComp.cpp">
+      <Filter>Archivos de origen</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\MiJuego\AguaComp.cpp">
+      <Filter>Archivos de origen</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\src\MiJuego\CameraController.h">
@@ -67,6 +73,12 @@
       <Filter>Archivos de origen</Filter>
     </ClInclude>
     <ClInclude Include="..\..\src\MiJuego\PhysicsMan.h">
+      <Filter>Archivos de origen</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\MiJuego\MultitexComp.h">
+      <Filter>Archivos de origen</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\MiJuego\AguaComp.h">
       <Filter>Archivos de origen</Filter>
     </ClInclude>
   </ItemGroup>

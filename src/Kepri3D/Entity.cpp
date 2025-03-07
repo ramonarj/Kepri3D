@@ -119,9 +119,6 @@ void Entity::render(Shader* sh)
 	// Debug del collider
 	if (m_collider != nullptr) { m_collider->render(); }
 
-	// Desactivar texturas
-	//m_material.unload();
-
 	// 2) Renderizar sus hijos con el mismo shader dado
 	for (Entity* e : m_children)
 		if (e->isActive())
@@ -402,46 +399,6 @@ void Billboard::render()
 
 // - - - - - - - - - - - - - - - - - 
 
-MovingGrid::MovingGrid(GLuint filas, GLuint columnas, GLdouble tamFila, GLdouble tamColumna) :
-	Grid(filas, columnas, tamFila, tamColumna)
-{
-	m_name = "MovingGrid";
-
-	velDisp = { -1, -1 };
-	velTex = { 2, 0 };
-}
-
-void MovingGrid::render()
-{
-	// Pasarle el tiempo y velocidad de desplazamiento al fragment shader
-	float t = glutGet(GLUT_ELAPSED_TIME);
-	m_material.getShader()->setFloat("tiempo", t / 10000.0f);
-	m_material.getShader()->setVec2("velTex", velTex);
-	m_material.getShader()->setVec2("velDisp", velDisp);
-
-	Entity::render();
-}
-
-// - - - - - - - - - - - - - - - - - 
-
-CuboMultitex::CuboMultitex(GLdouble size)
-{
-	Renderer* rend = new Renderer(IndexMesh::generateCube(size, true));
-	addComponent(rend);
-	m_name = "CuboMT";
-
-	setShader("multitexture");
-}
-
-
-void CuboMultitex::render()
-{
-	m_material.getShader()->setFloat("mix", (sin(glutGet(GLUT_ELAPSED_TIME) * 0.001) + 1) / 2.0f);
-	Entity::render();
-}
-
-// - - - - - - - - - - - - - - - - - 
-
 Hierba::Hierba(GLdouble width, GLdouble height)
 {
 	Renderer* rend = new Renderer(IndexMesh::generateRectangle(width, height));
@@ -584,9 +541,6 @@ void VBOEntity::render()
 
 	// Desactivar VBO
 	vbo->unbind();
-
-	// Desactivar texturas
-	m_material.unload();
 }
 
 // - - - - - - - - - - - - - - - - - 
@@ -627,9 +581,6 @@ void EBOEntity::render()
 	// Desactivar VBO
 	vbo->unbind();
 	ebo->unbind();
-
-	// Desactivar texturas
-	m_material.unload();
 }
 
 // - - - - - - - - - - - - - - - - - 
@@ -671,7 +622,4 @@ void VAOEntity::render()
 
 	// Desactivar VAO
 	vao->unbind();
-
-	// Desactivar texturas
-	m_material.unload();
 }

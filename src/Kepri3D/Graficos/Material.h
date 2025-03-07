@@ -3,6 +3,8 @@
 
 #include <glm.hpp>
 #include <glew.h>
+#include <map>
+#include <string>
 
 class Shader;
 class Texture;
@@ -22,9 +24,6 @@ public:
 
 	/* Carga el material al shader (lo mismo pero con shaders) */
 	void loadToShader(Shader* sh);
-
-	/* Limpia los atributos */
-	void unload();
 
 	inline void setTexture(unsigned int i, Texture* tex) { m_textures[i] = tex; }
 
@@ -50,6 +49,10 @@ public:
 	inline GLfloat getBrillo() const { return m_brillo; }
 
 	inline const Texture* getTexture(GLuint i) const { return m_textures[i]; }
+
+	/* - - Uniforms - - */
+	void setFloat(const std::string& name, float value);
+	void setVec2(const std::string& name, glm::vec2 value);
 
 	static bool fresnel;
 	static bool s_useTextures;
@@ -84,9 +87,14 @@ private:
 	// 6 = Skybox
 	Texture* m_textures[NUM_TEXTURES];
 
+	/* - - Uniforms - - */
+	std::map<std::string, float> m_floatUniforms;
+	std::map<std::string, glm::vec2> m_vec2Uniforms;
+
 	// Métodos auxiliares
 	/* Manda las texturas al shader */
 	void bindTextures(Shader* sh);
+	void sendCustomUniforms(Shader* sh);
 };
 
 #endif

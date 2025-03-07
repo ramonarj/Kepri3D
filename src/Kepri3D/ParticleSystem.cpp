@@ -93,9 +93,6 @@ void ParticleSystem::render()
 
 		glDisableVertexAttribArray(10);
 	}
-
-	// Desactivar la textura si la tiene
-	m_material.unload();
 }
 
 

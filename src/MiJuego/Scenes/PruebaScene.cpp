@@ -5,6 +5,8 @@
 #include "../GameManager.h"
 #include "../RotationComp.h"
 #include "../CameraController.h"
+#include "../MultitexComp.h"
+#include "../AguaComp.h"
 #include "../DebugText.h"
 #include "../Callbacks.h"
 
@@ -144,11 +146,14 @@ void PruebaScene::init()
 	AddEntity(cilindro);
 
 	// Un cubo multitextura
-	CuboMultitex* cuboMT = new CuboMultitex(2);
+	Cubo* cuboMT = new Cubo(2);
+	cuboMT->setName("CuboMT");
 	cuboMT->setPosition({ -15, 0, 6 });
 	cuboMT->setTexture("lego");
 	cuboMT->setSecondTex("emoji");
 	cuboMT->getRenderer()->castShadows(false);
+	cuboMT->setShader("multitexture");
+	cuboMT->addComponent(new MultitexComp((Material*)cuboMT->getMaterial()));
 	AddEntity(cuboMT);
 
 	// Una caja con mapa especular
@@ -431,27 +436,31 @@ void PruebaScene::PruebaMateriales()
 	AddEntity(tierra);
 
 	// Rejilla (suelo)
-	MovingGrid* grid = new MovingGrid(1, 1, 30, 60);
+	Grid* grid = new Grid(1, 1, 30, 60);
 	//grid->setMaterial("oceano");
-	//grid->setMaterial("emerald");
 	grid->setTexture("agua");
 	grid->setDisplacementMap("agua_disp");
 	grid->enableReflections("blanco", "lakeSkybox");
-	grid->setShader("lights");
-	grid->setSpeeds({ 2.0, 0.0 }, { -2, 0 });
+	grid->setShader("agua");
 	grid->setPosition({ 0,-1,0 });
+	AguaComp* sueloComp = new AguaComp((Material*)grid->getMaterial());
+	sueloComp->setSpeeds({ 2.0, 0.0 }, { -2, 0 });
+	grid->addComponent(sueloComp);
 	AddEntity(grid);
 
 	// "Cascada"
-	MovingGrid* cascada = new MovingGrid(1, 1, 30, 24);
+	Grid* cascada = new Grid(1, 1, 30, 24);
+	cascada->setName("Cascada");
 	cascada->setMaterial("oceano");
 	cascada->setTexture("agua");
 	cascada->setDisplacementMap("agua_disp");
 	cascada->enableReflections("blanco", "lakeSkybox");
-	cascada->setSpeeds({ 5.0, 0.0 }, { 10.0, 0.0 });
 	cascada->setPosition({ 30,-13,0 });
 	cascada->rotate(-PI / 2, { 0, 0, 1 }, GLOBAL);
 	cascada->setShader("agua");
+	AguaComp* cascadaComp = new AguaComp((Material*)cascada->getMaterial());
+	cascadaComp->setSpeeds({ 5.0, 0.0 }, { 10.0, 0.0 }); 
+	cascada->addComponent(cascadaComp);
 	AddEntity(cascada);
 
 	// Terreno antiguo
@@ -471,14 +480,16 @@ void PruebaScene::PruebaMateriales()
 
 
 	// Mar de la isla
-	MovingGrid* mar = new MovingGrid(1, 1, 723 * 3, 1087 * 3);
+	Grid* mar = new Grid(1, 1, 723 * 3, 1087 * 3);
 	mar->setMaterial("oceano");
 	mar->setTexture("agua");
 	mar->setDisplacementMap("agua_disp");
 	mar->enableReflections("blanco", "lakeSkybox");
-	mar->setSpeeds({ 0.0, 0.0 }, { -0.2, -0.2 });
 	mar->setPosition({ 0,-20.01,0 });
 	mar->setShader("agua");
+	AguaComp* marComp = new AguaComp((Material*)mar->getMaterial());
+	marComp->setSpeeds({ 0.0, 0.0 }, { -0.2, -0.2 });
+	mar->addComponent(marComp);
 	AddEntity(mar);
 
 	// Minimap

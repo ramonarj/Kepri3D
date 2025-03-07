@@ -155,11 +155,13 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="..\..\src\MiJuego\AguaComp.cpp" />
     <ClCompile Include="..\..\src\MiJuego\Callbacks.cpp" />
     <ClCompile Include="..\..\src\MiJuego\CameraController.cpp" />
     <ClCompile Include="..\..\src\MiJuego\DebugText.cpp" />
     <ClCompile Include="..\..\src\MiJuego\GameManager.cpp" />
     <ClCompile Include="..\..\src\MiJuego\Main.cpp" />
+    <ClCompile Include="..\..\src\MiJuego\MultitexComp.cpp" />
     <ClCompile Include="..\..\src\MiJuego\PhysicsMan.cpp" />
     <ClCompile Include="..\..\src\MiJuego\RotationComp.cpp" />
     <ClCompile Include="..\..\src\MiJuego\Scenes\PruebaScene.cpp" />
@@ -167,10 +169,12 @@
     <ClCompile Include="..\..\src\MiJuego\Scenes\SpaceScene.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="..\..\src\MiJuego\AguaComp.h" />
     <ClInclude Include="..\..\src\MiJuego\Callbacks.h" />
     <ClInclude Include="..\..\src\MiJuego\CameraController.h" />
     <ClInclude Include="..\..\src\MiJuego\DebugText.h" />
     <ClInclude Include="..\..\src\MiJuego\GameManager.h" />
+    <ClInclude Include="..\..\src\MiJuego\MultitexComp.h" />
     <ClInclude Include="..\..\src\MiJuego\PhysicsMan.h" />
     <ClInclude Include="..\..\src\MiJuego\RotationComp.h" />
     <ClInclude Include="..\..\src\MiJuego\Scenes\PruebaScene.h" />

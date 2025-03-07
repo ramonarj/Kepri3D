@@ -85,6 +85,8 @@ void Material::loadToShader(Shader* sh)
 		// Texturas
 		bindTextures(sh);
 	}
+	// Mandar los uniforms específicos de este shader
+	sendCustomUniforms(sh);
 }
 
 void Material::bindTextures(Shader* sh)
@@ -106,12 +108,24 @@ void Material::bindTextures(Shader* sh)
 	sh->setInt("use_normal_map", m_textures[3] != nullptr);
 }
 
-void Material::unload()
+void Material::sendCustomUniforms(Shader* sh)
 {
-	// Esto debería poder quitarse
-	//if (m_textures[0] != nullptr)
-	//{
-	//	m_textures[0]->unbind();
-	//	glActiveTexture(GL_TEXTURE0);
-	//}
+	// Floats
+	for (auto it : m_floatUniforms)
+		sh->setFloat(it.first, it.second);
+	// Vector2
+	for (auto it : m_vec2Uniforms)
+		sh->setVec2(it.first, it.second);
+}
+
+void Material::setFloat(const std::string& name, float value)
+{
+	// Se guarda el valor en el material (en el Update()) para luego pasárselo al shader (en el render())
+	m_floatUniforms[name] = value;
+}
+
+void Material::setVec2(const std::string& name, glm::vec2 value)
+{
+	// Se guarda el valor en el material (en el Update()) para luego pasárselo al shader (en el render())
+	m_vec2Uniforms[name] = value;
 }
