@@ -162,6 +162,7 @@
     <ClCompile Include="..\..\src\MiJuego\GameManager.cpp" />
     <ClCompile Include="..\..\src\MiJuego\Main.cpp" />
     <ClCompile Include="..\..\src\MiJuego\MultitexComp.cpp" />
+    <ClCompile Include="..\..\src\MiJuego\ParallaxComp.cpp" />
     <ClCompile Include="..\..\src\MiJuego\PhysicsMan.cpp" />
     <ClCompile Include="..\..\src\MiJuego\RotationComp.cpp" />
     <ClCompile Include="..\..\src\MiJuego\Scenes\PruebaScene.cpp" />
@@ -175,6 +176,7 @@
     <ClInclude Include="..\..\src\MiJuego\DebugText.h" />
     <ClInclude Include="..\..\src\MiJuego\GameManager.h" />
     <ClInclude Include="..\..\src\MiJuego\MultitexComp.h" />
+    <ClInclude Include="..\..\src\MiJuego\ParallaxComp.h" />
     <ClInclude Include="..\..\src\MiJuego\PhysicsMan.h" />
     <ClInclude Include="..\..\src\MiJuego\RotationComp.h" />
     <ClInclude Include="..\..\src\MiJuego\Scenes\PruebaScene.h" />

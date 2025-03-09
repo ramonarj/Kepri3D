@@ -113,6 +113,9 @@ void Material::sendCustomUniforms(Shader* sh)
 	// Floats
 	for (auto it : m_floatUniforms)
 		sh->setFloat(it.first, it.second);
+	// Enteros
+	for (auto it : m_intUniforms)
+		sh->setInt(it.first, it.second);
 	// Vector2
 	for (auto it : m_vec2Uniforms)
 		sh->setVec2(it.first, it.second);
@@ -124,8 +127,12 @@ void Material::setFloat(const std::string& name, float value)
 	m_floatUniforms[name] = value;
 }
 
+void Material::setInt(const std::string& name, int value)
+{
+	m_intUniforms[name] = value;
+}
+
 void Material::setVec2(const std::string& name, glm::vec2 value)
 {
-	// Se guarda el valor en el material (en el Update()) para luego pasárselo al shader (en el render())
 	m_vec2Uniforms[name] = value;
 }

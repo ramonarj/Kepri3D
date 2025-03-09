@@ -206,7 +206,8 @@ void IndexMesh::SetNormals()
 // Muy similar a setNormals()
 void IndexMesh::setTangents()
 {
-	tangentes = new glm::vec3[numVertices];
+	if (tangentes == nullptr)
+		tangentes = new glm::vec3[numVertices];
 	// Se inicializan todas a 0
 	for (int i = 0; i < numVertices; i++)
 		tangentes[i] = { 0,0,0 };

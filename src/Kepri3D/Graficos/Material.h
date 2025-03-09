@@ -52,6 +52,7 @@ public:
 
 	/* - - Uniforms - - */
 	void setFloat(const std::string& name, float value);
+	void setInt(const std::string& name, int value);
 	void setVec2(const std::string& name, glm::vec2 value);
 
 	static bool fresnel;
@@ -89,6 +90,7 @@ private:
 
 	/* - - Uniforms - - */
 	std::map<std::string, float> m_floatUniforms;
+	std::map<std::string, int> m_intUniforms;
 	std::map<std::string, glm::vec2> m_vec2Uniforms;
 
 	// Métodos auxiliares

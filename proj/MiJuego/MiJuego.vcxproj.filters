@@ -46,6 +46,9 @@
     <ClCompile Include="..\..\src\MiJuego\AguaComp.cpp">
       <Filter>Archivos de origen</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\src\MiJuego\ParallaxComp.cpp">
+      <Filter>Archivos de origen</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\src\MiJuego\CameraController.h">
@@ -79,6 +82,9 @@
       <Filter>Archivos de origen</Filter>
     </ClInclude>
     <ClInclude Include="..\..\src\MiJuego\AguaComp.h">
+      <Filter>Archivos de origen</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\MiJuego\ParallaxComp.h">
       <Filter>Archivos de origen</Filter>
     </ClInclude>
   </ItemGroup>

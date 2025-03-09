@@ -264,6 +264,8 @@ void Entity::setNormalMap(const std::string& textureID)
 void Entity::setDisplacementMap(const std::string& textureID)
 {
 	m_material.setTexture(4, (Texture*)&ResourceManager::Instance()->getTexture(textureID));
+	// Temporal
+	static_cast<IndexMesh*>(m_renderer->getMesh())->setTangents();
 }
 
 void Entity::enableReflections(const std::string& reflectionMapID, const std::string& cubemapID)
