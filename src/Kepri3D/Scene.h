@@ -5,9 +5,7 @@
 #include <string>
 #include <glew.h>
 #include <glm.hpp>
-#include "BufferObjects.h"
 #include "Game.h"
-#include "Light.h"
 
 class Entity;
 class Camera;
@@ -16,6 +14,9 @@ class Canvas;
 class Shader;
 class Mesh;
 class Skybox;
+class Renderer;
+class Uniformbuffer;
+class Framebuffer;
 
 const int MAX_LUCES = 5;
 // Lo que ocupa el struct "Light" del FS teniendo en cuenta alineamiento

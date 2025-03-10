@@ -1,20 +1,6 @@
 #include "Scene.h"
 
-#include "Game.h"
-#include "Utils.h"
-#include "Mesh.h"
-#include "Texture.h"
-#include "Entity.h"
-#include "Camera.h"
-#include "Light.h"
-#include "Shader.h"
-#include "ResourceManager.h"
-#include "InputManager.h"
-#include "PhysicsSystem.h"
-#include "UI/Canvas.h"
-#include "Renderer.h"
-
-#include <freeglut.h>
+#include "Kepri3D.h"
 
 // Miembros estáticos
 Camera* Scene::m_camera = nullptr;
@@ -182,12 +168,13 @@ void Scene::debugShadowMap()
 
 void Scene::bakeShadows()
 {
+	if (shadowsState == 0) { return; }
 	for(Light* l : m_lights) // Light* l : m_lights
 	{
 		Shadowmap* map = l->getShadowMap();
 		if (!l->isActive() || map == nullptr) { continue; }
 		// Mandar los uniforms de las matrices
-		l->sendShadowUniforms(m_uboMatrices);
+		l->sendShadowUniforms(m_uboMatrices, m_camera->getPosition());
 
 		// Cambiar a la resolución del depth map
 		glViewport(0, 0, map->width, map->height);
@@ -427,15 +414,8 @@ void Scene::resize(int width, int height)
 void Scene::toggleShadows()
 {
 	shadowsState = (shadowsState + 1) % 3;
-	if(shadowsState == 0)
+	if(shadowsState == 1)
 	{
-		for (Renderer* r : m_renderers)
-			r->castShadows(false);
-	}
-	else if(shadowsState == 1)
-	{
-		for (Renderer* r : m_renderers)
-			r->castShadows(true);
 		for (int i = 0; i < m_lights.size(); i++)
 		{
 			Shadowmap* shMap = m_lights[i]->getShadowMap();

@@ -11,7 +11,7 @@ Renderer::Renderer(Mesh* mesh)
 	m_polyModeBack = GL_FILL;
 
 	m_receiveShadows = true;
-	m_castShadows = false;
+	m_castShadows = true;
 }
 
 Renderer::~Renderer()

@@ -9,7 +9,7 @@ Terreno::Terreno(Material* mat) : cam(nullptr), heightMap(nullptr)
 {
 	this->mat = mat;
 	useEyedir = false;
-	patchSize = 160;
+	patchSize = 320; // TODO numeros magicos
 	mat->setInt("patch_size", patchSize);
 }
 

@@ -87,7 +87,7 @@ public:
 	inline Shadowmap* getShadowMap() { return m_shadowMap; }
 
 	/* Manda los uniforms */
-	void sendShadowUniforms(Uniformbuffer* uboMatrices);
+	void sendShadowUniforms(Uniformbuffer* uboMatrices, const glm::vec3& camPos);
 
 	/* Rellena parte del UBO con la información de esta luz */
 	void loadToUBO(unsigned int offset);

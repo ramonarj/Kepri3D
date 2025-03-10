@@ -254,7 +254,7 @@ void PruebaScene::init()
 	AddEntity(particleSys);
 
 	// Terreno teselado
-	TessTerrain* tesTerrain = new TessTerrain(9, 14, 80, 80); //patches de 80x80uds
+	TessTerrain* tesTerrain = new TessTerrain(18, 28, 80, 80); //patches de 80x80uds
 	tesTerrain->setTexture("iceland");
 	tesTerrain->setSpecularMap("iceland_spec");
 	tesTerrain->setNormalMap("iceland_normal");  // obligatorio usar un mapa de normales por el momento
@@ -445,12 +445,13 @@ void PruebaScene::PruebaMateriales()
 
 	// Rejilla (suelo)
 	Grid* grid = new Grid(1, 1, 30, 60);
-	//grid->setMaterial("oceano");
+	grid->setMaterial("oceano");
 	grid->setTexture("agua");
 	grid->setDisplacementMap("agua_disp");
 	grid->enableReflections("blanco", "lakeSkybox");
 	grid->setShader("agua");
 	grid->setPosition({ 0,-1,0 });
+	grid->getRenderer()->castShadows(false);
 	AguaComp* sueloComp = new AguaComp((Material*)grid->getMaterial());
 	sueloComp->setSpeeds({ 2.0, 0.0 }, { -2, 0 });
 	grid->addComponent(sueloComp);

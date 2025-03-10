@@ -57,7 +57,7 @@ Light::Light(LightType type, glm::fvec4 diffuse) : id(GL_MAX_LIGHTS), m_active(t
 	{
 		shadowSh = (Shader*)&ResourceManager::Instance()->getShader("shadows");
 		shadowSh->useTextures(false); // para no pasar ni una textura de más (que no se usarían)
-		m_shadowMap = new Shadowmap(shadowSh, SHADOW_SIZE, SHADOW_SIZE, 1.0f, 80.0f, false);
+		m_shadowMap = new Shadowmap(shadowSh, SHADOW_SIZE, SHADOW_SIZE, 1.0f, 150.0f, false);
 
 		float ortoSize = 40.0f;
 		m_shadowMap->lightProj = glm::ortho(-ortoSize, ortoSize, -ortoSize, ortoSize,
@@ -175,13 +175,13 @@ void Light::emitShadows(bool b)
 		
 }
 
-void Light::sendShadowUniforms(Uniformbuffer* uboMatrices)
+void Light::sendShadowUniforms(Uniformbuffer* uboMatrices, const glm::vec3& camPos)
 {
 	// Luces direccionales
 	if (type != POINT_LIGHT)
 	{
 		// Actualizar la matriz de vista y ponerla donde la luz
-		glm::vec3 origen = { 0, 0, 0 };
+		glm::vec3 origen = camPos;
 		m_shadowMap->lightView = glm::lookAt(origen + direction * m_shadowMap->distOrigen, origen, glm::vec3(0.0, 1.0, 0.0));
 
 		// Mandar el uniform

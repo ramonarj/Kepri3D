@@ -38,6 +38,12 @@ uniform sampler2D dispMap;
 
 uniform bool receive_shadows;
 
+// - - Niebla - - //
+uniform bool fog = true;
+uniform vec3 fog_color = { 0.5, 0.9, 1.0};
+const float fog_start = 150.0f;
+const float fog_end = 15000.0f;
+
 // Variables globales
 const float PI = 3.141593;
 vec4 diffColor;
@@ -141,7 +147,14 @@ void main()
 	// Emisión (con/sin mapa)
 	if(usingTexture(EMISSION_MAP)){ colorTotal = max(colorTotal, texture(material.emission_map, texCoords).rgb); }
 	else { colorTotal = max(colorTotal, material.emission); }
-
+	
+	// Niebla lineal por distancia
+	if(fog)
+	{
+		float fragDistance = length(camPos - data_in.fragPos);
+		float fogAmount = clamp((fragDistance - fog_start) / (fog_end - fog_start), 0, 1);
+		colorTotal = mix(colorTotal, fog_color, fogAmount);
+	}
 
 	// Asignar el color al fragmento, incluyendo la transparencia
 	FragColor = vec4(colorTotal, diffColor.a);

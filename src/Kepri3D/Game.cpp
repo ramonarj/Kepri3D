@@ -8,6 +8,7 @@
 #include "InputManager.h"
 #include "ResourceManager.h"
 #include "Shader.h"
+#include "Light.h"
 
 #include <freeglut.h>
 #include <glew.h>
