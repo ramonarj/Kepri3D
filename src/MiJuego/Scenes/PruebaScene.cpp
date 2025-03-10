@@ -48,8 +48,9 @@ void PruebaScene::init()
 	circleLight->setSpecular({ 0.8, 0.8, 0, 1.0 });
 	circleLight->emitShadows(true);
 	Entity* circleLightEnt = new Esfera(0.5);
-	circleLightEnt->setTexture("blanco");
-	circleLightEnt->setShader("default");
+	((Material*)circleLightEnt->getMaterial())->setEmission(circleLight->getDiffuse()); //que la bolita sea del color de la luz
+	//circleLightEnt->setTexture("blanco");
+	circleLightEnt->setShader("lights");
 	circleLightEnt->addComponent(circleLight);
 	AddEntity(circleLightEnt);
 
@@ -97,6 +98,7 @@ void PruebaScene::init()
 	redead->setMesh("redead");
 	redead->setMaterial("fluorescente");
 	redead->setTexture("redead");
+	redead->setEmissionMap("redead_emission");
 	redead->setShader("lights");
 	redead->setPosition({ -8,2,-6 });
 	AddEntity(redead);
@@ -314,6 +316,7 @@ void PruebaScene::loadResources()
 	ResourceManager::Instance()->loadTexture("earthHD.jpg", "earthHD");
 	ResourceManager::Instance()->loadTexture("venus.bmp", "venus");
 	ResourceManager::Instance()->loadTexture("orientacion.bmp", "orientacion");
+	ResourceManager::Instance()->loadTexture("orientacion_emission.png", "orientacion_emission");
 	ResourceManager::Instance()->loadTexture("Zelda.bmp", "zelda");
 	ResourceManager::Instance()->loadTexture("terrenoTex.bmp", "terreno");
 	ResourceManager::Instance()->loadTexture("Caja.bmp", "caja");
@@ -332,6 +335,7 @@ void PruebaScene::loadResources()
 	ResourceManager::Instance()->loadTexture("brickwall_disp2.png", "wall_disp", 255, GL_RGBA);
 	ResourceManager::Instance()->loadTexture("star.png", "star");
 	ResourceManager::Instance()->loadTexture("redead.png", "redead");
+	ResourceManager::Instance()->loadTexture("redead_emission.png", "redead_emission");
 	ResourceManager::Instance()->loadTexture("windows.bmp", "windows");
 	ResourceManager::Instance()->loadTexture("coke.jpg", "coke");
 	ResourceManager::Instance()->loadTexture("espejo.png", "espejo");
@@ -387,13 +391,13 @@ void PruebaScene::loadResources()
 
 void PruebaScene::PruebaMateriales()
 {
-
 	// Cubo de orientación (distintas texturas)
 	Cubo* c2 = new Cubo(2, false);
 	c2->setMaterial("fluorescente");
 	c2->setTexture("orientacion");
+	c2->setEmissionMap("orientacion_emission");
 	c2->setPosition({ -5,0,0 });
-	//c2->setShader("lights");
+	c2->setShader("lights");
 	AddEntity(c2);
 
 	// Cubo con la misma textura en todas las caras
@@ -417,8 +421,8 @@ void PruebaScene::PruebaMateriales()
 
 	// Cubo de cobre
 	Cubo* cuboCobre = new Cubo(2);
-	cuboCobre->setTexture("cobre");
 	cuboCobre->setMaterial("cobre");
+	cuboCobre->setTexture("cobre");
 	cuboCobre->setPosition({ 10,0,0 });
 	AddEntity(cuboCobre);
 

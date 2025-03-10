@@ -260,6 +260,11 @@ void Entity::enableReflections(const std::string& reflectionMapID, const std::st
 	m_material.setTexture(6, (Texture*)&ResourceManager::Instance()->getTexture(cubemapID));
 }
 
+void Entity::setEmissionMap(const std::string& textureID)
+{
+	m_material.setTexture(7, (Texture*)&ResourceManager::Instance()->getTexture(textureID));
+}
+
 
 // - - - - - - - - - - - - - - - - - 
 

@@ -92,6 +92,9 @@ public:
 	/* Establece el mapa de desplazamiento (textura en B/N) que desplazará las coordenadas de textura de la malla */
 	void setDisplacementMap(const std::string& textureID);
 
+	/* Establece el mapa de emisión */
+	void setEmissionMap(const std::string& textureID);
+
 	/* Activa los reflejos para esta entidad, dando el mapa de reflejos (textura en B/N) que indica qué partes
 	* son reflectantes, y la textura del Cubemap que reflejará */
 	void enableReflections(const std::string& reflectionMapID, const std::string& cubemapID);

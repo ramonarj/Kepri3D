@@ -192,7 +192,20 @@ void GameManager::controlTorre(GLuint deltaTime)
 		movTorre.y += 1;
 	}
 
-	// Mover la luz Blinn
+	// Cambiar el color con el Enter
+	if (InputManager::Instance()->getKeyDown(13))
+	{
+		float r = int(rand() % 255) / 255.0f;
+		float g = int(rand() % 255) / 255.0f;
+		float b = int(rand() % 255) / 255.0f;
+
+		circleLight->setDiffuse({ r, g, b, 1 });
+		circleLight->setSpecular({ r, g, b, 1 });
+		((Material*)circleLight->getEntity()->getMaterial())->setEmission(circleLight->getDiffuse());
+	}
+
+
+	// Mover la luz circular
 	movTorre = movTorre * velTorre * (deltaTime / 1000.0);
 	//pSystem->translate(movTorre, GLOBAL);
 	circleLight->getEntity()->translate(movTorre);

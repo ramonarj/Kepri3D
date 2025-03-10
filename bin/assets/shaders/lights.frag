@@ -137,6 +137,11 @@ void main()
 		
 		colorTotal += color;
 	}
+	
+	// Emisión (con/sin mapa)
+	if(usingTexture(EMISSION_MAP)){ colorTotal = max(colorTotal, texture(material.emission_map, texCoords).rgb); }
+	else { colorTotal = max(colorTotal, material.emission); }
+
 
 	// Asignar el color al fragmento, incluyendo la transparencia
 	FragColor = vec4(colorTotal, diffColor.a);

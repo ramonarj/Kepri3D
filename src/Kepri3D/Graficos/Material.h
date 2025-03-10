@@ -9,7 +9,7 @@
 class Shader;
 class Texture;
 
-const unsigned int NUM_TEXTURES = 7;
+const unsigned int NUM_TEXTURES = 8;
 
 class Material
 {
@@ -32,6 +32,8 @@ public:
 	static inline void setShadingType(GLuint sh) { m_shading = sh; }
 
 	void setShader(Shader* sh) { m_shader = sh; }
+
+	void setEmission(const glm::vec3& emission) { m_emission = glm::vec4(emission, 1.0); }
 
 	// Getters
 	Shader* getShader() const { return m_shader; }

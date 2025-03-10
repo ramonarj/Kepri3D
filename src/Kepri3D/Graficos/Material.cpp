@@ -11,7 +11,7 @@ bool Material::s_useTextures = true;
 
 // Nombre que deben tener las respectivas variables 'sampler2D/samplerCube' del shader
 std::string g_texNames[NUM_TEXTURES] = { "textura", "textura2", "material.specular_map", "normalMap",
-	"dispMap", "reflectionMap", "skybox" };
+	"dispMap", "reflectionMap", "skybox", "material.emission_map" };
 
 #define KEPRI_TEXTURE_0 10
 
@@ -46,12 +46,11 @@ Material::Material(glm::fvec4 ambient, glm::fvec4 diffuse, glm::fvec4 specular, 
 void Material::load()
 {
 	// Bindear la textura principal
-	if (m_textures[0] != nullptr) 
-	{
-		glActiveTexture(GL_TEXTURE0);
-		m_textures[0]->bind();
-	}
-	else { Texture::unbind(); }
+	glActiveTexture(GL_TEXTURE0);
+	if (m_textures[0] != nullptr)
+		m_textures[0]->bind(); 
+	else
+		Texture::unbind(); 
 
 	//glMaterialfv(GL_FRONT, GL_AMBIENT_AND_DIFFUSE, value_ptr(m_diffuse));
 	// El "front and back" produce algunos efectos no deseados
@@ -83,6 +82,8 @@ void Material::loadToShader(Shader* sh)
 		sh->setVec4("material.diffuse", m_diffuse);
 		sh->setVec3("material.specular", m_specular);
 		sh->setFloat("material.brillo", m_brillo);
+
+		sh->setVec3("material.emission", m_emission);
 
 		// Texturas
 		bindTextures(sh);
