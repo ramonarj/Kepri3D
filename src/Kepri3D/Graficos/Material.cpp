@@ -91,21 +91,26 @@ void Material::loadToShader(Shader* sh)
 
 void Material::bindTextures(Shader* sh)
 {
+	int mask = 0;
 	// Activar cada textura existente
 	for (int i = 0; i < NUM_TEXTURES; i++)
 	{
 		if (m_textures[i] != nullptr)
 		{
+			// Activar la textura
 			glActiveTexture(GL_TEXTURE0 + i);
 			m_textures[i]->bind();
 			sh->setInt(g_texNames[i], i);
+			// Poner a 1 el bit de la máscara
+			mask = mask | (1 << i);
 		}
 	}
+	sh->setInt("material.mapsMask", mask);
 
 	// Booleanos extra
-	sh->setInt("use_diff_map", m_textures[0] != nullptr);
-	sh->setInt("use_spec_map", m_textures[2] != nullptr);
-	sh->setInt("use_normal_map", m_textures[3] != nullptr);
+	//sh->setInt("use_diff_map", m_textures[0] != nullptr);
+	//sh->setInt("use_spec_map", m_textures[2] != nullptr);
+	//sh->setInt("use_normal_map", m_textures[3] != nullptr);
 }
 
 void Material::sendCustomUniforms(Shader* sh)

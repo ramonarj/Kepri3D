@@ -6,6 +6,8 @@ struct Material
 	vec3 specular;
 	sampler2D specular_map;
 	float brillo;
+	//
+	int mapsMask;
 };
 
 // Struct multifunción para los 3 tipos de luces
@@ -43,3 +45,12 @@ struct Shadowmap
 	// PCF
 	bool soft_shadows;
 };
+
+// IDs para las texturas del material
+#define DIFFUSE_MAP 1
+#define SECONDARY_MAP 2
+#define SPECULAR_MAP 4
+#define NORMAL_MAP 8
+#define DISPLACEMENT_MAP 16
+#define REFLECTION_MAP 32
+#define SKYBOX_MAP 64

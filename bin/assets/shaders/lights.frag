@@ -34,10 +34,8 @@ uniform Material material;
 
 uniform sampler2D textura;
 uniform sampler2D normalMap;
+uniform sampler2D dispMap;
 
-uniform bool use_diff_map;
-uniform bool use_spec_map;
-uniform bool use_normal_map;
 uniform bool receive_shadows;
 
 // Variables globales
@@ -50,32 +48,52 @@ vec3 ambColor;
 #include lighting.glsl
 // Funciones de sombra
 #include shadows.glsl
+// Parallax mapping
+#include parallax.glsl
 
 out vec4 FragColor;
+
+// Forma "sencilla" de ver si nos han pasado una textura desde el material o no
+bool usingTexture(int tex)
+{
+	return ((material.mapsMask & tex) == tex);
+}	
 
 void main()
 {
 	// 1) Calcular variables comunes a todas las luces
+	// Vector que va del fragmento a la cámara. NOTA: todos los vectores salen del fragmento (N, V, L, R...)
+	vec3 viewDir = normalize(camPos - data_in.fragPos);
+	
+	// Usar un mapa de alturas/parallax para desplazar las coords. de textura
+	vec2 texCoords;
+	if(usingTexture(DISPLACEMENT_MAP))
+	{
+		// Hay que pasar de espacio global a espacio tangente
+		mat3 inverseTBN = inverse(data_in.TBN);
+		vec3 viewDirTanSpace = normalize(inverseTBN * camPos - inverseTBN * data_in.fragPos);
+		texCoords = ParallaxMapping(dispMap, data_in.TexCoords, viewDirTanSpace, parallaxType);
+		if(texCoords.x > 1.0 || texCoords.y > 1.0 || texCoords.x < 0.0 || texCoords.y < 0.0) { discard; } // quitar fragmentos que se salgan de la textura
+	}
+	else { texCoords = data_in.TexCoords; }
+	
 	// Color difuso del material en el fragmento actual
-	if(use_diff_map) { diffColor = texture(textura, data_in.TexCoords); }
+	if(usingTexture(DIFFUSE_MAP)) { diffColor = texture(textura, texCoords); }
 	else {diffColor = material.diffuse; }
 	
 	// Usamos el valor del specular map / no
-	if(use_spec_map) { specColor = vec3(texture(material.specular_map, data_in.TexCoords)); }
+	if(usingTexture(SPECULAR_MAP)) { specColor = vec3(texture(material.specular_map, texCoords)); }
 	else {specColor = material.specular; }
 	
 	// Color ambient
 	ambColor = material.ambient * diffColor.rgb;
 	
-	// Vector que va del fragmento a la cámara. NOTA: todos los vectores salen del fragmento (N, V, L, R...)
-	vec3 viewDir = normalize(camPos - data_in.fragPos);
-	
 	vec3 normal;
 	// Usamos el valor del normal map y no del vértice
-	if(use_normal_map)
+	if(usingTexture(NORMAL_MAP))
 	{
 		// 1) Cogemos el valor RGB correspondiente al fragmento actual
-		normal = texture(normalMap, data_in.TexCoords).rgb;
+		normal = texture(normalMap, texCoords).rgb;
 		// 2) Pasamos del valor RGB a un vector en Tangent Space
 		normal = normalize(normal * 2.0 - 1.0);
 		// 3) Pasamos de espacio tangente a espacio global, con la matriz TBN

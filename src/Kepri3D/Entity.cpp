@@ -488,7 +488,7 @@ TessTerrain::TessTerrain(GLuint filas, GLuint columnas, GLdouble tamFila, GLdoub
 
 void TessTerrain::setHeightMap(const std::string& texID, float elevacion)
 {
-	setDisplacementMap(texID);
+	this->heightMap = (Texture*)&ResourceManager::Instance()->getTexture(texID);
 	this->elevacion = elevacion;
 }
 
@@ -498,6 +498,11 @@ void TessTerrain::render()
 	m_material.getShader()->setInt("patch_size", patchSize);
 	m_material.getShader()->setVec3("camFW", cam->forward());
 	m_material.getShader()->setFloat("elevacion", elevacion);
+
+	glActiveTexture(GL_TEXTURE0 + 20);
+	heightMap->bind();
+	m_material.getShader()->setInt("heightMap", 20); //por ejemplo
+
 	Entity::render();
 }
 

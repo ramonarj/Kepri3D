@@ -327,7 +327,7 @@ void PruebaScene::loadResources()
 	ResourceManager::Instance()->loadTexture("brickwall.jpg", "wall");
 	// Los mapas de normales/alturas no deben cargarse con SRGB_ALPHA (los que no representen colores)
 	ResourceManager::Instance()->loadTexture("brickwall_normal.png", "wall_normal", 255, GL_RGBA);
-	ResourceManager::Instance()->loadTexture("brickwall_disp.png", "wall_disp", 255, GL_RGBA);
+	ResourceManager::Instance()->loadTexture("brickwall_disp2.png", "wall_disp", 255, GL_RGBA);
 	ResourceManager::Instance()->loadTexture("star.png", "star");
 	ResourceManager::Instance()->loadTexture("redead.png", "redead");
 	ResourceManager::Instance()->loadTexture("windows.bmp", "windows");
@@ -360,7 +360,6 @@ void PruebaScene::loadResources()
 	ResourceManager::Instance()->loadShader("clippable.vert", "", "default.frag", "clippable");
 	ResourceManager::Instance()->loadShader("terrain.vert", "terrain.tesc", "terrain.tese", "", "lights.frag", "terreno");
 	ResourceManager::Instance()->loadShader("reflejos.vert", "", "reflejos.frag", "reflejos");
-	ResourceManager::Instance()->loadShader("lights.vert", "", "parallax.frag", "parallax");
 
 	/* Materiales */
 	ResourceManager::Instance()->loadMaterial("copper.material", "cobre");
@@ -511,7 +510,7 @@ void PruebaScene::PruebaMateriales()
 	paredParallax->setTexture("wall");
 	paredParallax->setNormalMap("wall_normal");
 	paredParallax->setDisplacementMap("wall_disp");
-	paredParallax->setShader("parallax");
+	paredParallax->setShader("lights");
 	paredParallax->setPosition({ -20,6.5,-15 });
 	paredParallax->rotate(PI / 2, { 1,0,0 });
 	//paredParallax->addComponent(new RotationComp(0.5));
@@ -521,7 +520,7 @@ void PruebaScene::PruebaMateriales()
 	// Pared de ladrillos (normal maps)
 	Grid* pared = new Grid(1, 1, 15, 15);
 	pared->setName("NormalMapWall");
-	pared->setMaterial("cromo");
+	//pared->setMaterial("cromo");
 	pared->setTexture("wall");
 	pared->setNormalMap("wall_normal");
 	pared->setShader("lights");

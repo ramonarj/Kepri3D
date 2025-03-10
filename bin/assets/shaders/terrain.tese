@@ -29,7 +29,7 @@ uniform dmat4 model;
 uniform dmat4 lightSpaceMatrix;
 
 // Reutilizamos este nombre aunque lo usemos para alturas
-uniform sampler2D dispMap;
+uniform sampler2D heightMap;
 
 uniform float elevacion = 1.0f;
 
@@ -62,7 +62,7 @@ void main()
     vec4 pos = leftPos + u * (rightPos - leftPos);
 	
 	// Sumarle la altura del Height Map
-	float y = texture(dispMap, coord).r;
+	float y = texture(heightMap, coord).r;
 	pos.y += (y * elevacion);
 
     gl_Position = vec4(projection * view * model * pos);

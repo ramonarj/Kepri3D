@@ -324,6 +324,7 @@ public:
 	bool useEyedir;
 	float elevacion;
 private:
+	Texture* heightMap;
 	Camera* cam;
 	int patchSize;
 };
