@@ -4,15 +4,17 @@
 #include "Mesh.h"
 #include "Renderer.h"
 #include "Texture.h"
-#include "Entity.h"
 #include "Camera.h"
 #include "Light.h"
 #include "Shader.h"
-#include "ParticleSystem.h"
+#include "BufferObjects.h"
 // Físicas
+#include "ParticleSystem.h"
 #include "Rigid.h"
 #include "Collider.h"
-// Managers
+#include "PhysicsSystem.h"
+// Core
+#include "Entity.h"
 #include "Game.h"
 #include "Scene.h"
 #include "ResourceManager.h"
@@ -21,6 +23,10 @@
 #include "UI/Button.h"
 #include "UI/Text.h"
 #include "UI/Canvas.h"
+// Otros
+#include "Terreno.h"
+#include "MeshLoader.h"
+#include "Utils.h"
 
 //#include <glew.h>
 #include <freeglut.h>

@@ -254,12 +254,14 @@ void PruebaScene::init()
 	// Terreno teselado
 	TessTerrain* tesTerrain = new TessTerrain(9, 14, 80, 80); //patches de 80x80uds
 	tesTerrain->setTexture("iceland");
-	tesTerrain->setHeightMap("iceland_height", 25.0f);
 	tesTerrain->setSpecularMap("iceland_spec");
 	tesTerrain->setNormalMap("iceland_normal");  // obligatorio usar un mapa de normales por el momento
 	tesTerrain->setPosition({ 0,-20,0 });
-	tesTerrain->setCamera(m_camera);
 	tesTerrain->getRenderer()->setPolygonMode(GL_FILL, GL_LINE);
+	Terreno* terrainComp = new Terreno((Material*)tesTerrain->getMaterial());
+	terrainComp->setCamera(m_camera);
+	terrainComp->setHeightMap("iceland_height", 25.0f);
+	tesTerrain->addComponent(terrainComp);
 	AddEntity(tesTerrain);
 
 	// Información de Debug
@@ -273,7 +275,7 @@ void PruebaScene::init()
 	// Componente GM
 	GameManager* gmComponent = new GameManager(this, m_camera, botonesMenu, torre);
 	gmComponent->setLights(dirLight, circleLight, spotLight, luzBlinn);
-	gmComponent->setTessTerrain(tesTerrain);
+	gmComponent->setTessTerrain(terrainComp);
 	gmComponent->setParticleSys(particleSys);
 	// Componente CameraController
 	CameraController* camComp = new CameraController(m_camera);

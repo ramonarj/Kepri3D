@@ -93,6 +93,9 @@
     <ClCompile Include="..\..\src\Kepri3D\Fisica\PhysicsSystem.cpp">
       <Filter>Fisicas</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\src\Kepri3D\Terreno.cpp">
+      <Filter>Core</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\src\Kepri3D\Utils\checkML.h">
@@ -178,6 +181,9 @@
     </ClInclude>
     <ClInclude Include="..\..\src\Kepri3D\Fisica\PhysicsSystem.h">
       <Filter>Fisicas</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\Kepri3D\Terreno.h">
+      <Filter>Core</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

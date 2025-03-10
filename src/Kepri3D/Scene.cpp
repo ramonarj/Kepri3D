@@ -379,7 +379,7 @@ void Scene::sendUniforms(Shader* sh)
 		return;
 
 	// shadowmaps
-	int ini_index = 8;
+	int ini_index = 20;
 	for(int i = 0; i < m_lights.size(); i++)
 	{
 		Shadowmap* map = m_lights[i]->getShadowMap();

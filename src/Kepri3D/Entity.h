@@ -259,6 +259,16 @@ public:
 
 // - - - - - - - - - - - - 
 
+class TessTerrain : public Entity
+{
+public:
+	/* Crea un terreno vacío */
+	TessTerrain(GLuint filas, GLuint columnas, GLdouble tamFila, GLdouble tamColumna);
+	~TessTerrain() { };
+};
+
+// - - - - - - - - - - - - 
+
 class Skybox : public Entity
 {
 public:
@@ -304,29 +314,6 @@ public:
 	void render() override;
 private:
 	std::vector<glm::vec4> planos;
-};
-
-// - - - - - - - - - - - - 
-class Camera;
-
-class TessTerrain : public Entity
-{
-public:
-	/* Crea un terreno vacío */
-	TessTerrain(GLuint filas, GLuint columnas, GLdouble tamFila, GLdouble tamColumna);
-	~TessTerrain() { };
-
-	inline void setCamera(Camera* cam) { this->cam = cam; }
-	void setHeightMap(const std::string& hMap, float elevacion);
-
-	void render() override;
-
-	bool useEyedir;
-	float elevacion;
-private:
-	Texture* heightMap;
-	Camera* cam;
-	int patchSize;
 };
 
 // - - - - - - - - - - - - 

@@ -1,24 +1,10 @@
 #include "Entity.h"
 
-#include <iostream>
-
 #include <gtc/type_ptr.hpp>
 
-#include "Utils.h"
-#include "ResourceManager.h"
-#include "Mesh.h"
-#include "Texture.h"
-#include "MeshLoader.h"
-#include "Shader.h"
-#include "Component.h"
-#include "Camera.h"
-#include "Renderer.h"
-#include "Collider.h"
-#include "Rigid.h"
-#include "PhysicsSystem.h"
-#include "BufferObjects.h"
+#include "Kepri3D.h"
 
-#include <freeglut.h>
+#include <iostream>
 
 using namespace glm;
 
@@ -366,6 +352,17 @@ void Terrain::loadHeightMap(const std::string& heightMap, GLdouble scale)
 
 // - - - - - - - - - - - - - - - - - 
 
+TessTerrain::TessTerrain(GLuint filas, GLuint columnas, GLdouble tamFila, GLdouble tamColumna)
+{
+	m_name = "TessTerrain";
+	Renderer* rend = new Renderer(IndexMesh::generateTessGrid(filas, columnas, tamFila, tamColumna));
+	addComponent(rend);
+
+	setShader("terreno");
+}
+
+// - - - - - - - - - - - - - - - - - 
+
 Skybox::Skybox(const std::string& cubemapTextureID)
 {
 	// Generar la malla y cargar la textura y el shader
@@ -470,40 +467,6 @@ void ClippableEntity::render()
 	// Si no los desactivamos, hay errores con el resto de shaders
 	for (int i = 0; i < planos.size(); i++)
 		glDisable(GL_CLIP_DISTANCE0 + i);
-}
-
-// - - - - - - - - - - - - - - - - - 
-
-TessTerrain::TessTerrain(GLuint filas, GLuint columnas, GLdouble tamFila, GLdouble tamColumna)
-{
-	m_name = "TessTerrain";
-	Renderer* rend = new Renderer(IndexMesh::generateTessGrid(filas, columnas, tamFila, tamColumna));
-	addComponent(rend);
-
-	setShader("terreno");
-	useEyedir = false;
-	patchSize = tamFila * 2;
-	this->elevacion = 1.0f;
-}
-
-void TessTerrain::setHeightMap(const std::string& texID, float elevacion)
-{
-	this->heightMap = (Texture*)&ResourceManager::Instance()->getTexture(texID);
-	this->elevacion = elevacion;
-}
-
-void TessTerrain::render()
-{
-	m_material.getShader()->setInt("use_eyeDir", useEyedir);
-	m_material.getShader()->setInt("patch_size", patchSize);
-	m_material.getShader()->setVec3("camFW", cam->forward());
-	m_material.getShader()->setFloat("elevacion", elevacion);
-
-	glActiveTexture(GL_TEXTURE0 + 20);
-	heightMap->bind();
-	m_material.getShader()->setInt("heightMap", 20); //por ejemplo
-
-	Entity::render();
 }
 
 // - - - - - - - - - - - - - - - - - 

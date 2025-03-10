@@ -7,6 +7,8 @@
 
 #include "Game.h"
 
+class Texture;
+
 class Shader
 {
 public:
@@ -67,6 +69,9 @@ public:
 
 	/* Pasa un uniform de tipo DMAT4 al shader */
 	void setMat4d(const std::string& name, const glm::dmat4 value) const; // TODO por referencia
+
+	/* Pasa un uniform de tipo Texture al shader */
+	void setTexture(const std::string& name, int index, Texture* tex) const;
 
 	// - - - Configurar los Uniform blocks - - - //
 	void bindUniformBlock(const std::string& name, unsigned int bindingPoint);

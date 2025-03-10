@@ -54,6 +54,8 @@ public:
 	void setFloat(const std::string& name, float value);
 	void setInt(const std::string& name, int value);
 	void setVec2(const std::string& name, glm::vec2 value);
+	void setVec3(const std::string& name, glm::vec3 value);
+	void setTexture(const std::string& name, Texture* value);
 
 	static bool fresnel;
 	static bool s_useTextures;
@@ -92,6 +94,8 @@ private:
 	std::map<std::string, float> m_floatUniforms;
 	std::map<std::string, int> m_intUniforms;
 	std::map<std::string, glm::vec2> m_vec2Uniforms;
+	std::map<std::string, glm::vec3> m_vec3Uniforms;
+	std::map<std::string, Texture*> m_texUniforms;
 
 	// Métodos auxiliares
 	/* Manda las texturas al shader */

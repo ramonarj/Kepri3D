@@ -8,6 +8,7 @@ class Scene;
 class Light;
 class UIElement;
 class ParticleSystem;
+class Terreno;
 
 class GameManager : public Component
 {
@@ -25,7 +26,7 @@ public:
 	~GameManager(){}
 
 	void setLights(Light* dirLight, Light* circleLight, Light* spotLight, Light* luzBlinn);
-	void setTessTerrain(TessTerrain* tesTerrain) { this->tessTerrain = tesTerrain; }
+	void setTessTerrain(Terreno* tesTerrain) { this->tessTerrain = tesTerrain; }
 	void setParticleSys(ParticleSystem* partSys) { this->particleSys = partSys; }
 
 	void update(GLuint deltaTime) override;
@@ -42,7 +43,7 @@ private:
 	Light* dirLight, *circleLight, *spotLight, *luzBlinn;
 	Entity* pSystem;
 	UIElement* botonesMenu;
-	TessTerrain* tessTerrain;
+	Terreno* tessTerrain;
 
 	// Cursor y pantalla
 	bool lockedMouse = true;

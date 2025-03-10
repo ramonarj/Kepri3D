@@ -13,6 +13,8 @@ bool Material::s_useTextures = true;
 std::string g_texNames[NUM_TEXTURES] = { "textura", "textura2", "material.specular_map", "normalMap",
 	"dispMap", "reflectionMap", "skybox" };
 
+#define KEPRI_TEXTURE_0 10
+
 Material::Material()
 {
 	// Valores por defecto
@@ -85,7 +87,7 @@ void Material::loadToShader(Shader* sh)
 		// Texturas
 		bindTextures(sh);
 	}
-	// Mandar los uniforms específicos de este shader
+	// Mandar los uniforms específicos de este material
 	sendCustomUniforms(sh);
 }
 
@@ -106,11 +108,6 @@ void Material::bindTextures(Shader* sh)
 		}
 	}
 	sh->setInt("material.mapsMask", mask);
-
-	// Booleanos extra
-	//sh->setInt("use_diff_map", m_textures[0] != nullptr);
-	//sh->setInt("use_spec_map", m_textures[2] != nullptr);
-	//sh->setInt("use_normal_map", m_textures[3] != nullptr);
 }
 
 void Material::sendCustomUniforms(Shader* sh)
@@ -124,6 +121,16 @@ void Material::sendCustomUniforms(Shader* sh)
 	// Vector2
 	for (auto it : m_vec2Uniforms)
 		sh->setVec2(it.first, it.second);
+	// Vector3
+	for (auto it : m_vec3Uniforms)
+		sh->setVec3(it.first, it.second);
+	// Texturas (de la 10 a la 19 están libres)
+	int i = 0;
+	for (auto it : m_texUniforms)
+	{
+		sh->setTexture(it.first, KEPRI_TEXTURE_0 + i, it.second);
+		i++;
+	}
 }
 
 void Material::setFloat(const std::string& name, float value)
@@ -140,4 +147,14 @@ void Material::setInt(const std::string& name, int value)
 void Material::setVec2(const std::string& name, glm::vec2 value)
 {
 	m_vec2Uniforms[name] = value;
+}
+
+void Material::setVec3(const std::string& name, glm::vec3 value)
+{
+	m_vec3Uniforms[name] = value;
+}
+
+void Material::setTexture(const std::string& name, Texture* value)
+{
+	m_texUniforms[name] = value;
 }
