@@ -4,10 +4,12 @@
 #include <glew.h>
 #include <glm.hpp>
 
+class Texture;
+
 class Framebuffer
 {
 public:
-	Framebuffer(){}
+	Framebuffer() : texture (nullptr), depthTexture(nullptr) {}
 	Framebuffer(GLuint width, GLuint height, bool multisampling = true);
 	~Framebuffer();
 
@@ -17,11 +19,11 @@ public:
 	/* Desactiva el framebuffer que hubiera, volviendo a dejar el predeterminado de OpenGL */
 	inline static void unbind() { glBindFramebuffer(GL_FRAMEBUFFER, 0); }
 
-	/* Activa la textura del FB */
-	void bindTexture(GLenum target = GL_TEXTURE_2D) { glBindTexture(target, textureId); }
+	/* Activa la textura del Color Buffer */
+	void bindTexture();
 
-	/* Activa el Depth Buffer para usarlo como textura */
-	void bindDepth(GLenum target = GL_TEXTURE_2D) { glBindTexture(target, depthId); }
+	/* Activa la textura del Depth Buffer */
+	void bindDepth();
 
 	/* Crea un mapa de sombras con la resolución dada */
 	static Framebuffer* createShadowMap(unsigned int width, unsigned int height, bool omnidirectional = false);
@@ -31,9 +33,13 @@ public:
 
 private:
 	unsigned int id;
-	unsigned int textureId;
-	unsigned int depthId;
 	unsigned int renderbufId;
+	// Texturas del Color y Depth buffer
+	Texture* texture;
+	Texture* depthTexture;
+
+	// Métodos auxiliares
+	static void checkComplete();
 };
 
 // - - - - - - - - - - - 

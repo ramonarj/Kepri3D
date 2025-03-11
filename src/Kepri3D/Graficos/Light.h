@@ -28,8 +28,6 @@ struct Shadowmap
 
 	~Shadowmap();
 
-	void clean() { if (depthBuf != nullptr) delete depthBuf; }
-
 	// El buffer con la textura donde ese guardan los datos de profundidad
 	Framebuffer* depthBuf;
 	// El shader con el que debe hacerse el pase de sombras

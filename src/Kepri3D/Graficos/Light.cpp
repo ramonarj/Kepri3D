@@ -20,7 +20,11 @@ Shadowmap::Shadowmap(Shader* shader, unsigned int width, unsigned int height,
 	this->depthBuf = Framebuffer::createShadowMap(width, height, omnidirectional);
 }
 
-Shadowmap::~Shadowmap() { clean(); }
+Shadowmap::~Shadowmap()
+{
+	if (depthBuf != nullptr)
+		delete depthBuf;
+}
 
 // - - - - - - - - - - - - - - - - - - 
 

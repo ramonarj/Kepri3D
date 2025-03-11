@@ -51,6 +51,12 @@ public:
 	//
 	inline bool hasAlpha() const { return m_hasAlpha; }
 
+	// - - Estáticos - - //
+	static Texture* createAttachment(unsigned int w, unsigned int h);
+	static Texture* createAttachmentMultisample(unsigned int w, unsigned int h, unsigned int samples);
+	static Texture* createDepthAttachment(unsigned int w, unsigned int h);
+	static Texture* createDepthAttachmentCubemap(unsigned int w, unsigned int h);
+
 #ifdef __DEBUG_INFO__
 	static GLuint numBinds;
 #endif

@@ -35,23 +35,19 @@ void Scene::setupStatics(Camera* cam)
 	// Crear la malla de rectángulo para el postprocesado. ({2, 2} para que ocupe la pantalla entera)
 	m_effectsMesh = Mesh::generateRectangle(2, 2);
 
-	// Crear los 2 FrameBuffers para  efectos
+	// - - Framebuffers - - //
+	// efectos
 	frameBuf = new Framebuffer(m_camera->getVP()->getW(), m_camera->getVP()->getH(), false);
 	frameBuf2 = new Framebuffer(m_camera->getVP()->getW(), m_camera->getVP()->getH(), false);
-
-	// Crear el framebuffer para el multisampling
+	// multisampling
 	msBuf = new Framebuffer(m_camera->getVP()->getW(), m_camera->getVP()->getH(), true);
-
-	// Crear framebuffer con MRT
+	// MRT
 	mrtBuf = Framebuffer::createMRTBuffer(m_camera->getVP()->getW(), m_camera->getVP()->getH());
 
-	// Composite por defecto
-	//AddComposite((Shader*)&ResourceManager::Instance()->getComposite("defaultComposite"));
-
-	// Crear los UBO para las matrices VP
+	// - - UBOs - - //
+	// matrices VP
 	m_uboMatrices = new Uniformbuffer(0, sizeof(glm::dmat4) * 2);
-
-	// Crear el UBO para las luces. Tamaño = 144 por temas de alineamiento
+	// luces. Tamaño = 144 por temas de alineamiento
 	// 16 = viewPos + blinn | 120 = lo que ocupa una luz | 8 = relleno para que la siguiente luz empiece en múltiplo de 16
 	m_uboLuces = new Uniformbuffer(1, 16 + LIGHT_STRUCT_SIZE * MAX_LUCES);
 
@@ -436,7 +432,7 @@ void Scene::sendUniforms(Shader* sh)
 		// puntual
 		else
 		{
-			map->depthBuf->bindTexture(GL_TEXTURE_CUBE_MAP);
+			map->depthBuf->bindTexture();
 			sh->setInt(str + ".pointMap", ini_index + i);
 			sh->setFloat(str + ".far_plane", map->farPlane);
 		}
@@ -453,10 +449,11 @@ void Scene::AddComposite(Shader* sh, bool active)
 
 void Scene::resize(int width, int height)
 {
-	delete frameBuf; delete frameBuf2; delete msBuf;
+	delete frameBuf; delete frameBuf2; delete msBuf; delete mrtBuf;
 	frameBuf = new Framebuffer(width, height, false);
 	frameBuf2 = new Framebuffer(width, height, false);
 	msBuf = new Framebuffer(width, height, true);
+	mrtBuf = Framebuffer::createMRTBuffer(width, height);
 #ifdef __DEBUG_INFO__
 	fbSize = { width, height };
 #endif

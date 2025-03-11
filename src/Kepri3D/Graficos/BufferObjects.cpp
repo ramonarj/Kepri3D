@@ -6,7 +6,7 @@
 
 #include <gtc/type_ptr.hpp>
 
-Framebuffer::Framebuffer(GLuint width, GLuint height, bool multisampling)
+Framebuffer::Framebuffer(GLuint width, GLuint height, bool multisampling) : depthTexture(nullptr)
 {
     // Creamos un Framebuffer. Debe tener 3 elementos atados a él: Color, Depth y Stencil buffer
     glGenFramebuffers(1, &id);
@@ -15,13 +15,9 @@ Framebuffer::Framebuffer(GLuint width, GLuint height, bool multisampling)
     // Con multisampling
     if(multisampling)
     {
-        // Creamos una textura que servirá de Color Buffer
-        glGenTextures(1, &textureId);
-        glBindTexture(GL_TEXTURE_2D_MULTISAMPLE, textureId);
-        glTexImage2DMultisample(GL_TEXTURE_2D_MULTISAMPLE, MSAA_SAMPLES, COLOR_SPACE, width, height, GL_TRUE);
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-        glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D_MULTISAMPLE, textureId, 0); // la atamos
+        // Creamos una textura tipo MULTISAMPLE que servirá de Color Buffer
+        texture = Texture::createAttachmentMultisample(width, height, MSAA_SAMPLES);
+        //glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D_MULTISAMPLE, textureId, 0);
 
         // Creamos un Renderbuffer que servirá de Depth+Stencil buffer
         glGenRenderbuffers(1, &renderbufId);
@@ -33,12 +29,7 @@ Framebuffer::Framebuffer(GLuint width, GLuint height, bool multisampling)
     else
     {
         // Lo mismo pero sin multisamples
-        glGenTextures(1, &textureId);
-        glBindTexture(GL_TEXTURE_2D, textureId);
-        glTexImage2D(GL_TEXTURE_2D, 0, COLOR_SPACE, width, height, 0, GL_RGB, GL_UNSIGNED_BYTE, NULL);
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-        glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, textureId, 0);
+        texture = Texture::createAttachment(width, height);
 
         glGenRenderbuffers(1, &renderbufId);
         glBindRenderbuffer(GL_RENDERBUFFER, renderbufId);
@@ -47,8 +38,7 @@ Framebuffer::Framebuffer(GLuint width, GLuint height, bool multisampling)
     }
 
     // Comprobamos que todo ha ido bien
-    if (glCheckFramebufferStatus(GL_FRAMEBUFFER) != GL_FRAMEBUFFER_COMPLETE)
-        std::cout << "ERROR::FRAMEBUFFER:: Framebuffer is not complete!" << std::endl;
+    checkComplete();
 
     glBindFramebuffer(GL_FRAMEBUFFER, 0);
 }
@@ -57,55 +47,23 @@ Framebuffer* Framebuffer::createShadowMap(unsigned int width, unsigned int heigh
 {
     Framebuffer* fb = new Framebuffer();
     glGenFramebuffers(1, &fb->id);
+    glBindFramebuffer(GL_FRAMEBUFFER, fb->id);
 
-    // Para luces direccionales
-    if(!omnidirectional)
-    {
-        // create depth texture
-        glGenTextures(1, &fb->textureId);
-        glBindTexture(GL_TEXTURE_2D, fb->textureId);
-        glTexImage2D(GL_TEXTURE_2D, 0, GL_DEPTH_COMPONENT, width, height, 0, GL_DEPTH_COMPONENT, GL_FLOAT, NULL);
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_BORDER);
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_BORDER);
-
-        float borderColor[] = { 1.0f, 1.0f, 1.0f, 1.0f };
-        glTexParameterfv(GL_TEXTURE_2D, GL_TEXTURE_BORDER_COLOR, borderColor);
-
-        // attach depth texture as FBO's depth buffer
-        glBindFramebuffer(GL_FRAMEBUFFER, fb->id);
-        glFramebufferTexture2D(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_TEXTURE_2D, fb->textureId, 0);
-        glDrawBuffer(GL_NONE);
-        glReadBuffer(GL_NONE);
-    }
-    // Para luces puntuales
+    // Luces puntuales
+    if(omnidirectional)
+        fb->texture = Texture::createDepthAttachmentCubemap(width, height);
+    // Luces direccionales
     else
-    {
-        glGenTextures(1, &fb->textureId);
-        glBindTexture(GL_TEXTURE_CUBE_MAP, fb->textureId);
-        // Crear las 6 caras del cubemap
-        for (unsigned int i = 0; i < 6; ++i)
-            glTexImage2D(GL_TEXTURE_CUBE_MAP_POSITIVE_X + i, 0, GL_DEPTH_COMPONENT, 
-                width, height, 0, GL_DEPTH_COMPONENT, GL_FLOAT, NULL);
-        glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
-        glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
-        glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
-        glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
-        glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_R, GL_CLAMP_TO_EDGE);
+        fb->texture = Texture::createDepthAttachment(width, height);
 
-        glBindFramebuffer(GL_FRAMEBUFFER, fb->id);
-        glFramebufferTexture(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, fb->textureId, 0);
-        glDrawBuffer(GL_NONE);
-        glReadBuffer(GL_NONE);
-    }
+    // No queremos usar el Color Buffer para nada
+    glDrawBuffer(GL_NONE);
+    glReadBuffer(GL_NONE);
 
     // Comprobamos que todo ha ido bien
-    if (glCheckFramebufferStatus(GL_FRAMEBUFFER) != GL_FRAMEBUFFER_COMPLETE)
-        std::cout << "ERROR::FRAMEBUFFER:: Framebuffer is not complete!" << std::endl;
+    checkComplete();
 
     glBindFramebuffer(GL_FRAMEBUFFER, 0);
-
     return fb;
 }
 
@@ -116,43 +74,38 @@ Framebuffer* Framebuffer::createMRTBuffer(unsigned int width, unsigned int heigh
     glBindFramebuffer(GL_FRAMEBUFFER, fb->id);
 
     // - Color Buffer - //
-    glGenTextures(1, &fb->textureId);
-    glBindTexture(GL_TEXTURE_2D, fb->textureId);
-    glTexImage2D(GL_TEXTURE_2D, 0, COLOR_SPACE, width, height, 0, GL_RGB, GL_UNSIGNED_BYTE, NULL);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-    glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, fb->textureId, 0);
-
-    /*glGenRenderbuffers(1, &renderbufId);
-    glBindRenderbuffer(GL_RENDERBUFFER, renderbufId);
-    glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH24_STENCIL8, width, height);
-    glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_STENCIL_ATTACHMENT, GL_RENDERBUFFER, renderbufId);*/
+    fb->texture = Texture::createAttachment(width, height);
 
     // - - Depth Buffer - - //
-    glGenTextures(1, &fb->depthId);
-    glBindTexture(GL_TEXTURE_2D, fb->depthId);
-    glTexImage2D(GL_TEXTURE_2D, 0, GL_DEPTH_COMPONENT, width, height, 0, GL_DEPTH_COMPONENT, GL_FLOAT, NULL);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_BORDER);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_BORDER);
-
-    float borderColor[] = { 1.0f, 1.0f, 1.0f, 1.0f };
-    glTexParameterfv(GL_TEXTURE_2D, GL_TEXTURE_BORDER_COLOR, borderColor);
-    glFramebufferTexture2D(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_TEXTURE_2D, fb->depthId, 0);
+    fb->depthTexture = Texture::createDepthAttachment(width, height);
 
     // Comprobamos que todo ha ido bien
-    if (glCheckFramebufferStatus(GL_FRAMEBUFFER) != GL_FRAMEBUFFER_COMPLETE)
-        std::cout << "ERROR::FRAMEBUFFER:: Framebuffer is not complete!" << std::endl;
+    checkComplete();
 
     glBindFramebuffer(GL_FRAMEBUFFER, 0);
-
     return fb;
+}
+
+void Framebuffer::checkComplete()
+{
+    if (glCheckFramebufferStatus(GL_FRAMEBUFFER) != GL_FRAMEBUFFER_COMPLETE)
+        std::cout << "ERROR::FRAMEBUFFER:: Framebuffer is not complete!" << std::endl;
+}
+
+void Framebuffer::bindTexture() 
+{
+    if (texture != nullptr) { texture->bind(); }
+}
+
+void Framebuffer::bindDepth()
+{
+    if (depthTexture != nullptr) { depthTexture->bind(); }
 }
 
 Framebuffer::~Framebuffer()
 {
-
+    if(texture != nullptr) delete texture;
+    if (depthTexture != nullptr) delete depthTexture;
 }
 
 // - - - - - - - - - - - - - - - 

@@ -168,6 +168,79 @@ void Texture::save(const std::string& BMP_Name, GLenum buf)
 	}
 }
 
+Texture* Texture::createAttachment(unsigned int w, unsigned int h)
+{
+	Texture* t = new Texture();
+	t->texType = GL_TEXTURE_2D;
+	glGenTextures(1, &t->id);
+	glBindTexture(GL_TEXTURE_2D, t->id);
+	glTexImage2D(GL_TEXTURE_2D, 0, COLOR_SPACE, w, h, 0, GL_RGB, GL_UNSIGNED_BYTE, NULL);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+
+	// La atamos
+	glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, t->id, 0);
+	return t;
+}
+
+Texture* Texture::createAttachmentMultisample(unsigned int w, unsigned int h, unsigned int samples)
+{
+	Texture* t = new Texture();
+	t->texType = GL_TEXTURE_2D;
+	glGenTextures(1, &t->id);
+	glBindTexture(GL_TEXTURE_2D_MULTISAMPLE, t->id);
+	glTexImage2DMultisample(GL_TEXTURE_2D_MULTISAMPLE, samples, COLOR_SPACE, w, h, GL_TRUE);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+
+	// La atamos
+	glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D_MULTISAMPLE, t->id, 0); 
+	return t;
+}
+
+Texture* Texture::createDepthAttachment(unsigned int w, unsigned int h)
+{
+	Texture* t = new Texture();
+	t->texType = GL_TEXTURE_2D;
+	glGenTextures(1, &t->id);
+	glBindTexture(GL_TEXTURE_2D, t->id);
+
+	glTexImage2D(GL_TEXTURE_2D, 0, GL_DEPTH_COMPONENT, w, h, 0, GL_DEPTH_COMPONENT, GL_FLOAT, NULL);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_BORDER);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_BORDER);
+
+	float borderColor[] = { 1.0f, 1.0f, 1.0f, 1.0f };
+	glTexParameterfv(GL_TEXTURE_2D, GL_TEXTURE_BORDER_COLOR, borderColor);
+
+	// La atamos
+	glFramebufferTexture2D(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_TEXTURE_2D, t->id, 0);
+	return t;
+}
+
+Texture* Texture::createDepthAttachmentCubemap(unsigned int w, unsigned int h)
+{
+	Texture* t = new Texture();
+	t->texType = GL_TEXTURE_CUBE_MAP;
+	glGenTextures(1, &t->id);
+	glBindTexture(GL_TEXTURE_CUBE_MAP, t->id);
+
+	// Crear las 6 caras del cubemap
+	for (unsigned int i = 0; i < 6; ++i)
+		glTexImage2D(GL_TEXTURE_CUBE_MAP_POSITIVE_X + i, 0, GL_DEPTH_COMPONENT,
+			w, h, 0, GL_DEPTH_COMPONENT, GL_FLOAT, NULL);
+	glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+	glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+	glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+	glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+	glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_R, GL_CLAMP_TO_EDGE);
+
+	// La atamos
+	glFramebufferTexture(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, t->id, 0);
+	return t;
+}
+
 
 // - - - - - - - - - - - - - - - - - - -
 
