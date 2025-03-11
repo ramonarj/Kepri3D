@@ -8,6 +8,8 @@ Mesh* Scene::m_effectsMesh = nullptr;
 Framebuffer* Scene::frameBuf = nullptr;
 Framebuffer* Scene::frameBuf2 = nullptr;
 Framebuffer* Scene::msBuf = nullptr;
+Framebuffer* Scene::mrtBuf = nullptr;
+Framebuffer* Scene::activeFB = nullptr;
 Uniformbuffer* Scene::m_uboMatrices = nullptr;
 Uniformbuffer* Scene::m_uboLuces = nullptr;
 Shader* Scene::m_shadowComp = nullptr;
@@ -15,6 +17,7 @@ Shader* Scene::m_shadowComp = nullptr;
 glm::ivec2 Scene::fbSize;
 #endif
 // - - //
+bool Scene::msaa_active = false;
 bool Scene::compositesActive = false;
 bool Scene::skyboxActive = true;
 bool Scene::mipmapsActive = false;
@@ -38,6 +41,9 @@ void Scene::setupStatics(Camera* cam)
 
 	// Crear el framebuffer para el multisampling
 	msBuf = new Framebuffer(m_camera->getVP()->getW(), m_camera->getVP()->getH(), true);
+
+	// Crear framebuffer con MRT
+	mrtBuf = Framebuffer::createMRTBuffer(m_camera->getVP()->getW(), m_camera->getVP()->getH());
 
 	// Composite por defecto
 	//AddComposite((Shader*)&ResourceManager::Instance()->getComposite("defaultComposite"));
@@ -88,13 +94,14 @@ void Scene::render()
 	//	std::cout << "ERROR OPENGL" << std::endl;
 
 	// Activar este framebuffer; todo lo que se pinte se guardará en su textura
-	if (compositesActive) { msBuf->bind(); }
+	if (msaa_active) { activeFB = msBuf; }
+	else { activeFB = mrtBuf; }
+	activeFB->bind();
 	// 0) Limpiar el color y depth buffer
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
 	// 1) Cargar las luces (Fixed Pip.), fabricar los mapas de profundidad y rellenar el UBOs
 	loadLights();
-	//debugShadowMap();
 
 	// 2) Rellenar UBO de las matrices
 	loadMatrices();
@@ -115,6 +122,8 @@ void Scene::render()
 
 	// 7) Pintar el canvas lo último
 	renderCanvas();
+
+	//debugDepthMap();
 
 	// 8) Post-procesar la imagen del color buffer
 	renderEffects();
@@ -156,14 +165,35 @@ void Scene::loadLights()
 	Uniformbuffer::unbind();
 }
 
-void Scene::debugShadowMap()
+void Scene::debugDepthMap()
 {
-	Shadowmap* map = m_lights[0]->getShadowMap();
-	m_shadowComp->use();
-	m_shadowComp->setFloat("near_plane", map->nearPlane);
-	m_shadowComp->setFloat("far_plane", map->farPlane);
-	map->depthBuf->bindTexture();
-	m_effectsMesh->draw();
+	glDepthMask(GL_FALSE);
+	glDepthFunc(GL_ALWAYS);
+
+	bool sombras = false;
+	// Sombras
+	if(sombras)
+	{
+		Shadowmap* map = m_lights[0]->getShadowMap();
+		m_shadowComp->use();
+		m_shadowComp->setFloat("near_plane", map->nearPlane);
+		m_shadowComp->setFloat("far_plane", map->farPlane);
+		m_shadowComp->setInt("perspective", false);
+		map->depthBuf->bindTexture();
+		m_effectsMesh->draw();
+	}
+	// MRT
+	else
+	{
+		m_shadowComp->use();
+		m_shadowComp->setFloat("near_plane", m_camera->getNearPlane());
+		m_shadowComp->setFloat("far_plane", m_camera->getFarPlane());
+		m_shadowComp->setInt("perspective", !m_camera->isOrto());
+		activeFB->bindDepth();
+		m_effectsMesh->draw();
+	}
+	glDepthMask(GL_TRUE);
+	glDepthFunc(GL_LESS);
 }
 
 void Scene::bakeShadows()
@@ -200,9 +230,7 @@ void Scene::bakeShadows()
 		//glCullFace(GL_BACK);
 
 		// Volver al frameBuffer anterior
-		if (compositesActive) { msBuf->bind(); }
-		else { glBindFramebuffer(GL_FRAMEBUFFER, 0); }
-
+		activeFB->bind();
 		glViewport(0, 0, m_camera->getVP()->getW(), m_camera->getVP()->getH());
 	}
 }
@@ -293,19 +321,29 @@ void Scene::renderCanvas()
 
 void Scene::renderEffects()
 {
-	// No hacemos nada
-	if(!compositesActive){ return; }
-
+	// No hay efectos activos -> solo volcamos el FBO en el FB de OpenGL
+	if(!compositesActive || m_composites.size() == 0)
+	{
+		activeFB->bind(GL_READ_FRAMEBUFFER);
+		glBindFramebuffer(GL_DRAW_FRAMEBUFFER, 0);
+		glBlitFramebuffer(0, 0, m_camera->getVP()->getW(), m_camera->getVP()->getH(),
+			0, 0, m_camera->getVP()->getW(), m_camera->getVP()->getH(), GL_COLOR_BUFFER_BIT, GL_NEAREST);
+		return;
+	}
 	// Blit del Framebuffer con múltiples samples a uno normal
-	msBuf->bind(GL_READ_FRAMEBUFFER);
-	frameBuf->bind(GL_DRAW_FRAMEBUFFER);
-	glBlitFramebuffer(0, 0, m_camera->getVP()->getW(), m_camera->getVP()->getH(),
-		0, 0, m_camera->getVP()->getW(), m_camera->getVP()->getH(), GL_COLOR_BUFFER_BIT, GL_NEAREST);
+	else if(true) //msaa_active
+	{
+		activeFB->bind(GL_READ_FRAMEBUFFER);
+		frameBuf->bind(GL_DRAW_FRAMEBUFFER);
+		glBlitFramebuffer(0, 0, m_camera->getVP()->getW(), m_camera->getVP()->getH(),
+			0, 0, m_camera->getVP()->getW(), m_camera->getVP()->getH(), GL_COLOR_BUFFER_BIT, GL_NEAREST);
+	}
 
 	glDepthFunc(GL_ALWAYS);
 
 	Framebuffer* fbo1 = frameBuf;
 	Framebuffer* fbo2 = frameBuf2;
+	Framebuffer* depthFB = activeFB;
 	// Aplicamos solo los efectos que estén activos, haciendo "ping-pong" entre los 2 FBOs que tenemos
 	// NOTA: siempre habrá al menos 1 composite (el default, que no hace nada). Si solo está este, no usamos el frameBuf2
 	for(int i = 0; i < m_composites.size(); i++)
@@ -319,7 +357,15 @@ void Scene::renderEffects()
 
 		// Usar el siguiente FX para pintar la textura (del otro buffer) sobre el rectángulo que ocupa la pantalla
 		m_composites.at(i)->use();
+		// RTTO
+		glActiveTexture(GL_TEXTURE0 + 9);
 		fbo1->bindTexture();
+		m_composites.at(i)->setInt("RTT0", 9);
+		// depth
+		glActiveTexture(GL_TEXTURE0 + 8);
+		depthFB->bindDepth();
+		m_composites.at(i)->setInt("depthBuf", 8);
+		// dibujar
 		m_effectsMesh->draw();
 
 		// Intercambio de punteros
@@ -361,6 +407,11 @@ void Scene::sendUniforms(Shader* sh)
 {
 	// posición de la cámara; sigue siendo necesario para el terreno, que lo usa en el TCS
 	sh->setVec3("viewPos", m_camera->getPosition());
+
+	// depth buffer
+	glActiveTexture(GL_TEXTURE0 + 8);
+	activeFB->bindDepth();
+	sh->setInt("depthBuf", 8);
 
 	if (shadowsState == 0)
 		return;
@@ -448,6 +499,9 @@ void Scene::clean()
 
 	//FB para multisampling
 	delete msBuf;
+
+	// FB con MRT
+	delete mrtBuf;
 
 	// UBO para matrices y luces
 	delete m_uboMatrices;

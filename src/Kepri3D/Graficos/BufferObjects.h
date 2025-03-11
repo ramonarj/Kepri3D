@@ -17,15 +17,22 @@ public:
 	/* Desactiva el framebuffer que hubiera, volviendo a dejar el predeterminado de OpenGL */
 	inline static void unbind() { glBindFramebuffer(GL_FRAMEBUFFER, 0); }
 
-	/* Desactiva el framebuffer, volviendo a dejar el predeterminado */
+	/* Activa la textura del FB */
 	void bindTexture(GLenum target = GL_TEXTURE_2D) { glBindTexture(target, textureId); }
+
+	/* Activa el Depth Buffer para usarlo como textura */
+	void bindDepth(GLenum target = GL_TEXTURE_2D) { glBindTexture(target, depthId); }
 
 	/* Crea un mapa de sombras con la resolución dada */
 	static Framebuffer* createShadowMap(unsigned int width, unsigned int height, bool omnidirectional = false);
 
+	/* Crea un Framebuffer con múltiples Render Targets */
+	static Framebuffer* createMRTBuffer(unsigned int width, unsigned int height);
+
 private:
 	unsigned int id;
 	unsigned int textureId;
+	unsigned int depthId;
 	unsigned int renderbufId;
 };
 

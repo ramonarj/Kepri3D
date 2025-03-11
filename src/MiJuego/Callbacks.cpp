@@ -66,6 +66,7 @@ void multisamplingButtonPressed()
 {
 	// Activar / desactivar el multisampling
 	Game::switchBoolParam(GL_MULTISAMPLE);
+	Scene::msaa_active = !Scene::msaa_active;
 	GameManager::centerMouse();
 }
 

@@ -73,6 +73,7 @@ public:
 	static bool skyboxActive;
 	static bool mipmapsActive;
 	static bool compositesActive;
+	static bool msaa_active;
 	static Shader* normalsShader;
 
 #ifdef __DEBUG_INFO__
@@ -111,11 +112,16 @@ protected:
 	/* Lista de efectos de postprocesado que se aplicarán (en este orden) a la escena */
 	std::vector<Shader*> m_composites;
 
+
 	// Framebuffers usados para los efectos
 	static Framebuffer* frameBuf;
 	static Framebuffer* frameBuf2;
 	// Framebuffer usado para el multisampling
 	static Framebuffer* msBuf;
+	// Framebuffer con MRT
+	static Framebuffer* mrtBuf;
+	// Puntero al FB activo, para mayor comodidad
+	static Framebuffer* activeFB;
 
 	/* Uniform Buffer Objects para uniforms comunes a muchos shaders (luces, cámara) */
 	static Uniformbuffer* m_uboMatrices;
@@ -142,7 +148,7 @@ private:
 	/* Manda todos los uniforms necesarios al shader de la entidad dada */
 	void sendUniforms(Shader* sh);
 	void bakeShadows();
-	void debugShadowMap();
+	void debugDepthMap();
 
 	// Modelo de iluminación. 0 = Phong, 1 = Blinn-phong
 	bool blinn = false;

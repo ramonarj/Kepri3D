@@ -241,6 +241,7 @@ bool ResourceManager::loadComposite(const std::string& compositeName, const std:
 		if (compositeName != "")
 		{
 			std::string FSprogram = FileToString((COMPOSITES_PATH + compositeName).c_str());
+			FSprogram = sh->preprocess(FSprogram.c_str());
 			sh->load(GL_FRAGMENT_SHADER, FSprogram.c_str());
 		}
 

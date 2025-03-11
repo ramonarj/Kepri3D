@@ -285,10 +285,11 @@ void PruebaScene::init()
 	AddEntity(gm);
 
 	/* - - - Efectos de postprocesado (el orden importa) - - - */
-	//AddComposite((Shader*)&ResourceManager::Instance()->getComposite("byn"));
+	AddComposite((Shader*)&ResourceManager::Instance()->getComposite("byn"));
 	//AddComposite((Shader*)&ResourceManager::Instance()->getComposite("waves"));
-	AddComposite((Shader*)&ResourceManager::Instance()->getComposite("bordes"));
-	AddComposite((Shader*)&ResourceManager::Instance()->getComposite("interference"));
+	//AddComposite((Shader*)&ResourceManager::Instance()->getComposite("bordes"));
+	//AddComposite((Shader*)&ResourceManager::Instance()->getComposite("interference"));
+	AddComposite((Shader*)&ResourceManager::Instance()->getComposite("fog"));
 
 	// Temporal
 	// Establecer el punto de enlace de los shaders que usen el UBO
@@ -361,7 +362,7 @@ void PruebaScene::loadResources()
 
 	/* Shaders (ES IMPORTANTE CARGARLOS ANTES QUE LOS MATERIALES) */
 	ResourceManager::Instance()->loadShader("default.vert", "cruces.geom", "default.frag", "cruces");
-	ResourceManager::Instance()->loadShader("maximize.vert", "", "fog.frag", "bigFog");
+	ResourceManager::Instance()->loadShader("maximize.vert", "", "default.frag", "big");
 	ResourceManager::Instance()->loadShader("default.vert", "", "multitexture.frag", "multitexture");
 	ResourceManager::Instance()->loadShader("clippable.vert", "", "default.frag", "clippable");
 	ResourceManager::Instance()->loadShader("terrain.vert", "terrain.tesc", "terrain.tese", "", "lights.frag", "terreno");
@@ -386,6 +387,7 @@ void PruebaScene::loadResources()
 	ResourceManager::Instance()->loadComposite("waves.frag", "waves");
 	ResourceManager::Instance()->loadComposite("byn.frag", "byn");
 	ResourceManager::Instance()->loadComposite("bordes.frag", "bordes");
+	ResourceManager::Instance()->loadComposite("fog.frag", "fog");
 }
 
 
@@ -430,7 +432,7 @@ void PruebaScene::PruebaMateriales()
 	Esfera* esfera = new Esfera(1, 8, 16);
 	esfera->setTexture("earth");
 	esfera->setPosition({ -15,2,-3 });
-	esfera->setShader("bigFog");
+	esfera->setShader("big");
 	AddEntity(esfera);
 
 	// Tierra
