@@ -16,7 +16,7 @@ Framebuffer::Framebuffer(GLuint width, GLuint height, bool multisampling) : dept
     if(multisampling)
     {
         // Creamos una textura tipo MULTISAMPLE que servirá de Color Buffer
-        texture = Texture::createAttachmentMultisample(width, height, MSAA_SAMPLES);
+        texture = Texture::createColorAttachment(width, height, MSAA_SAMPLES);
         //glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D_MULTISAMPLE, textureId, 0);
 
         // Creamos un Renderbuffer que servirá de Depth+Stencil buffer
@@ -29,7 +29,7 @@ Framebuffer::Framebuffer(GLuint width, GLuint height, bool multisampling) : dept
     else
     {
         // Lo mismo pero sin multisamples
-        texture = Texture::createAttachment(width, height);
+        texture = Texture::createColorAttachment(width, height);
 
         glGenRenderbuffers(1, &renderbufId);
         glBindRenderbuffer(GL_RENDERBUFFER, renderbufId);
@@ -51,10 +51,10 @@ Framebuffer* Framebuffer::createShadowMap(unsigned int width, unsigned int heigh
 
     // Luces puntuales
     if(omnidirectional)
-        fb->texture = Texture::createDepthAttachmentCubemap(width, height);
+        fb->texture = Texture::createDepthAttachment(width, height, GL_TEXTURE_CUBE_MAP);
     // Luces direccionales
     else
-        fb->texture = Texture::createDepthAttachment(width, height);
+        fb->texture = Texture::createDepthAttachment(width, height, GL_TEXTURE_2D);
 
     // No queremos usar el Color Buffer para nada
     glDrawBuffer(GL_NONE);
@@ -74,10 +74,10 @@ Framebuffer* Framebuffer::createMRTBuffer(unsigned int width, unsigned int heigh
     glBindFramebuffer(GL_FRAMEBUFFER, fb->id);
 
     // - Color Buffer - //
-    fb->texture = Texture::createAttachment(width, height);
+    fb->texture = Texture::createColorAttachment(width, height);
 
     // - - Depth Buffer - - //
-    fb->depthTexture = Texture::createDepthAttachment(width, height);
+    fb->depthTexture = Texture::createDepthAttachment(width, height, GL_TEXTURE_2D);
 
     // Comprobamos que todo ha ido bien
     checkComplete();

@@ -15,9 +15,9 @@ class Texture
 {
 public:
 	/* Constructora por defecto */
-	Texture() : w(0), h(0), id(0), hasMipmap(false), m_hasAlpha(false) {}
+	Texture(GLenum type = GL_TEXTURE_2D);
 	/* Borra la textura asociada si tenía alguna */
-	virtual ~Texture() { if (id != 0) glDeleteTextures(1, &id); };
+	virtual ~Texture();
 
 	/* Carga la textura y le da la transparencia indicada. Usa la librería STBI */
 	bool load(const std::string& filePath, GLubyte alpha = 255, GLint intFormat = COLOR_SPACE);
@@ -37,6 +37,9 @@ public:
 	/* Salva el contenido del color buffer dado en un archivo BMP */
 	static void save(const std::string& BMP_Name, GLenum buf = GL_BACK);
 
+	// Filtros
+	void setFilters(GLenum minMagFilter, GLenum wrapFilter);
+
 	//Getters
 	/* Ancho de la textura, en píxeles */
 	inline GLuint getWidth() const{ return w; };
@@ -52,10 +55,9 @@ public:
 	inline bool hasAlpha() const { return m_hasAlpha; }
 
 	// - - Estáticos - - //
-	static Texture* createAttachment(unsigned int w, unsigned int h);
-	static Texture* createAttachmentMultisample(unsigned int w, unsigned int h, unsigned int samples);
-	static Texture* createDepthAttachment(unsigned int w, unsigned int h);
-	static Texture* createDepthAttachmentCubemap(unsigned int w, unsigned int h);
+	// Framebuffers
+	static Texture* createColorAttachment(unsigned int w, unsigned int h, unsigned int samples = 1);
+	static Texture* createDepthAttachment(unsigned int w, unsigned int h, GLenum texType);
 
 #ifdef __DEBUG_INFO__
 	static GLuint numBinds;
@@ -83,7 +85,7 @@ protected:
 
 	// Métodos privados
 	/* Inicializa la textura si no se había creado ya */
-	void Init();
+	void Init(GLenum type = GL_TEXTURE_2D);
 };
 
 // - - - - - - - - - - - - -

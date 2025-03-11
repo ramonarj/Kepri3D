@@ -14,22 +14,27 @@ GLuint Texture::numBinds = 0;
 
 GLuint Texture::s_activeTexture = 0;
 
-void Texture::Init()
+Texture::Texture(GLenum type) : w(0), h(0), id(0), hasMipmap(false), m_hasAlpha(false)
 {
+	Init(type);
+}
+
+Texture::~Texture()
+{
+	if (id != 0) 
+		glDeleteTextures(1, &id);
+}
+
+void Texture::Init(GLenum type)
+{
+	// Tipo de textura que es (2D, multisample, cubemap...)
+	texType = type;
+
 	// Genera una nueva textura y devuelve un identificador para acceder a ella
 	glGenTextures(1, &id); 
+
 	// Indica a OpenGL que todo lo que hagamos con texturas será con la especificada
-	texType = GL_TEXTURE_2D;
 	glBindTexture(texType, id);
-
-	// Tipos de filtros de magnificación y minificación.
-	// Los 'mipmaps' solo se usan para minificación, no magnificación
-	glTexParameteri(texType, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-	glTexParameteri(texType, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-
-	// Tipos de "texture wrapping" en ambos ejes
-	glTexParameteri(texType, GL_TEXTURE_WRAP_S, GL_REPEAT);
-	glTexParameteri(texType, GL_TEXTURE_WRAP_T, GL_REPEAT);
 }
 
 bool Texture::load(const std::string& filePath, GLubyte alpha, GLint intFormat)
@@ -37,6 +42,7 @@ bool Texture::load(const std::string& filePath, GLubyte alpha, GLint intFormat)
 	// Crear la textura y establecer los filtros
 	if (id == 0)
 		Init();
+	setFilters(GL_LINEAR, GL_REPEAT);
 
 	// Cargamos la información del archivo de imagen (BMP, JPG, PNG, etc).
 	// Siempre usamos 4 canales, aunque no sea un PNG
@@ -80,6 +86,7 @@ bool Texture::load(const std::string& filePath, const glm::ivec3& colorTrans)
 {
 	if (id == 0)
 		Init();
+	setFilters(GL_LINEAR, GL_REPEAT);
 
 	PixMap32RGBA::rgba_color colorPix = { colorTrans.r, colorTrans.g, colorTrans.b, 0 };
 	PixMap32RGBA pixMap; // var. local para cargar la imagen del archivo
@@ -134,7 +141,7 @@ void Texture::unbind(GLenum type)
 
 void Texture::useMipmaps(bool b)
 {
-	glBindTexture(texType, id);
+	bind();
 
 	// Se activa/desactiva el filtro de minificación que cambia entre texturas de distintos tamaños (mipmaps)
 	if(b && hasMipmap)
@@ -168,79 +175,79 @@ void Texture::save(const std::string& BMP_Name, GLenum buf)
 	}
 }
 
-Texture* Texture::createAttachment(unsigned int w, unsigned int h)
+void Texture::setFilters(GLenum minMagFilter, GLenum wrapFilter)
 {
-	Texture* t = new Texture();
-	t->texType = GL_TEXTURE_2D;
-	glGenTextures(1, &t->id);
-	glBindTexture(GL_TEXTURE_2D, t->id);
-	glTexImage2D(GL_TEXTURE_2D, 0, COLOR_SPACE, w, h, 0, GL_RGB, GL_UNSIGNED_BYTE, NULL);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+	// Tipos de filtros de magnificación y minificación.
+	// Los 'mipmaps' solo se usan para minificación, no magnificación
+	glTexParameteri(texType, GL_TEXTURE_MAG_FILTER, minMagFilter);
+	glTexParameteri(texType, GL_TEXTURE_MIN_FILTER, minMagFilter);
+
+	// Tipos de "texture wrapping" en ambos ejes
+	glTexParameteri(texType, GL_TEXTURE_WRAP_S, wrapFilter);
+	glTexParameteri(texType, GL_TEXTURE_WRAP_T, wrapFilter);
+}
+
+// - - - - - - - - - - - - -
+
+Texture* Texture::createColorAttachment(unsigned int w, unsigned int h, unsigned int samples)
+{
+	GLenum texType = (samples > 1) ? GL_TEXTURE_2D_MULTISAMPLE : GL_TEXTURE_2D;
+
+	// Crear la textura
+	Texture* t = new Texture(texType);
+
+	// ¿Multisampled?
+	if(texType == GL_TEXTURE_2D_MULTISAMPLE)
+		glTexImage2DMultisample(GL_TEXTURE_2D_MULTISAMPLE, samples, COLOR_SPACE, w, h, GL_TRUE);
+	else
+		glTexImage2D(GL_TEXTURE_2D, 0, COLOR_SPACE, w, h, 0, GL_RGB, GL_UNSIGNED_BYTE, NULL);
+
+	// Filtros
+	glTexParameteri(texType, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+	glTexParameteri(texType, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 
 	// La atamos
-	glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, t->id, 0);
+	glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, texType, t->id, 0);
 	return t;
 }
 
-Texture* Texture::createAttachmentMultisample(unsigned int w, unsigned int h, unsigned int samples)
+Texture* Texture::createDepthAttachment(unsigned int w, unsigned int h, GLenum texType)
 {
-	Texture* t = new Texture();
-	t->texType = GL_TEXTURE_2D;
-	glGenTextures(1, &t->id);
-	glBindTexture(GL_TEXTURE_2D_MULTISAMPLE, t->id);
-	glTexImage2DMultisample(GL_TEXTURE_2D_MULTISAMPLE, samples, COLOR_SPACE, w, h, GL_TRUE);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+	// Crear la textura
+	Texture* t = new Texture(texType);
+	// Textura normal
+	if (texType == GL_TEXTURE_2D)
+	{
+		glTexImage2D(GL_TEXTURE_2D, 0, GL_DEPTH_COMPONENT, w, h, 0, GL_DEPTH_COMPONENT, GL_FLOAT, NULL);
+		// Filtros
+		t->setFilters(GL_NEAREST, GL_CLAMP_TO_BORDER);
 
-	// La atamos
-	glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D_MULTISAMPLE, t->id, 0); 
+		// Color del borde
+		float borderColor[] = { 1.0f, 1.0f, 1.0f, 1.0f };
+		glTexParameterfv(GL_TEXTURE_2D, GL_TEXTURE_BORDER_COLOR, borderColor);
+
+		// La atamos
+		glFramebufferTexture2D(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_TEXTURE_2D, t->id, 0);
+	}
+	// Cubemap
+	else if (texType == GL_TEXTURE_CUBE_MAP)
+	{
+		// Crear las 6 caras del cubemap
+		for (unsigned int i = 0; i < 6; ++i)
+			glTexImage2D(GL_TEXTURE_CUBE_MAP_POSITIVE_X + i, 0, GL_DEPTH_COMPONENT,
+				w, h, 0, GL_DEPTH_COMPONENT, GL_FLOAT, NULL);
+		// Filtros
+		t->setFilters(GL_NEAREST, GL_CLAMP_TO_EDGE);
+		glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_R, GL_CLAMP_TO_EDGE);
+
+		// La atamos
+		glFramebufferTexture(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, t->id, 0);
+	}
+	else
+		return nullptr;
+
 	return t;
 }
-
-Texture* Texture::createDepthAttachment(unsigned int w, unsigned int h)
-{
-	Texture* t = new Texture();
-	t->texType = GL_TEXTURE_2D;
-	glGenTextures(1, &t->id);
-	glBindTexture(GL_TEXTURE_2D, t->id);
-
-	glTexImage2D(GL_TEXTURE_2D, 0, GL_DEPTH_COMPONENT, w, h, 0, GL_DEPTH_COMPONENT, GL_FLOAT, NULL);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_BORDER);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_BORDER);
-
-	float borderColor[] = { 1.0f, 1.0f, 1.0f, 1.0f };
-	glTexParameterfv(GL_TEXTURE_2D, GL_TEXTURE_BORDER_COLOR, borderColor);
-
-	// La atamos
-	glFramebufferTexture2D(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_TEXTURE_2D, t->id, 0);
-	return t;
-}
-
-Texture* Texture::createDepthAttachmentCubemap(unsigned int w, unsigned int h)
-{
-	Texture* t = new Texture();
-	t->texType = GL_TEXTURE_CUBE_MAP;
-	glGenTextures(1, &t->id);
-	glBindTexture(GL_TEXTURE_CUBE_MAP, t->id);
-
-	// Crear las 6 caras del cubemap
-	for (unsigned int i = 0; i < 6; ++i)
-		glTexImage2D(GL_TEXTURE_CUBE_MAP_POSITIVE_X + i, 0, GL_DEPTH_COMPONENT,
-			w, h, 0, GL_DEPTH_COMPONENT, GL_FLOAT, NULL);
-	glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
-	glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
-	glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
-	glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
-	glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_R, GL_CLAMP_TO_EDGE);
-
-	// La atamos
-	glFramebufferTexture(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, t->id, 0);
-	return t;
-}
-
 
 // - - - - - - - - - - - - - - - - - - -
 
@@ -248,9 +255,7 @@ Texture* Texture::createDepthAttachmentCubemap(unsigned int w, unsigned int h)
 bool CubemapTexture::load(std::vector<std::string> faces)
 {
 	// Crear la textura de tipo CubeMap
-	glGenTextures(1, &id);
-	texType = GL_TEXTURE_CUBE_MAP;
-	glBindTexture(texType, id);
+	Init(GL_TEXTURE_CUBE_MAP);
 
 	// Cargar las 6 texturas de los lados
 	for (unsigned int i = 0; i < faces.size(); i++)
@@ -265,10 +270,7 @@ bool CubemapTexture::load(std::vector<std::string> faces)
 			w, h, 0, GL_RGBA, GL_UNSIGNED_BYTE, data);
 
 		// Parámetros de escalado y repetición
-		glTexParameteri(texType, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-		glTexParameteri(texType, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-		glTexParameteri(texType, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
-		glTexParameteri(texType, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+		setFilters(GL_LINEAR, GL_CLAMP_TO_EDGE);
 		// IMPORTANTE: la tercera dimensión
 		glTexParameteri(texType, GL_TEXTURE_WRAP_R, GL_CLAMP_TO_EDGE);
 
