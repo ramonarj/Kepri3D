@@ -129,6 +129,8 @@ public:
 	/* Devuelve la lista de componentes de la entidad */
 	inline std::vector<Component*> getComponents() { return m_componentes; }
 
+	inline Entity* getParent() { return m_parent; }
+
 	/* Devuelve un componente del tipo requerido */
 	template<typename T>
 	T* getComponent();

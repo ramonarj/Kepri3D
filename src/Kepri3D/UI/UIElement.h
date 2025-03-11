@@ -32,7 +32,7 @@ public:
 
 	void setScaleUI(float x, float y);
 
-	void render() override;
+	void render(Shader* sh) override;
 protected:
 	/* Referencia al canvas que pertenece */
 	Canvas* canvas;

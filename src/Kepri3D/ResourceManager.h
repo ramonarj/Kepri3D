@@ -50,6 +50,7 @@ public:
 			instance->loadShader("billboard.vert", "", "billboard.frag", "billboard");
 			instance->loadShader("particle.vert", "", "billboard.frag", "particle");
 			instance->loadShader("agua.vert", "", "agua.frag", "agua");
+			instance->loadShader("UI.vert", "", "UI.frag", "UI");
 			instance->loadShader("normals.vert", "normals.geom", "normals.frag", "normals");
 		}
 			

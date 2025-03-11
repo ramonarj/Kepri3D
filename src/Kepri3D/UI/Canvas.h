@@ -6,6 +6,8 @@
 #include <glew.h>
 
 class UIElement;
+class Shader;
+
 class Canvas
 {
 public:
@@ -37,5 +39,7 @@ private:
 	/* Tamaño de referencia del canvas (no tiene por qué coincidir con el tamaño de pantalla) */
 	int width;
 	int height;
+
+	Shader* canvasSh;
 };
 #endif

@@ -95,13 +95,16 @@ void Entity::render()
 void Entity::render(Shader* sh)
 {
 	// 1) Renderizar la propia entidad
-	// Cargar el material
-	m_material.loadToShader(sh);
-
-	// Dibujar la/s malla/s
-	sendUniforms(sh);
 	if (m_renderer != nullptr)
+	{
+		// Cargar el material
+		m_material.loadToShader(sh);
+
+		// Dibujar la/s malla/s
+		sendUniforms(sh);
 		m_renderer->draw();
+	}
+
 	// Debug del collider
 	if (m_collider != nullptr) { m_collider->render(); }
 

@@ -11,9 +11,9 @@
 #include "../DebugText.h"
 #include "../Callbacks.h"
 
-const float buttonScale = 0.27f;
+const float buttonScale = 0.28f;
 const float buttonMargin = 0.1f;
-const float buttonSep = 0.12f;
+const float buttonSep = 0.15f;
 
 std::vector<std::string> buttonNames = { "botonCulling", "botonBlending", "botonLighting", "botonTextures", "botonShading",
 "botonAlpha", "botonMultisampling", "botonMipmaps", "botonNormales", "botonPostprocess", "botonScissor",
@@ -216,16 +216,16 @@ void PruebaScene::init()
 	m_canvas->addElement(botonesMenu);
 
 	// Botones
-	for (int i = 0; i < buttonNames.size(); i++)
+	for (int i = 0; i < buttonNames.size(); i++) 
 	{
 		// Su textura, posición, escala y callback
 		Button* b = new Button("boton", m_canvas);
 		b->setName(buttonNames[i]);
 		glm::vec2 pos;
 		if (i < 8)
-			pos = { buttonMargin, 0.92 - i * buttonSep };
+			pos = { buttonMargin, 1.02 - i * buttonSep };
 		else
-			pos = { 1 - buttonMargin, 0.92 - (i - 8) * buttonSep };
+			pos = { 1 - buttonMargin, 1.02 - (i - 8) * buttonSep };
 		b->setPositionUI(pos.x, pos.y);
 		b->setScaleUI(buttonScale, buttonScale);
 		b->setCallback(callbacks[i]);
@@ -233,8 +233,8 @@ void PruebaScene::init()
 
 		// El texto que contiene
 		Text* t = new Text(buttonTexts[i], m_canvas, {1, 1, 1, 1});
-		t->setPositionUI(pos.x - 0.06, pos.y);
-		t->setScaleUI(buttonScale * 2, buttonScale * 2);
+		t->setPositionUI(0.3, 0.5); // alineado a la izquierda
+		t->setScaleUI(2.25, 2.25);
 		t->setGrosor(1.5);
 		t->setParent(b);
 	}

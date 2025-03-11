@@ -8,15 +8,15 @@ DebugText::DebugText(Canvas* canvas, const std::string& backgroundTexID)
 {
 	//
 	fondo = new Button(backgroundTexID, canvas);
-	fondo->setPositionUI(0.5, 0.14);
-	fondo->setScaleUI(0.8, 0.7);
+	fondo->setPositionUI(0.5, 0.05);
+	fondo->setScaleUI(0.85, 0.7);
 	canvas->addElement(fondo);
 
 	// 
 	text = new Text("DEBUG INFO", canvas, { 0, 0, 0, 1 });
-	text->setPositionUI(0.32, 0.22);
+	text->setPositionUI(0.27, 0.63);
 	text->setGrosor(1.25);
-	text->setScaleUI(0.5, 0.5);
+	text->setScaleUI(0.8, 0.8);
 	text->setParent(fondo);
 	//canvas->addElement(text);
 

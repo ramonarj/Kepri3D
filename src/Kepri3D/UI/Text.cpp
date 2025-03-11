@@ -3,6 +3,7 @@
 #include "Mesh.h"
 #include "Camera.h"
 #include "Texture.h"
+#include "Shader.h"
 
 void Text::setText(const std::string& text)
 {
@@ -45,13 +46,23 @@ Text::~Text()
 	clearText();
 }
 
-void Text::render()
+void Text::render(Shader* sh)
 {
 	glLineWidth(grosor);
 
-	// Cargar la matriz de modelado
-	glMatrixMode(GL_MODELVIEW);
-	Texture::unbind(); //no usamos texturas
+	//no usamos texturas
+	Texture::unbind(); 
+	// Indicar al shader que es texto
+	sh->setInt("text", true);
+
+	// Deshacer la posición de los hijos relativa al padre
+	glm::dmat4 model = modelMat;
+	Entity* parent = m_parent;
+	while (parent != nullptr)
+	{
+		model = parent->getModelMat() * model;
+		parent = parent->getParent();
+	}
 
 	// Dibujar las mallas de cada una de las letras
 	int col = 0;
@@ -68,7 +79,10 @@ void Text::render()
 		// Saltar los espacios
 		else if(texto[i] != ' ')
 		{
-			glLoadMatrixd(value_ptr(glm::translate(modelMat, { col + SPACING * col, -fil - SPACING_Y * fil, 0 })));
+			// Cargar la matriz de modelado al shader
+			glm::dmat4 matLetra = glm::translate(model, { col + SPACING * col, -fil - SPACING_Y * fil, 0 });
+			sh->setMat4d("model", matLetra);
+			// Dibujar
 			letters[k]->draw();
 			k++; col++;
 		}
@@ -80,5 +94,5 @@ void Text::render()
 	// 2) Renderizar mis hijos
 	for (Entity* e : m_children)
 		if (e->isActive())
-			e->render();
+			e->render(sh);
 }

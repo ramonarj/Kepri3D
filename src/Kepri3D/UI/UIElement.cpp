@@ -3,13 +3,13 @@
 #include "Mesh.h"
 #include "Texture.h"
 #include "Renderer.h"
+#include "Shader.h"
 
 #include <gtc/type_ptr.hpp>
 
 UIElement::UIElement() : x(0), y(0), width(0), height(0), canvas(nullptr)
 {
-	// Para estar siempre visible por la cámara
-	setPosition({ 0, 0, -1.0001}); // tiene que coincir con -nearPlane
+	setPosition({ 0, 0, 0});
 }
 
 void UIElement::setPositionUI(float x, float y, ALLIGNMENT_TYPE allignment)
@@ -31,20 +31,22 @@ void UIElement::setScaleUI(float x, float y)
 	height *= y;
 }
 
-void UIElement::render()
+void UIElement::render(Shader* sh)
 {
-	// Exactamente igual que Entity::render, pero sin usar la matriz de vista
-	// Cargar la matriz de modelado
-	glMatrixMode(GL_MODELVIEW);
-	glLoadMatrixd(value_ptr(modelMat));
-
-	// Dibujar la/s malla/s
-	m_material.load();
+	// 1) Renderizar la propia entidad
 	if (m_renderer != nullptr)
-		m_renderer->draw();
+	{
+		// Cargar el material
+		m_material.loadToShader(sh);
 
-	// 2) Renderizar mis hijos
+		// Dibujar la/s malla/s
+		sendUniforms(sh);
+		sh->setInt("text", false);
+		m_renderer->draw();
+	}
+
+	// 2) Renderizar sus hijos con el mismo shader dado
 	for (Entity* e : m_children)
-		if(e->isActive())
-			e->render();
+		if (e->isActive())
+			e->render(sh);
 }
