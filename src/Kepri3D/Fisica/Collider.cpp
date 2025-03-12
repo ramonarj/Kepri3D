@@ -23,7 +23,7 @@ Collider::~Collider()
 	delete m_renderer;
 }
 
-void Collider::render()
+void Collider::render(Shader* sh)
 {
-	if (m_visible) { m_renderer->draw(); }
+	if (m_visible) { m_renderer->draw(sh); }
 }

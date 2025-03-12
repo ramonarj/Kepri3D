@@ -77,9 +77,8 @@ void Entity::render(glm::dmat4 const& viewMat)
 	glLoadMatrixd(value_ptr(modelViewMat));
 
 	// 2) Cargar el material y dibujar la malla
-	m_material.load();
 	if (m_renderer != nullptr)
-		m_renderer->draw();
+		m_renderer->drawFixed();
 
 	// 2) Renderizar sus hijos
 	for(Entity* e : m_children)
@@ -89,7 +88,7 @@ void Entity::render(glm::dmat4 const& viewMat)
 
 void Entity::render()
 {
-	render(m_material.getShader());
+	render(m_renderer->getMaterial()->getShader());
 }
 
 void Entity::render(Shader* sh)
@@ -97,24 +96,21 @@ void Entity::render(Shader* sh)
 	// 1) Renderizar la propia entidad
 	if (m_renderer != nullptr)
 	{
-		// Cargar el material
-		m_material.loadToShader(sh);
-
 		// Dibujar la/s malla/s
-		sendUniforms(sh);
-		m_renderer->draw();
+		sendModelMat(sh);
+		m_renderer->draw(sh);
 	}
 
 	// Debug del collider
-	if (m_collider != nullptr) { m_collider->render(); }
+	if (m_collider != nullptr) { m_collider->render(sh); }
 
 	// 2) Renderizar sus hijos con el mismo shader dado
 	for (Entity* e : m_children)
 		if (e->isActive())
-			e->render();
+			e->render(sh);
 }
 
-void Entity::sendUniforms(Shader* sh)
+void Entity::sendModelMat(Shader* sh)
 {
 	if (sh == nullptr)
 		return;
@@ -129,8 +125,6 @@ void Entity::sendUniforms(Shader* sh)
 	}
 
 	sh->setMat4d("model", model);
-	// Sombras
-	sh->setInt("receive_shadows", m_renderer->receiveShadows());
 }
 
 void Entity::update(GLuint deltaTime)
@@ -201,14 +195,15 @@ void Entity::scale(const glm::dvec3& scale)
 	modelMat = glm::scale(modelMat, scale);
 }
 
-void Entity::setParent(Entity* e)
+void Entity::setParent(Entity* parent)
 {
 	// Actualizar referencia al padre
-	m_parent = e;
+	m_parent = parent;
 	// Añadirnos a sus hijos
-	e->m_children.push_back(this);
+	parent->m_children.push_back(this);
 	// Solución temporal
-	m_material.setShader((Shader*)m_parent->getShader());
+	if(m_renderer != nullptr && parent->getRenderer() != nullptr)
+		getMaterial()->setShader((Shader*)m_parent->getShader());
 }
 
 void Entity::setMesh(const std::string& meshID)
@@ -219,53 +214,68 @@ void Entity::setMesh(const std::string& meshID)
 	addComponent(m_renderer);
 }
 
+const Texture* Entity::getTexture() const 
+{ 
+	return m_renderer->getMaterial()->getTexture(0); 
+}
+
+Material* Entity::getMaterial() const 
+{
+	return m_renderer->getMaterial();
+}
+
+const Shader* Entity::getShader() const 
+{
+	return m_renderer->getMaterial()->getShader(); 
+}
+
 void Entity::setMaterial(const std::string& materialID)
 {
-	m_material = ResourceManager::Instance()->getMaterial(materialID);
+	m_renderer->setMaterial(materialID);
 }
 
 void Entity::setShader(const std::string& shaderID)
 {
-	m_material.setShader((Shader*)&ResourceManager::Instance()->getShader(shaderID));
+	getMaterial()->setShader((Shader*)&ResourceManager::Instance()->getShader(shaderID));
 }
 
 void Entity::setTexture(const std::string& textureID)
 {
-	m_material.setTexture(0, (Texture*)&ResourceManager::Instance()->getTexture(textureID));
+	getMaterial()->setTexture(0, (Texture*)&ResourceManager::Instance()->getTexture(textureID));
 }
 
 void Entity::setSecondTex(const std::string& textureID)
 {
-	m_material.setTexture(1, (Texture*)&ResourceManager::Instance()->getTexture(textureID));
+	getMaterial()->setTexture(1, (Texture*)&ResourceManager::Instance()->getTexture(textureID));
 }
 
 void Entity::setSpecularMap(const std::string& textureID)
 {
-	m_material.setTexture(2, (Texture*)&ResourceManager::Instance()->getTexture(textureID));
+	getMaterial()->setTexture(2, (Texture*)&ResourceManager::Instance()->getTexture(textureID));
 }
 
 void Entity::setNormalMap(const std::string& textureID)
 {
-	m_material.setTexture(3, (Texture*)&ResourceManager::Instance()->getTexture(textureID));
+	getMaterial()->setTexture(3, (Texture*)&ResourceManager::Instance()->getTexture(textureID));
 	static_cast<IndexMesh*>(m_renderer->getMesh())->setTangents();
 }
 
 void Entity::setDisplacementMap(const std::string& textureID)
 {
-	m_material.setTexture(4, (Texture*)&ResourceManager::Instance()->getTexture(textureID));
+	getMaterial()->setTexture(4, (Texture*)&ResourceManager::Instance()->getTexture(textureID));
 	// Temporal
 	static_cast<IndexMesh*>(m_renderer->getMesh())->setTangents();
 }
 
 void Entity::enableReflections(const std::string& reflectionMapID, const std::string& cubemapID)
 {
-	m_material.setTexture(5, (Texture*)&ResourceManager::Instance()->getTexture(reflectionMapID));
-	m_material.setTexture(6, (Texture*)&ResourceManager::Instance()->getTexture(cubemapID));
+	getMaterial()->setTexture(5, (Texture*)&ResourceManager::Instance()->getTexture(reflectionMapID));
+	getMaterial()->setTexture(6, (Texture*)&ResourceManager::Instance()->getTexture(cubemapID));
 }
 
 void Entity::setEmissionMap(const std::string& textureID)
 {
-	m_material.setTexture(7, (Texture*)&ResourceManager::Instance()->getTexture(textureID));
+	getMaterial()->setTexture(7, (Texture*)&ResourceManager::Instance()->getTexture(textureID));
 }
 
 
@@ -400,7 +410,7 @@ Billboard::Billboard(const std::string& textureID, GLfloat width, GLfloat height
 void Billboard::render()
 {
 	// Uniforms necesarios
-	m_material.getShader()->setVec2("ancla", ancla);
+	getMaterial()->getShader()->setVec2("ancla", ancla);
 	Entity::render();
 }
 
@@ -430,15 +440,15 @@ void Hierba::render(glm::dmat4 const& viewMat)
 		glm::dmat4 modelViewMat = viewMat * modelMat;
 		glLoadMatrixd(value_ptr(modelViewMat));
 
-		m_material.load();
-		m_renderer->draw();
+		getMaterial()->load();
+		m_renderer->drawFixed();
 
 		// En la otra
 		modelViewMat = glm::rotate(modelViewMat, PI/2, { 0, 1, 0 });
 		glLoadMatrixd(value_ptr(modelViewMat));
 
-		m_material.load();
-		m_renderer->draw();
+		getMaterial()->load();
+		m_renderer->drawFixed();
 	}
 
 	if(cullActivado)
@@ -466,7 +476,7 @@ void ClippableEntity::render()
 	for (int i = 0; i < planos.size(); i++)
 	{
 		glEnable(GL_CLIP_DISTANCE0 + i);
-		m_material.getShader()->setVec4("planoCorte[" + std::to_string(i) + "]", planos[i]);
+		getMaterial()->getShader()->setVec4("planoCorte[" + std::to_string(i) + "]", planos[i]);
 	}
 
 	Entity::render();
@@ -490,11 +500,16 @@ VBOEntity::VBOEntity()
 	vbo = new Vertexbuffer((void*)rend->getMesh()->getVertices(), numVerts);
 }
 
+VBOEntity::~VBOEntity()
+{
+	delete vbo;
+}
+
 void VBOEntity::render()
 {
 	// Cargar el material
-	m_material.loadToShader(m_material.getShader());
-	sendUniforms(m_material.getShader());
+	getMaterial()->loadToShader(getMaterial()->getShader());
+	sendModelMat(getMaterial()->getShader());
 	
 	glPolygonMode(GL_FRONT, GL_FILL);
 	glPolygonMode(GL_BACK, GL_LINE);
@@ -538,11 +553,17 @@ EBOEntity::EBOEntity()
 	ebo = new Elementbuffer((void*)static_cast<IndexMesh*>(rend->getMesh())->getIndices(), numIndices);
 }
 
+EBOEntity::~EBOEntity()
+{
+	delete ebo;
+	delete vbo;
+}
+
 void EBOEntity::render()
 {
 	// Cargar el material
-	m_material.loadToShader(m_material.getShader());
-	sendUniforms(m_material.getShader());
+	getMaterial()->loadToShader(getMaterial()->getShader());
+	sendModelMat(getMaterial()->getShader());
 
 	glPolygonMode(GL_FRONT, GL_FILL);
 	glPolygonMode(GL_BACK, GL_LINE);
@@ -583,11 +604,16 @@ VAOEntity::VAOEntity()
 	vao->unbind();
 }
 
+VAOEntity::~VAOEntity()
+{
+	delete vao;
+}
+
 void VAOEntity::render()
 {
 	// Cargar el material
-	m_material.loadToShader(m_material.getShader());
-	sendUniforms(m_material.getShader());
+	getMaterial()->loadToShader(getMaterial()->getShader());
+	sendModelMat(getMaterial()->getShader());
 
 	glPolygonMode(GL_FRONT, GL_FILL);
 	glPolygonMode(GL_BACK, GL_LINE);

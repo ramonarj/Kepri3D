@@ -22,7 +22,7 @@ enum LightType
 
 struct Shadowmap
 {
-	Shadowmap() : depthBuf(nullptr), shader(nullptr), nearPlane(1.0), farPlane(15.0) {}
+	Shadowmap() : depthBuf(nullptr), shader(nullptr), nearPlane(1.0), farPlane(15.0), height(0), width(0) {}
 	Shadowmap(Shader* shader, unsigned int width, unsigned int height, 
 		float nearPlane, float farPlane, bool omnidirectional);
 

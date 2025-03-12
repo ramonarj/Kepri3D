@@ -133,6 +133,8 @@ float Light::getAttenuation(GLuint i) const
 		return linearAtt;
 	else if (i == 2)
 		return quadraticAtt;
+	else
+		return 0;
 }
 
 void Light::setActive(bool active)

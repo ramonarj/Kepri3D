@@ -65,6 +65,7 @@ void Game::loadScene(Scene* sc)
 		scene->loadResources();
 		scene->init();
 
+		last_update_tick = glutGet(GLUT_ELAPSED_TIME);
 		std::cout << "Cargada escena '" << scene->getName() << "'" << std::endl;
 		// TODO StateMachine
 	}
@@ -83,6 +84,7 @@ void Game::loadScenePriv(Scene* sc)
 	scene->loadResources();
 	scene->init();
 
+	last_update_tick = glutGet(GLUT_ELAPSED_TIME);
 	std::cout << "Cargada escena '" << scene->getName() << "'" << std::endl;
 }
 

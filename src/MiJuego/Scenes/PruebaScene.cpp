@@ -219,7 +219,7 @@ void PruebaScene::init()
 	for (int i = 0; i < buttonNames.size(); i++) 
 	{
 		// Su textura, posición, escala y callback
-		Button* b = new Button("boton", m_canvas);
+		Button* b = new Button(400, 200, m_canvas);
 		b->setName(buttonNames[i]);
 		glm::vec2 pos;
 		if (i < 8)
@@ -229,6 +229,7 @@ void PruebaScene::init()
 		b->setPositionUI(pos.x, pos.y);
 		b->setScaleUI(buttonScale, buttonScale);
 		b->setCallback(callbacks[i]);
+		b->setTexture("boton");
 		b->setParent(botonesMenu); // hijos del nodo vacío
 
 		// El texto que contiene
@@ -295,11 +296,14 @@ void PruebaScene::init()
 	// Establecer el punto de enlace de los shaders que usen el UBO
 	for (Entity* e : m_entities)
 	{
-		Shader* sh = (Shader*)e->getShader();
-		if (sh != nullptr)
+		if(e->getRenderer() != nullptr)
 		{
-			sh->bindUniformBlock("Matrices", 0);
-			sh->bindUniformBlock("Lights", 1);
+			Shader* sh = (Shader*)e->getShader();
+			if (sh != nullptr)
+			{
+				sh->bindUniformBlock("Matrices", 0);
+				sh->bindUniformBlock("Lights", 1);
+			}
 		}
 	}
 }

@@ -69,7 +69,7 @@ void PruebaFisicas::init()
 	Cubo* cubo2 = new Cubo(2.0);
 	cubo2->setTexture("default");
 	cubo2->setShader("lights");
-	cubo2->setPosition({ 10, 100, 0 });
+	cubo2->setPosition({ 10, 60, 0 });
 	cubo2->getComponent<Renderer>()->setActive(false);
 	Collider* colCubo2 = new Collider(Collider::Cubo, 2.0);
 	colCubo2->setVisible(true);
@@ -89,7 +89,7 @@ void PruebaFisicas::init()
 	colcubo3->setVisible(true);
 	cubo3->addComponent(colcubo3);
 	Rigid* rigidcubo3 = new Rigid(cubo3->getModelMat());
-	rigidcubo3->setMass(10.0);
+	rigidcubo3->setMass(1.0);
 	rigidcubo3->useGravity(false);
 	cubo3->addComponent(rigidcubo3);
 	cubo3->addComponent(new RotationComp(0.0));
@@ -143,11 +143,14 @@ void PruebaFisicas::init()
 	// Temporal
 	for (Entity* e : m_entities)
 	{
-		Shader* sh = (Shader*)e->getShader();
-		if (sh != nullptr)
+		if (e->getRenderer() != nullptr)
 		{
-			sh->bindUniformBlock("Matrices", 0);
-			sh->bindUniformBlock("Lights", 1);
+			Shader* sh = (Shader*)e->getShader();
+			if (sh != nullptr)
+			{
+				sh->bindUniformBlock("Matrices", 0);
+				sh->bindUniformBlock("Lights", 1);
+			}
 		}
 	}
 }

@@ -6,15 +6,14 @@ class Shader;
 class Component;
 class Renderer;
 class Collider;
+class Material;
 
 class Vertexbuffer;
 class Elementbuffer;
 class VertexArray;
 
-#include "Material.h"
-
 #include <glm.hpp>
-
+#include <glew.h>
 #include <iostream>
 #include "Utils.h"
 
@@ -78,7 +77,7 @@ public:
 
 	/* Establece la textura principal (diffuse) que usará la entidad */
 	void setTexture(const std::string& textureID);
-	inline const Texture* getTexture() const { return m_material.getTexture(0); }
+	const Texture* getTexture() const;
 
 	/* Establece la textura secundaria a usar, que se mezclará con la principal en la medida dada */
 	void setSecondTex(const std::string& textureID);
@@ -113,10 +112,10 @@ public:
 	Renderer* getRenderer() const { return m_renderer; }
 
 	/* Devuelve el material que usa la entidad */
-	const Material* getMaterial() const { return &m_material; }
+	inline Material* getMaterial() const;
 
 	/* Devuelve el shader que usa la entidad */
-	const Shader* getShader() const { return m_material.getShader(); }
+	const Shader* getShader() const;
 
 	/* Devuelve 'true' si la entidad debe pintarse, false e.o.c. */
 	inline bool isActive() const { return m_active; }
@@ -164,11 +163,8 @@ protected:
 	(traslaciones, rotaciones, escalados) hechas a la entidad */
 	glm::dmat4 modelMat;
 
-	/* Material usado por la entidad */
-	Material m_material;
-
-	/* Manda la información de la entidad al shader */
-	void sendUniforms(Shader* sh);
+	/* Manda la matriz de modelado (combinada con la del padre) al shader */
+	void sendModelMat(Shader* sh);
 };
 
 template<typename T>
@@ -327,7 +323,7 @@ class VBOEntity : public Entity
 {
 public:
 	VBOEntity();
-	~VBOEntity() { delete vbo; };
+	~VBOEntity();
 
 	void render() override;
 
@@ -343,7 +339,7 @@ class EBOEntity : public Entity
 {
 public:
 	EBOEntity();
-	~EBOEntity() { delete ebo; delete vbo; };
+	~EBOEntity();
 
 	void render() override;
 
@@ -361,7 +357,7 @@ class VAOEntity : public Entity
 {
 public:
 	VAOEntity();
-	~VAOEntity() { delete vao; };
+	~VAOEntity();
 
 	void render() override;
 

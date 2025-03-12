@@ -3,7 +3,7 @@
 
 #include "Component.h"
 
-
+class Shader;
 
 class Collider : public Component
 {
@@ -18,7 +18,7 @@ public:
 	~Collider();
 
 	void update(GLuint deltaTime) override {};
-	void render();
+	void render(Shader* sh);
 
 	// Setters
 	inline void setVisible(bool visible) { m_visible = visible; }

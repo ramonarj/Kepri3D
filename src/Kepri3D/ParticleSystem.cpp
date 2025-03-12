@@ -76,7 +76,7 @@ void ParticleSystem::render()
 	glPolygonMode(GL_BACK, GL_LINE);
 
 	// Activar la textura si la tiene
-	m_material.loadToShader(m_material.getShader());
+	getMaterial()->loadToShader(getMaterial()->getShader());
 
 	// 2) Dibujar las mallas de todas las partículas a la vez
 	if (m_renderer != nullptr)

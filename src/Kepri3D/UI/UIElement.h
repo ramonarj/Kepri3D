@@ -3,9 +3,6 @@
 
 #include "Entity.h"
 #include "Canvas.h"
-#include <glm.hpp>
-
-class Canvas;
 
 enum ALLIGNMENT_TYPE
 {
@@ -19,8 +16,6 @@ class UIElement : public Entity
 public:
 	/* Constructora por defecto */
 	UIElement();
-
-	/* Destructora virtual */
 	virtual ~UIElement(){}
 
 	/* Establece la referencia al canvas */
@@ -32,7 +27,6 @@ public:
 
 	void setScaleUI(float x, float y);
 
-	void render(Shader* sh) override;
 protected:
 	/* Referencia al canvas que pertenece */
 	Canvas* canvas;

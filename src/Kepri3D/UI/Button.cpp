@@ -5,19 +5,20 @@
 #include "ResourceManager.h"
 #include "Renderer.h"
 
-Button::Button(const std::string& textureName, Canvas* canvas) : m_callback(nullptr)
+Button::Button(unsigned int w, unsigned int h, Canvas* canvas) : m_callback(nullptr)
 {
-	// Coger el tamaño en píxeles de la textura
-	setTexture(textureName);
-	width = m_material.getTexture(0)->getWidth();
-	height = m_material.getTexture(0)->getHeight();
+	// Dimenssiones
+	width = w;
+	height = h;
 
-	// 
-	double aspectRatio = (double)canvas->getWidth() / canvas->getHeight();
+	// Generar la malla para el renderer
+	//double aspectRatio = (double)canvas->getWidth() / canvas->getHeight();
 	m_renderer = new Renderer(Mesh::generateRectangle((double)width / canvas->getWidth() * 2,
 		(double)height / canvas->getHeight() * 2));
-	//m_renderer = new Renderer(Mesh::generateRectangle(width, height));
 	addComponent(m_renderer);
+
+	// Material UI
+	getMaterial()->setInt("text", false);
 
 	// Referencia al canvas
 	setCanvas(canvas);

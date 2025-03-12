@@ -63,20 +63,22 @@ void Scene::AddEntity(Entity* e)
 	// Vector general
 	m_entities.push_back(e);
 
-	// Una entidad puede ser tranlúcida por: a) Material con diffuse.a < 1 | b) Textura difusa con transparencias
-	bool trans = e->getMaterial()->getDiffuse().a < 1.0 ||
-		(e->getTexture() != nullptr && e->getTexture()->hasAlpha());
-	
-	// Diferenciar entre entidades opacas y translúcidas
-	if (trans)
-		m_transEntities.push_back(e);
-	else
-		m_opaqueEntities.push_back(e);
-
 	// Ver si tiene un componente Renderer
 	Renderer* r = e->getComponent<Renderer>();
 	if (r != nullptr)
+	{
 		m_renderers.push_back(r);
+
+		// Una entidad puede ser tranlúcida por: a) Material con diffuse.a < 1 | b) Textura difusa con transparencias
+		bool trans = e->getMaterial()->getDiffuse().a < 1.0 ||
+			(e->getTexture() != nullptr && e->getTexture()->hasAlpha());
+
+		// Diferenciar entre entidades opacas y translúcidas
+		if (trans)
+			m_transEntities.push_back(e);
+		else
+			m_opaqueEntities.push_back(e);
+	}
 
 	// Ver si tiene un componente Light
 	Light* l = e->getComponent<Light>();
@@ -289,7 +291,7 @@ void Scene::renderNormals()
 	for (Renderer* r : m_renderers)
 	{
 		//normalsShader->setMat4d("model", r->getEntity()->getModelMat());
-		r->getEntity()->render();
+		r->getEntity()->render(normalsShader);
 	}
 }
 

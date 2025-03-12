@@ -2,6 +2,9 @@
 #define __RENDERER__
 
 #include "Component.h"
+#include "Material.h"
+
+class Shader;
 class Mesh;
 
 class Renderer : public Component
@@ -12,14 +15,22 @@ public:
 
 	Mesh* getMesh() const { return m_mesh; }
 
-	void draw();
+	void draw(Shader* sh);
+	// Fixed pipeline version
+	void drawFixed();
 
 	virtual void update(GLuint deltaTime) override {}
 
 	/* Cómo debe pintarse la malla por delante y detrás (GL_FILL/GL_LINE/GL_POINT) */
 	void setPolygonMode(GLenum front, GLenum back);
 
-	// Sombras
+	/* Devuelve el material que usael renderer */
+	Material* getMaterial() { return &m_material; }
+
+	/* Establece el material */
+	void setMaterial(const std::string& materialID);
+
+	// Sombras - getters y setters
 	inline void castShadows(bool b) { m_castShadows = b; }
 	inline void receiveShadows(bool b) { m_receiveShadows = b; }
 	inline bool castShadows() const { return m_castShadows; }
@@ -27,6 +38,9 @@ public:
 private:
 	/* Malla/s que se encarga de pintar */
 	Mesh* m_mesh;
+
+	/* Material usado para pintar esa malla */
+	Material m_material;
 
 	/* Forma en que debe pintarse */
 	GLenum m_polyModeFront;

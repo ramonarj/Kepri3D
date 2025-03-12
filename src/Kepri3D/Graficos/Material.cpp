@@ -47,7 +47,7 @@ void Material::load()
 {
 	// Bindear la textura principal
 	glActiveTexture(GL_TEXTURE0);
-	if (m_textures[0] != nullptr)
+	if (m_textures[0] != nullptr && s_useTextures)
 		m_textures[0]->bind(); 
 	else
 		Texture::unbind(); 
@@ -72,7 +72,7 @@ void Material::loadToShader(Shader* sh)
 
 	// Evitar enviar información de más a shaders que no la requieran
 	// Pensado sobre todo para el Shadow Pass
-	if(s_useTextures && sh->useTextures())
+	if(sh->useTextures())
 	{
 		// Globales
 		sh->setInt("fresnel", fresnel);
@@ -86,7 +86,8 @@ void Material::loadToShader(Shader* sh)
 		sh->setVec3("material.emission", m_emission);
 
 		// Texturas
-		bindTextures(sh);
+		if(s_useTextures)
+			bindTextures(sh);
 	}
 	// Mandar los uniforms específicos de este material
 	sendCustomUniforms(sh);

@@ -7,9 +7,10 @@
 DebugText::DebugText(Canvas* canvas, const std::string& backgroundTexID)
 {
 	//
-	fondo = new Button(backgroundTexID, canvas);
+	fondo = new Button(400, 200, canvas);
 	fondo->setPositionUI(0.5, 0.05);
 	fondo->setScaleUI(0.85, 0.7);
+	fondo->setTexture(backgroundTexID);
 	canvas->addElement(fondo);
 
 	// 

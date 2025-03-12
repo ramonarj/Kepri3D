@@ -50,8 +50,6 @@ void Text::render(Shader* sh)
 {
 	glLineWidth(grosor);
 
-	//no usamos texturas
-	Texture::unbind(); 
 	// Indicar al shader que es texto
 	sh->setInt("text", true);
 
