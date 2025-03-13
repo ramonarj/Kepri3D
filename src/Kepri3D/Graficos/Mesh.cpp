@@ -555,6 +555,26 @@ Mesh* Mesh::generateLetter(char l, const glm::vec4& color)
 		m->vertices = new dvec3[m->numVertices]
 		{ {0, 0, 0}, {1, 1, 0} };
 		break;
+	case ',':
+		m->numVertices = 2;
+		m->vertices = new dvec3[m->numVertices]
+		{ {0, 0, 0}, {0.5, 0.5, 0} };
+		break;
+	case '.':
+		m->numVertices = 2;
+		m->vertices = new dvec3[m->numVertices]
+		{ {0.5, 1, 0}, {0.5, 0.5, 0} };
+		break;
+	case '(':
+		m->numVertices = 4;
+		m->vertices = new dvec3[m->numVertices]
+		{ {0.5, 1, 0}, {0, 0.75, 0}, {0, 0.25, 0}, {0.5, 0, 0} };
+		break;
+	case ')':
+		m->numVertices = 4;
+		m->vertices = new dvec3[m->numVertices]
+		{ {0.5, 1, 0}, {1, 0.75, 0}, {1, 0.25, 0}, {0.5, 0, 0} };
+		break;
 	default:
 		break;
 	}

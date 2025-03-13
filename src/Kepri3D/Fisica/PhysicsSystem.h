@@ -3,6 +3,7 @@
 
 #include <vector>
 #include <glew.h>
+#include "Game.h"
 
 class Collider;
 class Rigid;
@@ -32,6 +33,10 @@ public:
 	void addRigid(Rigid* r);
 
 	void update(GLuint deltaTime);
+
+#ifdef __DEBUG_INFO__
+	glm::vec3 momentoTotal = { 0, 0, 0 };
+#endif
 
 private:
 	static PhysicsSystem* s_instance;

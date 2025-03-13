@@ -5,6 +5,7 @@
 #include "../RotationComp.h"
 #include "../CameraController.h"
 #include "../PhysicsMan.h"
+#include "../DebugText.h"
 
 void PruebaFisicas::init()
 {
@@ -33,7 +34,7 @@ void PruebaFisicas::init()
 	Rigid* rigidEsfera = new Rigid(esf->getModelMat());
 	rigidEsfera->useGravity(true);
 	esf->addComponent(rigidEsfera);
-	AddEntity(esf);
+	//AddEntity(esf);
 
 	// Esfera 2
 	Esfera* esf2 = new Esfera(1.0);
@@ -75,6 +76,7 @@ void PruebaFisicas::init()
 	colCubo2->setVisible(true);
 	cubo2->addComponent(colCubo2);
 	Rigid* rigidCubo2 = new Rigid(cubo2->getModelMat());
+	rigidCubo2->setMass(20.0);
 	rigidCubo2->useGravity(true);
 	cubo2->addComponent(rigidCubo2);
 	AddEntity(cubo2);
@@ -121,8 +123,15 @@ void PruebaFisicas::init()
 	SetSkybox(sky);
 
 	/* - - Canvas - - */
-	//m_canvas = new Canvas();
-	//m_canvas->setSize(800, 600);
+	m_canvas = new Canvas();
+	m_canvas->setSize(800, 600);
+
+	// Información de Debug
+	Entity* debugTxt = new Entity("DebugText");
+	debugTxt->setPosition({ 0,0,0 });
+	debugTxt->addComponent(new DebugText(m_canvas, "panel"));
+	AddEntity(debugTxt);
+	debugTxt->setActive(true);
 
 	// PhysicsMan
 	Entity* phyMan = new Entity("PhysicsManager");
@@ -162,6 +171,7 @@ void PruebaFisicas::loadResources()
 	/* Texturas */
 	ResourceManager::Instance()->loadTexture("cobre.bmp", "cobre");
 	ResourceManager::Instance()->loadTexture("sombra.png", "sombra");
+	ResourceManager::Instance()->loadTexture("UI\\panel.png", "panel");
 
 	ResourceManager::Instance()->loadCubemapTexture({ "skyboxes/right.jpg", "skyboxes/left.jpg", "skyboxes/bottom.jpg",
 	"skyboxes/top.jpg", "skyboxes/front.jpg", "skyboxes/back.jpg" }, "lakeSkybox");

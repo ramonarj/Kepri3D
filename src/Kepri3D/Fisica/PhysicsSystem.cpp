@@ -18,11 +18,17 @@ void PhysicsSystem::addRigid(Rigid* r)
 
 void PhysicsSystem::update(GLuint deltaTime)
 {
+#ifdef __DEBUG_INFO__
+	momentoTotal = { 0, 0 ,0 };
+#endif
 	m_deltaTime = deltaTime;
 	// Comprobar que esté bien el bucle añadiendo más rigids
 	for(int i = 0; i < m_rigids.size(); i++)
 	{
 		Rigid* r1 = m_rigids[i];
+#ifdef __DEBUG_INFO__
+		momentoTotal += ((glm::vec3)r1->m_velocity * r1->m_mass);
+#endif
 		for(int j = i + 1; j < m_rigids.size(); j++)
 		{
 			Rigid* r2 = m_rigids[j];

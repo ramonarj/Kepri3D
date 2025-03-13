@@ -18,6 +18,8 @@ private:
 	bool visible;
 	Text* text;
 	Button* fondo;
+
+	bool physicsScene;
 };
 
 #endif

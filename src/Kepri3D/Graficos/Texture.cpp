@@ -120,7 +120,6 @@ void Texture::bind(GLuint mix)
 	// Esto solo será útil en caso de que las entidades se pinten ordenadas por su textura
 	if (s_activeTexture == id) { return; }
 
-	std::cout << this->getWidth() << " " << this->getHeight() << std::endl;
 	glBindTexture(texType, id);
 	glTexEnvi(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, mix);
 	s_activeTexture = id;
