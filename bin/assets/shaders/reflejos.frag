@@ -15,11 +15,27 @@ uniform sampler2D textura;
 uniform sampler2D reflectionMap;
 uniform samplerCube skybox;
 
+#include structs.glsl
+
+uniform Material material;
+
+// Forma "sencilla" de ver si nos han pasado una textura desde el material o no
+bool usingTexture(int tex)
+{
+	return ((material.mapsMask & tex) == tex);
+}
+
 void main()
 {   
-	// ¿Cuánto refleja la entidad? (0-1) -> color.r
-	vec4 color = texture(reflectionMap, data_in.TexCoords);
-	if(color.a < 0.1) { discard; return; } //descartar fragmentos transparentes
+	// Por defecto, refleja el 100%
+	float mix = 1.0;
+	if(usingTexture(REFLECTION_MAP))
+	{
+		// ¿Cuánto refleja la entidad? (0-1)
+		vec4 color = texture(reflectionMap, data_in.TexCoords);
+		if(color.a < 0.1) { discard; return; } //descartar fragmentos transparentes
+		mix = color.r;
+	}
 
 	// Rayo incidente y rayo reflejado
 	vec3 I = normalize(data_in.fragPos - viewPos);
@@ -31,5 +47,5 @@ void main()
 	// Samplear la textura en función de esa dirección, y mezclarla con la propia textura de la entidad en la medida 
 	// que indique el "mapa de reflexión"
 	/* Usamos el LOD (level-of-detail) para hacerla un poco borrosa; cuanto más grande el número, más pequeño el mipmap usado */
-	FragColor = mix(texture(textura, data_in.TexCoords), textureLod(skybox, R, 3), color.r);
+	FragColor = mix(texture(textura, data_in.TexCoords), textureLod(skybox, R, 3), mix);
 }

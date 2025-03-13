@@ -17,7 +17,7 @@ public:
 	inline void bind(GLenum target = GL_FRAMEBUFFER) { glBindFramebuffer(target, id); }
 
 	/* Desactiva el framebuffer que hubiera, volviendo a dejar el predeterminado de OpenGL */
-	inline static void unbind() { glBindFramebuffer(GL_FRAMEBUFFER, 0); }
+	inline static void unbind(GLenum target = GL_FRAMEBUFFER) { glBindFramebuffer(target, 0); }
 
 	/* Activa la textura del Color Buffer */
 	void bindTexture();

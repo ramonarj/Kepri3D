@@ -37,7 +37,6 @@ public:
 	/* Método render que usa shaders; necesario activar el shader y pasar los uniforms correspondientes antes
 	de llamar a la función */
 	virtual void render();
-
 	virtual void render(Shader* sh);
 
 	// Actualizar
@@ -77,26 +76,6 @@ public:
 
 	/* Establece la textura principal (diffuse) que usará la entidad */
 	void setTexture(const std::string& textureID);
-	const Texture* getTexture() const;
-
-	/* Establece la textura secundaria a usar, que se mezclará con la principal en la medida dada */
-	void setSecondTex(const std::string& textureID);
-
-	/* Establece el mapa especular (textura en B/N) que se usará para 'reemplazar' la componente specular del material */
-	void setSpecularMap(const std::string& textureID);
-
-	/* Establece el mapa de normales (bump map) que se usará para 'reemplazar' las normales de la malla */
-	void setNormalMap(const std::string& textureID);
-
-	/* Establece el mapa de desplazamiento (textura en B/N) que desplazará las coordenadas de textura de la malla */
-	void setDisplacementMap(const std::string& textureID);
-
-	/* Establece el mapa de emisión */
-	void setEmissionMap(const std::string& textureID);
-
-	/* Activa los reflejos para esta entidad, dando el mapa de reflejos (textura en B/N) que indica qué partes
-	* son reflectantes, y la textura del Cubemap que reflejará */
-	void enableReflections(const std::string& reflectionMapID, const std::string& cubemapID);
 
 	// Getters
 	/* Devuelve el nombre de la entidad */

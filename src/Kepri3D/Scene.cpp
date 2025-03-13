@@ -70,8 +70,9 @@ void Scene::AddEntity(Entity* e)
 		m_renderers.push_back(r);
 
 		// Una entidad puede ser tranlúcida por: a) Material con diffuse.a < 1 | b) Textura difusa con transparencias
-		bool trans = e->getMaterial()->getDiffuse().a < 1.0 ||
-			(e->getTexture() != nullptr && e->getTexture()->hasAlpha());
+		Material* m = e->getMaterial();
+		bool trans = m->getDiffuse().a < 1.0 ||
+			(m->getTexture(0) != nullptr && m->getTexture(0)->hasAlpha());
 
 		// Diferenciar entre entidades opacas y translúcidas
 		if (trans)
@@ -317,24 +318,31 @@ void Scene::renderCanvas()
 		glEnable(GL_LIGHTING);
 }
 
+void Scene::Blit(Framebuffer* readFB, Framebuffer* writeFB)
+{
+	readFB->bind(GL_READ_FRAMEBUFFER);
+	if (writeFB == nullptr)
+		Framebuffer::unbind(GL_DRAW_FRAMEBUFFER);
+	else
+		writeFB->bind(GL_DRAW_FRAMEBUFFER);
+
+	GLint w = m_camera->getVP()->getW();
+	GLint h = m_camera->getVP()->getH();
+	glBlitFramebuffer(0, 0, w, h, 0, 0, w, h, GL_COLOR_BUFFER_BIT, GL_NEAREST);
+}
+
 void Scene::renderEffects()
 {
 	// No hay efectos activos -> solo volcamos el FBO en el FB de OpenGL
 	if(!compositesActive || m_composites.size() == 0)
 	{
-		activeFB->bind(GL_READ_FRAMEBUFFER);
-		glBindFramebuffer(GL_DRAW_FRAMEBUFFER, 0);
-		glBlitFramebuffer(0, 0, m_camera->getVP()->getW(), m_camera->getVP()->getH(),
-			0, 0, m_camera->getVP()->getW(), m_camera->getVP()->getH(), GL_COLOR_BUFFER_BIT, GL_NEAREST);
+		Blit(activeFB, nullptr);
 		return;
 	}
 	// Blit del Framebuffer con múltiples samples a uno normal
 	else if(true) //msaa_active
 	{
-		activeFB->bind(GL_READ_FRAMEBUFFER);
-		frameBuf->bind(GL_DRAW_FRAMEBUFFER);
-		glBlitFramebuffer(0, 0, m_camera->getVP()->getW(), m_camera->getVP()->getH(),
-			0, 0, m_camera->getVP()->getW(), m_camera->getVP()->getH(), GL_COLOR_BUFFER_BIT, GL_NEAREST);
+		Blit(activeFB, frameBuf);
 	}
 
 	glDepthFunc(GL_ALWAYS);
@@ -406,10 +414,12 @@ void Scene::sendUniforms(Shader* sh)
 	// posición de la cámara; sigue siendo necesario para el terreno, que lo usa en el TCS
 	sh->setVec3("viewPos", m_camera->getPosition());
 
-	// depth buffer
+	// depth buffer (podría hacer falta para usar la ley de Beer-Lambert en objetos traslúcidos)
+	/*
 	glActiveTexture(GL_TEXTURE0 + 8);
 	activeFB->bindDepth();
 	sh->setInt("depthBuf", 8);
+	*/
 
 	if (shadowsState == 0)
 		return;

@@ -214,11 +214,6 @@ void Entity::setMesh(const std::string& meshID)
 	addComponent(m_renderer);
 }
 
-const Texture* Entity::getTexture() const 
-{ 
-	return m_renderer->getMaterial()->getTexture(0); 
-}
-
 Material* Entity::getMaterial() const 
 {
 	return m_renderer->getMaterial();
@@ -243,38 +238,6 @@ void Entity::setTexture(const std::string& textureID)
 {
 	getMaterial()->setTexture(0, (Texture*)&ResourceManager::Instance()->getTexture(textureID));
 }
-
-void Entity::setSecondTex(const std::string& textureID)
-{
-	getMaterial()->setTexture(1, (Texture*)&ResourceManager::Instance()->getTexture(textureID));
-}
-
-void Entity::setSpecularMap(const std::string& textureID)
-{
-	getMaterial()->setTexture(2, (Texture*)&ResourceManager::Instance()->getTexture(textureID));
-}
-
-void Entity::setNormalMap(const std::string& textureID)
-{
-	getMaterial()->setTexture(3, (Texture*)&ResourceManager::Instance()->getTexture(textureID));
-}
-
-void Entity::setDisplacementMap(const std::string& textureID)
-{
-	getMaterial()->setTexture(4, (Texture*)&ResourceManager::Instance()->getTexture(textureID));
-}
-
-void Entity::enableReflections(const std::string& reflectionMapID, const std::string& cubemapID)
-{
-	getMaterial()->setTexture(5, (Texture*)&ResourceManager::Instance()->getTexture(reflectionMapID));
-	getMaterial()->setTexture(6, (Texture*)&ResourceManager::Instance()->getTexture(cubemapID));
-}
-
-void Entity::setEmissionMap(const std::string& textureID)
-{
-	getMaterial()->setTexture(7, (Texture*)&ResourceManager::Instance()->getTexture(textureID));
-}
-
 
 // - - - - - - - - - - - - - - - - - 
 

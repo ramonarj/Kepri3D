@@ -149,6 +149,7 @@ private:
 	void sendUniforms(Shader* sh);
 	void bakeShadows();
 	void debugDepthMap();
+	void Blit(Framebuffer* readFB, Framebuffer* writeFB);
 
 	// Modelo de iluminación. 0 = Phong, 1 = Blinn-phong
 	bool blinn = false;

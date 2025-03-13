@@ -120,6 +120,7 @@ void Texture::bind(GLuint mix)
 	// Esto solo será útil en caso de que las entidades se pinten ordenadas por su textura
 	if (s_activeTexture == id) { return; }
 
+	std::cout << this->getWidth() << " " << this->getHeight() << std::endl;
 	glBindTexture(texType, id);
 	glTexEnvi(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, mix);
 	s_activeTexture = id;
@@ -219,6 +220,7 @@ Texture* Texture::createDepthAttachment(unsigned int w, unsigned int h, GLenum t
 	if (texType == GL_TEXTURE_2D)
 	{
 		glTexImage2D(GL_TEXTURE_2D, 0, GL_DEPTH_COMPONENT, w, h, 0, GL_DEPTH_COMPONENT, GL_FLOAT, NULL);
+		t->w = w; t->h = h;
 		// Filtros
 		t->setFilters(GL_NEAREST, GL_CLAMP_TO_BORDER);
 
@@ -236,6 +238,7 @@ Texture* Texture::createDepthAttachment(unsigned int w, unsigned int h, GLenum t
 		for (unsigned int i = 0; i < 6; ++i)
 			glTexImage2D(GL_TEXTURE_CUBE_MAP_POSITIVE_X + i, 0, GL_DEPTH_COMPONENT,
 				w, h, 0, GL_DEPTH_COMPONENT, GL_FLOAT, NULL);
+		t->w = w; t->h = h;
 		// Filtros
 		t->setFilters(GL_NEAREST, GL_CLAMP_TO_EDGE);
 		glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_R, GL_CLAMP_TO_EDGE);

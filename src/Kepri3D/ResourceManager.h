@@ -36,12 +36,6 @@ public:
 
 			instance->setAssetsPath();
 
-			// Carga de textura y material por defecto
-			instance->loadTexture("default.bmp", "default");
-			instance->loadMaterial("default.material", "default");
-			instance->loadShader("default.vert", "default.geom", "default.frag", "default");
-			instance->loadComposite("defaultComposite.frag", "defaultComposite");
-
 			// Otros shaders necesarios (skybox, partículas, agua, normales...)
 			instance->loadShader("shadows.vert", "", "shadows.frag", "shadows");
 			instance->loadShader("shadows_point.vert", "shadows_point.geom", "shadows_point.frag", "shadows_point");
@@ -52,6 +46,12 @@ public:
 			instance->loadShader("agua.vert", "", "agua.frag", "agua");
 			instance->loadShader("UI.vert", "", "UI.frag", "UI");
 			instance->loadShader("normals.vert", "normals.geom", "normals.frag", "normals");
+
+			// Carga de textura y material por defecto
+			instance->loadTexture("default.bmp", "default");
+			instance->loadMaterial("default.material", "default");
+			instance->loadShader("default.vert", "default.geom", "default.frag", "default");
+			instance->loadComposite("defaultComposite.frag", "defaultComposite");
 		}
 			
 		return instance;
@@ -66,8 +66,8 @@ public:
 		GLubyte alpha = 255, GLint internalFormat = COLOR_SPACE);
 	bool loadTexture(const std::string& textureName, const std::string& id, const glm::ivec3& colorTrans);
 
-	/* Carga un material de archivo y le asigna el ID dado */
-	bool loadMaterial(const std::string& materialName, const std::string& id);
+	/* Carga un material de archivo, especifica el shader que usará, y le asigna el ID dado */
+	bool loadMaterial(const std::string& materialName, const std::string& id, const std::string& shaderId = "lights");
 
 	/* Carga un shader de archivo y le asigna el ID dado */
 	bool loadShader(const std::string& vertexName, const std::string& geometryName, const std::string& tesControlName,

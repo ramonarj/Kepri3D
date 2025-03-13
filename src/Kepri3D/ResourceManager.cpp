@@ -108,7 +108,7 @@ const Texture& ResourceManager::getTexture(const std::string& id)
 
 // - - - - - - - - - - - - 
 
-bool ResourceManager::loadMaterial(const std::string& materialName, const std::string& id)
+bool ResourceManager::loadMaterial(const std::string& materialName, const std::string& id, const std::string& shaderId)
 {
 	try
 	{
@@ -133,14 +133,16 @@ bool ResourceManager::loadMaterial(const std::string& materialName, const std::s
 		stream >> expF;
 
 		// Leer todos los mapas
-		std::string diffuseMap, specularMap, normalMap, parallaxMap, emissionMap;
-		diffuseMap = specularMap = normalMap = parallaxMap = emissionMap = "";
+		std::string diffuseMap, secondaryMap, specularMap, normalMap, parallaxMap, emissionMap, skybox, reflectionMap;
+		diffuseMap = secondaryMap = specularMap = normalMap = parallaxMap = emissionMap = skybox = reflectionMap = "";
 		for(int i = 0; i < 5; i++)
 		{
 			std::string tipo;
 			stream >> tipo;
 			if (tipo == "map_Kd")
 				stream >> diffuseMap;
+			else if (tipo == "map_Kd2")
+				stream >> secondaryMap;
 			else if (tipo == "map_Ks")
 				stream >> specularMap;
 			else if (tipo == "map_normal")
@@ -149,6 +151,10 @@ bool ResourceManager::loadMaterial(const std::string& materialName, const std::s
 				stream >> parallaxMap;
 			else if (tipo == "map_Ke")
 				stream >> emissionMap;
+			else if (tipo == "skybox")
+				stream >> skybox;
+			else if (tipo == "map_reflection")
+				stream >> reflectionMap;
 			// Etiqueta inválida
 			else if(tipo != "")
 			{
@@ -160,20 +166,33 @@ bool ResourceManager::loadMaterial(const std::string& materialName, const std::s
 		// Cerrar el archivo
 		stream.close();
 
-		// Crear el material y añadirlo al diccionario
-		materials[id] = new Material(ambient, diffuse, specular, emission, expF);
+		// Crear el material y darle los valores
+		Material* material = new Material(ambient, diffuse, specular, emission, expF);
 
-		// Añadir los mapas
+		// Añadirle las texturas que usará
 		if (diffuseMap != "")
-			materials[id]->setTexture(0, (Texture*)&getTexture(diffuseMap));
+			material->setTexture(0, (Texture*)&getTexture(diffuseMap));
+		if (secondaryMap != "")
+			material->setTexture(1, (Texture*)&getTexture(secondaryMap));
 		if (specularMap != "")
-			materials[id]->setTexture(2, (Texture*)&getTexture(specularMap));
+			material->setTexture(2, (Texture*)&getTexture(specularMap));
 		if (normalMap != "")
-			materials[id]->setTexture(3, (Texture*)&getTexture(normalMap));
+			material->setTexture(3, (Texture*)&getTexture(normalMap));
 		if (parallaxMap != "")
-			materials[id]->setTexture(4, (Texture*)&getTexture(parallaxMap));
+			material->setTexture(4, (Texture*)&getTexture(parallaxMap));
+		if (reflectionMap != "")
+			material->setTexture(5, (Texture*)&getTexture(reflectionMap));
+		if (skybox != "")
+			material->setTexture(6, (Texture*)&getTexture(skybox));
 		if (emissionMap != "")
-			materials[id]->setTexture(7, (Texture*)&getTexture(emissionMap));
+			material->setTexture(7, (Texture*)&getTexture(emissionMap));
+
+		// Indicarle qué shader usa
+		material->setShader((Shader*)&getShader(shaderId));
+
+		// Por último, añadirlo al diccionario
+		materials[id] = material;
+
 		return true;
 	}
 
