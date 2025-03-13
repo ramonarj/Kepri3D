@@ -119,27 +119,61 @@ bool ResourceManager::loadMaterial(const std::string& materialName, const std::s
 			throw std::ios_base::failure("ResourceManager ERROR: Could not open file");
 		}
 
-		// Leer las 3 componentes del material (+ el exponente especular)
+		// Leer las 4 componentes del material (+ el exponente especular)
 		glm::fvec4 ambient{};
 		stream >> ambient.x >> ambient.y >> ambient.z >> ambient.w;
-
 		glm::fvec4 diffuse{};
 		stream >> diffuse.x >> diffuse.y >> diffuse.z >> diffuse.w;
-
 		glm::fvec4 specular{};
 		stream >> specular.x >> specular.y >> specular.z >> specular.w;
-
 		glm::fvec4 emission{};
 		stream >> emission.x >> emission.y >> emission.z >> emission.w;
 
 		float expF = 0;
 		stream >> expF;
 
+		// Leer todos los mapas
+		std::string diffuseMap, specularMap, normalMap, parallaxMap, emissionMap;
+		diffuseMap = specularMap = normalMap = parallaxMap = emissionMap = "";
+		for(int i = 0; i < 5; i++)
+		{
+			std::string tipo;
+			stream >> tipo;
+			if (tipo == "map_Kd")
+				stream >> diffuseMap;
+			else if (tipo == "map_Ks")
+				stream >> specularMap;
+			else if (tipo == "map_normal")
+				stream >> normalMap;
+			else if (tipo == "map_disp")
+				stream >> parallaxMap;
+			else if (tipo == "map_Ke")
+				stream >> emissionMap;
+			// Etiqueta inválida
+			else if(tipo != "")
+			{
+				std::cout << "WARNING: etiqueta '" << tipo << "' no reconocida en \"" << materialName << "\"" << std::endl;
+				stream >> tipo;
+			}
+		}
+
 		// Cerrar el archivo
 		stream.close();
 
 		// Crear el material y añadirlo al diccionario
 		materials[id] = new Material(ambient, diffuse, specular, emission, expF);
+
+		// Añadir los mapas
+		if (diffuseMap != "")
+			materials[id]->setTexture(0, (Texture*)&getTexture(diffuseMap));
+		if (specularMap != "")
+			materials[id]->setTexture(2, (Texture*)&getTexture(specularMap));
+		if (normalMap != "")
+			materials[id]->setTexture(3, (Texture*)&getTexture(normalMap));
+		if (parallaxMap != "")
+			materials[id]->setTexture(4, (Texture*)&getTexture(parallaxMap));
+		if (emissionMap != "")
+			materials[id]->setTexture(7, (Texture*)&getTexture(emissionMap));
 		return true;
 	}
 

@@ -25,7 +25,7 @@ public:
 	/* Carga el material al shader (lo mismo pero con shaders) */
 	void loadToShader(Shader* sh);
 
-	inline void setTexture(unsigned int i, Texture* tex) { m_textures[i] = tex; }
+	void setTexture(unsigned int i, Texture* tex);
 
 	// Setters
 	/* Indica el tipo de sombreado que se usará para TODOS los materiales */
@@ -51,6 +51,8 @@ public:
 	inline GLfloat getBrillo() const { return m_brillo; }
 
 	inline const Texture* getTexture(GLuint i) const { return m_textures[i]; }
+
+	inline bool needsTangents() { return m_needsTangents; }
 
 	/* - - Uniforms - - */
 	void setFloat(const std::string& name, float value);
@@ -90,6 +92,7 @@ private:
 	// 4 = Displacement Map
 	// 5 = Reflection Map
 	// 6 = Skybox
+	// 7 = Emission Map
 	Texture* m_textures[NUM_TEXTURES];
 
 	/* - - Uniforms - - */
@@ -103,6 +106,9 @@ private:
 	/* Manda las texturas al shader */
 	void bindTextures(Shader* sh);
 	void sendCustomUniforms(Shader* sh);
+
+	/* Necesita que la malla provea vectores tangentes/no */
+	bool m_needsTangents;
 };
 
 #endif

@@ -27,6 +27,7 @@ Material::Material()
 	for (int i = 0; i < NUM_TEXTURES; i++)
 		m_textures[i] = nullptr;
 	m_shader = nullptr;
+	m_needsTangents = false;
 }
 
 Material::Material(glm::fvec4 ambient, glm::fvec4 diffuse, glm::fvec4 specular, glm::fvec4 emission, GLfloat brillo)
@@ -41,6 +42,15 @@ Material::Material(glm::fvec4 ambient, glm::fvec4 diffuse, glm::fvec4 specular, 
 	for (int i = 0; i < NUM_TEXTURES; i++)
 		m_textures[i] = nullptr;
 	m_shader = nullptr;
+	m_needsTangents = false;
+}
+
+void Material::setTexture(unsigned int i, Texture* tex)
+{
+	m_textures[i] = tex;
+	// Si es un normal map, necesitaremos tangentes de la malla
+	if (i == 3 || i == 4)
+		m_needsTangents = true;
 }
 
 void Material::load()

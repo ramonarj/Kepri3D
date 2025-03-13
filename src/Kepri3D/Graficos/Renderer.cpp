@@ -58,4 +58,7 @@ void Renderer::setPolygonMode(GLenum front, GLenum back)
 void Renderer::setMaterial(const std::string& materialID)
 {
 	m_material = ResourceManager::Instance()->getMaterial(materialID);
+	// Calcular las tangentes si es necesario
+	if(m_material.needsTangents())
+		static_cast<IndexMesh*>(m_mesh)->setTangents();
 }

@@ -96,9 +96,7 @@ void PruebaScene::init()
 	// Redead del Zelda OoT
 	Entity* redead = new Entity("Redead");
 	redead->setMesh("redead");
-	redead->setMaterial("fluorescente");
-	redead->setTexture("redead");
-	redead->setEmissionMap("redead_emission");
+	redead->setMaterial("redead");
 	redead->setShader("lights");
 	redead->setPosition({ -8,2,-6 });
 	AddEntity(redead);
@@ -162,9 +160,8 @@ void PruebaScene::init()
 	// Una caja con mapa especular
 	Cubo* cuboSpec = new Cubo(2);
 	cuboSpec->setName("CuboSpecmap");
+	cuboSpec->setMaterial("specularCube");
 	cuboSpec->setPosition({ 0, 0, 5 });
-	cuboSpec->setTexture("caja");
-	cuboSpec->setSpecularMap("caja_spec");
 	cuboSpec->setShader("lights");
 	AddEntity(cuboSpec);
 
@@ -256,9 +253,8 @@ void PruebaScene::init()
 
 	// Terreno teselado
 	TessTerrain* tesTerrain = new TessTerrain(18, 28, 80, 80); //patches de 80x80uds
-	tesTerrain->setTexture("iceland");
-	tesTerrain->setSpecularMap("iceland_spec");
-	tesTerrain->setNormalMap("iceland_normal");  // obligatorio usar un mapa de normales por el momento
+	tesTerrain->setMaterial("iceland");
+	tesTerrain->setShader("terreno");
 	tesTerrain->setPosition({ 0,-20,0 });
 	tesTerrain->getRenderer()->setPolygonMode(GL_FILL, GL_LINE);
 	Terreno* terrainComp = new Terreno((Material*)tesTerrain->getMaterial());
@@ -316,7 +312,7 @@ void PruebaScene::loadResources()
 	ResourceManager::Instance()->loadMesh("star.obj", "star");
 	ResourceManager::Instance()->loadMesh("redead.obj", "redead", 0.1f);
 
-	/* Texturas */
+	/* Texturas (IMPORTANTE cargar antes que los materiales) */
 	ResourceManager::Instance()->loadTexture("earth24.bmp", "earth");
 	ResourceManager::Instance()->loadTexture("earthHD.jpg", "earthHD");
 	ResourceManager::Instance()->loadTexture("venus.bmp", "venus");
@@ -373,6 +369,8 @@ void PruebaScene::loadResources()
 	ResourceManager::Instance()->loadShader("reflejos.vert", "", "reflejos.frag", "reflejos");
 
 	/* Materiales */
+	ResourceManager::Instance()->loadMaterial("pared.material", "pared");
+	ResourceManager::Instance()->loadMaterial("paredParallax.material", "paredParallax");
 	ResourceManager::Instance()->loadMaterial("copper.material", "cobre");
 	ResourceManager::Instance()->loadMaterial("crome.material", "cromo");
 	ResourceManager::Instance()->loadMaterial("ruby.material", "ruby");
@@ -381,6 +379,10 @@ void PruebaScene::loadResources()
 	ResourceManager::Instance()->loadMaterial("blinn.material", "blinn");
 	ResourceManager::Instance()->loadMaterial("oceano.material", "oceano");
 	ResourceManager::Instance()->loadMaterial("emerald.material", "emerald");
+	ResourceManager::Instance()->loadMaterial("specularCube.material", "specularCube");
+	ResourceManager::Instance()->loadMaterial("iceland.material", "iceland");
+	ResourceManager::Instance()->loadMaterial("redead.material", "redead");
+	ResourceManager::Instance()->loadMaterial("orientacion.material", "orientacion");
 
 	// Prueba excepciones
 	ResourceManager::Instance()->loadTexture("ladrillo.bmp", "ladrillo");
@@ -399,9 +401,9 @@ void PruebaScene::PruebaMateriales()
 {
 	// Cubo de orientación (distintas texturas)
 	Cubo* c2 = new Cubo(2, false);
-	c2->setMaterial("fluorescente");
-	c2->setTexture("orientacion");
-	c2->setEmissionMap("orientacion_emission");
+	c2->setMaterial("orientacion");
+	//c2->setTexture("orientacion");
+	//c2->setEmissionMap("orientacion_emission");
 	c2->setPosition({ -5,0,0 });
 	c2->setShader("lights");
 	AddEntity(c2);
@@ -428,7 +430,6 @@ void PruebaScene::PruebaMateriales()
 	// Cubo de cobre
 	Cubo* cuboCobre = new Cubo(2);
 	cuboCobre->setMaterial("cobre");
-	cuboCobre->setTexture("cobre");
 	cuboCobre->setPosition({ 10,0,0 });
 	AddEntity(cuboCobre);
 
@@ -452,7 +453,7 @@ void PruebaScene::PruebaMateriales()
 	// Rejilla (suelo)
 	Grid* grid = new Grid(1, 1, 30, 60);
 	grid->setMaterial("oceano");
-	grid->setTexture("agua");
+	//grid->setTexture("agua");
 	grid->setDisplacementMap("agua_disp");
 	grid->enableReflections("blanco", "lakeSkybox");
 	grid->setShader("agua");
@@ -467,8 +468,6 @@ void PruebaScene::PruebaMateriales()
 	Grid* cascada = new Grid(1, 1, 30, 24);
 	cascada->setName("Cascada");
 	cascada->setMaterial("oceano");
-	cascada->setTexture("agua");
-	cascada->setDisplacementMap("agua_disp");
 	cascada->enableReflections("blanco", "lakeSkybox");
 	cascada->setPosition({ 30,-13,0 });
 	cascada->rotate(-PI / 2, { 0, 0, 1 }, GLOBAL);
@@ -497,8 +496,6 @@ void PruebaScene::PruebaMateriales()
 	// Mar de la isla
 	Grid* mar = new Grid(1, 1, 723 * 3, 1087 * 3);
 	mar->setMaterial("oceano");
-	mar->setTexture("agua");
-	mar->setDisplacementMap("agua_disp");
 	mar->enableReflections("blanco", "lakeSkybox");
 	mar->setPosition({ 0,-20.01,0 });
 	mar->setShader("agua");
@@ -519,10 +516,7 @@ void PruebaScene::PruebaMateriales()
 	// Pared de ladrillos (parallax maps)
 	Grid* paredParallax = new Grid(1, 1, 15, 15);
 	paredParallax->setName("ParallaxWall");
-	//paredParallax->setMaterial("cromo");
-	paredParallax->setTexture("wall");
-	paredParallax->setNormalMap("wall_normal");
-	paredParallax->setDisplacementMap("wall_disp");
+	paredParallax->setMaterial("paredParallax");
 	paredParallax->setShader("lights");
 	paredParallax->setPosition({ -20,6.5,-15 });
 	paredParallax->rotate(PI / 2, { 1,0,0 });
@@ -533,9 +527,7 @@ void PruebaScene::PruebaMateriales()
 	// Pared de ladrillos (normal maps)
 	Grid* pared = new Grid(1, 1, 15, 15);
 	pared->setName("NormalMapWall");
-	//pared->setMaterial("cromo");
-	pared->setTexture("wall");
-	pared->setNormalMap("wall_normal");
+	pared->setMaterial("pared");
 	pared->setShader("lights");
 	pared->setPosition({ -5,6.5,-15 });
 	pared->rotate(PI / 2, { 1,0,0 });
@@ -555,7 +547,6 @@ void PruebaScene::PruebaMateriales()
 	// Plano para iluminación Blinn-Phong
 	Grid* plano = new Grid(1, 1, 30, 30);
 	plano->setMaterial("blinn");
-	plano->setTexture("cobre");
 	plano->setShader("lights");
 	plano->setPosition({ 60,0,-40 });
 	AddEntity(plano);
@@ -568,7 +559,6 @@ void PruebaScene::PruebaMateriales()
 
 	// Esfera HD
 	Esfera* esf = new Esfera(10, 30, 40);
-	//esf->setTexture("earthHD");
 	esf->setPosition({ 0,10,25 });
 	esf->setMaterial("emerald");
 	esf->setShader("lights");
@@ -604,7 +594,7 @@ void PruebaScene::PruebaMateriales()
 
 	// Prueba para sombras
 	Grid* tejado = new Grid(1, 1, 15, 15);
-	tejado->setTexture("cobre");
+	tejado->setMaterial("cobre");
 	tejado->setPosition({ 0,10,0 });
 	tejado->setShader("lights");
 	AddEntity(tejado);
@@ -625,7 +615,6 @@ void PruebaScene::PruebaMateriales()
 
 	// Entidad con VAO
 	VAOEntity* vaoEnt = new VAOEntity();
-	//vaoEnt->setMaterial("ruby");
 	vaoEnt->setTexture("zelda");
 	vaoEnt->setShader("lights");
 	vaoEnt->setPosition({ 10,1,-5 });

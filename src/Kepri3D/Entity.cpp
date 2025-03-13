@@ -257,14 +257,11 @@ void Entity::setSpecularMap(const std::string& textureID)
 void Entity::setNormalMap(const std::string& textureID)
 {
 	getMaterial()->setTexture(3, (Texture*)&ResourceManager::Instance()->getTexture(textureID));
-	static_cast<IndexMesh*>(m_renderer->getMesh())->setTangents();
 }
 
 void Entity::setDisplacementMap(const std::string& textureID)
 {
 	getMaterial()->setTexture(4, (Texture*)&ResourceManager::Instance()->getTexture(textureID));
-	// Temporal
-	static_cast<IndexMesh*>(m_renderer->getMesh())->setTangents();
 }
 
 void Entity::enableReflections(const std::string& reflectionMapID, const std::string& cubemapID)
@@ -375,8 +372,6 @@ TessTerrain::TessTerrain(GLuint filas, GLuint columnas, GLdouble tamFila, GLdoub
 	m_name = "TessTerrain";
 	Renderer* rend = new Renderer(IndexMesh::generateTessGrid(filas, columnas, tamFila, tamColumna));
 	addComponent(rend);
-
-	setShader("terreno");
 }
 
 // - - - - - - - - - - - - - - - - - 
