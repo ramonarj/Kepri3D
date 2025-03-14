@@ -1,6 +1,7 @@
 #include "PhysicsSystem.h"
 
 #include "Rigid.h"
+#include "Muelle.h"
 #include "Collider.h"
 #include <iostream>
 
@@ -16,13 +17,31 @@ void PhysicsSystem::addRigid(Rigid* r)
 	m_rigids.push_back(r);
 }
 
+void PhysicsSystem::addMuelle(Muelle* m)
+{
+	m_muelles.push_back(m);
+}
+
 void PhysicsSystem::update(GLuint deltaTime)
 {
+	m_deltaTime = deltaTime;
+
+	// Actualizar muelles
+	for (Muelle* m : m_muelles)
+	{
+		double elongacion = glm::length(*m->r2->m_position - *m->r1->m_position) - m->longitud;
+		glm::dvec3 R1toR2 = glm::normalize(*m->r2->m_position - *m->r1->m_position);
+		if (elongacion == 0) { continue; }
+		// Ley de Hooke
+		if(m->r1->m_type != Static)
+			m->r1->addForce(m->k * (R1toR2 * elongacion));
+		if (m->r2->m_type != Static)
+			m->r2->addForce(m->k * (-R1toR2 * elongacion));
+	}
 #ifdef __DEBUG_INFO__
 	momentoTotal = { 0, 0 ,0 };
 #endif
-	m_deltaTime = deltaTime;
-	// Comprobar que esté bien el bucle añadiendo más rigids
+	// Comprobar y resolver colisiones entre Rigids
 	for(int i = 0; i < m_rigids.size(); i++)
 	{
 		Rigid* r1 = m_rigids[i];

@@ -7,6 +7,7 @@
 
 class Collider;
 class Rigid;
+class Muelle;
 
 // Indica cómo de elástico es un choque. Por ahora, es compartido para todos los choques.
 // 0 = totalmente inelástico (se quedan pegados), 1 = totalmente elástico (no se pierde Ec)
@@ -32,6 +33,9 @@ public:
 	/* Añade un sólido rígido a la simulación */
 	void addRigid(Rigid* r);
 
+	/* Añade un muelle a la simulación */
+	void addMuelle(Muelle* m);
+
 	void update(GLuint deltaTime);
 
 #ifdef __DEBUG_INFO__
@@ -45,6 +49,10 @@ private:
 	/* Vector de sólidos rígidos*/
 	std::vector<Rigid*> m_rigids;
 
+	/* Vector de muelles */
+	std::vector<Muelle*> m_muelles;
+
+	/* Tiempo entre el anterior frame y este */
 	GLuint m_deltaTime;
 
 	// Métodos privados

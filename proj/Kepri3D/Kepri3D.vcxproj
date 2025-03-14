@@ -174,6 +174,7 @@
     <ClCompile Include="..\..\src\Kepri3D\Component.cpp" />
     <ClCompile Include="..\..\src\Kepri3D\Entity.cpp" />
     <ClCompile Include="..\..\src\Kepri3D\Fisica\Collider.cpp" />
+    <ClCompile Include="..\..\src\Kepri3D\Fisica\Muelle.cpp" />
     <ClCompile Include="..\..\src\Kepri3D\Fisica\PhysicsSystem.cpp" />
     <ClCompile Include="..\..\src\Kepri3D\Fisica\Rigid.cpp" />
     <ClCompile Include="..\..\src\Kepri3D\Game.cpp" />
@@ -202,6 +203,7 @@
     <ClInclude Include="..\..\src\Kepri3D\Component.h" />
     <ClInclude Include="..\..\src\Kepri3D\Entity.h" />
     <ClInclude Include="..\..\src\Kepri3D\Fisica\Collider.h" />
+    <ClInclude Include="..\..\src\Kepri3D\Fisica\Muelle.h" />
     <ClInclude Include="..\..\src\Kepri3D\Fisica\PhysicsSystem.h" />
     <ClInclude Include="..\..\src\Kepri3D\Fisica\Rigid.h" />
     <ClInclude Include="..\..\src\Kepri3D\Game.h" />

@@ -27,7 +27,7 @@ Rigid::Rigid(const glm::dmat4& modelMat)
 void Rigid::update(GLuint deltaTime)
 {
 	// Actualizar aceleración en función de las fuerzas existentes
-	if (m_useGravity)
+	if (m_type == RigidType::Dynamic && m_useGravity)
 		m_acceleration += s_gravity;
 
 	// - - LINEAL - - //
