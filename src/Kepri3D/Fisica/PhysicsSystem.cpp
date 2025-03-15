@@ -78,15 +78,14 @@ bool PhysicsSystem::checkCollision(Collider* c1, Collider* c2)
 	// Colisión Cubo-Cubo (AABB)
 	else if(c1->shape == Collider::Cubo && c2->shape == Collider::Cubo)
 	{
-		// En el caso de los cubos, 'radio' se refiere a la longitud del lado
-		float r1 = c1->radio / 2.0f;
-		float r2 = c2->radio / 2.0f;
+		glm::dvec3 halfExt1 = c1->halfExtents;
+		glm::dvec3 halfExt2 = c2->halfExtents;
 		glm::dvec3 posC1 = c1->getEntity()->getPosition();
 		glm::dvec3 posC2 = c2->getEntity()->getPosition();
 		
-		if(posC1.x + r1 > posC2.x - r2 && posC1.x - r1 < posC2.x + r2 && // Eje X
-			posC1.y + r1 > posC2.y - r2 && posC1.y - r1 < posC2.y + r2 && // Eje Y
-			posC1.z + r1 > posC2.z - r2 && posC1.z - r1 < posC2.z + r2) // Eje Z
+		if(posC1.x + halfExt1.x > posC2.x - halfExt2.x && posC1.x - halfExt1.x < posC2.x + halfExt2.x && // Eje X
+			posC1.y + halfExt1.y > posC2.y - halfExt2.y && posC1.y - halfExt1.y < posC2.y + halfExt2.y && // Eje Y
+			posC1.z + halfExt1.z > posC2.z - halfExt2.z && posC1.z - halfExt1.z < posC2.z + halfExt2.z) // Eje Z
 			return true;
 	}
 	return false;
@@ -94,7 +93,7 @@ bool PhysicsSystem::checkCollision(Collider* c1, Collider* c2)
 
 void PhysicsSystem::solveCollision(Rigid* r1, Rigid* r2)
 {
-	// 1) Hasta que no dejen de solaparse; tirar para afuera
+	// - - - - (1) Hacer que dejen de solaparse (tirando hacia afuera) - - - - //
 	unsigned int iter = 0;
 	do
 	{
@@ -104,21 +103,46 @@ void PhysicsSystem::solveCollision(Rigid* r1, Rigid* r2)
 		iter++;
 	} while (iter < MAX_ITER && checkCollision(r1->m_collider, r2->m_collider));
 
-	// 2) Calcular el punto de contacto y ver qué tipo de colisión es
-	glm::vec3 R1toR2 = glm::normalize(r2->getEntity()->getPosition() - r1->getEntity()->getPosition());
-
-	// Ambos dinámicos
-	if(r1->m_type == Dynamic && r2->m_type == Dynamic)
+	// - - - - (2) Calcular el punto de contacto (según el tipo de los colliders) - - - - //
+	glm::vec3 R1toR2;
+	// Esfera-Esfera
+	if (r1->m_collider->shape == Collider::Esfera && r2->m_collider->shape == Collider::Esfera)
 	{
+		R1toR2 = glm::normalize(r2->getEntity()->getPosition() - r1->getEntity()->getPosition());
+	}
+	// Cubo - Cubo
+	else if (r1->m_collider->shape == Collider::Cubo && r2->m_collider->shape == Collider::Cubo)
+	{
+		R1toR2 = r2->getEntity()->getPosition() - r1->getEntity()->getPosition();
+		glm::dvec3 absV = glm::abs((glm::dvec3)R1toR2 / r1->m_collider->halfExtents); //inspiración divina
+		// No se me ocurre una forma mejor
+		glm::vec3 eje;
+		if (absV.x > absV.y && absV.x > absV.z) { eje = { 1, 0, 0 }; }
+		else if (absV.y > absV.x && absV.y > absV.z) { eje = { 0, 1, 0 }; }
+		else { eje = { 0, 0, 1 }; }
+		R1toR2 *= eje;
+		R1toR2 = glm::normalize(R1toR2);
+	}
+
+	// - - - - (3) Aplicar las nuevas velocidades - - - - //
+	// Ambos dinámicos
+	if (r1->m_type == Dynamic && r2->m_type == Dynamic)
+	{
+		// prueba
+		//std::pair<glm::vec3, glm::vec3> vels = calculateElasticCollision(r1->m_velocity, r2->m_velocity,
+		//	R1toR2, r1->m_mass, r2->m_mass);
+		//r1->m_velocity = vels.first;
+		//r2->m_velocity = vels.second;
+		
 		// Intercambiar velocidades y multiplicar por coef.rest.
 		glm::vec3 auxVel = r1->m_velocity;
 		r1->m_velocity = -R1toR2 * (float)glm::length(r2->m_velocity) * COEF_RESTITUCION;
 		r2->m_velocity = R1toR2 * (float)glm::length(auxVel) * COEF_RESTITUCION;
 	}
 	// Uno estático; se quedan con su velocidad
-	else if(r1->m_type == Static)
+	else if (r1->m_type == Static)
 		r2->m_velocity = R1toR2 * (float)glm::length(r2->m_velocity) * COEF_RESTITUCION;
-	else if(r2->m_type == Static)
+	else if (r2->m_type == Static)
 		r1->m_velocity = -R1toR2 * (float)glm::length(r1->m_velocity) * COEF_RESTITUCION;
 
 	// TODO conservación del momento lineal
@@ -131,4 +155,28 @@ void PhysicsSystem::notifyCollision(Collider* c1, Collider* c2)
 		c->onCollision(c2);
 	for (Component* c : c2->getEntity()->getComponents())
 		c->onCollision(c1);
+}
+
+std::pair<glm::vec3, glm::vec3> PhysicsSystem::calculateElasticCollision(const glm::dvec3& v1, const glm::dvec3& v2,
+	const glm::dvec3& x1, const glm::dvec3& x2, double m1, double m2)
+{
+	double massTerm = (2.0 * m2 / (m1 + m2));
+	glm::dvec3 v1new = v1 + massTerm * (glm::dot(v2 - v1, x2 - x1) / pow(glm::length(x2 - x1), 2))
+		* (x2 - x1);
+	glm::dvec3 v2new = v2 + massTerm * (glm::dot(v1 - v2, x1 - x2) / pow(glm::length(x1 - x2), 2))
+		* (x1 - x2);
+
+	return std::pair<glm::vec3, glm::vec3>(v1new, v2new);
+}
+
+std::pair<glm::vec3, glm::vec3> PhysicsSystem::calculateElasticCollision(const glm::dvec3& v1, const glm::dvec3& v2,
+	const glm::dvec3& X1toX2, double m1, double m2)
+{
+	double massTerm = (2.0 * m2 / (m1 + m2));
+	glm::dvec3 v1new = v1 + massTerm * (glm::dot(v2 - v1, X1toX2) / pow(glm::length(X1toX2), 2))
+		* (X1toX2);
+	glm::dvec3 v2new = v2 + massTerm * (glm::dot(v1 - v2, -X1toX2) / pow(glm::length(X1toX2), 2))
+		* (-X1toX2);
+
+	return std::pair<glm::vec3, glm::vec3>(v1new, v2new);
 }

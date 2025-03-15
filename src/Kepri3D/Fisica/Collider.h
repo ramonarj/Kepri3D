@@ -14,7 +14,10 @@ public:
 		Cubo = 1
 	};
 public:
-	Collider(Shape forma, float radio);
+	// Constructora para colliders esféricos
+	Collider(float radio);
+	// Constructora para colliders ortoedros
+	Collider(const glm::dvec3& size);
 	~Collider();
 
 	void update(GLuint deltaTime) override {};
@@ -25,9 +28,15 @@ public:
 private:
 	friend class PhysicsSystem;
 
-	/* Forma y radio */
+	/* Forma (tipo de collider) */
 	Shape shape;
-	float radio;
+	union
+	{
+		// Específico de esferas
+		float radio;
+		// Epecífico de cubos
+		glm::dvec3 halfExtents;
+	};
 
 	/* Componente renderer para depurar */
 	Renderer* m_renderer;

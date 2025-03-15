@@ -59,6 +59,11 @@ private:
 	bool checkCollision(Collider* r1, Collider* r2);
 	void solveCollision(Rigid* r1, Rigid* r2);
 	void notifyCollision(Collider* c1, Collider* c2);
+	// Cálculo de las velocidades resultantes tras una colisión elástica
+	std::pair<glm::vec3, glm::vec3> calculateElasticCollision(const glm::dvec3& v1, const glm::dvec3& v2,
+		const glm::dvec3& x1, const glm::dvec3& x2, double m1, double m2);
+	std::pair<glm::vec3, glm::vec3> calculateElasticCollision(const glm::dvec3& v1, const glm::dvec3& v2,
+		const glm::dvec3& X1toX2, double m1, double m2);
 };
 
 #endif

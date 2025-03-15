@@ -21,14 +21,32 @@ void PruebaFisicas::init()
 	// ENTIDADES
 	m_camera->translate({ 0, -5, 0 });
 
+
 	// NOTA: hay que añadir el componente Collider antes de añadir el Rigid.
+	// Suelo
+	Cubo* suelo = new Cubo(1.0);
+	suelo->scale({ 200.0, 1.0, 200.0 });
+	suelo->setTexture("cobre");
+	suelo->setShader("lights");
+	suelo->setPosition({ 0, -10, 0 });
+	//suelo->getComponent<Renderer>()->setActive(false);
+	Collider* colSuelo = new Collider({ 200.0, 1.0, 200.0 });
+	colSuelo->setVisible(true);
+	suelo->addComponent(colSuelo);
+	Rigid* rigidSuelo = new Rigid(suelo->getModelMat());
+	rigidSuelo->useGravity(false);
+	rigidSuelo->setMass(100);
+	//rigidSuelo->setType(Static);
+	suelo->addComponent(rigidSuelo);
+	AddEntity(suelo);
+
 	// Esfera con componente Rigid y Collider visible
 	Esfera* esf = new Esfera(1.0);
 	esf->setTexture("default");
 	esf->setShader("lights");
 	esf->setPosition({ 1, 100, 0 });
 	esf->getComponent<Renderer>()->setActive(false);
-	Collider* colEsfera = new Collider(Collider::Esfera, 1.0);
+	Collider* colEsfera = new Collider(1.0);
 	colEsfera->setVisible(true);
 	esf->addComponent(colEsfera);
 	Rigid* rigidEsfera = new Rigid(esf->getModelMat());
@@ -42,10 +60,11 @@ void PruebaFisicas::init()
 	esf2->setShader("lights");
 	esf2->setPosition({ 0, 0, 0 });
 	esf2->getComponent<Renderer>()->setActive(false);
-	Collider* colEsfera2 = new Collider(Collider::Esfera, 1.0);
+	Collider* colEsfera2 = new Collider(1.0);
 	colEsfera2->setVisible(true);
 	esf2->addComponent(colEsfera2);
 	Rigid* rigidEsfera2 = new Rigid(esf2->getModelMat());
+	//rigidEsfera2->useGravity(false);
 	rigidEsfera2->setType(Static); // si es estático, no usa la gravedad
 	esf2->addComponent(rigidEsfera2);
 	AddEntity(esf2);
@@ -56,7 +75,7 @@ void PruebaFisicas::init()
 	cubo1->setShader("lights");
 	cubo1->setPosition({ 10, 5, 0 });
 	cubo1->getComponent<Renderer>()->setActive(false);
-	Collider* colCubo = new Collider(Collider::Cubo, 2.0);
+	Collider* colCubo = new Collider({3, 3, 3});
 	colCubo->setVisible(true);
 	cubo1->addComponent(colCubo);
 	Rigid* rigidCubo= new Rigid(cubo1->getModelMat());
@@ -70,11 +89,11 @@ void PruebaFisicas::init()
 	cubo2->setShader("lights");
 	cubo2->setPosition({ 10, 60, 0 });
 	cubo2->getComponent<Renderer>()->setActive(false);
-	Collider* colCubo2 = new Collider(Collider::Cubo, 2.0);
+	Collider* colCubo2 = new Collider({2.0, 2.0, 2.0});
 	colCubo2->setVisible(true);
 	cubo2->addComponent(colCubo2);
 	Rigid* rigidCubo2 = new Rigid(cubo2->getModelMat());
-	rigidCubo2->setMass(20.0);
+	rigidCubo2->setMass(1.0);
 	rigidCubo2->useGravity(true);
 	cubo2->addComponent(rigidCubo2);
 	AddEntity(cubo2);
@@ -85,7 +104,7 @@ void PruebaFisicas::init()
 	cubo3->setShader("lights");
 	cubo3->setPosition({ 10, 50, 0 });
 	cubo3->getComponent<Renderer>()->setActive(false);
-	Collider* colcubo3 = new Collider(Collider::Cubo, 1.0);
+	Collider* colcubo3 = new Collider({2.0, 8.0, 2.0});
 	colcubo3->setVisible(true);
 	cubo3->addComponent(colcubo3);
 	Rigid* rigidcubo3 = new Rigid(cubo3->getModelMat());
@@ -115,7 +134,7 @@ void PruebaFisicas::init()
 	extremo1->setShader("lights");
 	extremo1->setPosition({ 0, 0, 15 });
 	extremo1->getComponent<Renderer>()->setActive(false);
-	Collider* colExtremo1 = new Collider(Collider::Cubo, 2.0);
+	Collider* colExtremo1 = new Collider({2.0, 2.0, 2.0});
 	colExtremo1->setVisible(true);
 	extremo1->addComponent(colExtremo1);
 	Rigid* rigidExtremo1 = new Rigid(extremo1->getModelMat());
@@ -128,12 +147,11 @@ void PruebaFisicas::init()
 	extremo2->setShader("lights");
 	extremo2->setPosition({ 15, 0, 15 });
 	extremo2->getComponent<Renderer>()->setActive(false);
-	Collider* colExtremo2 = new Collider(Collider::Cubo, 2.0);
+	Collider* colExtremo2 = new Collider({2.0, 2.0, 2.0});
 	colExtremo2->setVisible(true);
 	extremo2->addComponent(colExtremo2);
 	Rigid* rigidExtremo2 = new Rigid(extremo2->getModelMat());
 	rigidExtremo2->setMass(1.0);
-	rigidExtremo2->useGravity(true);
 	extremo2->addComponent(rigidExtremo2);
 	extremo2->addComponent(new RotationComp(0.0));
 	AddEntity(extremo2);
@@ -165,7 +183,7 @@ void PruebaFisicas::init()
 
 	// PhysicsMan
 	Entity* phyMan = new Entity("PhysicsManager");
-	PhysicsMan* phyManComp = new PhysicsMan(rigidExtremo2, sombra);
+	PhysicsMan* phyManComp = new PhysicsMan(rigidcubo3, sombra);
 	phyMan->addComponent(phyManComp);
 	AddEntity(phyMan);
 
