@@ -5,6 +5,7 @@
 #include <map>
 #include <string>
 #include <iostream>
+#include <glm.hpp>
 
 // PI
 #define PI 3.14159265358979323846
@@ -47,6 +48,9 @@ void PrintMatrix(void* matrixPtr)
 	}
 	std::cout << "\n";
 }
+
+/* Imprime un vector por pantalla */
+void PrintVector(const glm::vec3& v);
 
 /**
  * Limpia un vector de punteros a memoria dinámica, llamando a sus destructoras y limpiando el vector

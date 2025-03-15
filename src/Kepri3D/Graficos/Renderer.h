@@ -19,6 +19,9 @@ public:
 	// Fixed pipeline version
 	void drawFixed();
 
+	// Dibuja el volumen de la malla
+	void drawVolume(Shader* sh);
+
 	virtual void update(GLuint deltaTime) override {}
 
 	/* Cómo debe pintarse la malla por delante y detrás (GL_FILL/GL_LINE/GL_POINT) */
@@ -35,6 +38,9 @@ public:
 	inline void receiveShadows(bool b) { m_receiveShadows = b; }
 	inline bool castShadows() const { return m_castShadows; }
 	inline bool receiveShadows() const { return m_receiveShadows; }
+
+	// Debug
+	static bool visibleBounds;
 private:
 	/* Malla/s que se encarga de pintar */
 	Mesh* m_mesh;
@@ -49,6 +55,9 @@ private:
 	/* Sombras (si emite / recibe) */
 	bool m_receiveShadows;
 	bool m_castShadows;
+
+	/* Malla para pintar la Bounding Box */
+	Mesh* m_volumeMesh;
 };
 
 #endif

@@ -30,6 +30,13 @@ public:
 	inline const void* getNormals() { return normales; }
 	unsigned int getVerticesNum() const { return numVertices; }
 	GLuint getType() const { return type; }
+	inline const glm::dvec3 getVolume() { return volume; }
+
+	// Calcula la Bounding Box de la malla
+	void calculateVolume();
+
+	// Escala la malla
+	void scale(const glm::dvec3& scale);
 
 	/* Creación de mallas de los distintos objetos */
 	// Ejes RGB
@@ -70,6 +77,9 @@ protected:
 
 	/* Array de vectores normales a cada uno de los vértices */
 	glm::dvec3* normales;
+
+	/* Volumen tipo AABB de la malla (para el Frustrum culling) */
+	glm::dvec3 volume = { 0, 0, 0 };
 
 	// Métodos auxiliares
 	/* Activa los arrays de vértices, colores y texturas */

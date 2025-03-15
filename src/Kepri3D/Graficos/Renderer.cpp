@@ -4,9 +4,18 @@
 #include "Shader.h"
 #include "ResourceManager.h"
 
+bool Renderer::visibleBounds = true;
+
 Renderer::Renderer(Mesh* mesh)
 {
 	m_mesh = mesh;
+
+	// Bounding Volume
+	m_mesh->calculateVolume();
+	glm::dvec3 size = m_mesh->getVolume();
+	m_volumeMesh = IndexMesh::generateCube(1);
+	m_volumeMesh->scale(size);
+	// TODO: optimizar y no usar normales ni uvs en el volume mesh
 
 	// Valores por defecto
 	m_polyModeFront = GL_FILL;
@@ -19,6 +28,8 @@ Renderer::Renderer(Mesh* mesh)
 Renderer::~Renderer()
 {
 	delete m_mesh;
+	if (m_volumeMesh != nullptr)
+		delete m_volumeMesh;
 }
 
 void Renderer::drawFixed()
@@ -47,6 +58,16 @@ void Renderer::draw(Shader* sh)
 	sh->setInt("receive_shadows", m_receiveShadows);
 
 	m_mesh->draw();
+
+	// Debug volume
+	if (visibleBounds) { drawVolume(sh); }
+}
+
+void Renderer::drawVolume(Shader* sh)
+{
+	glPolygonMode(GL_FRONT, GL_LINE);
+	glPolygonMode(GL_BACK, GL_LINE);
+	m_volumeMesh->draw();
 }
 
 void Renderer::setPolygonMode(GLenum front, GLenum back)

@@ -34,6 +34,9 @@ bool ResourceManager::loadMesh(const std::string& meshName, const std::string& i
 		meshLoader.loadOBJ(MESHES_PATH + meshName, scale);
 		IndexMesh* m = meshLoader.getMesh();
 
+		// Le calculamos el Bounding Volume
+		m->calculateVolume();
+
 		// la guardamos en el diccionario
 		meshes[id] = m;
 		return true;

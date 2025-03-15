@@ -121,6 +121,38 @@ void Mesh::drawInstanced(GLuint numInstances)
 #endif
 }
 
+void Mesh::calculateVolume()
+{
+	if (vertices == nullptr) { return; }
+	double minX, minY, minZ, maxX, maxY, maxZ;
+	minX = minY = minZ = maxX = maxY = maxZ = 0;
+	for(int i = 0; i < numVertices; i++)
+	{
+		// Anchura
+		if (vertices[i].x < minX)
+			minX = vertices[i].x;
+		else if (vertices[i].x > maxX)
+			maxX = vertices[i].x;
+		// Altura
+		if (vertices[i].y < minY)
+			minY = vertices[i].y;
+		else if (vertices[i].y > maxY)
+			maxY = vertices[i].y;
+		// Profundidad
+		if (vertices[i].z < minZ)
+			minZ = vertices[i].z;
+		else if (vertices[i].z > maxZ)
+			maxZ = vertices[i].z;
+	}
+	volume = { maxX - minX, maxY - minY, maxZ - minZ };
+}
+
+void Mesh::scale(const glm::dvec3& scale)
+{
+	for(int i = 0; i < numVertices; i++)
+		vertices[i] *= scale;
+}
+
 // - - - - - - - - - - - - - - - - - - -
 
 IndexMesh::~IndexMesh() 

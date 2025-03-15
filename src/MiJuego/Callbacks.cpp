@@ -166,3 +166,9 @@ void instancingButtonPressed()
 	}
 	GameManager::centerMouse();
 }
+
+void volumesButtonPressed()
+{
+	Renderer::visibleBounds = !Renderer::visibleBounds;
+	GameManager::centerMouse();
+}

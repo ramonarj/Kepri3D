@@ -19,12 +19,12 @@ std::vector<std::string> buttonNames = { "botonCulling", "botonBlending", "boton
 "botonAlpha", "botonMultisampling", "botonMipmaps", "botonNormales", "botonPostprocess", "botonScissor",
 "botonSkybox", "botonGamma", "botonInstancing", "botonStencil", "botonLogicOp"};
 
-std::vector<std::string> buttonTexts = { "CULLING", "BLENDING", "LIGHTING", "TEXTURES", "FLAT\nSHADING",
+std::vector<std::string> buttonTexts = { "CULLING", "BLENDING", "LIGHTING", "TEXTURES", "BOUNDING\nVOLUMES",
 "ALPHA\nTEST", "MULTI\nSAMPLING", "MIPMAPS", "VER\nNORMALES", "POST\nPROCESADO", "SCISSOR\nTEST",
 "SKYBOX", "FRESNEL\nEFFECT", "INSTANCING", "SOMBRAS", "LOGIC\nOP" };
 
 std::vector<void(*)()> PruebaScene::callbacks = { cullingButtonPressed, blendingButtonPressed, lightingButtonPressed,
-texturesButtonPressed, shadingButtonPressed, alphaButtonPressed, multisamplingButtonPressed, mipmapButtonPressed,
+texturesButtonPressed, volumesButtonPressed, alphaButtonPressed, multisamplingButtonPressed, mipmapButtonPressed,
 normalsButtonPressed, compositeButtonPressed, scissorButtonPressed, skyboxButtonPressed, fresnelButtonPressed, 
 instancingButtonPressed, shadowsButtonPressed, logicOpButtonPressed, gammaButtonPressed };
 

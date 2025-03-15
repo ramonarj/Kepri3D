@@ -1,6 +1,8 @@
 #include "Utils.h"
 
 #include <fstream>
+#include <sstream>
+#include <iomanip>
 
 std::string FileToString(const char* fileName)
 {
@@ -25,4 +27,13 @@ std::string FileToString(const char* fileName)
 
 	// Devolver el texto
 	return fileContent;
+}
+
+void PrintVector(const glm::vec3& v)
+{
+	std::stringstream stream;
+	stream << std::fixed << std::setprecision(2)
+		<< "(" << v.x << "," << v.y << "," << v.z << ")";
+
+	std::cout << stream.str();
 }

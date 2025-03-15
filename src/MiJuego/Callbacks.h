@@ -20,6 +20,7 @@ void shadowsButtonPressed();
 void stencilButtonPressed();
 void logicOpButtonPressed();
 void instancingButtonPressed();
+void volumesButtonPressed();
 
 
 #endif
