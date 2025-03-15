@@ -40,6 +40,7 @@ public:
 
 #ifdef __DEBUG_INFO__
 	glm::vec3 momentoTotal = { 0, 0, 0 };
+	unsigned int rigidsDespiertos = 0;
 #endif
 
 private:

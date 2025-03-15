@@ -18,7 +18,7 @@ public:
 	/* Gravedad global */
 	static glm::dvec3 s_gravity;
 
-	Rigid(const glm::dmat4& modelMat);
+	Rigid(const glm::dmat4& modelMat, RigidType type = Dynamic);
 	~Rigid(){}
 
 	/* Actualiza la posición y velocidad del Rigid */
@@ -52,6 +52,15 @@ public:
 
 	/* Cambia el tipo del Rigidbody entre dinámico y estático */
 	inline void setType(RigidType type) { m_type = type; }
+
+	/* Cambia la velocidad del Rigid */
+	void setVelocity(const glm::dvec3& vel);
+
+	/* Despierta al Rigid */
+	void wakeUp();
+	/* Manda el Rigid a dormir */
+	void sleep();
+
 private:
 	friend class PhysicsSystem;
 
@@ -87,6 +96,12 @@ private:
 
 	/* Puntero al collider de la entidad */
 	Collider* m_collider;
+
+	/* ¿Está dormido? */
+	bool m_sleeping;
+
+	/* Los frames que lleva con una velocidad ínfima */
+	unsigned int m_framesInactivo;
 };
 
 #endif

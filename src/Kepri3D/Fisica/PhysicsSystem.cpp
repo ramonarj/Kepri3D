@@ -15,6 +15,10 @@ void PhysicsSystem::addRigid(Rigid* r)
 	r->setCollider(col);
 
 	m_rigids.push_back(r);
+#ifdef __DEBUG_INFO__
+	if(!r->m_sleeping)
+		rigidsDespiertos++;
+#endif
 }
 
 void PhysicsSystem::addMuelle(Muelle* m)
@@ -31,12 +35,10 @@ void PhysicsSystem::update(GLuint deltaTime)
 	{
 		double elongacion = glm::length(*m->r2->m_position - *m->r1->m_position) - m->longitud;
 		glm::dvec3 R1toR2 = glm::normalize(*m->r2->m_position - *m->r1->m_position);
-		if (elongacion == 0) { continue; }
+		if (glm::abs(elongacion) < 0.05) { continue; } //pequeño umbral para que duerma
 		// Ley de Hooke
-		if(m->r1->m_type != Static)
-			m->r1->addForce(m->k * (R1toR2 * elongacion));
-		if (m->r2->m_type != Static)
-			m->r2->addForce(m->k * (-R1toR2 * elongacion));
+		m->r1->addForce(m->k * (R1toR2 * elongacion));
+		m->r2->addForce(m->k * (-R1toR2 * elongacion));
 	}
 #ifdef __DEBUG_INFO__
 	momentoTotal = { 0, 0 ,0 };
@@ -51,6 +53,8 @@ void PhysicsSystem::update(GLuint deltaTime)
 		for(int j = i + 1; j < m_rigids.size(); j++)
 		{
 			Rigid* r2 = m_rigids[j];
+			// Si ambos están dormidos, es imposible que choquen
+			if (r1->m_sleeping && r2->m_sleeping) { continue; }
 			// Hay colisión
 			if(checkCollision(r1->m_collider, r2->m_collider))
 			{
@@ -58,7 +62,7 @@ void PhysicsSystem::update(GLuint deltaTime)
 				// La resolvemos
 				solveCollision(r1, r2);
 
-				// Notificamos a los involucrados
+				// Y norificamos a los implicados
 				notifyCollision(r1->m_collider, r2->m_collider);
 			}
 		}
@@ -133,17 +137,17 @@ void PhysicsSystem::solveCollision(Rigid* r1, Rigid* r2)
 		//	R1toR2, r1->m_mass, r2->m_mass);
 		//r1->m_velocity = vels.first;
 		//r2->m_velocity = vels.second;
-		
+
 		// Intercambiar velocidades y multiplicar por coef.rest.
 		glm::vec3 auxVel = r1->m_velocity;
-		r1->m_velocity = -R1toR2 * (float)glm::length(r2->m_velocity) * COEF_RESTITUCION;
-		r2->m_velocity = R1toR2 * (float)glm::length(auxVel) * COEF_RESTITUCION;
+		r1->setVelocity(- R1toR2 * (float)glm::length(r2->m_velocity) * COEF_RESTITUCION);
+		r2->setVelocity(R1toR2 * (float)glm::length(auxVel) * COEF_RESTITUCION);
 	}
 	// Uno estático; se quedan con su velocidad
 	else if (r1->m_type == Static)
-		r2->m_velocity = R1toR2 * (float)glm::length(r2->m_velocity) * COEF_RESTITUCION;
+		r2->setVelocity(R1toR2 * (float)glm::length(r2->m_velocity) * COEF_RESTITUCION);
 	else if (r2->m_type == Static)
-		r1->m_velocity = -R1toR2 * (float)glm::length(r1->m_velocity) * COEF_RESTITUCION;
+		r1->setVelocity(- R1toR2 * (float)glm::length(r1->m_velocity) * COEF_RESTITUCION);
 
 	// TODO conservación del momento lineal
 }

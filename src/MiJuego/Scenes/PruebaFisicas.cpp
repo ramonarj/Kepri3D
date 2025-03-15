@@ -33,10 +33,9 @@ void PruebaFisicas::init()
 	Collider* colSuelo = new Collider({ 200.0, 1.0, 200.0 });
 	colSuelo->setVisible(true);
 	suelo->addComponent(colSuelo);
-	Rigid* rigidSuelo = new Rigid(suelo->getModelMat());
+	Rigid* rigidSuelo = new Rigid(suelo->getModelMat(), Static);
 	rigidSuelo->useGravity(false);
 	rigidSuelo->setMass(100);
-	//rigidSuelo->setType(Static);
 	suelo->addComponent(rigidSuelo);
 	AddEntity(suelo);
 
@@ -52,7 +51,7 @@ void PruebaFisicas::init()
 	Rigid* rigidEsfera = new Rigid(esf->getModelMat());
 	rigidEsfera->useGravity(true);
 	esf->addComponent(rigidEsfera);
-	AddEntity(esf);
+	//AddEntity(esf);
 
 	// Esfera 2
 	Esfera* esf2 = new Esfera(1.0);
@@ -63,9 +62,8 @@ void PruebaFisicas::init()
 	Collider* colEsfera2 = new Collider(1.0);
 	colEsfera2->setVisible(true);
 	esf2->addComponent(colEsfera2);
-	Rigid* rigidEsfera2 = new Rigid(esf2->getModelMat());
+	Rigid* rigidEsfera2 = new Rigid(esf2->getModelMat(), Static);  // si es estático, no usa la gravedad
 	//rigidEsfera2->useGravity(false);
-	rigidEsfera2->setType(Static); // si es estático, no usa la gravedad
 	esf2->addComponent(rigidEsfera2);
 	AddEntity(esf2);
 
@@ -78,8 +76,7 @@ void PruebaFisicas::init()
 	Collider* colCubo = new Collider({3, 3, 3});
 	colCubo->setVisible(true);
 	cubo1->addComponent(colCubo);
-	Rigid* rigidCubo= new Rigid(cubo1->getModelMat());
-	rigidCubo->setType(Static);
+	Rigid* rigidCubo= new Rigid(cubo1->getModelMat(), Static);
 	cubo1->addComponent(rigidCubo);
 	AddEntity(cubo1);
 
@@ -137,8 +134,7 @@ void PruebaFisicas::init()
 	Collider* colExtremo1 = new Collider({2.0, 2.0, 2.0});
 	colExtremo1->setVisible(true);
 	extremo1->addComponent(colExtremo1);
-	Rigid* rigidExtremo1 = new Rigid(extremo1->getModelMat());
-	rigidExtremo1->setType(Static);
+	Rigid* rigidExtremo1 = new Rigid(extremo1->getModelMat(), Static);
 	extremo1->addComponent(rigidExtremo1);
 	AddEntity(extremo1);
 

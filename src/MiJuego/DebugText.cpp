@@ -71,7 +71,8 @@ void DebugText::update(GLuint deltaTime)
 		{
 			glm::vec3 momento = PhysicsSystem::Instance()->momentoTotal;
 			std::string s = "MOMENTO TOTAL " + VectorToString(momento) +
-				"\nENERGIA CINETICA ";
+				"\nENERGIA CINETICA " + 
+				"\nRIGIDS DESPIERTOS " + std::to_string(PhysicsSystem::Instance()->rigidsDespiertos);
 
 			text->setText(s);
 		}

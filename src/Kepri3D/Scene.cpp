@@ -85,6 +85,10 @@ void Scene::AddEntity(Entity* e)
 	Light* l = e->getComponent<Light>();
 	if (l != nullptr)
 		m_lights.push_back(l);
+
+	// Ver si tiene un componente Rigid (añadir a la simulación)
+	Rigid* rigid = e->getComponent<Rigid>();
+	if (rigid != nullptr) { PhysicsSystem::Instance()->addRigid(rigid); }
 }
 
 void Scene::render()
