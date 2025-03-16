@@ -8,6 +8,12 @@
     <Filter Include="Scenes">
       <UniqueIdentifier>{ba38d5b1-8858-4b04-98f7-240d74c6aef0}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Archivos de origen\Graficos">
+      <UniqueIdentifier>{0404eb8c-dfd0-4357-ad2d-4fe1708f340e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Archivos de origen\Fisicas">
+      <UniqueIdentifier>{bca7530a-06b0-4543-95f7-1014b22eb7eb}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\..\src\MiJuego\CameraController.cpp">
@@ -17,9 +23,6 @@
       <Filter>Archivos de origen</Filter>
     </ClCompile>
     <ClCompile Include="..\..\src\MiJuego\Main.cpp">
-      <Filter>Archivos de origen</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\src\MiJuego\RotationComp.cpp">
       <Filter>Archivos de origen</Filter>
     </ClCompile>
     <ClCompile Include="..\..\src\MiJuego\Scenes\PruebaScene.cpp">
@@ -37,17 +40,23 @@
     <ClCompile Include="..\..\src\MiJuego\Callbacks.cpp">
       <Filter>Archivos de origen</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\src\MiJuego\PhysicsMan.cpp">
-      <Filter>Archivos de origen</Filter>
+    <ClCompile Include="..\..\src\MiJuego\AguaComp.cpp">
+      <Filter>Archivos de origen\Graficos</Filter>
     </ClCompile>
     <ClCompile Include="..\..\src\MiJuego\MultitexComp.cpp">
-      <Filter>Archivos de origen</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\src\MiJuego\AguaComp.cpp">
-      <Filter>Archivos de origen</Filter>
+      <Filter>Archivos de origen\Graficos</Filter>
     </ClCompile>
     <ClCompile Include="..\..\src\MiJuego\ParallaxComp.cpp">
-      <Filter>Archivos de origen</Filter>
+      <Filter>Archivos de origen\Graficos</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\MiJuego\RotationComp.cpp">
+      <Filter>Archivos de origen\Graficos</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\MiJuego\PhysicsMan.cpp">
+      <Filter>Archivos de origen\Fisicas</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\MiJuego\BloqueComp.cpp">
+      <Filter>Archivos de origen\Fisicas</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -55,9 +64,6 @@
       <Filter>Archivos de origen</Filter>
     </ClInclude>
     <ClInclude Include="..\..\src\MiJuego\GameManager.h">
-      <Filter>Archivos de origen</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\src\MiJuego\RotationComp.h">
       <Filter>Archivos de origen</Filter>
     </ClInclude>
     <ClInclude Include="..\..\src\MiJuego\Scenes\PruebaScene.h">
@@ -75,17 +81,23 @@
     <ClInclude Include="..\..\src\MiJuego\Callbacks.h">
       <Filter>Archivos de origen</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\src\MiJuego\PhysicsMan.h">
-      <Filter>Archivos de origen</Filter>
+    <ClInclude Include="..\..\src\MiJuego\AguaComp.h">
+      <Filter>Archivos de origen\Graficos</Filter>
     </ClInclude>
     <ClInclude Include="..\..\src\MiJuego\MultitexComp.h">
-      <Filter>Archivos de origen</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\src\MiJuego\AguaComp.h">
-      <Filter>Archivos de origen</Filter>
+      <Filter>Archivos de origen\Graficos</Filter>
     </ClInclude>
     <ClInclude Include="..\..\src\MiJuego\ParallaxComp.h">
-      <Filter>Archivos de origen</Filter>
+      <Filter>Archivos de origen\Graficos</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\MiJuego\RotationComp.h">
+      <Filter>Archivos de origen\Graficos</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\MiJuego\PhysicsMan.h">
+      <Filter>Archivos de origen\Fisicas</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\MiJuego\BloqueComp.h">
+      <Filter>Archivos de origen\Fisicas</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

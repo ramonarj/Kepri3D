@@ -32,6 +32,7 @@ void CameraController::update(GLuint deltaTime)
 	movimientoCamara(deltaTime);
 	rotacionesCamara(deltaTime);
 	volumenVistaCamara(deltaTime);
+	puntosFijosCamara();
 
 	// Devolver el ratón al medio
 	InputManager::Instance()->setMousePos(cam->getVP()->getW() / 2, cam->getVP()->getH() / 2);
@@ -124,5 +125,43 @@ void CameraController::volumenVistaCamara(GLuint deltaTime)
 	else if (InputManager::Instance()->getKey('2'))
 	{
 		cam->setFarPlane(cam->getFarPlane() + (deltaTime / 1000.0f) * 20.0f);
+	}
+}
+
+void CameraController::puntosFijosCamara()
+{
+	float dist = 25;
+	// Izquierda/derecha
+	if (InputManager::Instance()->getKeyDown('4'))
+	{
+		cam->setPosition({ -dist, 0, 0 });
+		cam->lookAt(cam->getPosition() + glm::dvec3(1, 0, 0));
+	}
+	if (InputManager::Instance()->getKeyDown('6'))
+	{
+		cam->setPosition({ dist, 0, 0 });
+		cam->lookAt(cam->getPosition() + glm::dvec3(-1, 0, 0));
+	}
+	// Arriba/abajo
+	if (InputManager::Instance()->getKeyDown('8'))
+	{
+		cam->setPosition({ 0, dist, 0 });
+		cam->lookAt(cam->getPosition() + glm::dvec3(0, -1, 0), { 0, 0, -1 });
+	}
+	if (InputManager::Instance()->getKeyDown('2'))
+	{
+		cam->setPosition({ 0, -10, 0 });
+		cam->lookAt(cam->getPosition() + glm::dvec3(0, 1, 0), { 0, 0, 1 });
+	}
+	// Adelante/atrás
+	if (InputManager::Instance()->getKeyDown('5'))
+	{
+		cam->setPosition({ 0, 0, dist });
+		cam->lookAt(cam->getPosition() + glm::dvec3(0, 0, -1));
+	}
+	if (InputManager::Instance()->getKeyDown('1'))
+	{
+		cam->setPosition({ 0, 0, -dist });
+		cam->lookAt(cam->getPosition() + glm::dvec3(0, 0, 1));
 	}
 }

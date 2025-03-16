@@ -47,12 +47,6 @@ void PhysicsMan::update(GLuint deltaTime)
 			-rigid->getEntity()->forward() / 2.0 - rigid->getEntity()->up() / 2.0);
 	}
 
-	/*if (InputManager::Instance()->getKey('h'))
-		rigid->addForce(10.0 * -rigid->getEntity()->forward());*/
-
-	//if (InputManager::Instance()->getKeyDown('h'))
-	//	rigid->addForce(1000.0f * glm::normalize(glm::vec3(-20, 0, -20)), {0, -0.5, 0.5});
-
 	// Sombra
 	glm::dvec3 rigidPos = rigid->getEntity()->getPosition();
 	sombra->setPosition({ rigidPos.x, 0.51, rigidPos.z });

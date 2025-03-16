@@ -7,6 +7,14 @@
 
 PhysicsSystem* PhysicsSystem::s_instance = nullptr;
 
+void PhysicsSystem::Clean()
+{
+	CleanVector(m_muelles);
+
+	delete s_instance;
+	s_instance = nullptr;
+}
+
 void PhysicsSystem::addRigid(Rigid* r)
 {
 	Collider* col = r->getEntity()->getComponent<Collider>();
@@ -59,11 +67,19 @@ void PhysicsSystem::update(GLuint deltaTime)
 			if(checkCollision(r1->m_collider, r2->m_collider))
 			{
 				//std::cout << "Colisión entre " << r1->getEntity()->getName() << " y " << r2->getEntity()->getName() << std::endl;
-				// La resolvemos
-				solveCollision(r1, r2);
+				// Si alguno de lo 2 es trigger, no hay que resolver la colisión
+				if(r1->m_collider->m_trigger || r2->m_collider->m_trigger)
+				{ 
+					notifyTrigger(r1->m_collider, r2->m_collider); 
+				}
+				else
+				{
+					// La resolvemos
+					solveCollision(r1, r2);
 
-				// Y norificamos a los implicados
-				notifyCollision(r1->m_collider, r2->m_collider);
+					// Y notificamos a los implicados
+					notifyCollision(r1->m_collider, r2->m_collider);
+				}
 			}
 		}
 	}
@@ -159,6 +175,15 @@ void PhysicsSystem::notifyCollision(Collider* c1, Collider* c2)
 		c->onCollision(c2);
 	for (Component* c : c2->getEntity()->getComponents())
 		c->onCollision(c1);
+}
+
+void PhysicsSystem::notifyTrigger(Collider* c1, Collider* c2)
+{
+	// Notificamos a las entidades involucradas (a cada componente)
+	for (Component* c : c1->getEntity()->getComponents())
+		c->onTrigger(c2);
+	for (Component* c : c2->getEntity()->getComponents())
+		c->onTrigger(c1);
 }
 
 std::pair<glm::vec3, glm::vec3> PhysicsSystem::calculateElasticCollision(const glm::dvec3& v1, const glm::dvec3& v2,

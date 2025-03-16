@@ -22,5 +22,6 @@ private:
 	void movimientoCamara(GLuint deltaTime);
 	void rotacionesCamara(GLuint deltaTime);
 	void volumenVistaCamara(GLuint deltaTime);
+	void puntosFijosCamara();
 };
 #endif

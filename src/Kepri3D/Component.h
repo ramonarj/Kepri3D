@@ -30,6 +30,8 @@ public:
 
 	/* Callback para cuando la entidad colisione con otra */
 	virtual void onCollision(Collider* other) {}
+	/* Callback para cuando penetre en un collider tipo trigger */
+	virtual void onTrigger(Collider* other) {}
 protected:
 	bool m_active;
 

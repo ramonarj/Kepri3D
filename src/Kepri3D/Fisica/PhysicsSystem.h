@@ -28,7 +28,7 @@ public:
 	}
 
 	/* Limpia la instancia; debe llamarse explícitamente */
-	inline void Clean() { delete s_instance; s_instance = nullptr; }
+	void Clean();
 
 	/* Añade un sólido rígido a la simulación */
 	void addRigid(Rigid* r);
@@ -59,7 +59,9 @@ private:
 	// Métodos privados
 	bool checkCollision(Collider* r1, Collider* r2);
 	void solveCollision(Rigid* r1, Rigid* r2);
+	// Envío de mensajes a los demás componentes
 	void notifyCollision(Collider* c1, Collider* c2);
+	void notifyTrigger(Collider* c1, Collider* c2);
 	// Cálculo de las velocidades resultantes tras una colisión elástica
 	std::pair<glm::vec3, glm::vec3> calculateElasticCollision(const glm::dvec3& v1, const glm::dvec3& v2,
 		const glm::dvec3& x1, const glm::dvec3& x2, double m1, double m2);

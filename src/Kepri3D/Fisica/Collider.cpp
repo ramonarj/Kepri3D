@@ -14,6 +14,7 @@ Collider::Collider(float radio)
 	// wireframe
 	m_renderer->setPolygonMode(GL_LINE, GL_LINE);
 	m_visible = false;
+	m_trigger = false;
 }	
 
 Collider::Collider(const glm::dvec3& size)
@@ -29,6 +30,7 @@ Collider::Collider(const glm::dvec3& size)
 	// wireframe
 	m_renderer->setPolygonMode(GL_LINE, GL_LINE);
 	m_visible = false;
+	m_trigger = false;
 }
 
 Collider::~Collider()

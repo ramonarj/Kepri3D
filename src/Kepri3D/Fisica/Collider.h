@@ -24,6 +24,7 @@ public:
 	void render(Shader* sh);
 
 	// Setters
+	inline void setTrigger(bool trigger) { m_trigger = trigger; }
 	inline void setVisible(bool visible) { m_visible = visible; }
 private:
 	friend class PhysicsSystem;
@@ -37,6 +38,9 @@ private:
 		// Epecífico de cubos
 		glm::dvec3 halfExtents;
 	};
+
+	/* ¿Es atravesable? */
+	bool m_trigger;
 
 	/* Componente renderer para depurar */
 	Renderer* m_renderer;

@@ -6,6 +6,7 @@
 #include "../CameraController.h"
 #include "../PhysicsMan.h"
 #include "../DebugText.h"
+#include "../BloqueComp.h"
 
 void PruebaFisicas::init()
 {
@@ -51,7 +52,7 @@ void PruebaFisicas::init()
 	Rigid* rigidEsfera = new Rigid(esf->getModelMat());
 	rigidEsfera->useGravity(true);
 	esf->addComponent(rigidEsfera);
-	//AddEntity(esf);
+	AddEntity(esf);
 
 	// Esfera 2
 	Esfera* esf2 = new Esfera(1.0);
@@ -110,6 +111,23 @@ void PruebaFisicas::init()
 	cubo3->addComponent(rigidcubo3);
 	cubo3->addComponent(new RotationComp(0.0));
 	AddEntity(cubo3);
+
+
+	// Trigger
+	Cubo* trigger = new Cubo(0.5);
+	trigger->setTexture("default");
+	trigger->setShader("lights");
+	trigger->setPosition({ 10, 20, 0 });
+	trigger->getComponent<Renderer>()->setActive(false);
+	Collider* colTrigger = new Collider({ 1, 1, 1});
+	colTrigger->setVisible(true);
+	colTrigger->setTrigger(true);
+	trigger->addComponent(colTrigger);
+	Rigid* rigidTrigger = new Rigid(trigger->getModelMat());
+	rigidTrigger->useGravity(false);
+	trigger->addComponent(rigidTrigger);
+	trigger->addComponent(new BloqueComp());
+	AddEntity(trigger);
 
 	// Suelo estático
 	//Cubo* suelo = new Cubo(1);
