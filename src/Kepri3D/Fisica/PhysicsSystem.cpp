@@ -64,7 +64,7 @@ void PhysicsSystem::update(GLuint deltaTime)
 			// Si ambos están dormidos, es imposible que choquen
 			if (r1->m_sleeping && r2->m_sleeping) { continue; }
 			// Hay colisión
-			if(checkCollision(r1->m_collider, r2->m_collider))
+			if(checkOverlap(r1->m_collider, r2->m_collider))
 			{
 				//std::cout << "Colisión entre " << r1->getEntity()->getName() << " y " << r2->getEntity()->getName() << std::endl;
 				// Si alguno de lo 2 es trigger, no hay que resolver la colisión
@@ -85,28 +85,24 @@ void PhysicsSystem::update(GLuint deltaTime)
 	}
 }
 
-bool PhysicsSystem::checkCollision(Collider* c1, Collider* c2)
+bool PhysicsSystem::checkOverlap(Collider* c1, Collider* c2)
 {
-	float dist = glm::length(c1->getEntity()->getPosition() - c2->getEntity()->getPosition());
-
 	// Colisión Esfera-Esfera
-	if(c1->shape == Collider::Esfera && c2->shape == Collider::Esfera)
+	if (c1->shape == Collider::Esfera && c2->shape == Collider::Esfera)
 	{
-		if (dist < (c1->radio + c2->radio))
-			return true;	
+		return Collider::sphereOverlap(c1, c2);
 	}
 	// Colisión Cubo-Cubo (AABB)
-	else if(c1->shape == Collider::Cubo && c2->shape == Collider::Cubo)
+	else if (c1->shape == Collider::Cubo && c2->shape == Collider::Cubo)
 	{
-		glm::dvec3 halfExt1 = c1->halfExtents;
-		glm::dvec3 halfExt2 = c2->halfExtents;
-		glm::dvec3 posC1 = c1->getEntity()->getPosition();
-		glm::dvec3 posC2 = c2->getEntity()->getPosition();
-		
-		if(posC1.x + halfExt1.x > posC2.x - halfExt2.x && posC1.x - halfExt1.x < posC2.x + halfExt2.x && // Eje X
-			posC1.y + halfExt1.y > posC2.y - halfExt2.y && posC1.y - halfExt1.y < posC2.y + halfExt2.y && // Eje Y
-			posC1.z + halfExt1.z > posC2.z - halfExt2.z && posC1.z - halfExt1.z < posC2.z + halfExt2.z) // Eje Z
-			return true;
+		return Collider::aabbOverlap(c1, c2);
+	}
+	// Colisiones Esfera-Cubo
+	else if (c1->shape == Collider::Esfera && c2->shape == Collider::Cubo) {
+		return Collider::sphereCubeOverlap(c1, c2); 
+	}
+	else if (c1->shape == Collider::Cubo && c2->shape == Collider::Esfera) {
+		return Collider::sphereCubeOverlap(c2, c1);
 	}
 	return false;
 }
@@ -121,7 +117,7 @@ void PhysicsSystem::solveCollision(Rigid* r1, Rigid* r2)
 		r1->getEntity()->translate(-r1->m_velocity * (m_deltaTime / 1000.0)); // /2.0? para que sea mejor
 		r2->getEntity()->translate(-r2->m_velocity * (m_deltaTime / 1000.0));
 		iter++;
-	} while (iter < MAX_ITER && checkCollision(r1->m_collider, r2->m_collider));
+	} while (iter < MAX_ITER && checkOverlap(r1->m_collider, r2->m_collider));
 
 	// - - - - (2) Calcular el punto de contacto (según el tipo de los colliders) - - - - //
 	glm::vec3 R1toR2;
@@ -163,7 +159,7 @@ void PhysicsSystem::solveCollision(Rigid* r1, Rigid* r2)
 	}
 
 	// Cubo - Cubo
-	else if (r1->m_collider->shape == Collider::Cubo && r2->m_collider->shape == Collider::Cubo)
+	else //if (r1->m_collider->shape == Collider::Cubo && r2->m_collider->shape == Collider::Cubo)
 	{
 		R1toR2 = r2->getEntity()->getPosition() - r1->getEntity()->getPosition();
 		glm::dvec3 absV = glm::abs((glm::dvec3)R1toR2 / r1->m_collider->halfExtents); //inspiración divina
@@ -213,6 +209,11 @@ void PhysicsSystem::notifyTrigger(Collider* c1, Collider* c2)
 		c->onTrigger(c2);
 	for (Component* c : c2->getEntity()->getComponents())
 		c->onTrigger(c1);
+}
+
+bool PhysicsSystem::raycast(const glm::dvec3& origen, const glm::dvec3& dir, double dist)
+{
+	return true;
 }
 
 std::pair<glm::vec3, glm::vec3> PhysicsSystem::calculateElasticCollision(const glm::dvec3& v1, const glm::dvec3& v2,

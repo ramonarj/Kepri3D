@@ -44,7 +44,7 @@ void PruebaFisicas::init()
 	Esfera* esf = new Esfera(1.0);
 	esf->setTexture("default");
 	esf->setShader("lights");
-	esf->setPosition({ 0, 20, 0 });
+	esf->setPosition({ 0, 0, 0 });
 	esf->getComponent<Renderer>()->setActive(false);
 	Collider* colEsfera = new Collider(1.0);
 	colEsfera->setVisible(true);
@@ -59,14 +59,14 @@ void PruebaFisicas::init()
 	Esfera* esf2 = new Esfera(1.0);
 	esf2->setTexture("default");
 	esf2->setShader("lights");
-	esf2->setPosition({ 1.99, 0, 0 });
+	esf2->setPosition({ 1, 20, 0 });
 	esf2->getComponent<Renderer>()->setActive(false);
-	Collider* colEsfera2 = new Collider(1.0);
+	Collider* colEsfera2 = new Collider(5.0);
 	colEsfera2->setVisible(true);
 	esf2->addComponent(colEsfera2);
 	Rigid* rigidEsfera2 = new Rigid(esf2->getModelMat());  // si es estático, no usa la gravedad
-	rigidEsfera2->setVelocity({ 0, 10, 0 });
-	rigidEsfera2->useGravity(false);
+	//rigidEsfera2->setVelocity({ 0, 10, 0 });
+	//rigidEsfera2->useGravity(false);
 	esf2->addComponent(rigidEsfera2);
 	AddEntity(esf2);
 
@@ -96,7 +96,7 @@ void PruebaFisicas::init()
 	rigidCubo2->setMass(1.0);
 	rigidCubo2->useGravity(true);
 	cubo2->addComponent(rigidCubo2);
-	//AddEntity(cubo2);
+	AddEntity(cubo2);
 
 	// Cubo 3
 	Cubo* cubo3 = new Cubo(2.0);
@@ -156,12 +156,12 @@ void PruebaFisicas::init()
 	extremo1->addComponent(colExtremo1);
 	Rigid* rigidExtremo1 = new Rigid(extremo1->getModelMat(), Static);
 	extremo1->addComponent(rigidExtremo1);
-	//AddEntity(extremo1);
+	AddEntity(extremo1);
 
 	Cubo* extremo2 = new Cubo(2.0);
 	extremo2->setTexture("default");
 	extremo2->setShader("lights");
-	extremo2->setPosition({ 15, 0, 15 });
+	extremo2->setPosition({ 7.5, 0, 15 });
 	extremo2->getComponent<Renderer>()->setActive(false);
 	Collider* colExtremo2 = new Collider({2.0, 2.0, 2.0});
 	colExtremo2->setVisible(true);
@@ -170,10 +170,10 @@ void PruebaFisicas::init()
 	rigidExtremo2->setMass(1.0);
 	extremo2->addComponent(rigidExtremo2);
 	extremo2->addComponent(new RotationComp(0.0));
-	//AddEntity(extremo2);
+	AddEntity(extremo2);
 
 	// Añadir el muelle
-	//PhysicsSystem::Instance()->addMuelle(new Muelle(rigidExtremo1, rigidExtremo2, 20));
+	PhysicsSystem::Instance()->addMuelle(new Muelle(rigidExtremo1, rigidExtremo2, 20));
 
 	// Sombra de la pelota
 	Entity* sombra = new Poligono(40, 3.0, true);
@@ -199,7 +199,7 @@ void PruebaFisicas::init()
 
 	// PhysicsMan
 	Entity* phyMan = new Entity("PhysicsManager");
-	PhysicsMan* phyManComp = new PhysicsMan(rigidcubo3, sombra);
+	PhysicsMan* phyManComp = new PhysicsMan(rigidEsfera2, sombra);
 	phyMan->addComponent(phyManComp);
 	AddEntity(phyMan);
 

@@ -11,7 +11,7 @@ class Muelle;
 
 // Indica cómo de elástico es un choque. Por ahora, es compartido para todos los choques.
 // 0 = totalmente inelástico (se quedan pegados), 1 = totalmente elástico (no se pierde Ec)
-const float COEF_RESTITUCION = 1.0f;
+const float COEF_RESTITUCION = 0.6f;
 
 // Número máximo de iteraciones para resolver una colisión
 const unsigned int MAX_ITER = 10;
@@ -36,6 +36,9 @@ public:
 	/* Añade un muelle a la simulación */
 	void addMuelle(Muelle* m);
 
+	/* Lanza un rayo en la dirección dada y devuelve true si el rayo golpea un collider, false e.o.c. */
+	static bool raycast(const glm::dvec3& origen, const glm::dvec3& dir, double dist);
+
 	void update(GLuint deltaTime);
 
 #ifdef __DEBUG_INFO__
@@ -57,7 +60,7 @@ private:
 	GLuint m_deltaTime;
 
 	// Métodos privados
-	bool checkCollision(Collider* r1, Collider* r2);
+	bool checkOverlap(Collider* r1, Collider* r2);
 	void solveCollision(Rigid* r1, Rigid* r2);
 	// Envío de mensajes a los demás componentes
 	void notifyCollision(Collider* c1, Collider* c2);

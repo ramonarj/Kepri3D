@@ -26,6 +26,12 @@ public:
 	// Setters
 	inline void setTrigger(bool trigger) { m_trigger = trigger; }
 	inline void setVisible(bool visible) { m_visible = visible; }
+
+	// - - Estáticos - - // (Detección de colisiones)
+	static bool sphereOverlap(const Collider* c1, const Collider* c2);
+	static bool aabbOverlap(const Collider* c1, const Collider* c2);
+	static bool sphereCubeOverlap(const Collider* sphere, const Collider* cube);
+
 private:
 	friend class PhysicsSystem;
 
