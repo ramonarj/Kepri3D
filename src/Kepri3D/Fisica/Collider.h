@@ -32,6 +32,9 @@ public:
 	static bool aabbOverlap(const Collider* c1, const Collider* c2);
 	static bool sphereCubeOverlap(const Collider* sphere, const Collider* cube);
 
+	static bool pointInCube(const glm::dvec3& point, const Collider* cube);
+	static bool pointInSphere(const glm::dvec3& point, const Collider* sphere);
+
 private:
 	friend class PhysicsSystem;
 

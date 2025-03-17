@@ -98,3 +98,24 @@ bool Collider::sphereCubeOverlap(const Collider* sphere, const Collider* cube)
 
 	return dist_squared > 0;
 }
+
+bool Collider::pointInCube(const glm::dvec3& point, const Collider* cube)
+{
+	glm::dvec3 halfExt = cube->halfExtents;
+	glm::dvec3 cubePos = cube->getEntity()->getPosition();
+
+	// Hay overlap
+	if (cubePos.x + halfExt.x >= point.x && cubePos.x - halfExt.x <= point.x && // Eje X
+		cubePos.y + halfExt.y >= point.y && cubePos.y - halfExt.y <= point.y && // Eje Y
+		cubePos.z + halfExt.z >= point.z && cubePos.z - halfExt.z <= point.z) // Eje Z
+		return true;
+
+	return false;
+}
+
+bool Collider::pointInSphere(const glm::dvec3& point, const Collider* sphere)
+{
+	float dist = glm::length(sphere->getEntity()->getPosition() - point);
+
+	return (dist <= sphere->radio);
+}

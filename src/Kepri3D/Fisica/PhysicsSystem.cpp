@@ -7,6 +7,8 @@
 
 PhysicsSystem* PhysicsSystem::s_instance = nullptr;
 
+const double RAYCAST_INCR = 0.1;
+
 void PhysicsSystem::Clean()
 {
 	CleanVector(m_muelles);
@@ -213,7 +215,23 @@ void PhysicsSystem::notifyTrigger(Collider* c1, Collider* c2)
 
 bool PhysicsSystem::raycast(const glm::dvec3& origen, const glm::dvec3& dir, double dist)
 {
-	return true;
+	double currDistance = 0;
+	bool hit = false;
+	// Ir avanzando poco a poco
+	while(currDistance < dist && !hit)
+	{
+		glm::dvec3 point = origen + dir * currDistance;
+		// TODO: optimizar con Octrees/alguna otra técnica
+		for(Rigid* r : m_rigids)
+		{
+			if (r->m_collider->shape == Collider::Esfera && Collider::pointInSphere(point, r->m_collider))
+				hit = true;
+			else if (r->m_collider->shape == Collider::Cubo && Collider::pointInCube(point, r->m_collider))
+				hit = true;
+		}
+		currDistance += RAYCAST_INCR;
+	}
+	return hit;
 }
 
 std::pair<glm::vec3, glm::vec3> PhysicsSystem::calculateElasticCollision(const glm::dvec3& v1, const glm::dvec3& v2,

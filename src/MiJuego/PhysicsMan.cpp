@@ -47,6 +47,20 @@ void PhysicsMan::update(GLuint deltaTime)
 			-rigid->getEntity()->forward() / 2.0 - rigid->getEntity()->up() / 2.0);
 	}
 
+	// RayCast
+	if (InputManager::Instance()->getKey('c'))
+	{
+		// Detecta el objeto colgado del muelle
+		bool hit = PhysicsSystem::Instance()->raycast({ 50, -7, 15 }, { -1, 0, 0 }, 100);
+		// Detecta la bola en el origen de coordenadas
+		//bool hit = PhysicsSystem::Instance()->raycast({ -glm::cos(PI / 4), glm::sin(PI / 4), 5}, {0, 0, -1}, 5);
+		if (hit)
+			std::cout << "Chocado con algo" << std::endl;
+		else
+			std::cout << "Nada" << std::endl;
+	}
+
+
 	// Sombra
 	glm::dvec3 rigidPos = rigid->getEntity()->getPosition();
 	sombra->setPosition({ rigidPos.x, 0.51, rigidPos.z });

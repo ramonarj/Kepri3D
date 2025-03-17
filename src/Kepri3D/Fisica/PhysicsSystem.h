@@ -37,7 +37,7 @@ public:
 	void addMuelle(Muelle* m);
 
 	/* Lanza un rayo en la dirección dada y devuelve true si el rayo golpea un collider, false e.o.c. */
-	static bool raycast(const glm::dvec3& origen, const glm::dvec3& dir, double dist);
+	bool raycast(const glm::dvec3& origen, const glm::dvec3& dir, double dist);
 
 	void update(GLuint deltaTime);
 
