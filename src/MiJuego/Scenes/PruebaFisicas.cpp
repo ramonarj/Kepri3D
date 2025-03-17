@@ -44,14 +44,14 @@ void PruebaFisicas::init()
 	Esfera* esf = new Esfera(1.0);
 	esf->setTexture("default");
 	esf->setShader("lights");
-	esf->setPosition({ 0.5, 20, 0 });
+	esf->setPosition({ 0, 20, 0 });
 	esf->getComponent<Renderer>()->setActive(false);
 	Collider* colEsfera = new Collider(1.0);
 	colEsfera->setVisible(true);
 	esf->addComponent(colEsfera);
-	Rigid* rigidEsfera = new Rigid(esf->getModelMat());
+	Rigid* rigidEsfera = new Rigid(esf->getModelMat(), Static);
 	rigidEsfera->useGravity(false);
-	rigidEsfera->setVelocity({ 0, -10, 0 });
+	//rigidEsfera->setVelocity({ 0, -10, 0 });
 	esf->addComponent(rigidEsfera);
 	AddEntity(esf);
 
@@ -59,14 +59,14 @@ void PruebaFisicas::init()
 	Esfera* esf2 = new Esfera(1.0);
 	esf2->setTexture("default");
 	esf2->setShader("lights");
-	esf2->setPosition({ 0, 0, 0 });
+	esf2->setPosition({ 1.99, 0, 0 });
 	esf2->getComponent<Renderer>()->setActive(false);
 	Collider* colEsfera2 = new Collider(1.0);
 	colEsfera2->setVisible(true);
 	esf2->addComponent(colEsfera2);
 	Rigid* rigidEsfera2 = new Rigid(esf2->getModelMat());  // si es estático, no usa la gravedad
+	rigidEsfera2->setVelocity({ 0, 10, 0 });
 	rigidEsfera2->useGravity(false);
-	rigidEsfera2->setVelocity({ 0, 0, 0 });
 	esf2->addComponent(rigidEsfera2);
 	AddEntity(esf2);
 

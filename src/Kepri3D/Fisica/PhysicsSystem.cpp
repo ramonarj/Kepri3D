@@ -118,7 +118,7 @@ void PhysicsSystem::solveCollision(Rigid* r1, Rigid* r2)
 	do
 	{
 		// TODO: dejar de detectar colisiones cuando ambos objetos ya están quietos
-		r1->getEntity()->translate(-r1->m_velocity * (m_deltaTime / 1000.0));
+		r1->getEntity()->translate(-r1->m_velocity * (m_deltaTime / 1000.0)); // /2.0? para que sea mejor
 		r2->getEntity()->translate(-r2->m_velocity * (m_deltaTime / 1000.0));
 		iter++;
 	} while (iter < MAX_ITER && checkCollision(r1->m_collider, r2->m_collider));
@@ -130,41 +130,38 @@ void PhysicsSystem::solveCollision(Rigid* r1, Rigid* r2)
 	{
 		R1toR2 = glm::normalize(r2->getEntity()->getPosition() - r1->getEntity()->getPosition());
 
-		// Ambos dinámicos
-		if (r1->m_type == Dynamic && r2->m_type == Dynamic)
+		// Hay que descomponer las velocidades en sus componentes normal y tangente 
+		// respecto al plano de choque. La normal se transmite en la colisión, y la tangente se conserva
+		glm::dvec3 newV1 = { 0, 0, 0 };
+		glm::dvec3 newV2 = { 0, 0, 0 };
+
+		// Cómo afecta el cuerpo 1 al cuerpo 2
+		if (glm::length(r1->m_velocity) != 0)
 		{
-			// Hay que descomponer las velocidades en sus componentes normal y tangente 
-			// respecto al plano de choque. La normal se transmite en la colisión, y la tangente se conserva
-			glm::dvec3 newV1 = { 0, 0, 0 };
-			glm::dvec3 newV2 = { 0, 0, 0 };
-
-			// Cómo afecta el cuerpo 1 al cuerpo 2
-			if (glm::length(r1->m_velocity) != 0)
-			{
-				double cosAlpha1 = glm::dot(glm::normalize(r1->m_velocity), (glm::dvec3)R1toR2);
-				glm::dvec3 velNormal = (glm::dvec3)R1toR2 * glm::length(r1->m_velocity) * cosAlpha1;
-				newV2 += velNormal;
-				newV1 += (r1->m_velocity - velNormal); // total - normal = tangencial
-			}
-			// Cómo afecta el cuerpo 2 al cuerpo 1
-			if(glm::length(r2->m_velocity) != 0)
-			{
-				double cosAlpha2 = glm::dot(glm::normalize(r2->m_velocity), (glm::dvec3)-R1toR2);
-				glm::dvec3 velNormal = (glm::dvec3)-R1toR2 * glm::length(r2->m_velocity) * cosAlpha2;
-				newV1 += velNormal;
-				newV2 += (r2->m_velocity - velNormal); // total - normal = tangencial
-			}
-
-			// TODO: tener masa en cuenta
-			r1->setVelocity(newV1 * (double)COEF_RESTITUCION);
-			r2->setVelocity(newV2 * (double)COEF_RESTITUCION);
+			double cosAlpha1 = glm::dot(glm::normalize(r1->m_velocity), (glm::dvec3)R1toR2);
+			glm::dvec3 velNormal = (glm::dvec3)R1toR2 * glm::length(r1->m_velocity) * cosAlpha1;
+			newV2 += velNormal;
+			newV1 += (r1->m_velocity - velNormal); // total - normal = tangencial
 		}
-		// Uno estático; se quedan con su velocidad
-		else if (r1->m_type == Static)
-			r2->setVelocity(R1toR2 * (float)glm::length(r2->m_velocity) * COEF_RESTITUCION);
-		else if (r2->m_type == Static)
-			r1->setVelocity(-R1toR2 * (float)glm::length(r1->m_velocity) * COEF_RESTITUCION);
+		// Cómo afecta el cuerpo 2 al cuerpo 1
+		if (glm::length(r2->m_velocity) != 0)
+		{
+			double cosAlpha2 = glm::dot(glm::normalize(r2->m_velocity), (glm::dvec3)-R1toR2);
+			glm::dvec3 velNormal = (glm::dvec3)-R1toR2 * glm::length(r2->m_velocity) * cosAlpha2;
+			newV1 += velNormal;
+			newV2 += (r2->m_velocity - velNormal); // total - normal = tangencial
+		}
+
+		// Si uno de ellos es estático, al otro se le devuelve la componente normal (opuesta)
+		if (r1->m_type == Static) { newV2 -= newV1; }
+		else if (r2->m_type == Static) { newV1 -= newV2; }
+
+		// Asignar las nuevas velocidades
+		r1->setVelocity(newV1 * (double)COEF_RESTITUCION);
+		r2->setVelocity(newV2 * (double)COEF_RESTITUCION);
+		// TODO: tener masa en cuenta
 	}
+
 	// Cubo - Cubo
 	else if (r1->m_collider->shape == Collider::Cubo && r2->m_collider->shape == Collider::Cubo)
 	{

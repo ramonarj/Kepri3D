@@ -136,6 +136,8 @@ void Rigid::sleep()
 
 void Rigid::setVelocity(const glm::dvec3& vel)
 {
+	if (m_type == Static) { return; }
+
 	m_velocity = vel;
 	// Despertarlo si es preciso
 	if (m_sleeping && glm::length(m_velocity) > 0.05)
