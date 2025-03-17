@@ -44,13 +44,14 @@ void PruebaFisicas::init()
 	Esfera* esf = new Esfera(1.0);
 	esf->setTexture("default");
 	esf->setShader("lights");
-	esf->setPosition({ 1, 100, 0 });
+	esf->setPosition({ 0.5, 20, 0 });
 	esf->getComponent<Renderer>()->setActive(false);
 	Collider* colEsfera = new Collider(1.0);
 	colEsfera->setVisible(true);
 	esf->addComponent(colEsfera);
 	Rigid* rigidEsfera = new Rigid(esf->getModelMat());
-	rigidEsfera->useGravity(true);
+	rigidEsfera->useGravity(false);
+	rigidEsfera->setVelocity({ 0, -10, 0 });
 	esf->addComponent(rigidEsfera);
 	AddEntity(esf);
 
@@ -63,8 +64,9 @@ void PruebaFisicas::init()
 	Collider* colEsfera2 = new Collider(1.0);
 	colEsfera2->setVisible(true);
 	esf2->addComponent(colEsfera2);
-	Rigid* rigidEsfera2 = new Rigid(esf2->getModelMat(), Static);  // si es estático, no usa la gravedad
-	//rigidEsfera2->useGravity(false);
+	Rigid* rigidEsfera2 = new Rigid(esf2->getModelMat());  // si es estático, no usa la gravedad
+	rigidEsfera2->useGravity(false);
+	rigidEsfera2->setVelocity({ 0, 0, 0 });
 	esf2->addComponent(rigidEsfera2);
 	AddEntity(esf2);
 
@@ -94,7 +96,7 @@ void PruebaFisicas::init()
 	rigidCubo2->setMass(1.0);
 	rigidCubo2->useGravity(true);
 	cubo2->addComponent(rigidCubo2);
-	AddEntity(cubo2);
+	//AddEntity(cubo2);
 
 	// Cubo 3
 	Cubo* cubo3 = new Cubo(2.0);
@@ -154,7 +156,7 @@ void PruebaFisicas::init()
 	extremo1->addComponent(colExtremo1);
 	Rigid* rigidExtremo1 = new Rigid(extremo1->getModelMat(), Static);
 	extremo1->addComponent(rigidExtremo1);
-	AddEntity(extremo1);
+	//AddEntity(extremo1);
 
 	Cubo* extremo2 = new Cubo(2.0);
 	extremo2->setTexture("default");
@@ -168,10 +170,10 @@ void PruebaFisicas::init()
 	rigidExtremo2->setMass(1.0);
 	extremo2->addComponent(rigidExtremo2);
 	extremo2->addComponent(new RotationComp(0.0));
-	AddEntity(extremo2);
+	//AddEntity(extremo2);
 
 	// Añadir el muelle
-	PhysicsSystem::Instance()->addMuelle(new Muelle(rigidExtremo1, rigidExtremo2, 20));
+	//PhysicsSystem::Instance()->addMuelle(new Muelle(rigidExtremo1, rigidExtremo2, 20));
 
 	// Sombra de la pelota
 	Entity* sombra = new Poligono(40, 3.0, true);

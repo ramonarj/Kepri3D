@@ -11,7 +11,7 @@ class Muelle;
 
 // Indica cómo de elástico es un choque. Por ahora, es compartido para todos los choques.
 // 0 = totalmente inelástico (se quedan pegados), 1 = totalmente elástico (no se pierde Ec)
-const float COEF_RESTITUCION = 0.6f;
+const float COEF_RESTITUCION = 1.0f;
 
 // Número máximo de iteraciones para resolver una colisión
 const unsigned int MAX_ITER = 10;

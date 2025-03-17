@@ -129,6 +129,41 @@ void PhysicsSystem::solveCollision(Rigid* r1, Rigid* r2)
 	if (r1->m_collider->shape == Collider::Esfera && r2->m_collider->shape == Collider::Esfera)
 	{
 		R1toR2 = glm::normalize(r2->getEntity()->getPosition() - r1->getEntity()->getPosition());
+
+		// Ambos dinámicos
+		if (r1->m_type == Dynamic && r2->m_type == Dynamic)
+		{
+			// Hay que descomponer las velocidades en sus componentes normal y tangente 
+			// respecto al plano de choque. La normal se transmite en la colisión, y la tangente se conserva
+			glm::dvec3 newV1 = { 0, 0, 0 };
+			glm::dvec3 newV2 = { 0, 0, 0 };
+
+			// Cómo afecta el cuerpo 1 al cuerpo 2
+			if (glm::length(r1->m_velocity) != 0)
+			{
+				double cosAlpha1 = glm::dot(glm::normalize(r1->m_velocity), (glm::dvec3)R1toR2);
+				glm::dvec3 velNormal = (glm::dvec3)R1toR2 * glm::length(r1->m_velocity) * cosAlpha1;
+				newV2 += velNormal;
+				newV1 += (r1->m_velocity - velNormal); // total - normal = tangencial
+			}
+			// Cómo afecta el cuerpo 2 al cuerpo 1
+			if(glm::length(r2->m_velocity) != 0)
+			{
+				double cosAlpha2 = glm::dot(glm::normalize(r2->m_velocity), (glm::dvec3)-R1toR2);
+				glm::dvec3 velNormal = (glm::dvec3)-R1toR2 * glm::length(r2->m_velocity) * cosAlpha2;
+				newV1 += velNormal;
+				newV2 += (r2->m_velocity - velNormal); // total - normal = tangencial
+			}
+
+			// TODO: tener masa en cuenta
+			r1->setVelocity(newV1 * (double)COEF_RESTITUCION);
+			r2->setVelocity(newV2 * (double)COEF_RESTITUCION);
+		}
+		// Uno estático; se quedan con su velocidad
+		else if (r1->m_type == Static)
+			r2->setVelocity(R1toR2 * (float)glm::length(r2->m_velocity) * COEF_RESTITUCION);
+		else if (r2->m_type == Static)
+			r1->setVelocity(-R1toR2 * (float)glm::length(r1->m_velocity) * COEF_RESTITUCION);
 	}
 	// Cubo - Cubo
 	else if (r1->m_collider->shape == Collider::Cubo && r2->m_collider->shape == Collider::Cubo)
@@ -142,30 +177,27 @@ void PhysicsSystem::solveCollision(Rigid* r1, Rigid* r2)
 		else { eje = { 0, 0, 1 }; }
 		R1toR2 *= eje;
 		R1toR2 = glm::normalize(R1toR2);
+
+		// Ambos dinámicos
+		if (r1->m_type == Dynamic && r2->m_type == Dynamic)
+		{
+			// prueba
+			//std::pair<glm::vec3, glm::vec3> vels = calculateElasticCollision(r1->m_velocity, r2->m_velocity,
+			//	R1toR2, r1->m_mass, r2->m_mass);
+			//r1->m_velocity = vels.first;
+			//r2->m_velocity = vels.second;
+
+			// Intercambiar velocidades y multiplicar por coef.rest.
+			glm::vec3 auxVel = r1->m_velocity;
+			r1->setVelocity(-R1toR2 * (float)glm::length(r2->m_velocity) * COEF_RESTITUCION);
+			r2->setVelocity(R1toR2 * (float)glm::length(auxVel) * COEF_RESTITUCION);
+		}
+		// Uno estático; se quedan con su velocidad
+		else if (r1->m_type == Static)
+			r2->setVelocity(R1toR2 * (float)glm::length(r2->m_velocity) * COEF_RESTITUCION);
+		else if (r2->m_type == Static)
+			r1->setVelocity(-R1toR2 * (float)glm::length(r1->m_velocity) * COEF_RESTITUCION);
 	}
-
-	// - - - - (3) Aplicar las nuevas velocidades - - - - //
-	// Ambos dinámicos
-	if (r1->m_type == Dynamic && r2->m_type == Dynamic)
-	{
-		// prueba
-		//std::pair<glm::vec3, glm::vec3> vels = calculateElasticCollision(r1->m_velocity, r2->m_velocity,
-		//	R1toR2, r1->m_mass, r2->m_mass);
-		//r1->m_velocity = vels.first;
-		//r2->m_velocity = vels.second;
-
-		// Intercambiar velocidades y multiplicar por coef.rest.
-		glm::vec3 auxVel = r1->m_velocity;
-		r1->setVelocity(- R1toR2 * (float)glm::length(r2->m_velocity) * COEF_RESTITUCION);
-		r2->setVelocity(R1toR2 * (float)glm::length(auxVel) * COEF_RESTITUCION);
-	}
-	// Uno estático; se quedan con su velocidad
-	else if (r1->m_type == Static)
-		r2->setVelocity(R1toR2 * (float)glm::length(r2->m_velocity) * COEF_RESTITUCION);
-	else if (r2->m_type == Static)
-		r1->setVelocity(- R1toR2 * (float)glm::length(r1->m_velocity) * COEF_RESTITUCION);
-
-	// TODO conservación del momento lineal
 }
 
 void PhysicsSystem::notifyCollision(Collider* c1, Collider* c2)
