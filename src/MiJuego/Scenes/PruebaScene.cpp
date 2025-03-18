@@ -296,6 +296,7 @@ void PruebaScene::loadResources()
 	ResourceManager::Instance()->loadMesh("Peon.obj", "peon");
 	ResourceManager::Instance()->loadMesh("star.obj", "star");
 	ResourceManager::Instance()->loadMesh("redead.obj", "redead", 0.1f);
+	//ResourceManager::Instance()->loadMesh("sponza.obj", "sponza_236", "mallaPrueba");
 
 	/* Texturas (IMPORTANTE cargar antes que los materiales) */
 	ResourceManager::Instance()->loadTexture("earth24.bmp", "earth");

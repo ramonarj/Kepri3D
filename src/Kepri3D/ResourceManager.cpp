@@ -49,6 +49,31 @@ bool ResourceManager::loadMesh(const std::string& meshName, const std::string& i
 	}
 }
 
+bool ResourceManager::loadMesh(const std::string& filename, const std::string& meshName, const std::string& id, float scale)
+{
+	std::cout << "Loading mesh " << meshName << " from " << filename << std::endl;
+	try
+	{
+		// Cargamos la malla gracias a MeshLoader
+		MeshLoader meshLoader;
+		meshLoader.loadOBJ(MESHES_PATH + filename, meshName, scale);
+		IndexMesh* m = meshLoader.getMesh();
+
+		// Le calculamos el Bounding Volume
+		m->calculateVolume();
+
+		// la guardamos en el diccionario
+		meshes[id] = m;
+		return true;
+	}
+
+	catch (const std::ios_base::failure& f)
+	{
+		std::cout << "No se pudo cargar la malla " << "\"" << meshName << "\"" << std::endl;
+		return false;
+	}
+}
+
 const Mesh& ResourceManager::getMesh(const std::string& id)
 {
 	// Si no se encuentra la malla dada, se devuelve por defecto... TODO

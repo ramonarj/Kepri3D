@@ -11,7 +11,7 @@ class IndexMesh;
 class MeshLoader
 {
 private:
-	struct MeshData
+	struct VertexData
 	{
 		// En qué línea empieza ese dato
 		unsigned int line;
@@ -23,6 +23,8 @@ public:
 
 	/* Carga la información de un archivo Wavefront (.obj) y rellena la malla con ella */
 	void loadOBJ(const std::string& fileName, float scale);
+	/* Carga una sola malla del archivo OBJ y rellena la malla con ella */
+	void loadOBJ(const std::string& fileName, const std::string& meshName, float scale);
 
 	// Devuelve la malla ya creada
 	inline IndexMesh* getMesh() { return mesh; }
@@ -40,7 +42,7 @@ private:
 	std::vector<glm::ivec3> indices;
 
 	// Información de la primera lectura
-	MeshData m_vertices, m_texCoods, m_normales, m_indices;
+	VertexData m_vertices, m_texCoods, m_normales, m_indices;
 
 
 	// Métodos auxiliares
@@ -51,12 +53,11 @@ private:
 	void readFaces(std::ifstream& stream);
 
 	/* Hace una primera lectura del archivo para saber cuánto hay de cada cosa */
-	void Reconocimiento(std::ifstream& stream);
+	void Reconocimiento(const std::string& objString);
+	void Reconocimiento(std::ifstream& stream, const std::string& meshName);
 
 	/* Llega al patrón indicado y deja el marcador justo encima */
 	void getTo(const std::string& pattern, std::ifstream& stream);
-
-
 };
 
 #endif
