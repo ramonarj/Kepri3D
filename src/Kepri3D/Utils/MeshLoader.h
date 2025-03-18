@@ -43,7 +43,7 @@ private:
 
 	// Información de la primera lectura
 	VertexData m_vertices, m_texCoods, m_normales, m_indices;
-
+	int dataOrder[4];
 
 	// Métodos auxiliares
 	/* Métodos para leer cada atributo */ 
@@ -54,7 +54,7 @@ private:
 
 	/* Hace una primera lectura del archivo para saber cuánto hay de cada cosa */
 	void Reconocimiento(const std::string& objString);
-	void Reconocimiento(std::ifstream& stream, const std::string& meshName);
+	void Reconocimiento(const std::string& objString, const std::string& meshName);
 
 	/* Llega al patrón indicado y deja el marcador justo encima */
 	void getTo(const std::string& pattern, std::ifstream& stream);

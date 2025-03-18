@@ -28,47 +28,57 @@ void MeshLoader::loadOBJ(const std::string& filename, float scale)
 	mesh->type = GL_TRIANGLES;
 	mesh->numVertices = m_vertices.num;
 
-	// Volver a la línea de los vértices
+	// Volver a la primera línea del flujo
 	stream.seekg(0, std::ios::beg);
 	lineNo = 1;
-	getTo("v ", stream);
 
-	/* a) Leer los vértices */
-	mesh->vertices = new glm::dvec3[mesh->numVertices];
-	readVertices(stream);
-
-	/* b) Leer las normales */
-	mesh->normales = new glm::dvec3[mesh->numVertices];
-	readNormals(stream);
-
-	/* c) Leer las coordenadas de textura */
-	mesh->texCoords = new glm::dvec2[mesh->numVertices];
-	readTexCoords(stream);
-
-	// Nos saltamos el parámetro smooth
-	std::string texto;
-	std::getline(stream, texto);
-	std::getline(stream, texto); // ???
-	lineNo++;
-
-	/* d) Leer los triángulos */
-	readFaces(stream);
-	mesh->numIndices = indices.size() * 3;
-	mesh->indices = new GLuint[mesh->numIndices];
-	for (int i = 0; i < mesh->numIndices; i+=3)
+	// Leer los atributos en orden
+	for(int i = 0; i < 4; i++)
 	{
-		glm::ivec3 tri = indices[(i / 3) + (i % 3)];
+		/* a) Leer los vértices */
+		if(dataOrder[i] == 0)
+		{
+			getTo("v ", stream);
+			mesh->vertices = new glm::dvec3[mesh->numVertices];
+			readVertices(stream);
+		}
+		/* b) Leer las normales */
+		else if(dataOrder[i] == 1)
+		{
+			getTo("vn ", stream);
+			mesh->normales = new glm::dvec3[mesh->numVertices];
+			readNormals(stream);
+		}
+		/* c) Leer las coordenadas de textura */
+		else if(dataOrder[i] == 2)
+		{
+			getTo("vt ", stream);
+			mesh->texCoords = new glm::dvec2[mesh->numVertices];
+			readTexCoords(stream);
+		}
+		/* d) Leer los triángulos */
+		else if(dataOrder[i] == 3)
+		{
+			getTo("f ", stream);
+			readFaces(stream);
+			mesh->numIndices = indices.size() * 3;
+			mesh->indices = new GLuint[mesh->numIndices];
+			// Rellenar los índices de la malla
+			for (int i = 0; i < mesh->numIndices; i += 3)
+			{
+				glm::ivec3 tri = indices[(i / 3) + (i % 3)];
 
-		mesh->indices[i] = tri.x;
-		mesh->indices[i+1] = tri.y;
-		mesh->indices[i+2] = tri.z;
+				mesh->indices[i] = tri.x;
+				mesh->indices[i + 1] = tri.y;
+				mesh->indices[i + 2] = tri.z;
+			}
+		}
 	}
 
 	// No sería necesario
 	mesh->SetNormals();
 
 	// Cerrar el flujo
-	//stream = std::stringstream();
 	stream.close();
 }
 
@@ -78,6 +88,7 @@ void MeshLoader::Reconocimiento(const std::string& objString)
 	// Nos colocamos en la primera línea y vamos avanzando, guardando
 	// cuántos vértices, normales, texCoords, etc. hay, y en qué línea empieza cada lista
 	lineNo = 1;
+	unsigned int dataIndex = 0;
 
 	std::stringstream ssObj(objString);
 
@@ -108,21 +119,25 @@ void MeshLoader::Reconocimiento(const std::string& objString)
 		{
 			m_vertices.line = lineNo;
 			numElems = &m_vertices.num;
+			dataOrder[dataIndex++] = 0;
 		}
 		else if (patron == "vn")
 		{
 			m_normales.line = lineNo;
 			numElems = &m_normales.num;
+			dataOrder[dataIndex++] = 1;
 		}
 		else if (patron == "vt")
 		{
 			m_texCoods.line = lineNo;
 			numElems = &m_texCoods.num;
+			dataOrder[dataIndex++] = 2;
 		}
 		else if (patron == "f")
 		{
 			m_indices.line = lineNo;
 			numElems = &m_indices.num;
+			dataOrder[dataIndex++] = 3;
 		}
 
 		firstLine = lineNo;
@@ -262,83 +277,133 @@ void MeshLoader::loadOBJ(const std::string& filename, const std::string& meshNam
 	}
 
 	// 1) Vuelta de reconocimiento para ver en qué línea empieza cada array de datos
-	Reconocimiento(stream, meshName);
+	std::string objString = FileToString(filename.c_str());
+	Reconocimiento(objString, meshName);
 
 	// 2) Crear la malla y los arrays con el tamaño correspondiente
 	mesh = new IndexMesh();
 	mesh->type = GL_TRIANGLES;
 	mesh->numVertices = m_vertices.num;
 
-	// Volver a la línea de los vértices
+	// Volver a la primera línea del flujo
 	stream.seekg(0, std::ios::beg);
 	lineNo = 1;
-	getTo("v ", stream);
 
-	/* a) Leer los vértices */
-	mesh->vertices = new glm::dvec3[mesh->numVertices];
-	readVertices(stream);
-
-	/* b) Leer las normales */
-	mesh->normales = new glm::dvec3[mesh->numVertices];
-	readNormals(stream);
-
-	/* c) Leer las coordenadas de textura */
-	mesh->texCoords = new glm::dvec2[mesh->numVertices];
-	readTexCoords(stream);
-
-	// Nos saltamos el parámetro smooth
-	std::string texto;
-	std::getline(stream, texto);
-	std::getline(stream, texto); // ???
-	lineNo++;
-
-	/* d) Leer los triángulos */
-	readFaces(stream);
-	mesh->numIndices = indices.size() * 3;
-	mesh->indices = new GLuint[mesh->numIndices];
-	for (int i = 0; i < mesh->numIndices; i += 3)
+	// Leer los atributos en orden
+	for (int i = 0; i < 4; i++)
 	{
-		glm::ivec3 tri = indices[(i / 3) + (i % 3)];
+		/* a) Leer los vértices */
+		if (dataOrder[i] == 0)
+		{
+			getTo("v ", stream);
+			mesh->vertices = new glm::dvec3[mesh->numVertices];
+			readVertices(stream);
+		}
+		/* b) Leer las normales */
+		else if (dataOrder[i] == 1)
+		{
+			getTo("vn ", stream);
+			mesh->normales = new glm::dvec3[mesh->numVertices];
+			readNormals(stream);
+		}
+		/* c) Leer las coordenadas de textura */
+		else if (dataOrder[i] == 2)
+		{
+			getTo("vt ", stream);
+			mesh->texCoords = new glm::dvec2[mesh->numVertices];
+			readTexCoords(stream);
+		}
+		/* d) Leer los triángulos */
+		else if (dataOrder[i] == 3)
+		{
+			getTo("f ", stream);
+			readFaces(stream);
+			mesh->numIndices = indices.size() * 3;
+			mesh->indices = new GLuint[mesh->numIndices];
+			// Rellenar los índices de la malla
+			for (int i = 0; i < mesh->numIndices; i += 3)
+			{
+				glm::ivec3 tri = indices[(i / 3) + (i % 3)];
 
-		mesh->indices[i] = tri.x;
-		mesh->indices[i + 1] = tri.y;
-		mesh->indices[i + 2] = tri.z;
+				mesh->indices[i] = tri.x;
+				mesh->indices[i + 1] = tri.y;
+				mesh->indices[i + 2] = tri.z;
+			}
+		}
 	}
 
 	// No sería necesario
 	mesh->SetNormals();
 
-	// Cerrar el archivo
+	// Cerrar el flujo
 	stream.close();
 }
 
 
-void MeshLoader::Reconocimiento(std::ifstream& stream, const std::string& meshName)
+void MeshLoader::Reconocimiento(const std::string& objString, const std::string& meshName)
 {
+	// Nos colocamos en la primera línea y vamos avanzando, guardando
+	// cuántos vértices, normales, texCoords, etc. hay, y en qué línea empieza cada lista
 	lineNo = 1;
+	unsigned int dataIndex = 0;
 
-	// Buscamos el objeto que nos piden
-	//getTo("o ", stream);
+	std::stringstream ssObj(objString);
 
-	// Leemos igual que en la otra versión
-	getTo("v ", stream);
-	m_vertices.line = lineNo;
+	// Leer línea a línea
+	unsigned int firstLine = lineNo;
+	unsigned int* numElems = nullptr;
+	std::string currentPattern = " ";
+	std::string s;
+	while (std::getline(ssObj, s, '\n'))
+	{
+		// Buscar directivas separadas por espacios
+		std::stringstream patternCheck(s);
+		std::string patron;
+		std::getline(patternCheck, patron, ' ');
+		// a) Sigue siendo la misma directiva
+		if (patron == currentPattern) { lineNo++; continue; }
+		// b) Ha cambiado
+		currentPattern = patron;
+		// -> ¿Cuántos elementos tenía la propiedad anterior?
+		if (numElems != nullptr)
+		{
+			*numElems = lineNo - firstLine;
+			numElems = nullptr;
+		}
 
-	getTo("vn", stream);
-	m_vertices.num = lineNo - m_vertices.line;
-	m_normales.line = lineNo;
+		// -> Ver qué tipo de dato es el nuevo
+		if (patron == "v")
+		{
+			m_vertices.line = lineNo;
+			numElems = &m_vertices.num;
+			dataOrder[dataIndex++] = 0;
+		}
+		else if (patron == "vn")
+		{
+			m_normales.line = lineNo;
+			numElems = &m_normales.num;
+			dataOrder[dataIndex++] = 1;
+		}
+		else if (patron == "vt")
+		{
+			m_texCoods.line = lineNo;
+			numElems = &m_texCoods.num;
+			dataOrder[dataIndex++] = 2;
+		}
+		else if (patron == "f")
+		{
+			m_indices.line = lineNo;
+			numElems = &m_indices.num;
+			dataOrder[dataIndex++] = 3;
+		}
 
-	getTo("vt", stream);
-	m_normales.num = lineNo - m_normales.line;
-	m_texCoods.line = lineNo;
+		firstLine = lineNo;
+		lineNo++;
+	}
 
-	getTo("s ", stream);
-	m_texCoods.num = lineNo - m_texCoods.line;
-
-	getTo("f ", stream);
-	m_indices.line = lineNo;
-
-	// fin del archivo
-	getTo("", stream);
-	m_indices.num = lineNo - m_indices.line;
+	// Por si se acaba el archivo 
+	if (numElems != nullptr)
+	{
+		*numElems = lineNo - firstLine;
+	}
 }

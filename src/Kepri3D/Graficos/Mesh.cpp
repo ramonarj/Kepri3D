@@ -125,7 +125,8 @@ void Mesh::calculateVolume()
 {
 	if (vertices == nullptr) { return; }
 	double minX, minY, minZ, maxX, maxY, maxZ;
-	minX = minY = minZ = maxX = maxY = maxZ = 0;
+	minX = minY = minZ = 99999999; //TODO mejorar
+	maxX = maxY = maxZ = -99999999;
 	for(int i = 0; i < numVertices; i++)
 	{
 		// Anchura

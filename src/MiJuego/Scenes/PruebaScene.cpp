@@ -296,6 +296,7 @@ void PruebaScene::loadResources()
 	ResourceManager::Instance()->loadMesh("Peon.obj", "peon");
 	ResourceManager::Instance()->loadMesh("star.obj", "star");
 	ResourceManager::Instance()->loadMesh("redead.obj", "redead", 0.1f);
+	ResourceManager::Instance()->loadMesh("sponza1.obj", "sponza1", 0.05f);
 	//ResourceManager::Instance()->loadMesh("sponza.obj", "sponza_236", "mallaPrueba");
 
 	/* Texturas (IMPORTANTE cargar antes que los materiales) */
@@ -582,6 +583,12 @@ void PruebaScene::PruebaMateriales()
 	vaoEnt->setMaterial("default");
 	vaoEnt->setPosition({ 10,1,-5 });
 	AddEntity(vaoEnt);
+
+	// Prueba Sponza
+	Entity* sponza = new Entity("Sponza");
+	sponza->setMesh("sponza1");
+	sponza->setMaterial("cobre");
+	AddEntity(sponza);
 }
 
 void PruebaScene::ViewportTest()
