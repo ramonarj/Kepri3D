@@ -39,6 +39,9 @@ public:
 	/* Lanza un rayo en la dirección dada y devuelve true si el rayo golpea un collider, false e.o.c. */
 	bool raycast(const glm::dvec3& origen, const glm::dvec3& dir, double dist);
 
+	/* Lanza un rayo desde la posición de la pantalla dada (la dirección dependerá del tipo de cámara) */
+	bool raycastFromScreen(glm::dvec2 origen, double dist);
+
 	void update(GLuint deltaTime);
 
 #ifdef __DEBUG_INFO__

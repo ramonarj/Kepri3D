@@ -3,6 +3,7 @@
 #include "Rigid.h"
 #include "Muelle.h"
 #include "Collider.h"
+#include "Camera.h"
 #include <iostream>
 
 PhysicsSystem* PhysicsSystem::s_instance = nullptr;
@@ -232,6 +233,31 @@ bool PhysicsSystem::raycast(const glm::dvec3& origen, const glm::dvec3& dir, dou
 		currDistance += RAYCAST_INCR;
 	}
 	return hit;
+}
+
+bool PhysicsSystem::raycastFromScreen(glm::dvec2 origen, double dist)
+{
+	// 1) Pasar de Screen Space a NDC [{800, 600} --> {-1, 1}]
+	glm::dvec2 screenSize = { Game::Instance()->getCamera()->getVP()->getW(), Game::Instance()->getCamera()->getVP()->getH() };
+	glm::dvec2 NDCpos = (origen / screenSize) * 2.0 - 1.0;
+
+	// 2) Pasar de NDC a View Space
+	double fov = 45.0;
+	double aspectRatio = 600.0 / 800.0;
+	// d = distancia focal de la cámara
+	double d = 1.0 / glm::tan(fov);
+	glm::dvec4 VIEWpos = { NDCpos.x / d, aspectRatio * NDCpos.y / d, -1.0, 1.0 }; //-1 por el S.coords. mano derecha
+	// Método alternativo: usando la inversa de la matriz de proyección
+	// VIEWpos = glm::inverse(Game::Instance()->getCamera()->getProjMat()) * NDCpos;
+	
+	// 3) Pasar de View Space a World Space
+	glm::dvec4 WORLDpos = Game::Instance()->getCamera()->getModelMat() * VIEWpos;
+
+	//std::cout << "{" << NDCpos.x << "," << NDCpos.y << "}" << std::endl;
+	//std::cout << "{" << VIEWpos.x << "," << VIEWpos.y << "," << VIEWpos.z << "}" << std::endl;
+	//std::cout << "{" << WORLDpos.x << "," << WORLDpos.y << "," << WORLDpos.z << "}" << std::endl;
+
+	return raycast(WORLDpos, Game::Instance()->getCamera()->forward(), dist);
 }
 
 std::pair<glm::vec3, glm::vec3> PhysicsSystem::calculateElasticCollision(const glm::dvec3& v1, const glm::dvec3& v2,

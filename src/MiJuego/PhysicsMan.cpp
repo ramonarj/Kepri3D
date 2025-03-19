@@ -60,6 +60,17 @@ void PhysicsMan::update(GLuint deltaTime)
 			std::cout << "Nada" << std::endl;
 	}
 
+	// RayCast from screen
+	if (InputManager::Instance()->getMouseKeyDown(LEFT))
+	{
+		InputManager::Instance()->getMousePos();
+		// Tira un rayo desde el ratón
+		bool hit = PhysicsSystem::Instance()->raycastFromScreen(InputManager::Instance()->getMousePos(), 100);
+
+		if (hit)
+			std::cout << "Chocado desde pantalla" << std::endl;
+	}
+
 
 	// Sombra
 	glm::dvec3 rigidPos = rigid->getEntity()->getPosition();
