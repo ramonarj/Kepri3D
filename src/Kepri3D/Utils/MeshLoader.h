@@ -13,6 +13,12 @@ class MeshLoader
 private:
 	struct VertexData
 	{
+		VertexData(){}
+		VertexData(unsigned int line, unsigned int num)
+		{
+			this->line = line;
+			this->num = num;
+		}
 		// En qué línea empieza ese dato
 		unsigned int line;
 		// Cuántos hay de ese dato
@@ -42,7 +48,9 @@ private:
 	std::vector<glm::ivec3> indices;
 
 	// Información de la primera lectura
-	VertexData m_vertices, m_texCoods, m_normales, m_indices;
+	VertexData m_vertices, m_texCoods, m_normales;
+	// Todos los grupos de triángulos (submeshes)
+	std::vector<VertexData> m_indices;
 	int dataOrder[4];
 
 	// Métodos auxiliares
@@ -50,7 +58,7 @@ private:
 	void readVertices(std::ifstream& stream);
 	void readNormals(std::ifstream& stream);
 	void readTexCoords(std::ifstream& stream);
-	void readFaces(std::ifstream& stream);
+	void readFaces(std::ifstream& stream, int numTris);
 
 	/* Hace una primera lectura del archivo para saber cuánto hay de cada cosa */
 	void Reconocimiento(const std::string& objString);

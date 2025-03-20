@@ -156,12 +156,28 @@ void Mesh::scale(const glm::dvec3& scale)
 
 // - - - - - - - - - - - - - - - - - - -
 
+IndexMesh::IndexMesh() : indices(nullptr), tangentes(nullptr), numIndices(0), m_divisores(nullptr), m_numSubmallas(1)
+{
+
+}
+
 IndexMesh::~IndexMesh() 
 {
 	if (indices != nullptr)
 		delete[] indices;
 	if (tangentes != nullptr)
 		delete[] tangentes;
+	
+	if (m_divisores != nullptr)
+		delete m_divisores;
+}
+
+void IndexMesh::calculateSubmeshes()
+{
+	if(m_divisores == nullptr)
+	{
+		m_divisores = new GLint[2]{ 0, (GLint)numIndices};
+	}
 }
 
 void IndexMesh::draw()
@@ -176,8 +192,17 @@ void IndexMesh::draw()
 		glEnableVertexAttribArray(4);
 	}
 
-	// Dibuja los triángulos definidos por la tabla de índices
-	glDrawElements(type, numIndices, GL_UNSIGNED_INT, indices);
+	// Dibujar cada una de las submallas
+	GLint count = 0;
+	for(int i = 0; i < m_numSubmallas; i++)
+	{
+		// Dibuja los triángulos definidos por la tabla de índices
+		count = m_divisores[i + 1] - m_divisores[i];
+		assert(m_divisores != nullptr);
+		assert(count % 3 == 0); // Asegurarnos de que son triángulos enteros; divisibles por 3
+		glDrawElements(type, count, GL_UNSIGNED_INT, indices + m_divisores[i]);
+		//glDrawElements(type, numIndices, GL_UNSIGNED_INT, indices);
+	}
 
 	// Dejarlo todo como estaba
 	glDisableVertexAttribArray(4);

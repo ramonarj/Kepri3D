@@ -96,7 +96,7 @@ class IndexMesh : public Mesh
 {
 public:
 	/* Constructora por defecto */
-	IndexMesh() : indices(nullptr), tangentes(nullptr), numIndices(0) {}
+	IndexMesh();
 	/* Destructora */
 	virtual ~IndexMesh(); 
 
@@ -104,6 +104,7 @@ public:
 	void draw() override;
 	void drawInstanced(GLuint numInstances) override;
 
+	void calculateSubmeshes();
 	// Getters (TEMPORAL)
 	inline const void* getIndices() { return indices; }
 	inline unsigned int getIndicesNum() const { return numIndices; }
@@ -148,6 +149,12 @@ protected:
 
 	/* Variable auxiliar para ahorrar cálculos (= numTriangulos * 3) */
 	GLuint numIndices;
+
+	/* Número de submallas */
+	GLuint m_numSubmallas;
+
+	/* Índices para separar las submallas entre sí */
+	GLint* m_divisores;
 
 	// Métodos auxiliares
 	/* Rellena el vector de normales usando los triángulos indexados */

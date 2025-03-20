@@ -15,7 +15,13 @@ Renderer::Renderer(Mesh* mesh)
 	glm::dvec3 size = m_mesh->getVolume();
 	m_volumeMesh = IndexMesh::generateCube(1);
 	m_volumeMesh->scale(size);
+	dynamic_cast<IndexMesh*>(m_volumeMesh)->calculateSubmeshes();
 	// TODO: optimizar y no usar normales ni uvs en el volume mesh
+
+	// Submeshes
+	IndexMesh* m = dynamic_cast<IndexMesh*>(mesh);
+	if (m != nullptr)
+		m->calculateSubmeshes();
 
 	// Valores por defecto
 	m_polyModeFront = GL_FILL;

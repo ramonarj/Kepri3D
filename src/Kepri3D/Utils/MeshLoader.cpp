@@ -59,11 +59,15 @@ void MeshLoader::loadOBJ(const std::string& filename, float scale)
 		/* d) Leer los triángulos */
 		else if(dataOrder[i] == 3)
 		{
-			getTo("f ", stream);
-			readFaces(stream);
+			// Leer cada una de las submallas
+			for(int i = 0; i < m_indices.size(); i++)
+			{
+				getTo("f ", stream);
+				readFaces(stream, m_indices[i].num);
+			}
+			// Rellenar los índices de la malla
 			mesh->numIndices = indices.size() * 3;
 			mesh->indices = new GLuint[mesh->numIndices];
-			// Rellenar los índices de la malla
 			for (int i = 0; i < mesh->numIndices; i += 3)
 			{
 				glm::ivec3 tri = indices[(i / 3) + (i % 3)];
@@ -78,6 +82,17 @@ void MeshLoader::loadOBJ(const std::string& filename, float scale)
 	// No sería necesario
 	mesh->SetNormals();
 
+	// Atributos de las submallas
+	mesh->m_numSubmallas = m_indices.size();
+	mesh->m_divisores = new GLint[mesh->m_numSubmallas + 1];
+	mesh->m_divisores[0] = 0;
+	int accum = 0;
+	for(int i = 1; i <= mesh->m_numSubmallas; i++)
+	{
+		mesh->m_divisores[i] = accum + m_indices[i - 1].num * 3; // * 3??
+		accum += m_indices[i - 1].num * 3;
+	}
+
 	// Cerrar el flujo
 	stream.close();
 }
@@ -89,6 +104,7 @@ void MeshLoader::Reconocimiento(const std::string& objString)
 	// cuántos vértices, normales, texCoords, etc. hay, y en qué línea empieza cada lista
 	lineNo = 1;
 	unsigned int dataIndex = 0;
+	int submesh = -1;
 
 	std::stringstream ssObj(objString);
 
@@ -135,9 +151,15 @@ void MeshLoader::Reconocimiento(const std::string& objString)
 		}
 		else if (patron == "f")
 		{
-			m_indices.line = lineNo;
-			numElems = &m_indices.num;
-			dataOrder[dataIndex++] = 3;
+			m_indices.push_back(VertexData(lineNo, 0));
+			if (submesh < 0) { submesh++; } // El archivo no tiene etiquetas 'g'
+			numElems = &m_indices[submesh].num;
+			if(dataIndex < 4)
+				dataOrder[dataIndex++] = 3;
+		}
+		else if(patron == "g")
+		{
+			submesh++;
 		}
 
 		firstLine = lineNo;
@@ -206,10 +228,10 @@ void MeshLoader::readTexCoords(std::ifstream& stream)
 
 }
 
-void MeshLoader::readFaces(std::ifstream& stream)
+void MeshLoader::readFaces(std::ifstream& stream, int numTris)
 {
-	// Leer todos los triángulos
-	for(int i = 0; i < m_indices.num; i++)
+	// Leer todos los triángulos de ese grupo de vértices
+	for(int i = 0; i < numTris; i++)
 	{
 		std::string f;
 		stream >> f;
@@ -317,7 +339,7 @@ void MeshLoader::loadOBJ(const std::string& filename, const std::string& meshNam
 		else if (dataOrder[i] == 3)
 		{
 			getTo("f ", stream);
-			readFaces(stream);
+			readFaces(stream, i);
 			mesh->numIndices = indices.size() * 3;
 			mesh->indices = new GLuint[mesh->numIndices];
 			// Rellenar los índices de la malla
@@ -392,9 +414,9 @@ void MeshLoader::Reconocimiento(const std::string& objString, const std::string&
 		}
 		else if (patron == "f")
 		{
-			m_indices.line = lineNo;
-			numElems = &m_indices.num;
-			dataOrder[dataIndex++] = 3;
+			//m_indices.line = lineNo;
+			//numElems = &m_indices.num;
+			//dataOrder[dataIndex++] = 3;
 		}
 
 		firstLine = lineNo;
