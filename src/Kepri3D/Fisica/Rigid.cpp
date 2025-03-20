@@ -34,9 +34,10 @@ Rigid::Rigid(const glm::dmat4& modelMat, RigidType type)
 	m_framesInactivo = 0;
 }
 
-void Rigid::update(GLuint deltaTime)
+void Rigid::update(GLuint delta)
 {
 	if (m_type == RigidType::Static || m_sleeping) { return; }
+	real deltaTime = delta / 1000.0; // Pasar de ms a segundos
 
 	// Darle una aceleración fija si le afecta la gravedad
 	if (m_useGravity)
@@ -47,13 +48,13 @@ void Rigid::update(GLuint deltaTime)
 	m_acceleration += m_accumForces / m_mass;
 
 	// Actualizar velocidad en función de la aceleración (v = v0 + a*t)
-	m_velocity += m_acceleration * (deltaTime / 1000.0);
+	m_velocity += m_acceleration * deltaTime;
 
 	// Actualizar la posición en función de la velocidad (e = e0 + v*t)
-	*m_position += m_velocity * (deltaTime / 1000.0);
+	*m_position += m_velocity * deltaTime;
 
 	// Rozamiento
-	m_velocity *= (1 - (m_drag * deltaTime / 1000.0));
+	m_velocity *= (1 - (m_drag * deltaTime));
 
 	// Limpiar la aceleración y las fuerzas acumuladas
 	m_acceleration = { 0, 0, 0 };
@@ -64,13 +65,13 @@ void Rigid::update(GLuint deltaTime)
 	m_angularAcc += m_accumTorque / m_mass;
 
 	// Actualizar velocidad angular en función de la aceleración angular
-	m_angularVel += m_angularAcc * (deltaTime / 1000.0);
+	m_angularVel += m_angularAcc * deltaTime;
 
 	// Actualizar la rotación en función de la velocidad angular
-	entity->rotate(glm::length(m_angularVel) * (deltaTime / 1000.0), glm::normalize(m_angularVel));
+	entity->rotate(glm::length(m_angularVel) * deltaTime, glm::normalize(m_angularVel));
 
 	// Rozamiento angular
-	m_angularVel *= (1 - (m_angularDrag * deltaTime / 1000.0));
+	m_angularVel *= (1 - (m_angularDrag * deltaTime));
 
 	// Limpiar la aceleración angular y el torque acumulado
 	m_angularAcc = { 0, 0, 0 };
@@ -88,7 +89,7 @@ void Rigid::update(GLuint deltaTime)
 	else { m_framesInactivo = 0; }
 }
 
-void Rigid::addForce(const glm::vec3& force)
+void Rigid::addForce(const vector3& force)
 {
 	if (m_type == Static || glm::length(force) < 0.05) { return; }
 
@@ -96,7 +97,7 @@ void Rigid::addForce(const glm::vec3& force)
 	wakeUp();
 }
 
-void Rigid::addTorque(const glm::vec3& torque)
+void Rigid::addTorque(const vector3& torque)
 {
 	if (m_type == Static || glm::length(torque) < 0.05) { return; }
 
@@ -104,19 +105,19 @@ void Rigid::addTorque(const glm::vec3& torque)
 	wakeUp();
 }
 
-void Rigid::addForce(const glm::vec3& force, const glm::vec3& point)
+void Rigid::addForce(const vector3& force, const vector3& point)
 {
 	if (glm::length(point) == 0) { addForce(force); return; }
 
 	// Ángulo entre el vector posición y el vector fuerza
-	double cosAngle = glm::dot(glm::normalize(force), glm::normalize(point));
+	real cosAngle = glm::dot(glm::normalize(force), glm::normalize(point));
 	
 	// Aplicar el torque necesario usando la componente tangencial de la fuerza. L = r x F
 	addTorque(glm::cross(point, force));
 
 	// Por descomposición de fuerzas, una vez quitada la tangencial (que va al torque),
 	// nos queda la que apunta desde el punto al centro de masas
-	float fuerzaNoTang = glm::length(force) * cosAngle;
+	real fuerzaNoTang = glm::length(force) * cosAngle;
 
 	// Si angle > 90 está "tirando", si es menor, está "empujando"
 	addForce(fuerzaNoTang * point);
@@ -144,7 +145,7 @@ void Rigid::sleep()
 #endif
 }
 
-void Rigid::setVelocity(const glm::dvec3& vel)
+void Rigid::setVelocity(const vector3& vel)
 {
 	if (m_type == Static) { return; }
 

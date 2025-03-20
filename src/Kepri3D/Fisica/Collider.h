@@ -2,6 +2,7 @@
 #define __COLLIDER__
 
 #include "Component.h"
+#include "CorePhysics.h"
 
 class Shader;
 
@@ -15,9 +16,9 @@ public:
 	};
 public:
 	// Constructora para colliders esféricos
-	Collider(float radio);
+	Collider(real radio);
 	// Constructora para colliders ortoedros
-	Collider(const glm::dvec3& size);
+	Collider(const vector3& size);
 	~Collider();
 
 	void update(GLuint deltaTime) override {};
@@ -32,8 +33,8 @@ public:
 	static bool aabbOverlap(const Collider* c1, const Collider* c2);
 	static bool sphereCubeOverlap(const Collider* sphere, const Collider* cube);
 
-	static bool pointInCube(const glm::dvec3& point, const Collider* cube);
-	static bool pointInSphere(const glm::dvec3& point, const Collider* sphere);
+	static bool pointInCube(const vector3& point, const Collider* cube);
+	static bool pointInSphere(const vector3& point, const Collider* sphere);
 
 private:
 	friend class PhysicsSystem;
@@ -43,9 +44,9 @@ private:
 	union
 	{
 		// Específico de esferas
-		float radio;
+		real radio;
 		// Epecífico de cubos
-		glm::dvec3 halfExtents;
+		vector3 halfExtents;
 	};
 
 	/* ¿Es atravesable? */

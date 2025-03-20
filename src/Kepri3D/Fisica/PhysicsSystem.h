@@ -4,14 +4,16 @@
 #include <vector>
 #include <glew.h>
 #include "Game.h"
+#include "CorePhysics.h"
 
 class Collider;
 class Rigid;
 class Muelle;
 
+
 // Indica cómo de elástico es un choque. Por ahora, es compartido para todos los choques.
 // 0 = totalmente inelástico (se quedan pegados), 1 = totalmente elástico (no se pierde Ec)
-const float COEF_RESTITUCION = 0.6f;
+const real COEF_RESTITUCION = 0.6f;
 
 // Número máximo de iteraciones para resolver una colisión
 const unsigned int MAX_ITER = 10;
@@ -37,10 +39,10 @@ public:
 	void addMuelle(Muelle* m);
 
 	/* Lanza un rayo en la dirección dada y devuelve true si el rayo golpea un collider, false e.o.c. */
-	bool raycast(const glm::dvec3& origen, const glm::dvec3& dir, double dist);
+	bool raycast(const vector3& origen, const vector3& dir, real dist);
 
 	/* Lanza un rayo desde la posición de la pantalla dada (la dirección dependerá del tipo de cámara) */
-	bool raycastFromScreen(glm::dvec2 origen, double dist);
+	bool raycastFromScreen(vector2 origen, real dist);
 
 	void update(GLuint deltaTime);
 
@@ -69,10 +71,10 @@ private:
 	void notifyCollision(Collider* c1, Collider* c2);
 	void notifyTrigger(Collider* c1, Collider* c2);
 	// Cálculo de las velocidades resultantes tras una colisión elástica
-	std::pair<glm::vec3, glm::vec3> calculateElasticCollision(const glm::dvec3& v1, const glm::dvec3& v2,
-		const glm::dvec3& x1, const glm::dvec3& x2, double m1, double m2);
-	std::pair<glm::vec3, glm::vec3> calculateElasticCollision(const glm::dvec3& v1, const glm::dvec3& v2,
-		const glm::dvec3& X1toX2, double m1, double m2);
+	std::pair<vector3, vector3> calculateElasticCollision(const vector3& v1, const vector3& v2,
+		const vector3& x1, const vector3& x2, real m1, real m2);
+	std::pair<vector3, vector3> calculateElasticCollision(const vector3& v1, const vector3& v2,
+		const vector3& X1toX2, real m1, real m2);
 };
 
 #endif

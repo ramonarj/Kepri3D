@@ -3,7 +3,7 @@
 #include "Mesh.h"
 #include "Renderer.h"
 
-Collider::Collider(float radio)
+Collider::Collider(real radio)
 {
 	this->shape = Esfera;
 	this->radio = radio;
@@ -17,7 +17,7 @@ Collider::Collider(float radio)
 	m_trigger = false;
 }	
 
-Collider::Collider(const glm::dvec3& size)
+Collider::Collider(const vector3& size)
 {
 	this->shape = Cubo;
 	this->halfExtents = size / 2.0;
@@ -48,7 +48,7 @@ void Collider::render(Shader* sh)
 bool Collider::sphereOverlap(const Collider* c1, const Collider* c2)
 {
 	// Distancia entre ambos centros
-	float dist = glm::length(c1->getEntity()->getPosition() - c2->getEntity()->getPosition());
+	real dist = glm::length(c1->getEntity()->getPosition() - c2->getEntity()->getPosition());
 	// Hay overlap
 	if (dist < (c1->radio + c2->radio))
 		return true;
@@ -58,10 +58,10 @@ bool Collider::sphereOverlap(const Collider* c1, const Collider* c2)
 
 bool Collider::aabbOverlap(const Collider* c1, const Collider* c2)
 {
-	glm::dvec3 halfExt1 = c1->halfExtents;
-	glm::dvec3 halfExt2 = c2->halfExtents;
-	glm::dvec3 posC1 = c1->getEntity()->getPosition();
-	glm::dvec3 posC2 = c2->getEntity()->getPosition();
+	vector3 halfExt1 = c1->halfExtents;
+	vector3 halfExt2 = c2->halfExtents;
+	vector3 posC1 = c1->getEntity()->getPosition();
+	vector3 posC2 = c2->getEntity()->getPosition();
 
 	// Hay overlap
 	if (posC1.x + halfExt1.x > posC2.x - halfExt2.x && posC1.x - halfExt1.x < posC2.x + halfExt2.x && // Eje X
@@ -74,11 +74,11 @@ bool Collider::aabbOverlap(const Collider* c1, const Collider* c2)
 
 bool Collider::sphereCubeOverlap(const Collider* sphere, const Collider* cube)
 {
-	double dist_squared = sphere->radio * sphere->radio;
-	glm::dvec3 posEsf = sphere->getEntity()->getPosition();
+	real dist_squared = sphere->radio * sphere->radio;
+	vector3 posEsf = sphere->getEntity()->getPosition();
 	// C1 Y C2 son 2 esquinas opuestas del cubo
-	glm::dvec3 C1 = cube->getEntity()->getPosition() - cube->halfExtents;
-	glm::dvec3 C2 = cube->getEntity()->getPosition() + cube->halfExtents;
+	vector3 C1 = cube->getEntity()->getPosition() - cube->halfExtents;
+	vector3 C2 = cube->getEntity()->getPosition() + cube->halfExtents;
 
 	// Eje X
 	if (posEsf.x < C1.x)
@@ -99,10 +99,10 @@ bool Collider::sphereCubeOverlap(const Collider* sphere, const Collider* cube)
 	return dist_squared > 0;
 }
 
-bool Collider::pointInCube(const glm::dvec3& point, const Collider* cube)
+bool Collider::pointInCube(const vector3& point, const Collider* cube)
 {
-	glm::dvec3 halfExt = cube->halfExtents;
-	glm::dvec3 cubePos = cube->getEntity()->getPosition();
+	vector3 halfExt = cube->halfExtents;
+	vector3 cubePos = cube->getEntity()->getPosition();
 
 	// Hay overlap
 	if (cubePos.x + halfExt.x >= point.x && cubePos.x - halfExt.x <= point.x && // Eje X
@@ -113,9 +113,9 @@ bool Collider::pointInCube(const glm::dvec3& point, const Collider* cube)
 	return false;
 }
 
-bool Collider::pointInSphere(const glm::dvec3& point, const Collider* sphere)
+bool Collider::pointInSphere(const vector3& point, const Collider* sphere)
 {
-	float dist = glm::length(sphere->getEntity()->getPosition() - point);
+	real dist = glm::length(sphere->getEntity()->getPosition() - point);
 
 	return (dist <= sphere->radio);
 }

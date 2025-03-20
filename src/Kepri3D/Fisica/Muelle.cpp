@@ -2,7 +2,7 @@
 
 #include "Rigid.h"
 
-Muelle::Muelle(Rigid* r1, Rigid* r2, double k)
+Muelle::Muelle(Rigid* r1, Rigid* r2, real k)
 {
 	this->r1 = r1;
 	this->r2 = r2;

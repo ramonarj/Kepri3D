@@ -203,6 +203,7 @@
     <ClInclude Include="..\..\src\Kepri3D\Component.h" />
     <ClInclude Include="..\..\src\Kepri3D\Entity.h" />
     <ClInclude Include="..\..\src\Kepri3D\Fisica\Collider.h" />
+    <ClInclude Include="..\..\src\Kepri3D\Fisica\CorePhysics.h" />
     <ClInclude Include="..\..\src\Kepri3D\Fisica\Muelle.h" />
     <ClInclude Include="..\..\src\Kepri3D\Fisica\PhysicsSystem.h" />
     <ClInclude Include="..\..\src\Kepri3D\Fisica\Rigid.h" />

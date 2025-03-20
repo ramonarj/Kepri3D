@@ -1,8 +1,8 @@
 #ifndef __RIGID__
 #define __RIGID__
 
+#include "CorePhysics.h"
 #include "Component.h"
-#include <glm.hpp>
 
 class Collider;
 
@@ -26,26 +26,26 @@ public:
 
 	// Aplicación de fuerzas
 	/* Ejerce una fuerza con la dirección y magnitud dadas sobre el Rigid */
-	void addForce(const glm::vec3& force);
+	void addForce(const vector3& force);
 
 	/* Ejerce una fuerza sobre el Rigid en el punto dado (coords. locales respecto al centro de masa) */
-	void addForce(const glm::vec3& force, const glm::vec3& point);
+	void addForce(const vector3& force, const vector3& point);
 
 	/* Aplica un torque al Rigid (t = r x F) */
-	void addTorque(const glm::vec3& torque);
+	void addTorque(const vector3& torque);
 
 	// Setters
 	/* Indica si el objeto será afectado por la fuerza de la Gravedad */
 	inline void useGravity(bool use) { m_useGravity = use; }
 
 	/* Cambia la masa del Rigidbody */
-	inline void setMass(float mass) { m_mass = mass; }
+	inline void setMass(real mass) { m_mass = mass; }
 
 	/* Cambia el rozamiento estático/dinámico del Rigidbody */
-	inline void setDrag(float drag) { m_drag = drag; }
+	inline void setDrag(real drag) { m_drag = drag; }
 
 	/* Cambia el rozamiento angular del Rigidbody */
-	inline void setAngularDrag(float angDrag) { m_angularDrag = angDrag; }
+	inline void setAngularDrag(real angDrag) { m_angularDrag = angDrag; }
 
 	/* Enlaza el rigid a su collider */
 	inline void setCollider(Collider* col) { m_collider = col; }
@@ -54,7 +54,7 @@ public:
 	inline void setType(RigidType type) { m_type = type; }
 
 	/* Cambia la velocidad del Rigid */
-	void setVelocity(const glm::dvec3& vel);
+	void setVelocity(const vector3& vel);
 
 	/* Despierta al Rigid */
 	void wakeUp();
@@ -71,34 +71,34 @@ private:
 	glm::dvec3* m_position;
 
 	/* Velocidad del Rigid */
-	glm::dvec3 m_velocity;
+	vector3 m_velocity;
 
 	/* Aceleración del Rigid */
-	glm::dvec3 m_acceleration;
+	vector3 m_acceleration;
 
 	/* Suma de las fuerzas ejercidas durante este frame */
-	glm::vec3 m_accumForces;
+	vector3 m_accumForces;
 
 	/* Velocidad angular del Rigid */
-	glm::dvec3 m_angularVel;
+	vector3 m_angularVel;
 
 	/* Aceleración angular del Rigid */
-	glm::dvec3 m_angularAcc;
+	vector3 m_angularAcc;
 
 	/* Suma de las fuerzas de torque ejercidas durante este frame */
-	glm::vec3 m_accumTorque;
+	vector3 m_accumTorque;
 
 	/* ¿Le afecta la gravedad? */
 	bool m_useGravity;
 
 	/* Rozamiento (=resistencia a moverse) del Rigid */
-	float m_drag;
+	real m_drag;
 
 	/* Rozamiento angular (=resistencia a rotar) del Rigid */
-	float m_angularDrag;
+	real m_angularDrag;
 
 	/* Masa del Rigid */
-	float m_mass;
+	real m_mass;
 
 	/* Puntero al collider de la entidad */
 	Collider* m_collider;

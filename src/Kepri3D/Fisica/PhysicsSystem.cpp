@@ -8,7 +8,7 @@
 
 PhysicsSystem* PhysicsSystem::s_instance = nullptr;
 
-const double RAYCAST_INCR = 0.1;
+const real RAYCAST_INCR = 0.1;
 
 void PhysicsSystem::Clean()
 {
@@ -44,8 +44,8 @@ void PhysicsSystem::update(GLuint deltaTime)
 	// Actualizar muelles
 	for (Muelle* m : m_muelles)
 	{
-		double elongacion = glm::length(*m->r2->m_position - *m->r1->m_position) - m->longitud;
-		glm::dvec3 R1toR2 = glm::normalize(*m->r2->m_position - *m->r1->m_position);
+		real elongacion = glm::length(*m->r2->m_position - *m->r1->m_position) - m->longitud;
+		vector3 R1toR2 = glm::normalize(*m->r2->m_position - *m->r1->m_position);
 		if (glm::abs(elongacion) < 0.05) { continue; } //pequeño umbral para que duerma
 		// Ley de Hooke
 		m->r1->addForce(m->k * (R1toR2 * elongacion));
@@ -59,7 +59,7 @@ void PhysicsSystem::update(GLuint deltaTime)
 	{
 		Rigid* r1 = m_rigids[i];
 #ifdef __DEBUG_INFO__
-		momentoTotal += ((glm::vec3)r1->m_velocity * r1->m_mass);
+		momentoTotal += (r1->m_velocity * r1->m_mass);
 #endif
 		for(int j = i + 1; j < m_rigids.size(); j++)
 		{
@@ -123,7 +123,7 @@ void PhysicsSystem::solveCollision(Rigid* r1, Rigid* r2)
 	} while (iter < MAX_ITER && checkOverlap(r1->m_collider, r2->m_collider));
 
 	// - - - - (2) Calcular el punto de contacto (según el tipo de los colliders) - - - - //
-	glm::vec3 R1toR2;
+	vector3 R1toR2;
 	// Esfera-Esfera
 	if (r1->m_collider->shape == Collider::Esfera && r2->m_collider->shape == Collider::Esfera)
 	{
@@ -131,22 +131,22 @@ void PhysicsSystem::solveCollision(Rigid* r1, Rigid* r2)
 
 		// Hay que descomponer las velocidades en sus componentes normal y tangente 
 		// respecto al plano de choque. La normal se transmite en la colisión, y la tangente se conserva
-		glm::dvec3 newV1 = { 0, 0, 0 };
-		glm::dvec3 newV2 = { 0, 0, 0 };
+		vector3 newV1 = { 0, 0, 0 };
+		vector3 newV2 = { 0, 0, 0 };
 
 		// Cómo afecta el cuerpo 1 al cuerpo 2
 		if (glm::length(r1->m_velocity) != 0)
 		{
-			double cosAlpha1 = glm::dot(glm::normalize(r1->m_velocity), (glm::dvec3)R1toR2);
-			glm::dvec3 velNormal = (glm::dvec3)R1toR2 * glm::length(r1->m_velocity) * cosAlpha1;
+			real cosAlpha1 = glm::dot(glm::normalize(r1->m_velocity), R1toR2);
+			vector3 velNormal = R1toR2 * glm::length(r1->m_velocity) * cosAlpha1;
 			newV2 += velNormal;
 			newV1 += (r1->m_velocity - velNormal); // total - normal = tangencial
 		}
 		// Cómo afecta el cuerpo 2 al cuerpo 1
 		if (glm::length(r2->m_velocity) != 0)
 		{
-			double cosAlpha2 = glm::dot(glm::normalize(r2->m_velocity), (glm::dvec3)-R1toR2);
-			glm::dvec3 velNormal = (glm::dvec3)-R1toR2 * glm::length(r2->m_velocity) * cosAlpha2;
+			real cosAlpha2 = glm::dot(glm::normalize(r2->m_velocity), -R1toR2);
+			vector3 velNormal = -R1toR2 * glm::length(r2->m_velocity) * cosAlpha2;
 			newV1 += velNormal;
 			newV2 += (r2->m_velocity - velNormal); // total - normal = tangencial
 		}
@@ -156,8 +156,8 @@ void PhysicsSystem::solveCollision(Rigid* r1, Rigid* r2)
 		else if (r2->m_type == Static) { newV1 -= newV2; }
 
 		// Asignar las nuevas velocidades
-		r1->setVelocity(newV1 * (double)COEF_RESTITUCION);
-		r2->setVelocity(newV2 * (double)COEF_RESTITUCION);
+		r1->setVelocity(newV1 * COEF_RESTITUCION);
+		r2->setVelocity(newV2 * COEF_RESTITUCION);
 		// TODO: tener masa en cuenta
 	}
 
@@ -165,9 +165,9 @@ void PhysicsSystem::solveCollision(Rigid* r1, Rigid* r2)
 	else //if (r1->m_collider->shape == Collider::Cubo && r2->m_collider->shape == Collider::Cubo)
 	{
 		R1toR2 = r2->getEntity()->getPosition() - r1->getEntity()->getPosition();
-		glm::dvec3 absV = glm::abs((glm::dvec3)R1toR2 / r1->m_collider->halfExtents); //inspiración divina
+		vector3 absV = glm::abs(R1toR2 / r1->m_collider->halfExtents); //inspiración divina
 		// No se me ocurre una forma mejor
-		glm::vec3 eje;
+		vector3 eje;
 		if (absV.x > absV.y && absV.x > absV.z) { eje = { 1, 0, 0 }; }
 		else if (absV.y > absV.x && absV.y > absV.z) { eje = { 0, 1, 0 }; }
 		else { eje = { 0, 0, 1 }; }
@@ -184,15 +184,15 @@ void PhysicsSystem::solveCollision(Rigid* r1, Rigid* r2)
 			//r2->m_velocity = vels.second;
 
 			// Intercambiar velocidades y multiplicar por coef.rest.
-			glm::vec3 auxVel = r1->m_velocity;
-			r1->setVelocity(-R1toR2 * (float)glm::length(r2->m_velocity) * COEF_RESTITUCION);
-			r2->setVelocity(R1toR2 * (float)glm::length(auxVel) * COEF_RESTITUCION);
+			vector3 auxVel = r1->m_velocity;
+			r1->setVelocity(-R1toR2 * glm::length(r2->m_velocity) * COEF_RESTITUCION);
+			r2->setVelocity(R1toR2 * glm::length(auxVel) * COEF_RESTITUCION);
 		}
 		// Uno estático; se quedan con su velocidad
 		else if (r1->m_type == Static)
-			r2->setVelocity(R1toR2 * (float)glm::length(r2->m_velocity) * COEF_RESTITUCION);
+			r2->setVelocity(R1toR2 * glm::length(r2->m_velocity) * COEF_RESTITUCION);
 		else if (r2->m_type == Static)
-			r1->setVelocity(-R1toR2 * (float)glm::length(r1->m_velocity) * COEF_RESTITUCION);
+			r1->setVelocity(-R1toR2 * glm::length(r1->m_velocity) * COEF_RESTITUCION);
 	}
 }
 
@@ -214,14 +214,14 @@ void PhysicsSystem::notifyTrigger(Collider* c1, Collider* c2)
 		c->onTrigger(c1);
 }
 
-bool PhysicsSystem::raycast(const glm::dvec3& origen, const glm::dvec3& dir, double dist)
+bool PhysicsSystem::raycast(const vector3& origen, const vector3& dir, real dist)
 {
-	double currDistance = 0;
+	real currDistance = 0;
 	bool hit = false;
 	// Ir avanzando poco a poco
 	while(currDistance < dist && !hit)
 	{
-		glm::dvec3 point = origen + dir * currDistance;
+		vector3 point = origen + dir * currDistance;
 		// TODO: optimizar con Octrees/alguna otra técnica
 		for(Rigid* r : m_rigids)
 		{
@@ -235,23 +235,23 @@ bool PhysicsSystem::raycast(const glm::dvec3& origen, const glm::dvec3& dir, dou
 	return hit;
 }
 
-bool PhysicsSystem::raycastFromScreen(glm::dvec2 origen, double dist)
+bool PhysicsSystem::raycastFromScreen(vector2 origen, real dist)
 {
 	// 1) Pasar de Screen Space a NDC [{800, 600} --> {-1, 1}]
-	glm::dvec2 screenSize = { Game::Instance()->getCamera()->getVP()->getW(), Game::Instance()->getCamera()->getVP()->getH() };
-	glm::dvec2 NDCpos = (origen / screenSize) * 2.0 - 1.0;
+	vector2 screenSize = { Game::Instance()->getCamera()->getVP()->getW(), Game::Instance()->getCamera()->getVP()->getH() };
+	vector2 NDCpos = (origen / screenSize) * 2.0 - 1.0;
 
 	// 2) Pasar de NDC a View Space
-	double fov = 45.0;
-	double aspectRatio = 600.0 / 800.0;
+	real fov = 45.0;
+	real aspectRatio = 600.0 / 800.0;
 	// d = distancia focal de la cámara
-	double d = 1.0 / glm::tan(fov);
-	glm::dvec4 VIEWpos = { NDCpos.x / d, aspectRatio * NDCpos.y / d, -1.0, 1.0 }; //-1 por el S.coords. mano derecha
+	real d = 1.0 / glm::tan(fov);
+	vector4 VIEWpos = { NDCpos.x / d, aspectRatio * NDCpos.y / d, -1.0, 1.0 }; //-1 por el S.coords. mano derecha
 	// Método alternativo: usando la inversa de la matriz de proyección
 	// VIEWpos = glm::inverse(Game::Instance()->getCamera()->getProjMat()) * NDCpos;
 	
 	// 3) Pasar de View Space a World Space
-	glm::dvec4 WORLDpos = Game::Instance()->getCamera()->getModelMat() * VIEWpos;
+	vector4 WORLDpos = Game::Instance()->getCamera()->getModelMat() * VIEWpos;
 
 	//std::cout << "{" << NDCpos.x << "," << NDCpos.y << "}" << std::endl;
 	//std::cout << "{" << VIEWpos.x << "," << VIEWpos.y << "," << VIEWpos.z << "}" << std::endl;
@@ -260,26 +260,26 @@ bool PhysicsSystem::raycastFromScreen(glm::dvec2 origen, double dist)
 	return raycast(WORLDpos, Game::Instance()->getCamera()->forward(), dist);
 }
 
-std::pair<glm::vec3, glm::vec3> PhysicsSystem::calculateElasticCollision(const glm::dvec3& v1, const glm::dvec3& v2,
-	const glm::dvec3& x1, const glm::dvec3& x2, double m1, double m2)
+std::pair<vector3, vector3> PhysicsSystem::calculateElasticCollision(const vector3& v1, const vector3& v2,
+	const vector3& x1, const vector3& x2, real m1, real m2)
 {
-	double massTerm = (2.0 * m2 / (m1 + m2));
-	glm::dvec3 v1new = v1 + massTerm * (glm::dot(v2 - v1, x2 - x1) / pow(glm::length(x2 - x1), 2))
+	real massTerm = (2.0 * m2 / (m1 + m2));
+	vector3 v1new = v1 + massTerm * (glm::dot(v2 - v1, x2 - x1) / pow(glm::length(x2 - x1), 2))
 		* (x2 - x1);
-	glm::dvec3 v2new = v2 + massTerm * (glm::dot(v1 - v2, x1 - x2) / pow(glm::length(x1 - x2), 2))
+	vector3 v2new = v2 + massTerm * (glm::dot(v1 - v2, x1 - x2) / pow(glm::length(x1 - x2), 2))
 		* (x1 - x2);
 
-	return std::pair<glm::vec3, glm::vec3>(v1new, v2new);
+	return std::pair<vector3, vector3>(v1new, v2new);
 }
 
-std::pair<glm::vec3, glm::vec3> PhysicsSystem::calculateElasticCollision(const glm::dvec3& v1, const glm::dvec3& v2,
-	const glm::dvec3& X1toX2, double m1, double m2)
+std::pair<vector3, vector3> PhysicsSystem::calculateElasticCollision(const vector3& v1, const vector3& v2,
+	const vector3& X1toX2, real m1, real m2)
 {
-	double massTerm = (2.0 * m2 / (m1 + m2));
-	glm::dvec3 v1new = v1 + massTerm * (glm::dot(v2 - v1, X1toX2) / pow(glm::length(X1toX2), 2))
+	real massTerm = (2.0 * m2 / (m1 + m2));
+	vector3 v1new = v1 + massTerm * (glm::dot(v2 - v1, X1toX2) / pow(glm::length(X1toX2), 2))
 		* (X1toX2);
-	glm::dvec3 v2new = v2 + massTerm * (glm::dot(v1 - v2, -X1toX2) / pow(glm::length(X1toX2), 2))
+	vector3 v2new = v2 + massTerm * (glm::dot(v1 - v2, -X1toX2) / pow(glm::length(X1toX2), 2))
 		* (-X1toX2);
 
-	return std::pair<glm::vec3, glm::vec3>(v1new, v2new);
+	return std::pair<vector3, vector3>(v1new, v2new);
 }

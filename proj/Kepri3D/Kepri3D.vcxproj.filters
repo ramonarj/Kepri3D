@@ -191,5 +191,8 @@
     <ClInclude Include="..\..\src\Kepri3D\Fisica\Muelle.h">
       <Filter>Fisicas</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\src\Kepri3D\Fisica\CorePhysics.h">
+      <Filter>Fisicas</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>
