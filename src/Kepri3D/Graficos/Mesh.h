@@ -102,12 +102,15 @@ public:
 
 	/* Pinta la malla pero usando la tabla de índices, y no otras primitivas */
 	void draw() override;
+	void drawSubmesh(int i);
 	void drawInstanced(GLuint numInstances) override;
 
 	void calculateSubmeshes();
 	// Getters (TEMPORAL)
 	inline const void* getIndices() { return indices; }
 	inline unsigned int getIndicesNum() const { return numIndices; }
+
+	inline GLuint numSubmallas() { return m_numSubmallas; }
 
 	// Creación de mallas con triángulos indexados
 

@@ -24,13 +24,21 @@ private:
 		// Cuántos hay de ese dato
 		unsigned int num;
 	};
+	struct FaceData : public VertexData
+	{
+		FaceData() {}
+		FaceData(unsigned int line, unsigned int num) : VertexData(line, num)
+		{
+			this->material = "";
+		}
+		// Material usado
+		std::string material;
+	};
 public:
 	MeshLoader() : mesh(nullptr) {}
 
 	/* Carga la información de un archivo Wavefront (.obj) y rellena la malla con ella */
 	void loadOBJ(const std::string& fileName, float scale);
-	/* Carga una sola malla del archivo OBJ y rellena la malla con ella */
-	void loadOBJ(const std::string& fileName, const std::string& meshName, float scale);
 
 	// Devuelve la malla ya creada
 	inline IndexMesh* getMesh() { return mesh; }
@@ -50,8 +58,9 @@ private:
 	// Información de la primera lectura
 	VertexData m_vertices, m_texCoods, m_normales;
 	// Todos los grupos de triángulos (submeshes)
-	std::vector<VertexData> m_indices;
+	std::vector<FaceData> m_indices;
 	int dataOrder[4];
+
 
 	// Métodos auxiliares
 	/* Métodos para leer cada atributo */ 
@@ -62,7 +71,6 @@ private:
 
 	/* Hace una primera lectura del archivo para saber cuánto hay de cada cosa */
 	void Reconocimiento(const std::string& objString);
-	void Reconocimiento(const std::string& objString, const std::string& meshName);
 
 	/* Llega al patrón indicado y deja el marcador justo encima */
 	void getTo(const std::string& pattern, std::ifstream& stream);

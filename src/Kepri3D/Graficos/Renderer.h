@@ -28,10 +28,11 @@ public:
 	void setPolygonMode(GLenum front, GLenum back);
 
 	/* Devuelve el material que usael renderer */
-	Material* getMaterial() { return &m_material; }
+	Material* getMaterial() { return &m_materials[0]; }
 
 	/* Establece el material */
 	void setMaterial(const std::string& materialID);
+	void setMaterial(int i, const std::string& materialID);
 
 	// Sombras - getters y setters
 	inline void castShadows(bool b) { m_castShadows = b; }
@@ -42,11 +43,14 @@ public:
 	// Debug
 	static bool visibleBounds;
 private:
-	/* Malla/s que se encarga de pintar */
+	/* Malla que se encarga de pintar */
 	Mesh* m_mesh;
 
-	/* Material usado para pintar esa malla */
-	Material m_material;
+	/* Número de submallas a pintar (para ahorrar tiempo luego) */
+	GLuint m_numSubmallas;
+
+	/* Materiales usado para pintar esa malla */
+	Material* m_materials;
 
 	/* Forma en que debe pintarse */
 	GLenum m_polyModeFront;

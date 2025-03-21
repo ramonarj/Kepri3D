@@ -156,9 +156,10 @@ void Mesh::scale(const glm::dvec3& scale)
 
 // - - - - - - - - - - - - - - - - - - -
 
-IndexMesh::IndexMesh() : indices(nullptr), tangentes(nullptr), numIndices(0), m_divisores(nullptr), m_numSubmallas(1)
+IndexMesh::IndexMesh() : indices(nullptr), tangentes(nullptr), numIndices(0), m_divisores(nullptr)
 {
-
+	// Valor por defecto
+	m_numSubmallas = 1;
 }
 
 IndexMesh::~IndexMesh() 
@@ -192,17 +193,36 @@ void IndexMesh::draw()
 		glEnableVertexAttribArray(4);
 	}
 
-	// Dibujar cada una de las submallas
-	GLint count = 0;
-	for(int i = 0; i < m_numSubmallas; i++)
+	// Dibujar la malla entera
+	glDrawElements(type, numIndices, GL_UNSIGNED_INT, indices);
+
+	// Dejarlo todo como estaba
+	glDisableVertexAttribArray(4);
+	Mesh::disableArrays();
+
+#ifdef __DEBUG_INFO__
+	numVerts += numVertices;
+	numTris += numIndices / 3.0;
+#endif
+}
+
+void IndexMesh::drawSubmesh(int i)
+{
+	// Activa los arrays de vértices, colores, texturas...
+	Mesh::enableArrays();
+	// Tangentes
+	if (tangentes != nullptr)
 	{
-		// Dibuja los triángulos definidos por la tabla de índices
-		count = m_divisores[i + 1] - m_divisores[i];
-		assert(m_divisores != nullptr);
-		assert(count % 3 == 0); // Asegurarnos de que son triángulos enteros; divisibles por 3
-		glDrawElements(type, count, GL_UNSIGNED_INT, indices + m_divisores[i]);
-		//glDrawElements(type, numIndices, GL_UNSIGNED_INT, indices);
+		// Para el vertex shader
+		glVertexAttribPointer(4, 3, GL_FLOAT, GL_FALSE, 0, tangentes);
+		glEnableVertexAttribArray(4);
 	}
+
+	// Dibujar la submalla indicada
+	GLint count = m_divisores[i + 1] - m_divisores[i];
+	assert(m_divisores != nullptr);
+	assert(count % 3 == 0); // Asegurarnos de que son triángulos enteros; divisibles por 3
+	glDrawElements(type, count, GL_UNSIGNED_INT, indices + m_divisores[i]);
 
 	// Dejarlo todo como estaba
 	glDisableVertexAttribArray(4);

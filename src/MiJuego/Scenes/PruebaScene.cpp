@@ -93,6 +93,8 @@ void PruebaScene::init()
 	Entity* redead = new Entity("Redead");
 	redead->setMesh("redead");
 	redead->setMaterial("redead");
+	redead->getRenderer()->setMaterial(1, "star");
+	redead->getRenderer()->setMaterial(2, "oceano");
 	redead->setPosition({ -8,2,-6 });
 	AddEntity(redead);
 
@@ -296,8 +298,6 @@ void PruebaScene::loadResources()
 	ResourceManager::Instance()->loadMesh("Peon.obj", "peon");
 	ResourceManager::Instance()->loadMesh("star.obj", "star");
 	ResourceManager::Instance()->loadMesh("redead.obj", "redead", 0.1f);
-	ResourceManager::Instance()->loadMesh("sponza1.obj", "sponza1", 0.05f);
-	//ResourceManager::Instance()->loadMesh("sponza.obj", "sponza_236", "mallaPrueba");
 
 	/* Texturas (IMPORTANTE cargar antes que los materiales) */
 	ResourceManager::Instance()->loadTexture("earth24.bmp", "earth");
