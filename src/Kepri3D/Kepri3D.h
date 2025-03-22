@@ -13,6 +13,7 @@
 #include "Rigid.h"
 #include "Collider.h"
 #include "Muelle.h"
+#include "Liquido.h"
 #include "PhysicsSystem.h"
 // Core
 #include "Entity.h"

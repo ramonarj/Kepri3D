@@ -3,8 +3,6 @@
 #include "Game.h"
 #include "PhysicsSystem.h"
 
-glm::dvec3 Rigid::s_gravity = { 0, -9.8, 0 };
-
 // Si el Rigid está 20 frames con una velocidad ínfima, se duerme
 const unsigned int FRAMES_UNTIL_SLEEP = 20;
 
@@ -21,7 +19,7 @@ Rigid::Rigid(const glm::dmat4& modelMat, RigidType type)
 
 	m_velocity = { 0, 0, 0 };
 	m_acceleration = { 0, 0 ,0 };
-	m_drag = 0.0;
+	m_drag = 0.2;
 	m_accumForces = { 0, 0, 0 };
 
 	m_angularVel = { 0, 0, 0 };
@@ -41,7 +39,7 @@ void Rigid::update(GLuint delta)
 
 	// Darle una aceleración fija si le afecta la gravedad
 	if (m_useGravity)
-		m_acceleration += s_gravity;
+		m_acceleration += PhysicsSystem::s_gravity;
 
 	// - - LINEAL - - //
 	// Actualizar aceleración en función de las fuerzas acumuladas (a = F / m)

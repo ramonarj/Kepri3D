@@ -59,7 +59,7 @@ void PruebaFisicas::init()
 	Esfera* esf2 = new Esfera(1.0);
 	esf2->setTexture("default");
 	esf2->setShader("lights");
-	esf2->setPosition({ 1, 20, 0 });
+	esf2->setPosition({ 0, 20, 0 });
 	esf2->getComponent<Renderer>()->setActive(false);
 	Collider* colEsfera2 = new Collider(5.0);
 	colEsfera2->setVisible(true);
@@ -169,11 +169,29 @@ void PruebaFisicas::init()
 	Rigid* rigidExtremo2 = new Rigid(extremo2->getModelMat());
 	rigidExtremo2->setMass(1.0);
 	extremo2->addComponent(rigidExtremo2);
-	extremo2->addComponent(new RotationComp(0.0));
 	AddEntity(extremo2);
 
 	// Añadir el muelle
 	PhysicsSystem::Instance()->addMuelle(new Muelle(rigidExtremo1, rigidExtremo2, 20));
+
+	// - -  FLOTACIÓN - - //
+	// Cubo flotacion
+	Cubo* cuboFlot = new Cubo(2.0);
+	cuboFlot->setTexture("default");
+	cuboFlot->setShader("lights");
+	cuboFlot->setPosition({ -110, 10, 0 });
+	cuboFlot->getComponent<Renderer>()->setActive(false);
+	Collider* colcuboFlot = new Collider({ 2.0, 2.0, 2.0 });
+	colcuboFlot->setVisible(true);
+	cuboFlot->addComponent(colcuboFlot);
+	Rigid* rigidcuboFlot = new Rigid(cuboFlot->getModelMat());
+	rigidcuboFlot->setMass(2000.0);
+	cuboFlot->addComponent(rigidcuboFlot);
+	AddEntity(cuboFlot);
+
+	// Líquido
+	Liquido* liquido = new Liquido(-10, 1000);
+	PhysicsSystem::Instance()->addLiquido(liquido);
 
 	// Sombra de la pelota
 	Entity* sombra = new Poligono(40, 3.0, true);
@@ -199,7 +217,7 @@ void PruebaFisicas::init()
 
 	// PhysicsMan
 	Entity* phyMan = new Entity("PhysicsManager");
-	PhysicsMan* phyManComp = new PhysicsMan(rigidEsfera2, sombra);
+	PhysicsMan* phyManComp = new PhysicsMan(rigidcuboFlot, sombra, liquido);
 	phyMan->addComponent(phyManComp);
 	AddEntity(phyMan);
 

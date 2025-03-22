@@ -9,6 +9,7 @@
 class Collider;
 class Rigid;
 class Muelle;
+class Liquido;
 
 
 // Indica cómo de elástico es un choque. Por ahora, es compartido para todos los choques.
@@ -32,11 +33,17 @@ public:
 	/* Limpia la instancia; debe llamarse explícitamente */
 	void Clean();
 
+	/* Gravedad global */
+	static vector3 s_gravity;
+
 	/* Añade un sólido rígido a la simulación */
 	void addRigid(Rigid* r);
 
 	/* Añade un muelle a la simulación */
 	void addMuelle(Muelle* m);
+
+	/* Añade un líquido a la simulación */
+	void addLiquido(Liquido* l);
 
 	/* Lanza un rayo en la dirección dada y devuelve true si el rayo golpea un collider, false e.o.c. */
 	bool raycast(const vector3& origen, const vector3& dir, real dist);
@@ -61,8 +68,11 @@ private:
 	/* Vector de muelles */
 	std::vector<Muelle*> m_muelles;
 
+	/* Vector del líquidos */
+	std::vector<Liquido*> m_liquidos;
+
 	/* Tiempo entre el anterior frame y este */
-	GLuint m_deltaTime;
+	real m_deltaTime;
 
 	// Métodos privados
 	bool checkOverlap(Collider* r1, Collider* r2);

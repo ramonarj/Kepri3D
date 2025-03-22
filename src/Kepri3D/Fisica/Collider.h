@@ -24,6 +24,10 @@ public:
 	void update(GLuint deltaTime) override {};
 	void render(Shader* sh);
 
+	// Getters
+	const vector3& getHalfExtents() { return halfExtents; }
+	real getRadio() { return radio; }
+
 	// Setters
 	inline void setTrigger(bool trigger) { m_trigger = trigger; }
 	inline void setVisible(bool visible) { m_visible = visible; }

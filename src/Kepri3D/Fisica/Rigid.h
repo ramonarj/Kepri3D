@@ -15,9 +15,6 @@ enum RigidType
 class Rigid : public Component
 {
 public:
-	/* Gravedad global */
-	static glm::dvec3 s_gravity;
-
 	Rigid(const glm::dmat4& modelMat, RigidType type = Dynamic);
 	~Rigid(){}
 
@@ -63,6 +60,7 @@ public:
 
 private:
 	friend class PhysicsSystem;
+	friend class Liquido;
 
 	/* Tipo de Rigidbody */
 	RigidType m_type;

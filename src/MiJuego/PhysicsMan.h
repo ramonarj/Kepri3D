@@ -3,21 +3,23 @@
 
 #include "Component.h"
 
+class Liquido;
 class Rigid;
 
 class PhysicsMan : public Component
 {
 public:
-	PhysicsMan(Rigid* r, Entity* sombra);
+	PhysicsMan(Rigid* r, Entity* sombra, Liquido* liquido);
 	~PhysicsMan() {}
 
 	void update(GLuint deltaTime) override;
 private:
 	Rigid* rigid;
 	Entity* sombra;
+	Liquido* liquido;
 
-	float movForce = 15.0f;
-	float jumpForce = 6000.0f; // impulso
+	float movForce = 15.0f * 2000;
+	float jumpForce = 6000.0f * 2000.0f; // impulso
 	float torque = 300.0f; //impulso
 };
 

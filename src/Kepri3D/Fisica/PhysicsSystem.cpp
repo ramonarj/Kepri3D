@@ -4,15 +4,18 @@
 #include "Muelle.h"
 #include "Collider.h"
 #include "Camera.h"
+#include "Liquido.h"
 #include <iostream>
 
 PhysicsSystem* PhysicsSystem::s_instance = nullptr;
 
 const real RAYCAST_INCR = 0.1;
+vector3 PhysicsSystem::s_gravity = { 0, -9.8, 0 };
 
 void PhysicsSystem::Clean()
 {
 	CleanVector(m_muelles);
+	CleanVector(m_liquidos);
 
 	delete s_instance;
 	s_instance = nullptr;
@@ -32,16 +35,19 @@ void PhysicsSystem::addRigid(Rigid* r)
 #endif
 }
 
-void PhysicsSystem::addMuelle(Muelle* m)
-{
+void PhysicsSystem::addMuelle(Muelle* m) {
 	m_muelles.push_back(m);
 }
 
-void PhysicsSystem::update(GLuint deltaTime)
-{
-	m_deltaTime = deltaTime;
+void PhysicsSystem::addLiquido(Liquido* l) {
+	m_liquidos.push_back(l);
+}
 
-	// Actualizar muelles
+void PhysicsSystem::update(GLuint delta)
+{
+	m_deltaTime = delta / 1000.0;
+
+	// a) Actualizar muelles
 	for (Muelle* m : m_muelles)
 	{
 		real elongacion = glm::length(*m->r2->m_position - *m->r1->m_position) - m->longitud;
@@ -50,6 +56,12 @@ void PhysicsSystem::update(GLuint deltaTime)
 		// Ley de Hooke
 		m->r1->addForce(m->k * (R1toR2 * elongacion));
 		m->r2->addForce(m->k * (-R1toR2 * elongacion));
+	}
+
+	// b) Actualizar líquidos
+	for(Liquido* l : m_liquidos)
+	{
+		l->applyBuoyancy(m_rigids);
 	}
 #ifdef __DEBUG_INFO__
 	momentoTotal = { 0, 0 ,0 };
@@ -117,8 +129,8 @@ void PhysicsSystem::solveCollision(Rigid* r1, Rigid* r2)
 	do
 	{
 		// TODO: dejar de detectar colisiones cuando ambos objetos ya están quietos
-		r1->getEntity()->translate(-r1->m_velocity * (m_deltaTime / 1000.0)); // /2.0? para que sea mejor
-		r2->getEntity()->translate(-r2->m_velocity * (m_deltaTime / 1000.0));
+		r1->getEntity()->translate(-r1->m_velocity * m_deltaTime); // /2.0? para que sea mejor
+		r2->getEntity()->translate(-r2->m_velocity * m_deltaTime);
 		iter++;
 	} while (iter < MAX_ITER && checkOverlap(r1->m_collider, r2->m_collider));
 

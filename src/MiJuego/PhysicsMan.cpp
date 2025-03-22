@@ -2,10 +2,11 @@
 
 #include "Kepri3D.h"
 
-PhysicsMan::PhysicsMan(Rigid* r, Entity* sombra)
+PhysicsMan::PhysicsMan(Rigid* r, Entity* sombra, Liquido* liquido)
 {
 	this->rigid = r;
 	this->sombra = sombra;
+	this->liquido = liquido;
 }
 
 void PhysicsMan::update(GLuint deltaTime)
@@ -30,7 +31,7 @@ void PhysicsMan::update(GLuint deltaTime)
 
 	// Rozamientos
 	if (InputManager::Instance()->getKeyDown('t'))
-		rigid->setDrag(2.0);
+		rigid->setDrag(1.5);
 
 	if (InputManager::Instance()->getKeyDown('r'))
 		rigid->setAngularDrag(0.8);
@@ -71,6 +72,13 @@ void PhysicsMan::update(GLuint deltaTime)
 			std::cout << "Chocado desde pantalla" << std::endl;
 	}
 
+	// Cambiar nivel del agua
+	if (InputManager::Instance()->getKey('.')) {
+		liquido->setAltura(liquido->getAltura() + (deltaTime / 1000.0));
+	}
+	if (InputManager::Instance()->getKey(',')) {
+		liquido->setAltura(liquido->getAltura() - (deltaTime / 1000.0));
+	}
 
 	// Sombra
 	glm::dvec3 rigidPos = rigid->getEntity()->getPosition();
