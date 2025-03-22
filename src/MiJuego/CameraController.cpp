@@ -14,7 +14,7 @@ CameraController::CameraController(Camera* cam)
 	InputManager::Instance()->setMousePos(cam->getVP()->getW() / 2, cam->getVP()->getH() / 2);
 }
 
-void CameraController::update(GLuint deltaTime)
+void CameraController::update(float deltaTime)
 {
 	// Cambiar/recargar la escena
 	if (InputManager::Instance()->getSpecialKeyDown(GLUT_KEY_F1))
@@ -38,7 +38,7 @@ void CameraController::update(GLuint deltaTime)
 	InputManager::Instance()->setMousePos(cam->getVP()->getW() / 2, cam->getVP()->getH() / 2);
 }
 
-void CameraController::movimientoCamara(GLuint deltaTime)
+void CameraController::movimientoCamara(float deltaTime)
 {
 	glm::vec3 movCamara = { 0,0,0 };
 
@@ -72,12 +72,12 @@ void CameraController::movimientoCamara(GLuint deltaTime)
 	}
 
 	// Moverla en los 3 ejes
-	movCamara = movCamara * (float)velocidad * (deltaTime / 1000.0f);
+	movCamara = movCamara * (float)velocidad * deltaTime;
 	cam->translate({ movCamara.x, 0, movCamara.z }, LOCAL);
 	cam->translate({ 0, movCamara.y, 0 }, GLOBAL);
 }
 
-void CameraController::rotacionesCamara(GLuint deltaTime)
+void CameraController::rotacionesCamara(float deltaTime)
 {
 	glm::vec2 rotCamara = { 0,0 };
 
@@ -95,36 +95,36 @@ void CameraController::rotacionesCamara(GLuint deltaTime)
 	cam->rotate(rotCamara.y, { 1,0,0 }, LOCAL); // lo mismo que hacer pitch
 }
 
-void CameraController::volumenVistaCamara(GLuint deltaTime)
+void CameraController::volumenVistaCamara(float deltaTime)
 {
 	if (InputManager::Instance()->getMouseKey(WHEEL_DOWN))
 	{
 		// Reducir el tamaño de la cámara ortográfica
 		if (cam->isOrto())
-			cam->setOrtoSize(cam->getOrtoSize() - (deltaTime / 1000.0f) * 100.0f);
+			cam->setOrtoSize(cam->getOrtoSize() - deltaTime * 100.0f);
 		// Hacer zoom out (modificando el Near Plane)
 		else
-			cam->setNearPlane(cam->getNearPlane() + (deltaTime / 1000.0f) * 20.0f);
+			cam->setNearPlane(cam->getNearPlane() + deltaTime * 20.0f);
 
 	}
 	else if (InputManager::Instance()->getMouseKey(WHEEL_UP))
 	{
 		// Aumentar ""
 		if (cam->isOrto())
-			cam->setOrtoSize(cam->getOrtoSize() + (deltaTime / 1000.0f) * 100.0f);
+			cam->setOrtoSize(cam->getOrtoSize() + deltaTime * 100.0f);
 		// Hacer zoom in ("")
 		else
-			cam->setNearPlane(cam->getNearPlane() - (deltaTime / 1000.0f) * 20.0f);
+			cam->setNearPlane(cam->getNearPlane() - deltaTime * 20.0f);
 	}
 
 	// Cambiar la distancia de renderizado (modificando el Far Plane)
 	if (InputManager::Instance()->getKey('1'))
 	{
-		cam->setFarPlane(cam->getFarPlane() - (deltaTime / 1000.0f) * 20.0f);
+		cam->setFarPlane(cam->getFarPlane() - deltaTime * 20.0f);
 	}
 	else if (InputManager::Instance()->getKey('2'))
 	{
-		cam->setFarPlane(cam->getFarPlane() + (deltaTime / 1000.0f) * 20.0f);
+		cam->setFarPlane(cam->getFarPlane() + deltaTime * 20.0f);
 	}
 }
 

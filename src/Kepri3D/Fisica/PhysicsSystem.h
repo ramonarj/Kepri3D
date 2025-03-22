@@ -51,7 +51,7 @@ public:
 	/* Lanza un rayo desde la posición de la pantalla dada (la dirección dependerá del tipo de cámara) */
 	bool raycastFromScreen(vector2 origen, real dist);
 
-	void update(GLuint deltaTime);
+	void update(float deltaTime);
 
 #ifdef __DEBUG_INFO__
 	glm::vec3 momentoTotal = { 0, 0, 0 };

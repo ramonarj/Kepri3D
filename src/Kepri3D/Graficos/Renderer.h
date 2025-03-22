@@ -22,7 +22,7 @@ public:
 	// Dibuja el volumen de la malla
 	void drawVolume(Shader* sh);
 
-	virtual void update(GLuint deltaTime) override {}
+	virtual void update(float deltaTime) override {}
 
 	/* Cómo debe pintarse la malla por delante y detrás (GL_FILL/GL_LINE/GL_POINT) */
 	void setPolygonMode(GLenum front, GLenum back);

@@ -58,7 +58,7 @@ public:
 	/* Destructora */
 	~Light();
 
-	void update(GLuint deltaTime) override;
+	void update(float deltaTime) override;
 
 	/* Carga las propiedades de la luz en OpenGL */
 	virtual void load(glm::dmat4 viewMat);

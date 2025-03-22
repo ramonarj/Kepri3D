@@ -9,7 +9,7 @@ PhysicsMan::PhysicsMan(Rigid* r, Entity* sombra, Liquido* liquido)
 	this->liquido = liquido;
 }
 
-void PhysicsMan::update(GLuint deltaTime)
+void PhysicsMan::update(float deltaTime)
 {
 	// Movimiento en ejes X y Z
 	if (InputManager::Instance()->getSpecialKey(GLUT_KEY_LEFT))
@@ -74,10 +74,10 @@ void PhysicsMan::update(GLuint deltaTime)
 
 	// Cambiar nivel del agua
 	if (InputManager::Instance()->getKey('.')) {
-		liquido->setAltura(liquido->getAltura() + (deltaTime / 1000.0));
+		liquido->setAltura(liquido->getAltura() + deltaTime);
 	}
 	if (InputManager::Instance()->getKey(',')) {
-		liquido->setAltura(liquido->getAltura() - (deltaTime / 1000.0));
+		liquido->setAltura(liquido->getAltura() - deltaTime);
 	}
 
 	// Sombra

@@ -123,7 +123,7 @@ void Game::update()
 	last_update_tick = glutGet(GLUT_ELAPSED_TIME);
 
 	//Llamamos al update y al render
-	scene->update(deltaTime); 
+	scene->update(deltaTime / 1000.0); 
 	render();
 
 	// Conteo de FPS

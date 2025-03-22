@@ -21,7 +21,7 @@ public:
 
 	void render() override;
 
-	void update(GLuint deltaTime) override;
+	void update(float deltaTime) override;
 
 	// Setters
 	/* Establece la rapidez de las partículas */

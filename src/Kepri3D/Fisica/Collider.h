@@ -21,7 +21,7 @@ public:
 	Collider(const vector3& size);
 	~Collider();
 
-	void update(GLuint deltaTime) override {};
+	void update(float deltaTime) override {};
 	void render(Shader* sh);
 
 	// Getters

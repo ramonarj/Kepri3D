@@ -43,9 +43,9 @@ void PhysicsSystem::addLiquido(Liquido* l) {
 	m_liquidos.push_back(l);
 }
 
-void PhysicsSystem::update(GLuint delta)
+void PhysicsSystem::update(float delta)
 {
-	m_deltaTime = delta / 1000.0;
+	m_deltaTime = delta;
 
 	// a) Actualizar muelles
 	for (Muelle* m : m_muelles)

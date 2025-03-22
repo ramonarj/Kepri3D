@@ -2,7 +2,7 @@
 
 #include "Kepri3D.h"
 
-void MultitexComp::update(GLuint deltaTime)
+void MultitexComp::update(float deltaTime)
 {
 	mat->setFloat("mix", (sin(glutGet(GLUT_ELAPSED_TIME) * 0.001) + 1) / 2.0f);
 }

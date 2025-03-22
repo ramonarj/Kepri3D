@@ -13,7 +13,7 @@ Terreno::Terreno(Material* mat) : cam(nullptr), heightMap(nullptr)
 	mat->setInt("patch_size", patchSize);
 }
 
-void Terreno::update(GLuint deltaTime)
+void Terreno::update(float deltaTime)
 {
 	// Las cosas configurables en tiempo de ejecución son estas 3 de momento
 	mat->setInt("use_eyeDir", useEyedir);

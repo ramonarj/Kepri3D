@@ -29,7 +29,7 @@ public:
 	void setTessTerrain(Terreno* tesTerrain) { this->tessTerrain = tesTerrain; }
 	void setParticleSys(ParticleSystem* partSys) { this->particleSys = partSys; }
 
-	void update(GLuint deltaTime) override;
+	void update(float deltaTime) override;
 
 	static void centerMouse();
 
@@ -50,7 +50,7 @@ private:
 	bool fullscreen = false;
 	glm::ivec2 windowDim;
 	// Luces
-	GLuint totalTime = 0;
+	float totalTime = 0;
 	float sunVel = 0.15;
 	float lightVel = 0.5f;
 	bool movingLights = true;
@@ -58,9 +58,9 @@ private:
 	GLdouble velTorre = 10.0f;
 
 	// Métodos
-	void controlLuces(GLuint deltaTime);
-	void controlTorre(GLuint deltaTime);
-	void controlTerreno(GLuint deltaTime);
+	void controlLuces(float deltaTime);
+	void controlTorre(float deltaTime);
+	void controlTerreno(float deltaTime);
 };
 
 #endif

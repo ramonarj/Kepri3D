@@ -9,7 +9,7 @@ public:
 	RotationComp(GLdouble rotSpeed = 1.0) : rotSpeed(rotSpeed), rotAxis({ 0, 1, 0 }) {}
 	~RotationComp(){}
 
-	void update(GLuint deltaTime) override;
+	void update(float deltaTime) override;
 
 	void onCollision(Collider* other);
 

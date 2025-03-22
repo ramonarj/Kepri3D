@@ -17,7 +17,7 @@ public:
 	/* Establece el callback del botón */
 	inline void setCallback(void(*callback)()) { m_callback = callback; }
 
-	void update(GLuint deltaTime) override;
+	void update(float deltaTime) override;
 
 private:
 	/* Puntero a la función que llama el botón al clicarse */

@@ -11,7 +11,7 @@ public:
 	ParallaxComp(Material* mat) { this->parallaxMat = mat; }
 	~ParallaxComp() {}
 
-	void update(GLuint deltaTime) override;
+	void update(float deltaTime) override;
 
 private:
 	Material* parallaxMat;

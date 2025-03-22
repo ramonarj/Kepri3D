@@ -384,7 +384,7 @@ void Scene::renderEffects()
 	glDepthFunc(GL_LESS);
 }
 
-void Scene::update(GLuint deltaTime)
+void Scene::update(float deltaTime)
 {
 	// Actualizar el canvas. Importante hacerlo antes que el resto de entidades
 	if(m_canvas != nullptr)

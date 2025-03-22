@@ -2,17 +2,17 @@
 
 #include "Kepri3D.h"
 
-void ParallaxComp::update(GLuint deltaTime)
+void ParallaxComp::update(float deltaTime)
 {
 	// Aumentar/disminuir el efecto
 	if (InputManager::Instance()->getKey('8'))
 	{
-		heightScale += ((float)deltaTime / 1000.0f) * 0.1f;
+		heightScale += deltaTime * 0.1f;
 		parallaxMat->setFloat("height_scale", heightScale);
 	}
 	if (InputManager::Instance()->getKey('7'))
 	{
-		heightScale -= ((float)deltaTime / 1000.0f) * 0.1f;
+		heightScale -= deltaTime * 0.1f;
 		if (heightScale < 0) { heightScale = 0; }
 		parallaxMat->setFloat("height_scale", heightScale);
 	}

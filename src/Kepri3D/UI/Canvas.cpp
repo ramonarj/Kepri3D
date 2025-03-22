@@ -27,7 +27,7 @@ void Canvas::render()
 	Shader::turnOff();
 }
 
-void Canvas::update(GLuint deltaTime)
+void Canvas::update(float deltaTime)
 {
 	for (UIElement* e : m_elements)
 	{

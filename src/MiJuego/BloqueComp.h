@@ -12,7 +12,7 @@ public:
 	/* Ejemplo de componente que empequeñece las entidades que se cruzan con él */
 	void onTrigger(Collider* other) override;
 
-	void update(GLuint deltaTime) override {}
+	void update(float deltaTime) override {}
 private:
 	bool entered = false;
 };

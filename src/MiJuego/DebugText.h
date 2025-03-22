@@ -13,7 +13,7 @@ public:
 	DebugText(Canvas* canvas, const std::string& backgroundTexID);
 	~DebugText(){}
 
-	void update(GLuint deltaTime) override;
+	void update(float deltaTime) override;
 private:
 	bool visible;
 	Text* text;

@@ -2,7 +2,7 @@
 
 #include "Kepri3D.h"
 
-void RotationComp::update(GLuint deltaTime)
+void RotationComp::update(float deltaTime)
 {
 	if (InputManager::Instance()->getKeyDown('x'))
 	{
@@ -16,7 +16,7 @@ void RotationComp::update(GLuint deltaTime)
 	{
 		rotAxis = { 0, 0, 1 };
 	}
-	entity->rotate(deltaTime / 1000.0 * rotSpeed, rotAxis, LOCAL);
+	entity->rotate(deltaTime * rotSpeed, rotAxis, LOCAL);
 }
 
 void RotationComp::onCollision(Collider* other)

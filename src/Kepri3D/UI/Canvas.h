@@ -15,7 +15,7 @@ public:
 	~Canvas();
 
 	void render();
-	void update(GLuint deltaTime);
+	void update(float deltaTime);
 
 	/* Añade un elemento al canvas */
 	void addElement(UIElement* e);

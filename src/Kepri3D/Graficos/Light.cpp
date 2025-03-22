@@ -85,7 +85,7 @@ Light::~Light()
 	cont--;
 }
 
-void Light::update(GLuint deltaTime)
+void Light::update(float deltaTime)
 {
 }
 

@@ -96,12 +96,12 @@ void ParticleSystem::render()
 }
 
 
-void ParticleSystem::update(GLuint deltaTime)
+void ParticleSystem::update(float deltaTime)
 {
 	// Actualizar la posición y el tiempo de vida de cada partícula
 	for (int i = 0; i < maxParticles; i++)
 	{
-		m_positions[i] += (m_velocities[i] * m_particleSpeed * (deltaTime / 1000.0f));
+		m_positions[i] += (m_velocities[i] * m_particleSpeed * deltaTime );
 		m_life[i] += deltaTime;
 
 		// Partícula se muere -> devolverla al estado inicial

@@ -12,7 +12,7 @@ public:
 	MultitexComp(Material* mat) { this->mat = mat; }
 	~MultitexComp() {}
 
-	void update(GLuint deltaTime);
+	void update(float deltaTime);
 
 private:
 	Material* mat;

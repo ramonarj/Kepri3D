@@ -10,7 +10,7 @@ AguaComp::AguaComp(Material* mat)
 	setSpeeds({ 2, 0 }, { -1, -1 });
 }
 
-void AguaComp::update(GLuint deltaTime)
+void AguaComp::update(float deltaTime)
 {
 	// Pasarle el tiempo y velocidad de desplazamiento al material
 	float t = glutGet(GLUT_ELAPSED_TIME);

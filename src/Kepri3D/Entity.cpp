@@ -123,7 +123,7 @@ void Entity::sendModelMat(Shader* sh)
 	sh->setMat4d("model", model);
 }
 
-void Entity::update(GLuint deltaTime)
+void Entity::update(float deltaTime)
 {
 	// Actualiza cada uno de sus componentes
 	for(Component* c : m_componentes)

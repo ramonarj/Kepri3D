@@ -11,7 +11,7 @@ public:
 	CameraController(Camera* cam);
 	~CameraController(){}
 
-	void update(GLuint deltaTime) override;
+	void update(float deltaTime) override;
 private:
 	Camera* cam;
 
@@ -19,9 +19,9 @@ private:
 	float sensibilidad = 0.25;
 
 	// Métodos
-	void movimientoCamara(GLuint deltaTime);
-	void rotacionesCamara(GLuint deltaTime);
-	void volumenVistaCamara(GLuint deltaTime);
+	void movimientoCamara(float deltaTime);
+	void rotacionesCamara(float deltaTime);
+	void volumenVistaCamara(float deltaTime);
 	void puntosFijosCamara();
 };
 #endif

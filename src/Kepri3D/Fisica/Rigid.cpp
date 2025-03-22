@@ -32,10 +32,10 @@ Rigid::Rigid(const glm::dmat4& modelMat, RigidType type)
 	m_framesInactivo = 0;
 }
 
-void Rigid::update(GLuint delta)
+void Rigid::update(float delta)
 {
 	if (m_type == RigidType::Static || m_sleeping) { return; }
-	real deltaTime = delta / 1000.0; // Pasar de ms a segundos
+	real deltaTime = delta; // Pasar de ms a segundos
 
 	// Darle una aceleración fija si le afecta la gravedad
 	if (m_useGravity)

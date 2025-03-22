@@ -40,7 +40,7 @@ public:
 	virtual void render(Shader* sh);
 
 	// Actualizar
-	virtual void update(GLuint deltaTime);
+	virtual void update(float deltaTime);
 
 	// Transformaciones afines
 	/* Suma el vector de tralación dado a la entidad, usando un sistema de referencia dado */

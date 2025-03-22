@@ -19,7 +19,7 @@ public:
 	~Rigid(){}
 
 	/* Actualiza la posición y velocidad del Rigid */
-	void update(GLuint deltaTime) override;
+	void update(float deltaTime) override;
 
 	// Aplicación de fuerzas
 	/* Ejerce una fuerza con la dirección y magnitud dadas sobre el Rigid */

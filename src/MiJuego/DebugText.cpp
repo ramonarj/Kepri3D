@@ -54,7 +54,7 @@ std::string VectorToString(const glm::vec3& v)
 	return stream.str();
 }
 
-void DebugText::update(GLuint deltaTime)
+void DebugText::update(float deltaTime)
 {
 	// Activar/desactivar
 	if (InputManager::Instance()->getSpecialKeyDown(GLUT_KEY_F8))

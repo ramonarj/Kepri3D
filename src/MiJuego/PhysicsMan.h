@@ -12,7 +12,7 @@ public:
 	PhysicsMan(Rigid* r, Entity* sombra, Liquido* liquido);
 	~PhysicsMan() {}
 
-	void update(GLuint deltaTime) override;
+	void update(float deltaTime) override;
 private:
 	Rigid* rigid;
 	Entity* sombra;

@@ -12,7 +12,7 @@ public:
 	AguaComp(Material* mat);
 	~AguaComp() {}
 
-	void update(GLuint deltaTime);
+	void update(float deltaTime);
 
 	void setSpeeds(glm::vec2 texSpeed, glm::vec2 dispSpeed);
 

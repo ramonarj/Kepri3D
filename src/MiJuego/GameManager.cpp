@@ -34,7 +34,7 @@ void GameManager::setLights(Light* dirLight, Light* circleLight, Light* spotLigh
 	windowDim = { cam->getVP()->getW(),  cam->getVP()->getH() };
 }
 
-void GameManager::update(GLuint deltaTime)
+void GameManager::update(float deltaTime)
 {
 	// Salir de la aplicación / desbloquear el ratón
 	if (InputManager::Instance()->getKeyDown(27)) // escape
@@ -114,7 +114,7 @@ void GameManager::update(GLuint deltaTime)
 }
 
 
-void GameManager::controlLuces(GLuint deltaTime)
+void GameManager::controlLuces(float deltaTime)
 {
 	// 1) Luz de foco (linterna)
 	// Posición y dirección
@@ -129,7 +129,7 @@ void GameManager::controlLuces(GLuint deltaTime)
 
 	// 2) Luz puntual (trayectoria circular)
 	//if (movingLights)
-	//	circleLight->setPosition({ 20 * cos(totalTime / 1000.0f * lightVel), 1, 8 * sin(totalTime / 1000.0f * lightVel) });
+	//	circleLight->setPosition({ 20 * cos(totalTime * lightVel), 1, 8 * sin(totalTime * lightVel) });
 
 	// 3) Luz direccional
 	// Parar el movimiento de luces
@@ -146,8 +146,8 @@ void GameManager::controlLuces(GLuint deltaTime)
 	// Moverlo
 	if (movingLights)
 	{
-		dirLight->setDirection({ -cos(totalTime / 1000.0 * sunVel),
-			-sin(totalTime / 1000.0 * sunVel), 0 });
+		dirLight->setDirection({ -cos(totalTime * sunVel),
+			-sin(totalTime * sunVel), 0 });
 		// Cambiar el color del cielo y de la luz
 		float luminosidad = (dirLight->getDirection().y + 1) / 2.0f;
 		Camera::setBackgroundColor(luminosidad, luminosidad, luminosidad);
@@ -157,7 +157,7 @@ void GameManager::controlLuces(GLuint deltaTime)
 	totalTime += deltaTime;
 }
 
-void GameManager::controlTorre(GLuint deltaTime)
+void GameManager::controlTorre(float deltaTime)
 {
 	glm::dvec3 movTorre = { 0,0,0 };
 
@@ -165,12 +165,12 @@ void GameManager::controlTorre(GLuint deltaTime)
 	if(InputManager::Instance()->getSpecialKey(GLUT_KEY_RIGHT))
 	{
 		movTorre.x += 1;
-		//pSystem->rotate(3.5 * deltaTime / -1000.0, { 0,1,0 });
+		//pSystem->rotate(3.5 * deltaTime, { 0,1,0 });
 	}
 	if (InputManager::Instance()->getSpecialKey(GLUT_KEY_LEFT))
 	{
 		movTorre.x -= 1;
-		//pSystem->rotate(3.5 * deltaTime / 1000.0, { 0,1,0 });
+		//pSystem->rotate(3.5 * deltaTime, { 0,1,0 });
 	}
 	// Moverse adelante / atrás
 	if (InputManager::Instance()->getSpecialKey(GLUT_KEY_UP))
@@ -206,12 +206,12 @@ void GameManager::controlTorre(GLuint deltaTime)
 
 
 	// Mover la luz circular
-	movTorre = movTorre * velTorre * (deltaTime / 1000.0);
+	movTorre = movTorre * velTorre * (double)deltaTime;
 	//pSystem->translate(movTorre, GLOBAL);
 	circleLight->getEntity()->translate(movTorre);
 }
 
-void GameManager::controlTerreno(GLuint deltaTime)
+void GameManager::controlTerreno(float deltaTime)
 {
 	if (tessTerrain == nullptr)
 		return;
@@ -222,9 +222,9 @@ void GameManager::controlTerreno(GLuint deltaTime)
 
 	// Modificar la elevación máxima del terreno
 	if (InputManager::Instance()->getKey('h'))
-		tessTerrain->elevacion += deltaTime / 1000.0 * 5.0;
+		tessTerrain->elevacion += deltaTime * 5.0;
 	if (InputManager::Instance()->getKey('b'))
-		tessTerrain->elevacion -= deltaTime / 1000.0 * 5.0;
+		tessTerrain->elevacion -= deltaTime * 5.0;
 }
 
 void GameManager::centerMouse()

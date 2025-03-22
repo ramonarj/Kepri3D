@@ -24,7 +24,7 @@ Button::Button(unsigned int w, unsigned int h, Canvas* canvas) : m_callback(null
 	setCanvas(canvas);
 }
 
-void Button::update(GLuint deltaTime)
+void Button::update(float deltaTime)
 {
 	if (m_callback == nullptr)
 		return;

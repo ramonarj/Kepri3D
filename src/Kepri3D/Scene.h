@@ -44,7 +44,7 @@ public:
 	void render();
 
 	/* Actualiza todas las entidades */
-	void update(GLuint deltaTime);
+	void update(float deltaTime);
 
 	/* Añade una entidad a la escena */
 	void AddEntity(Entity* e);

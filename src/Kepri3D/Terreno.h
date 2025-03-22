@@ -13,7 +13,7 @@ public:
 	Terreno(Material* mat);
 	~Terreno(){}
 
-	void update(GLuint deltaTime) override;
+	void update(float deltaTime) override;
 
 	inline void setCamera(Camera* cam) { this->cam = cam; }
 	void setHeightMap(const std::string& hMap, float elevacion);
