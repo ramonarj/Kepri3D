@@ -117,6 +117,14 @@ private:
 	/* Instante del último update */
 	GLuint last_update_tick = 0;
 
+#ifdef _WIN32
+	/* Información sobre el contexto del dispositivo y de OpenGL */ //TODO: usar un mutex
+	// Handler to the Device Context
+	HDC hdc;
+	// Handler to the GL Rendering Context
+	HGLRC hglrc;
+#endif
+
 	// - Métodos auxiliares - //
 	/* Inicializa GLUT */
 	void iniciarGlut(int argc, char* argv[], int windowW, int windowH);
@@ -132,6 +140,9 @@ private:
 
 	/* Carga la escena y quita la actual */
 	void loadScenePriv(Scene* scene);
+
+	// - - - Funciones para hilos - - - //
+	void thread_loadResources();
 
 	// EDITOR //
 	void updateMenuInfo();

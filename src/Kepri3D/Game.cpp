@@ -4,6 +4,7 @@
 
 #include <iostream>
 #include <vector>
+#include <thread>
 
 Game* Game::instance = nullptr;
 
@@ -53,10 +54,25 @@ void Game::loadScene(Scene* sc)
 	// Primera escena que cargamos (no hay ninguna ejecutándose)
 	if(scene == nullptr)
 	{
-		// Iniciar la escena(cargar recursos necesarios, crear entidades y colocarlas)
+		// Cambiar la escena
 		scene = sc;
+
+		// Cargar recursos necesarios
+#ifdef _WIN32
+		// Quitar el contexto de este hilo
+		assert(wglMakeCurrent(0, 0));
+		// Lanzar el hilo que cargará los recursos y esperar a que acabe
+		std::thread hiloRecursos(&Game::thread_loadResources, this);
+		glutSetWindowTitle("Cargando escena inicial");
+		hiloRecursos.join();
+		// Devolver el contexto a este hilo
+		assert(wglMakeCurrent(hdc, hglrc));
+#else
 		scene->loadResources();
 		scene->init();
+#endif
+		// Crear las entidades y colocarlas
+		//scene->init();
 
 		last_update_tick = glutGet(GLUT_ELAPSED_TIME);
 		std::cout << "Cargada escena '" << scene->getName() << "'" << std::endl;
@@ -80,6 +96,19 @@ void Game::loadScenePriv(Scene* sc)
 
 	last_update_tick = glutGet(GLUT_ELAPSED_TIME);
 	std::cout << "Cargada escena '" << scene->getName() << "'" << std::endl;
+}
+
+void Game::thread_loadResources()
+{
+#ifdef _WIN32
+	// Transmitir el contexto a este hilo
+	assert(wglMakeCurrent(hdc, hglrc));
+	// Cargar los recursos de la escena en cuestión
+	scene->loadResources();
+	scene->init();
+	// Quitar el contexto
+	wglMakeCurrent(0, 0);
+#endif
 }
 
 void Game::exitGame()
@@ -195,19 +224,6 @@ void Game::iniciarGlut(int argc, char* argv[], int windowW, int windowH)
 	glutDisplayFunc(editorDisplay);
 	//glutFullScreen();
 
-	// Menú del editor
-	/*
-	int menu = glutCreateMenu(activeMenu);
-	// Entradas del menú
-	glutAddMenuEntry("Objeto 1", 0);
-	glutAddMenuEntry("Objeto 2", 1);
-	// Menu mas grande
-	glutAddSubMenu("Menu 1", menu);
-	//glutSetMenu(menu);
-	glutAttachMenu(GLUT_RIGHT_BUTTON);
-	*/
-
-
 	// - - - Ventana del juego - - - //
 	glutInitWindowSize(windowW, windowH);   // window size
 	glutInitWindowPosition(250, 100);
@@ -231,6 +247,12 @@ void Game::iniciarGLEW()
 	// Información de debug
 	std::cout << "OpenGL " << glGetString(GL_VERSION) << '\n';
 	std::cout << glGetString(GL_VENDOR) << '\n';
+
+	// Información sobre el contexto de OpenGL (Windows)
+#ifdef _WIN32
+	hdc = wglGetCurrentDC();
+	hglrc = wglGetCurrentContext();
+#endif
 }
 
 void Game::registerGlutCallbacks()
