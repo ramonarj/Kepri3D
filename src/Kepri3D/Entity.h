@@ -180,7 +180,7 @@ public:
 class Cubo : public Entity
 {
 public:
-	Cubo(GLdouble size, bool equalFaces = true);
+	Cubo(GLdouble size = 1, bool equalFaces = true);
 	~Cubo() { };
 };
 
@@ -189,7 +189,7 @@ public:
 class Esfera : public Entity
 {
 public:
-	Esfera(GLdouble radio, GLuint paralelos = 10, GLuint meridianos = 20);
+	Esfera(GLdouble radio = 1, GLuint paralelos = 10, GLuint meridianos = 20);
 	~Esfera() { };
 };
 
@@ -198,7 +198,7 @@ public:
 class Cilindro : public Entity
 {
 public:
-	Cilindro(GLdouble radio, GLdouble altura, GLuint lados = 20);
+	Cilindro(GLdouble radio = 1, GLdouble altura = 2, GLuint lados = 20);
 	~Cilindro() { };
 };
 
@@ -207,7 +207,7 @@ public:
 class Toro : public Entity
 {
 public:
-	Toro(GLdouble radioExterior, GLdouble radioInterior, GLuint anillos, GLuint lineas);
+	Toro(GLdouble radioExterior = 1, GLdouble radioInterior = 0.5, GLuint anillos = 15, GLuint lineas = 8);
 	~Toro() { };
 };
 

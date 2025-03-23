@@ -109,6 +109,7 @@ private:
 
 	/* ID de la ventana de GLUT */
 	int glutWindow = 0;
+	int editorWindow = 0;
 
 	/* Nombre de la ventana, dado por el usuario */
 	std::string windowName;
@@ -131,6 +132,9 @@ private:
 
 	/* Carga la escena y quita la actual */
 	void loadScenePriv(Scene* scene);
+
+	// EDITOR //
+	void updateMenuInfo();
 };
 
 #endif

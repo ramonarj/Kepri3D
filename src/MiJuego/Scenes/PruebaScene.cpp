@@ -162,17 +162,20 @@ void PruebaScene::init()
 	AddEntity(hierba);
 
 
-	// Matojos de hierba (billboards)
+	// Matojos de hierba (billboards). TODO mejorar esto
+	Billboard* matojos = new Billboard("Matojos", 0, 0);
+	matojos->setPosition({ 50, -9, 0 });
 	int numMatojos = 20;
-	glm::vec3 posMatojo = { 40, -11, 44 };
 	float radioMax = 15.0f;
 	for(int i = 0; i < numMatojos; i++)
 	{
 		glm::vec3 incr = { (std::rand() % 100) / (100 / radioMax), 0, (std::rand() % 100) / (100 / radioMax) };
 		Billboard* bill = new Billboard("hierba", 2, 2.5);
-		bill->setPosition(posMatojo + incr);
-		AddEntity(bill);
+		bill->setPosition(incr);
+		bill->setParent(matojos);
+		//AddEntity(bill);
 	}
+	AddEntity(matojos);
 
 	// Árbol (billboard)
 	Billboard* tree = new Billboard("tree", 8, 10);

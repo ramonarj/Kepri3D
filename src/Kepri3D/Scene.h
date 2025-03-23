@@ -67,6 +67,9 @@ public:
 	/* Cambia entre el modelo Phong y el Blinn-Phong */
 	inline void switchBlinnPhong() { blinn = !blinn; }
 
+	// Getters
+	inline Entity* getEntity(int n) { return m_entities[n]; }
+
 	void toggleShadows();
 
 	// Para ser accesibles desde callbacks
