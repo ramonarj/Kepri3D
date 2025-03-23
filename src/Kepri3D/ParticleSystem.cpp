@@ -28,8 +28,8 @@ ParticleSystem::ParticleSystem(GLdouble size, GLuint maxParticles, PARTICLE_TYPE
 	this->m_maxLifetime = 3000.0f;
 
 	// Específico de cada partícula
-	// Tiempo de vida
-	m_life = new GLuint[maxParticles];
+	// Tiempo de vida (segundos)
+	m_life = new float[maxParticles];
 	// Posición
 	m_positions = new glm::dvec3[maxParticles];
 	// Velocidad normalizada
@@ -51,7 +51,7 @@ ParticleSystem::ParticleSystem(GLdouble size, GLuint maxParticles, PARTICLE_TYPE
 
 void ParticleSystem::setLifetime(double time)
 {
-	this->m_maxLifetime = time * 1000;
+	this->m_maxLifetime = time;
 	for (int i = 0; i < maxParticles; i++)
 	{
 		m_life[i] = ((double)m_maxLifetime / maxParticles) * i;

@@ -110,7 +110,7 @@ void Scene::render()
 	loadMatrices();
 
 	// 3) Pintar todas las entidades opacas
-	renderEntities(m_opaqueEntities);
+	renderOpaques();
 
 	// 4) Pintar los vectores normales, si están activos
 	renderNormals();
@@ -119,9 +119,7 @@ void Scene::render()
 	renderSkybox();
 
 	// 6) Pintar todas las entidades transparentes
-	glDepthMask(GL_FALSE);
-	renderEntities(m_transEntities);
-	glDepthMask(GL_TRUE);
+	renderTranslucids();
 
 	// 7) Pintar el canvas lo último
 	renderCanvas();
@@ -284,6 +282,63 @@ void Scene::renderEntities(const std::vector<Entity*>& entityList)
 	}
 	// Valor predet.
 	glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+}
+
+void Scene::renderOpaques()
+{
+	renderEntities(m_opaqueEntities);
+}
+
+void Scene::renderTranslucids()
+{
+	// [Blending desactivado]
+	if (!glIsEnabled(GL_BLEND)) {
+		renderEntities(m_transEntities);
+		return;
+	}
+
+	// Ordenar las entidades translúcidas de más lejanas a más cercanas (algoritmo del pintor)
+	glm::dvec3 camPos = m_camera->getPosition();
+	// Selection Sort chapurrero
+	for (int i = 0; i < m_transEntities.size(); i++)
+	{
+		float maxDist = glm::length(camPos - m_transEntities[i]->getPosition());
+		for (int j = i + 1; j < m_transEntities.size(); j++)
+		{
+			float dist = glm::length(camPos - m_transEntities[j]->getPosition());
+			if (dist > maxDist)
+			{
+				// update max dist
+				maxDist = dist;
+				// swap
+				std::swap(m_transEntities[i], m_transEntities[j]);
+				//std::cout << "Swap" << std::endl;
+				//Entity* aux = m_transEntities[i];
+				//m_transEntities[i] = m_transEntities[j];
+				//m_transEntities[j] = aux;
+			}
+		}
+	}
+	
+	// Comprobación del algoritmo
+	//for(int i = 1; i < m_transEntities.size(); i++)
+	//{
+	//	float dist = glm::length(camPos - m_transEntities[i]->getPosition());
+	//	for(int j = i + 1; j < m_transEntities.size(); j++)
+	//	{
+	//		if (glm::length(camPos - m_transEntities[j]->getPosition()) > dist)
+	//		{
+	//			std::cout << "Fallo" << std::endl;
+	//			std::cout << glm::length(camPos - m_transEntities[i]->getPosition());
+	//			std::cout << " vs " << dist << std::endl;
+	//		}
+	//	}
+	//}
+
+	// Dibujarlas con el Z-write desactivado
+	glDepthMask(GL_FALSE);
+	renderEntities(m_transEntities);
+	glDepthMask(GL_TRUE);
 }
 
 void Scene::renderNormals()

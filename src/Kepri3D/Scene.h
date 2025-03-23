@@ -139,11 +139,14 @@ private:
 	// Sub-métodos del render() para que sea más legible
 	void loadLights();
 	void loadMatrices();
-	void renderEntities(const std::vector<Entity*>& entityList);
+	void renderOpaques();
+	void renderTranslucids();
 	void renderNormals();
 	void renderCanvas();
 	void renderSkybox();
 	void renderEffects();
+
+	void renderEntities(const std::vector<Entity*>& entityList);
 
 	/* Manda todos los uniforms necesarios al shader de la entidad dada */
 	void sendUniforms(Shader* sh);

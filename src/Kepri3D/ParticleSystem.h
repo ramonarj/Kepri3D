@@ -56,7 +56,7 @@ private:
 	glm::vec3* m_velocities;
 
 	/* Tiempo que lleva viva cada partícula */
-	GLuint* m_life;
+	float* m_life;
 };
 
 // - - - - - - - - - - 
