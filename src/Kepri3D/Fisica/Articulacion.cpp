@@ -1,5 +1,8 @@
 #include "Articulacion.h"
+
 #include "Rigid.h"
+#include "PhysicsSystem.h"
+
 // Circular
 Articulacion::Articulacion(Rigid* r1, Rigid* r2, Type tipo, real distancia)
 {
@@ -63,11 +66,21 @@ void Articulacion::applyConstraints()
 		// Capar el movimiento del Rigid 2 a sus dos ejes libres
 		vector3 desp = m_ejeBisagra * (posR1 - posR2);
 		m_r2->getEntity()->translate(desp);
-		// Tratarla como una circular una vez puesta en el eje
+		// Tratarla como una art. circular una vez puesta en el plano adecuado
 		real incr = m_distancia - glm::length(R2toR1);
-		if (glm::abs(incr) > 0.05)
+		if (glm::abs(incr) > 0.01)
 		{
+			R2toR1 = glm::normalize(R2toR1);
+			// Dejarle solo la componente tangencial de la velocidad (respecto al otro cuerpo)
+			if (glm::length(m_r2->m_velocity) != 0)
+			{
+				real cosAlpha2 = glm::dot(glm::normalize(m_r2->m_velocity), R2toR1);
+				vector3 velNormal = R2toR1 * glm::length(m_r2->m_velocity) * cosAlpha2;
+				m_r2->m_velocity -= velNormal;
+				m_r2->m_velocity *= (vector3(1, 1, 1) - m_ejeBisagra);
+			}
 			m_r2->getEntity()->translate(-incr * glm::normalize(R2toR1));
+			m_r2->wakeUp(); //hay que despertarlo
 		}
 		break;
 	}
@@ -76,17 +89,25 @@ void Articulacion::applyConstraints()
 	case Circular:
 	{
 		vector3 R1toR2 = posR2 - posR1;
-		real incr = m_distancia - glm::length(R1toR2);
-		if (glm::abs(incr) > 0.05) // pequeño umbral
+		real incr = glm::length(R1toR2) - m_distancia;
+		if (glm::abs(incr) > 0.01) // pequeño umbral
 		{
-			//m_r1->getEntity()->translate(sobrante / 2 * glm::normalize(R1toR2));
-			m_r2->getEntity()->translate(-incr * glm::normalize(-R1toR2));
+			R1toR2 = glm::normalize(R1toR2);
+			// Dejarle solo la componente tangencial de la velocidad (respecto al otro cuerpo). TODO: hacer un método común
+			if (glm::length(m_r2->m_velocity) != 0)
+			{
+				real cosAlpha2 = glm::dot(glm::normalize(m_r2->m_velocity), -R1toR2);
+				vector3 velNormal = -R1toR2 * glm::length(m_r2->m_velocity) * cosAlpha2;
+				m_r2->m_velocity -= velNormal;
+			}
+			// Teletransportarlo a la posición correcta
+			m_r2->getEntity()->setPosition(posR2 - incr * R1toR2);
+			m_r2->wakeUp(); //hay que despertarlo
+			//m_r2->getEntity()->translate(-incr * glm::normalize(-R1toR2));
 		}
 		break;
 	}
-
 	default:
 		break;
 	}
-	///std::cout << "Applying" << std::endl;
 }
