@@ -9,6 +9,8 @@ class Muelle
 public:
 	Muelle(Rigid* r1, Rigid* r2, real k = 10.0);
 	~Muelle();
+
+	void applyForce();
 private:
 	friend class PhysicsSystem;
 	/* Rigidos conectados por el muelle */

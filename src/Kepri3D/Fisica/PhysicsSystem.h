@@ -10,7 +10,7 @@ class Collider;
 class Rigid;
 class Muelle;
 class Liquido;
-
+class Articulacion;
 
 // Indica cómo de elástico es un choque. Por ahora, es compartido para todos los choques.
 // 0 = totalmente inelástico (se quedan pegados), 1 = totalmente elástico (no se pierde Ec)
@@ -45,6 +45,9 @@ public:
 	/* Añade un líquido a la simulación */
 	void addLiquido(Liquido* l);
 
+	/* Añade una articulación a la simulación */
+	void addArticulacion(Articulacion* a);
+
 	/* Lanza un rayo en la dirección dada y devuelve true si el rayo golpea un collider, false e.o.c. */
 	bool raycast(const vector3& origen, const vector3& dir, real dist);
 
@@ -70,6 +73,9 @@ private:
 
 	/* Vector del líquidos */
 	std::vector<Liquido*> m_liquidos;
+
+	/* Vector de articulaciones */
+	std::vector<Articulacion*> m_articulaciones;
 
 	/* Tiempo entre el anterior frame y este */
 	real m_deltaTime;

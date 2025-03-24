@@ -173,6 +173,7 @@
   <ItemGroup>
     <ClCompile Include="..\..\src\Kepri3D\Component.cpp" />
     <ClCompile Include="..\..\src\Kepri3D\Entity.cpp" />
+    <ClCompile Include="..\..\src\Kepri3D\Fisica\Articulacion.cpp" />
     <ClCompile Include="..\..\src\Kepri3D\Fisica\Collider.cpp" />
     <ClCompile Include="..\..\src\Kepri3D\Fisica\Liquido.cpp" />
     <ClCompile Include="..\..\src\Kepri3D\Fisica\Muelle.cpp" />
@@ -203,6 +204,7 @@
   <ItemGroup>
     <ClInclude Include="..\..\src\Kepri3D\Component.h" />
     <ClInclude Include="..\..\src\Kepri3D\Entity.h" />
+    <ClInclude Include="..\..\src\Kepri3D\Fisica\Articulacion.h" />
     <ClInclude Include="..\..\src\Kepri3D\Fisica\Collider.h" />
     <ClInclude Include="..\..\src\Kepri3D\Fisica\CorePhysics.h" />
     <ClInclude Include="..\..\src\Kepri3D\Fisica\Liquido.h" />

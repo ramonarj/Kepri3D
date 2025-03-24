@@ -3,6 +3,8 @@
 
 #include "../Scene.h"
 
+class Rigid;
+
 class PruebaFisicas : public Scene
 {
 public:
@@ -11,6 +13,9 @@ public:
 
 	void loadResources() override;
 	void init() override;
+
+private:
+	void createDragon(Rigid* nodo, int numEslabones, int tipoUnion);
 };
 
 #endif

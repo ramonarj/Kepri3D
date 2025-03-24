@@ -102,6 +102,9 @@
     <ClCompile Include="..\..\src\Kepri3D\Fisica\Liquido.cpp">
       <Filter>Fisicas</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\src\Kepri3D\Fisica\Articulacion.cpp">
+      <Filter>Fisicas</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\src\Kepri3D\Utils\checkML.h">
@@ -198,6 +201,9 @@
       <Filter>Fisicas</Filter>
     </ClInclude>
     <ClInclude Include="..\..\src\Kepri3D\Fisica\Liquido.h">
+      <Filter>Fisicas</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\Kepri3D\Fisica\Articulacion.h">
       <Filter>Fisicas</Filter>
     </ClInclude>
   </ItemGroup>

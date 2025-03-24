@@ -5,6 +5,7 @@
 #include "Collider.h"
 #include "Camera.h"
 #include "Liquido.h"
+#include "Articulacion.h"
 #include <iostream>
 
 PhysicsSystem* PhysicsSystem::s_instance = nullptr;
@@ -16,6 +17,7 @@ void PhysicsSystem::Clean()
 {
 	CleanVector(m_muelles);
 	CleanVector(m_liquidos);
+	CleanVector(m_articulaciones);
 
 	delete s_instance;
 	s_instance = nullptr;
@@ -43,30 +45,29 @@ void PhysicsSystem::addLiquido(Liquido* l) {
 	m_liquidos.push_back(l);
 }
 
+void PhysicsSystem::addArticulacion(Articulacion* a) {
+	m_articulaciones.push_back(a);
+}
+
 void PhysicsSystem::update(float delta)
 {
 	m_deltaTime = delta;
 
 	// a) Actualizar muelles
 	for (Muelle* m : m_muelles)
-	{
-		real elongacion = glm::length(*m->r2->m_position - *m->r1->m_position) - m->longitud;
-		vector3 R1toR2 = glm::normalize(*m->r2->m_position - *m->r1->m_position);
-		if (glm::abs(elongacion) < 0.05) { continue; } //pequeño umbral para que duerma
-		// Ley de Hooke
-		m->r1->addForce(m->k * (R1toR2 * elongacion));
-		m->r2->addForce(m->k * (-R1toR2 * elongacion));
-	}
+		m->applyForce();
 
 	// b) Actualizar líquidos
 	for(Liquido* l : m_liquidos)
-	{
 		l->applyBuoyancy(m_rigids);
-	}
+
+	// c) Actualizar articulaciones
+	for (Articulacion* a : m_articulaciones)
+		a->applyConstraints();
 #ifdef __DEBUG_INFO__
 	momentoTotal = { 0, 0 ,0 };
 #endif
-	// Comprobar y resolver colisiones entre Rigids
+	// d) Comprobar y resolver colisiones entre Rigids
 	for(int i = 0; i < m_rigids.size(); i++)
 	{
 		Rigid* r1 = m_rigids[i];

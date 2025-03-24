@@ -193,6 +193,43 @@ void PruebaFisicas::init()
 	Liquido* liquido = new Liquido(-10, 1000);
 	PhysicsSystem::Instance()->addLiquido(liquido);
 
+	// - -  ARTICULACIONES - - //
+	// Extremo 1
+	Cubo* art1 = new Cubo(2.0);
+	art1->setTexture("default");
+	art1->setShader("lights");
+	art1->setPosition({ -40, 10, 0 });
+	art1->getComponent<Renderer>()->setActive(false);
+	Collider* colArt1 = new Collider({ 2.0, 2.0, 2.0 });
+	colArt1->setVisible(true);
+	art1->addComponent(colArt1);
+	Rigid* rigidArt1 = new Rigid(art1->getModelMat());
+	rigidArt1->setMass(20.0);
+	art1->addComponent(rigidArt1);
+	AddEntity(art1);
+
+	// Extremo 2
+	Cubo* art2 = new Cubo(2.0);
+	art2->setTexture("default");
+	art2->setShader("lights");
+	art2->setPosition({ -45, 10, 0 });
+	art2->getComponent<Renderer>()->setActive(false);
+	Collider* colArt2 = new Collider({ 2.0, 2.0, 2.0 });
+	colArt2->setVisible(true);
+	art2->addComponent(colArt2);
+	Rigid* rigidArt2 = new Rigid(art2->getModelMat());
+	rigidArt2->setMass(20.0);
+	art2->addComponent(rigidArt2);
+	AddEntity(art2);
+
+	// Añadir la articulación
+	//PhysicsSystem::Instance()->addArticulacion(new Articulacion(rigidArt1, rigidArt2, Articulacion::Fija));
+	//PhysicsSystem::Instance()->addArticulacion(new Articulacion(rigidArt1, rigidArt2, Articulacion::Bisagra));
+	PhysicsSystem::Instance()->addArticulacion(new Articulacion(rigidArt1, rigidArt2, Articulacion::Circular));
+
+	// Dragón
+	createDragon(rigidArt2, 5, Articulacion::Circular);
+
 	// Sombra de la pelota
 	Entity* sombra = new Poligono(40, 3.0, true);
 	sombra->setTexture("sombra");
@@ -217,7 +254,7 @@ void PruebaFisicas::init()
 
 	// PhysicsMan
 	Entity* phyMan = new Entity("PhysicsManager");
-	PhysicsMan* phyManComp = new PhysicsMan(rigidcuboFlot, sombra, liquido);
+	PhysicsMan* phyManComp = new PhysicsMan(rigidArt1, sombra, liquido);
 	phyMan->addComponent(phyManComp);
 	AddEntity(phyMan);
 
@@ -264,4 +301,34 @@ void PruebaFisicas::loadResources()
 
 	/* Efectos de postprocesado ('composites') */
 
+}
+
+
+void PruebaFisicas::createDragon(Rigid* primerNodo, int numEslabones, int tipoUnion)
+{
+	vector3 pos = primerNodo->getEntity()->getPosition();
+	// Dragón
+	Rigid* rigidNodo1 = primerNodo;
+	Rigid* rigidNodo2;
+	for (int i = 0; i < numEslabones; i++)
+	{
+		// Extremo 2
+		Cubo* nodo2 = new Cubo(2.0);
+		nodo2->setTexture("default");
+		nodo2->setShader("lights");
+		nodo2->setPosition(pos - vector3(5, 0, 0));
+		nodo2->getComponent<Renderer>()->setActive(false);
+		Collider* colNodo2 = new Collider({ 2.0, 2.0, 2.0 });
+		colNodo2->setVisible(true);
+		nodo2->addComponent(colNodo2);
+		rigidNodo2 = new Rigid(nodo2->getModelMat());
+		rigidNodo2->setMass(20.0);
+		nodo2->addComponent(rigidNodo2);
+		AddEntity(nodo2);
+
+		// Añadir articulación
+		PhysicsSystem::Instance()->addArticulacion(new Articulacion(rigidNodo1, rigidNodo2, (Articulacion::Type)tipoUnion));
+		rigidNodo1 = rigidNodo2;
+		pos = rigidNodo1->getEntity()->getPosition();
+	}
 }

@@ -18,8 +18,8 @@ private:
 	Entity* sombra;
 	Liquido* liquido;
 
-	float movForce = 15.0f * 2000;
-	float jumpForce = 6000.0f * 2000.0f; // impulso
+	float movForce = 15.0f * 20;// *2000;
+	float jumpForce = 6000.0f * 20;// *2000.0f; // impulso
 	float torque = 300.0f; //impulso
 };
 

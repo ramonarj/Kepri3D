@@ -61,6 +61,8 @@ public:
 private:
 	friend class PhysicsSystem;
 	friend class Liquido;
+	friend class Muelle;
+	friend class Articulacion;
 
 	/* Tipo de Rigidbody */
 	RigidType m_type;
