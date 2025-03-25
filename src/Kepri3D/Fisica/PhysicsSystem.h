@@ -33,19 +33,15 @@ public:
 	/* Limpia la instancia; debe llamarse explícitamente */
 	void Clean();
 
+	void update(float deltaTime);
+
 	/* Gravedad global */
 	static vector3 s_gravity;
 
-	/* Añade un sólido rígido a la simulación */
+	// Añadir entidades físicas a la simulación
 	void addRigid(Rigid* r);
-
-	/* Añade un muelle a la simulación */
 	void addMuelle(Muelle* m);
-
-	/* Añade un líquido a la simulación */
 	void addLiquido(Liquido* l);
-
-	/* Añade una articulación a la simulación */
 	void addArticulacion(Articulacion* a);
 
 	/* Lanza un rayo en la dirección dada y devuelve true si el rayo golpea un collider, false e.o.c. */
@@ -54,7 +50,9 @@ public:
 	/* Lanza un rayo desde la posición de la pantalla dada (la dirección dependerá del tipo de cámara) */
 	bool raycastFromScreen(vector2 origen, real dist);
 
-	void update(float deltaTime);
+	// Fixed Time
+	inline real getFixedTime() const { return m_fixedTime; }
+	void setFixedTime(real t);
 
 #ifdef __DEBUG_INFO__
 	glm::vec3 momentoTotal = { 0, 0, 0 };
@@ -63,7 +61,7 @@ public:
 
 private:
 	static PhysicsSystem* s_instance;
-	PhysicsSystem() {}
+	PhysicsSystem() : accumTime(0) {}
 
 	/* Vector de sólidos rígidos*/
 	std::vector<Rigid*> m_rigids;
@@ -80,7 +78,12 @@ private:
 	/* Tiempo entre el anterior frame y este */
 	real m_deltaTime;
 
+	/* Tiempo fijo que transcurre entre cada paso de la simulación */
+	real accumTime;
+	real m_fixedTime = 0.02; // 50 veces/segundo
+
 	// Métodos privados
+	void simulateStep(real delta);
 	bool checkOverlap(Collider* r1, Collider* r2);
 	void solveCollision(Rigid* r1, Rigid* r2);
 	// Envío de mensajes a los demás componentes

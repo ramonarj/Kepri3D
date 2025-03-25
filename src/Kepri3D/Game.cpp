@@ -493,8 +493,13 @@ void accionesMenu(int accion)
 		break;
 		// Añadirle un Rigid
 	case 3:
-		ent->addComponent(new Rigid(ent->getModelMat()));
+	{
+		Rigid* r = new Rigid(ent->getModelMat());
+		ent->addComponent(r);
+		PhysicsSystem::Instance()->addRigid(r);
 		break;
+	}
+
 	default:
 		break;
 	}

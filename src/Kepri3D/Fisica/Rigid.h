@@ -18,8 +18,7 @@ public:
 	Rigid(const glm::dmat4& modelMat, RigidType type = Dynamic);
 	~Rigid(){}
 
-	/* Actualiza la posición y velocidad del Rigid */
-	void update(float deltaTime) override;
+	void update(float deltaTime) override {}
 
 	// Aplicación de fuerzas
 	/* Ejerce una fuerza con la dirección y magnitud dadas sobre el Rigid */
@@ -65,34 +64,24 @@ private:
 	/* Puntero a la posición del Rigid */
 	glm::dvec3* m_position;
 
-	/* Velocidad del Rigid */
+	/* Velocidades y aceleraciones */
 	vector3 m_velocity;
-
-	/* Aceleración del Rigid */
 	vector3 m_acceleration;
-
-	/* Suma de las fuerzas ejercidas durante este frame */
-	vector3 m_accumForces;
-
-	/* Velocidad angular del Rigid */
 	vector3 m_angularVel;
-
-	/* Aceleración angular del Rigid */
 	vector3 m_angularAcc;
 
-	/* Suma de las fuerzas de torque ejercidas durante este frame */
+	/* Sumatorio de las fuerzas/torques ejercidas durante este frame */
+	vector3 m_accumForces;
 	vector3 m_accumTorque;
 
 	/* ¿Le afecta la gravedad? */
 	bool m_useGravity;
 
-	/* Rozamiento (=resistencia a moverse) del Rigid */
+	/* Rozamiento lineal (=resistencia a moverse) y angular (=resistencia a rotar) */
 	real m_drag;
-
-	/* Rozamiento angular (=resistencia a rotar) del Rigid */
 	real m_angularDrag;
 
-	/* Masa del Rigid */
+	/* Masa */
 	real m_mass;
 
 	/* Puntero al collider de la entidad */
@@ -102,7 +91,13 @@ private:
 	bool m_sleeping;
 
 	/* Los frames que lleva con una velocidad ínfima */
-	unsigned int m_framesInactivo;
+	float m_tiempoInactivo;
+
+	// Métodos auxiliares
+	/* Actualiza la posición y velocidad del Rigid */
+	void integrate(real t);
+	// Actualiza un paso en la simulación
+	void updateStep(real deltaTime);
 };
 
 #endif

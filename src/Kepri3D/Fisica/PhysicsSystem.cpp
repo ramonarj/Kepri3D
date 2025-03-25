@@ -6,11 +6,13 @@
 #include "Camera.h"
 #include "Liquido.h"
 #include "Articulacion.h"
+#include "Scene.h"
 #include <iostream>
 
 PhysicsSystem* PhysicsSystem::s_instance = nullptr;
 
 const real RAYCAST_INCR = 0.1;
+const real MIN_STEP_TIME = 0.001; // 100 veces/segundo
 vector3 PhysicsSystem::s_gravity = { 0, -9.8, 0 };
 
 void PhysicsSystem::Clean()
@@ -49,44 +51,68 @@ void PhysicsSystem::addArticulacion(Articulacion* a) {
 	m_articulaciones.push_back(a);
 }
 
-void PhysicsSystem::update(float delta)
+void PhysicsSystem::update(float deltaTime)
+{
+#ifdef FIXED_STEP_TIME
+	accumTime += deltaTime;
+	// Simular los pasos que haya pendientes (o ninguno, si ha sido un frame muy rápido)
+	while (accumTime > m_fixedTime)
+	{
+		// El motor da un paso...
+		simulateStep(m_fixedTime);
+		// ...y los componentes suscritos a FixedUpdate dan otro
+		Game::Instance()->getScene()->callFixedUpdates(m_fixedTime);
+		accumTime -= m_fixedTime;
+	}
+#else
+	// Simular exactamente 1 paso (NOTA: no se llamaría al FixedUpdate!!)
+	simulateStep(deltaTime);
+#endif
+}
+
+void PhysicsSystem::simulateStep(real delta)
 {
 	m_deltaTime = delta;
+	// a) Actualizar rigids
+	for (Rigid* r : m_rigids)
+		r->updateStep(delta);
 
-	// a) Actualizar muelles
+	// b) Actualizar muelles
 	for (Muelle* m : m_muelles)
 		m->applyForce();
 
-	// b) Actualizar líquidos
-	for(Liquido* l : m_liquidos)
+	// c) Actualizar líquidos
+	for (Liquido* l : m_liquidos)
 		l->applyBuoyancy(m_rigids);
 
-	// c) Actualizar articulaciones
+	// d) Actualizar articulaciones
 	for (Articulacion* a : m_articulaciones)
 		a->applyConstraints();
 #ifdef __DEBUG_INFO__
 	momentoTotal = { 0, 0 ,0 };
 #endif
-	// d) Comprobar y resolver colisiones entre Rigids
-	for(int i = 0; i < m_rigids.size(); i++)
+	// e) Comprobar y resolver colisiones entre Rigids
+	for (int i = 0; i < m_rigids.size(); i++)
 	{
 		Rigid* r1 = m_rigids[i];
 #ifdef __DEBUG_INFO__
 		momentoTotal += (r1->m_velocity * r1->m_mass);
 #endif
-		for(int j = i + 1; j < m_rigids.size(); j++)
+		for (int j = i + 1; j < m_rigids.size(); j++)
 		{
 			Rigid* r2 = m_rigids[j];
 			// Si ambos están dormidos, es imposible que choquen
 			if (r1->m_sleeping && r2->m_sleeping) { continue; }
+			// Si al menos uno de los 2 no tiene collider, tampoco
+			if (r1->m_collider == nullptr || r2->m_collider == nullptr) { continue; }
 			// Hay colisión
-			if(checkOverlap(r1->m_collider, r2->m_collider))
+			if (checkOverlap(r1->m_collider, r2->m_collider))
 			{
 				//std::cout << "Colisión entre " << r1->getEntity()->getName() << " y " << r2->getEntity()->getName() << std::endl;
 				// Si alguno de lo 2 es trigger, no hay que resolver la colisión
-				if(r1->m_collider->m_trigger || r2->m_collider->m_trigger)
-				{ 
-					notifyTrigger(r1->m_collider, r2->m_collider); 
+				if (r1->m_collider->m_trigger || r2->m_collider->m_trigger)
+				{
+					notifyTrigger(r1->m_collider, r2->m_collider);
 				}
 				else
 				{
@@ -271,6 +297,11 @@ bool PhysicsSystem::raycastFromScreen(vector2 origen, real dist)
 	//std::cout << "{" << WORLDpos.x << "," << WORLDpos.y << "," << WORLDpos.z << "}" << std::endl;
 
 	return raycast(WORLDpos, Game::Instance()->getCamera()->forward(), dist);
+}
+
+void PhysicsSystem::setFixedTime(real t)
+{
+	m_fixedTime = glm::max(t, MIN_STEP_TIME);
 }
 
 std::pair<vector3, vector3> PhysicsSystem::calculateElasticCollision(const vector3& v1, const vector3& v2,

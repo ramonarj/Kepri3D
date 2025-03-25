@@ -41,6 +41,7 @@ public:
 
 	// Actualizar
 	virtual void update(float deltaTime);
+	virtual void fixedUpdate(float fixedTime);
 
 	// Transformaciones afines
 	/* Suma el vector de tralación dado a la entidad, usando un sistema de referencia dado */

@@ -25,9 +25,11 @@ public:
 	/* Establece la referencia a nuestra entidad */
 	inline void setEntity(Entity* e) { this->entity = e; }
 
+	// Callbacks
 	/* Método virtual puro que debe implementar cada tipo de componente */
 	virtual void update(float deltaTime) = 0;
-
+	/* Callback que se llama en cada paso de la simulación física */
+	virtual void fixedUpdate(float fixedDeltatime) {}
 	/* Callback para cuando la entidad colisione con otra */
 	virtual void onCollision(Collider* other) {}
 	/* Callback para cuando penetre en un collider tipo trigger */

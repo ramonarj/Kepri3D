@@ -13,12 +13,14 @@ public:
 	~PhysicsMan() {}
 
 	void update(float deltaTime) override;
+	void fixedUpdate(float fixedTime) override;
 private:
 	Rigid* rigid;
 	Entity* sombra;
 	Liquido* liquido;
-
-	float movForce = 100.0f;// *2000;
+	
+	double pointForce = 10.0 * 300000;
+	float movForce = 80.0f * 300000;// *2000;
 	float jumpImpulse = 10.0f * 300000; // impulso
 	float torque = 300.0f; //impulso
 };

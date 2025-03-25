@@ -60,14 +60,14 @@ void PruebaFisicas::init()
 	Esfera* esf2 = new Esfera(1.0);
 	esf2->setTexture("default");
 	esf2->setShader("lights");
-	esf2->setPosition({ -120, 20, 0 });
+	esf2->setPosition({ -80, 30, 0 });
 	esf2->getComponent<Renderer>()->setActive(false);
 	Collider* colEsfera2 = new Collider(5.0);
 	colEsfera2->setVisible(true);
 	esf2->addComponent(colEsfera2);
 	Rigid* rigidEsfera2 = new Rigid(esf2->getModelMat());  // si es estático, no usa la gravedad
 	rigidEsfera2->setMass(colEsfera2->volume() * 500); // mitad de densidad que el agua
-	//rigidEsfera2->setVelocity({ 0, 10, 0 });
+	//rigidEsfera2->setVelocity({ 0, -10, 0 });
 	//rigidEsfera2->useGravity(false);
 	esf2->addComponent(rigidEsfera2);
 	AddEntity(esf2);

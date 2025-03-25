@@ -11,15 +11,8 @@ PhysicsMan::PhysicsMan(Rigid* r, Entity* sombra, Liquido* liquido)
 
 void PhysicsMan::update(float deltaTime)
 {
-	// Movimiento en ejes X y Z
-	if (InputManager::Instance()->getSpecialKey(GLUT_KEY_LEFT))
-		rigid->addForce({ -movForce, 0, 0 });
-	if (InputManager::Instance()->getSpecialKey(GLUT_KEY_RIGHT))
-		rigid->addForce({ movForce, 0, 0 });
-	if (InputManager::Instance()->getSpecialKey(GLUT_KEY_UP))
-		rigid->addForce({ 0, 0, -movForce });
-	if (InputManager::Instance()->getSpecialKey(GLUT_KEY_DOWN))
-		rigid->addForce({ 0, 0, movForce });
+	// Los impulsos y otros eventos instantáneos (getkeyDOWN) 
+	// pueden aplicarse tanto en el Update como en el FixedUpdate
 
 	// Salto
 	if (InputManager::Instance()->getMouseKeyDown(LEFT))
@@ -36,17 +29,6 @@ void PhysicsMan::update(float deltaTime)
 	if (InputManager::Instance()->getKeyDown('r'))
 		rigid->setAngularDrag(0.8);
 
-	// Fuerzas en un punto concreto h, j, u, n
-	if (InputManager::Instance()->getKey('h'))
-	{
-		rigid->addForce(10.0 * -rigid->getEntity()->forward(),
-			rigid->getEntity()->forward() / 2.0 + rigid->getEntity()->up() / 2.0);
-	}
-	if (InputManager::Instance()->getKey('j'))
-	{
-		rigid->addForce(10.0 * -rigid->getEntity()->forward(), 
-			-rigid->getEntity()->forward() / 2.0 - rigid->getEntity()->up() / 2.0);
-	}
 
 	// RayCast
 	if (InputManager::Instance()->getKey('c'))
@@ -64,9 +46,9 @@ void PhysicsMan::update(float deltaTime)
 	// RayCast from screen
 	if (InputManager::Instance()->getMouseKeyDown(LEFT))
 	{
-		InputManager::Instance()->getMousePos();
+		glm::ivec2 mousePos = InputManager::Instance()->getMousePos();
 		// Tira un rayo desde el ratón
-		bool hit = PhysicsSystem::Instance()->raycastFromScreen(InputManager::Instance()->getMousePos(), 100);
+		bool hit = PhysicsSystem::Instance()->raycastFromScreen(mousePos, 100);
 
 		if (hit)
 			std::cout << "Chocado desde pantalla" << std::endl;
@@ -80,7 +62,50 @@ void PhysicsMan::update(float deltaTime)
 		liquido->setAltura(liquido->getAltura() - deltaTime);
 	}
 
+	// Cambiar el step físico
+	real fixedTime = PhysicsSystem::Instance()->getFixedTime();
+	if (InputManager::Instance()->getKey('m'))
+	{
+		PhysicsSystem::Instance()->setFixedTime(fixedTime - deltaTime * 0.1);
+	}
+	if (InputManager::Instance()->getKey('n'))
+	{
+		PhysicsSystem::Instance()->setFixedTime(fixedTime + deltaTime * 0.1);
+	}
+	//std::cout << PhysicsSystem::Instance()->getFixedTime() << std::endl;
+
 	// Sombra
 	glm::dvec3 rigidPos = rigid->getEntity()->getPosition();
 	sombra->setPosition({ rigidPos.x, 0.51, rigidPos.z });
+
+	// Fixed timesteps
+	//std::cout << rigid->getEntity()->getPosition().y << std::endl;
+}
+
+void PhysicsMan::fixedUpdate(float fixedTime)
+{
+	// Las fuerzas continuas (que se ejercen cada frame y no en un instante) [getKey]
+	// deben aplicarse en el FixedUpdate, porque si no se acumulan de más
+
+	// Movimiento en ejes X y Z
+	if (InputManager::Instance()->getSpecialKey(GLUT_KEY_LEFT))
+		rigid->addForce({ -movForce, 0, 0 });
+	if (InputManager::Instance()->getSpecialKey(GLUT_KEY_RIGHT))
+		rigid->addForce({ movForce, 0, 0 });
+	if (InputManager::Instance()->getSpecialKey(GLUT_KEY_UP))
+		rigid->addForce({ 0, 0, -movForce });
+	if (InputManager::Instance()->getSpecialKey(GLUT_KEY_DOWN))
+		rigid->addForce({ 0, 0, movForce });
+
+	// Fuerzas en un punto concreto h, j
+	if (InputManager::Instance()->getKey('h'))
+	{
+		rigid->addForce(pointForce * -rigid->getEntity()->forward(),
+			rigid->getEntity()->forward() / 2.0 + rigid->getEntity()->up() / 2.0);
+	}
+	if (InputManager::Instance()->getKey('j'))
+	{
+		rigid->addForce(pointForce * -rigid->getEntity()->forward(),
+			-rigid->getEntity()->forward() / 2.0 - rigid->getEntity()->up() / 2.0);
+	}
 }

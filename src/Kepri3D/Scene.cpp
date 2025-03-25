@@ -452,8 +452,14 @@ void Scene::update(float deltaTime)
 
 	// Limpiar el input para el siguiente frame
 	InputManager::Instance()->Update();
-	// Detectar y resolver colisiones
+	// Informar al motor físico de cuánto tiempo ha pasado (él decidirá si le toca actualizarse)
 	PhysicsSystem::Instance()->update(deltaTime);
+}
+void Scene::callFixedUpdates(float fixedTime)
+{
+	for (Entity* e : m_entities)
+		if (e->isActive())
+			e->fixedUpdate(fixedTime);
 }
 
 void Scene::loadMatrices()

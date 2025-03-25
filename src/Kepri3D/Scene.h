@@ -45,6 +45,7 @@ public:
 
 	/* Actualiza todas las entidades */
 	void update(float deltaTime);
+	void callFixedUpdates(float fixedTime);
 
 	/* Añade una entidad a la escena */
 	void AddEntity(Entity* e);

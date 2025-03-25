@@ -138,6 +138,19 @@ void Entity::update(float deltaTime)
 			e->update(deltaTime);
 }
 
+void Entity::fixedUpdate(float fixedTime)
+{
+	// Llama al FixedUpdate de cada uno de sus componentes
+	for (Component* c : m_componentes)
+		if (c->isActive())
+			c->fixedUpdate(fixedTime);
+
+	// Avisa a sus hijos para que hagan lo mismo
+	for (Entity* e : m_children)
+		if (e->isActive())
+			e->fixedUpdate(fixedTime);
+}
+
 void Entity::setPosition(const glm::dvec3& pos)
 {
 	// Cambiamos la última columna, que contiene la posición

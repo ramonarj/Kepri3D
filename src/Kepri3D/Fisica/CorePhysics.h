@@ -4,6 +4,7 @@
 #include <glm.hpp>
 
 #define DOUBLE_PRECISION
+#define FIXED_STEP_TIME
 
 /* Establecer la precisión que tendrá el sistema (float/double) */
 #ifdef DOUBLE_PRECISION
