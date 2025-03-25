@@ -119,3 +119,23 @@ bool Collider::pointInSphere(const vector3& point, const Collider* sphere)
 
 	return (dist <= sphere->radio);
 }
+
+// - - - - - - - - - - - - - - - 
+
+real Collider::volume() const
+{
+	real volumen = -1;
+	//  - - Ortoedros - - // -> V = lado * lado * lado
+	if (shape == Cubo)
+	{
+		//vector3 fullExtents = halfExtents * 2.0;
+		//volumen = fullExtents.x * fullExtents.y * fullExtents.z;
+		volumen = 8.0 * (halfExtents.x * halfExtents.y * halfExtents.z); // más rápido
+	}
+	// - - Esferas - - // -> V = 4 / 3 * PI * r3
+	else
+	{
+		volumen = (4.0 / 3.0) * PI * glm::pow(radio, 3);
+	}
+	return volumen;
+}

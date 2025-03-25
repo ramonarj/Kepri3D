@@ -5,6 +5,7 @@
 #include "CorePhysics.h"
 
 class Rigid;
+class Collider;
 
 class Liquido
 {
@@ -27,7 +28,7 @@ private:
 	real m_altura;
 
 	// Métodos auxiliares
-	void depuracionEmpuje(real volumen, real prop, const vector3& pesoDesp);
+	void depuracionEmpuje(real volumen, real prop, const vector3& pesoDesp) const;
 };
 
 #endif

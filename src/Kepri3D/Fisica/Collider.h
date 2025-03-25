@@ -24,9 +24,13 @@ public:
 	void update(float deltaTime) override {};
 	void render(Shader* sh);
 
+	/* Calcula el volumen del Collider en metros cúbicos */
+	real volume() const;
+
 	// Getters
 	const vector3& getHalfExtents() { return halfExtents; }
-	real getRadio() { return radio; }
+	real getRadio() const { return radio; }
+	Shape getShape() const { return shape; }
 
 	// Setters
 	inline void setTrigger(bool trigger) { m_trigger = trigger; }

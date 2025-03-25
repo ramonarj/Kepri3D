@@ -23,7 +23,7 @@ void PhysicsMan::update(float deltaTime)
 
 	// Salto
 	if (InputManager::Instance()->getMouseKeyDown(LEFT))
-		rigid->addForce({ 0, jumpForce, 0 });
+		rigid->addImpulse({ 0, jumpImpulse, 0 });
 
 	// Torque
 	if (InputManager::Instance()->getMouseKeyDown(RIGHT))

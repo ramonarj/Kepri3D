@@ -10,6 +10,7 @@
 
 void PruebaFisicas::init()
 {
+	m_camera->setPosition({ -100, 10, 20 });
 	// LUCES
 	// Direccional
 	Light* dirLight = new Light(DIRECTIONAL_LIGHT);
@@ -59,12 +60,13 @@ void PruebaFisicas::init()
 	Esfera* esf2 = new Esfera(1.0);
 	esf2->setTexture("default");
 	esf2->setShader("lights");
-	esf2->setPosition({ 0, 20, 0 });
+	esf2->setPosition({ -120, 20, 0 });
 	esf2->getComponent<Renderer>()->setActive(false);
 	Collider* colEsfera2 = new Collider(5.0);
 	colEsfera2->setVisible(true);
 	esf2->addComponent(colEsfera2);
 	Rigid* rigidEsfera2 = new Rigid(esf2->getModelMat());  // si es estático, no usa la gravedad
+	rigidEsfera2->setMass(colEsfera2->volume() * 500); // mitad de densidad que el agua
 	//rigidEsfera2->setVelocity({ 0, 10, 0 });
 	//rigidEsfera2->useGravity(false);
 	esf2->addComponent(rigidEsfera2);
@@ -179,7 +181,7 @@ void PruebaFisicas::init()
 	Cubo* cuboFlot = new Cubo(2.0);
 	cuboFlot->setTexture("default");
 	cuboFlot->setShader("lights");
-	cuboFlot->setPosition({ -110, 10, 0 });
+	cuboFlot->setPosition({ -110, 10, 20 });
 	cuboFlot->getComponent<Renderer>()->setActive(false);
 	Collider* colcuboFlot = new Collider({ 2.0, 2.0, 2.0 });
 	colcuboFlot->setVisible(true);
@@ -254,7 +256,7 @@ void PruebaFisicas::init()
 
 	// PhysicsMan
 	Entity* phyMan = new Entity("PhysicsManager");
-	PhysicsMan* phyManComp = new PhysicsMan(rigidArt1, sombra, liquido);
+	PhysicsMan* phyManComp = new PhysicsMan(rigidEsfera2, sombra, liquido);
 	phyMan->addComponent(phyManComp);
 	AddEntity(phyMan);
 

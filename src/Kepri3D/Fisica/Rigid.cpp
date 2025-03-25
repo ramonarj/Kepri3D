@@ -103,6 +103,14 @@ void Rigid::addTorque(const vector3& torque)
 	wakeUp();
 }
 
+void Rigid::addImpulse(const vector3& impulse)
+{
+	if (m_type == Static || glm::length(impulse) < 0.01) { return; }
+
+	m_velocity += (impulse / m_mass);
+	wakeUp();
+}
+
 void Rigid::addForce(const vector3& force, const vector3& point)
 {
 	if (glm::length(point) == 0) { addForce(force); return; }

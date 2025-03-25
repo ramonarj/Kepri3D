@@ -31,28 +31,23 @@ public:
 	/* Aplica un torque al Rigid (t = r x F) */
 	void addTorque(const vector3& torque);
 
+	/* Aplica un impulso al Rigid (I = m * v), cambiando su velocidad instantáneamente */
+	void addImpulse(const vector3& impulse);
+
 	// Setters
+	inline void setMass(real mass) { m_mass = mass; }
+	inline void setDrag(real drag) { m_drag = drag; }
+	inline void setAngularDrag(real angDrag) { m_angularDrag = angDrag; }
+	inline void setCollider(Collider* col) { m_collider = col; }
+	inline void setType(RigidType type) { m_type = type; }
+
 	/* Indica si el objeto será afectado por la fuerza de la Gravedad */
 	inline void useGravity(bool use) { m_useGravity = use; }
-
-	/* Cambia la masa del Rigidbody */
-	inline void setMass(real mass) { m_mass = mass; }
-
-	/* Cambia el rozamiento estático/dinámico del Rigidbody */
-	inline void setDrag(real drag) { m_drag = drag; }
-
-	/* Cambia el rozamiento angular del Rigidbody */
-	inline void setAngularDrag(real angDrag) { m_angularDrag = angDrag; }
-
-	/* Enlaza el rigid a su collider */
-	inline void setCollider(Collider* col) { m_collider = col; }
-
-	/* Cambia el tipo del Rigidbody entre dinámico y estático */
-	inline void setType(RigidType type) { m_type = type; }
 
 	/* Cambia la velocidad del Rigid */
 	void setVelocity(const vector3& vel);
 
+	// Otros
 	/* Despierta al Rigid */
 	void wakeUp();
 	/* Manda el Rigid a dormir */
