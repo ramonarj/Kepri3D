@@ -10,7 +10,7 @@
 
 void PruebaFisicas::init()
 {
-	m_camera->setPosition({ -100, 10, 20 });
+	//m_camera->setPosition({ -100, 10, 20 });
 	// LUCES
 	// Direccional
 	Light* dirLight = new Light(DIRECTIONAL_LIGHT);
@@ -23,173 +23,45 @@ void PruebaFisicas::init()
 	// ENTIDADES
 	m_camera->translate({ 0, -5, 0 });
 
-
-	// NOTA: hay que añadir el componente Collider antes de añadir el Rigid.
 	// Suelo
-	Cubo* suelo = new Cubo(1.0);
-	suelo->scale({ 200.0, 1.0, 200.0 });
-	suelo->setTexture("cobre");
-	suelo->setShader("lights");
-	suelo->setPosition({ 0, -10, 0 });
-	//suelo->getComponent<Renderer>()->setActive(false);
-	Collider* colSuelo = new Collider({ 200.0, 1.0, 200.0 });
-	colSuelo->setVisible(true);
-	suelo->addComponent(colSuelo);
-	Rigid* rigidSuelo = new Rigid(suelo->getModelMat(), Static);
-	rigidSuelo->useGravity(false);
-	rigidSuelo->setMass(100);
-	suelo->addComponent(rigidSuelo);
-	AddEntity(suelo);
+	Rigid* suelo = createRigidCubo("Suelo", { 0, -10, 0 }, Static, 100, false, 1.0, { 200, 1, 200 });
+	suelo->getEntity()->setTexture("cobre");
+	suelo->getEntity()->scale({ 200.0, 1.0, 200.0 });
+	suelo->getEntity()->getComponent<Renderer>()->setActive(true);
 
+	// - - ESFERAS - - //
 	// Esfera con componente Rigid y Collider visible
-	Esfera* esf = new Esfera(1.0);
-	esf->setTexture("default");
-	esf->setShader("lights");
-	esf->setPosition({ 0, 0, 0 });
-	esf->getComponent<Renderer>()->setActive(false);
-	Collider* colEsfera = new Collider(1.0);
-	colEsfera->setVisible(true);
-	esf->addComponent(colEsfera);
-	Rigid* rigidEsfera = new Rigid(esf->getModelMat(), Static);
-	rigidEsfera->useGravity(false);
-	//rigidEsfera->setVelocity({ 0, -10, 0 });
-	esf->addComponent(rigidEsfera);
-	AddEntity(esf);
+	Rigid* esfera1 = createRigidEsfera("Esfera1", { 0, 0, 0 }, Static, 1, false);
 
 	// Esfera 2
-	Esfera* esf2 = new Esfera(1.0);
-	esf2->setTexture("default");
-	esf2->setShader("lights");
-	esf2->setPosition({ -80, 30, 0 });
-	esf2->getComponent<Renderer>()->setActive(false);
-	Collider* colEsfera2 = new Collider(5.0);
-	colEsfera2->setVisible(true);
-	esf2->addComponent(colEsfera2);
-	Rigid* rigidEsfera2 = new Rigid(esf2->getModelMat());  // si es estático, no usa la gravedad
-	rigidEsfera2->setMass(colEsfera2->volume() * 500); // mitad de densidad que el agua
-	//rigidEsfera2->setVelocity({ 0, -10, 0 });
-	//rigidEsfera2->useGravity(false);
-	esf2->addComponent(rigidEsfera2);
-	AddEntity(esf2);
+	Rigid* esfera2 = createRigidEsfera("Esfera2", { -80, 30, 0 }, Dynamic, 1, true, 1.0, 5.0);
+	esfera2->setMass(esfera2->getCollider()->volume() * 500); // mitad de densidad que el agua
 
+	// - - CUBOS - - //
 	// Cubo 1
-	Cubo* cubo1 = new Cubo(2.0);
-	cubo1->setTexture("default");
-	cubo1->setShader("lights");
-	cubo1->setPosition({ 10, 5, 0 });
-	cubo1->getComponent<Renderer>()->setActive(false);
-	Collider* colCubo = new Collider({3, 3, 3});
-	colCubo->setVisible(true);
-	cubo1->addComponent(colCubo);
-	Rigid* rigidCubo= new Rigid(cubo1->getModelMat(), Static);
-	cubo1->addComponent(rigidCubo);
-	AddEntity(cubo1);
-
+	Rigid* cubo1 = createRigidCubo("Cubo1", { 10, 5, 0 }, Static, 1, false, 2.0, { 3, 3, 3 });
 	// Cubo 2
-	Cubo* cubo2 = new Cubo(2.0);
-	cubo2->setTexture("default");
-	cubo2->setShader("lights");
-	cubo2->setPosition({ 10, 60, 0 });
-	cubo2->getComponent<Renderer>()->setActive(false);
-	Collider* colCubo2 = new Collider({2.0, 2.0, 2.0});
-	colCubo2->setVisible(true);
-	cubo2->addComponent(colCubo2);
-	Rigid* rigidCubo2 = new Rigid(cubo2->getModelMat());
-	rigidCubo2->setMass(1.0);
-	rigidCubo2->useGravity(true);
-	cubo2->addComponent(rigidCubo2);
-	AddEntity(cubo2);
-
+	Rigid* cubo2 = createRigidCubo("Cubo2", { 10, 60, 0 }, Dynamic, 1, true);
 	// Cubo 3
-	Cubo* cubo3 = new Cubo(2.0);
-	cubo3->setTexture("default");
-	cubo3->setShader("lights");
-	cubo3->setPosition({ 10, 50, 0 });
-	cubo3->getComponent<Renderer>()->setActive(false);
-	Collider* colcubo3 = new Collider({2.0, 8.0, 2.0});
-	colcubo3->setVisible(true);
-	cubo3->addComponent(colcubo3);
-	Rigid* rigidcubo3 = new Rigid(cubo3->getModelMat());
-	rigidcubo3->setMass(1.0);
-	rigidcubo3->useGravity(false);
-	cubo3->addComponent(rigidcubo3);
-	cubo3->addComponent(new RotationComp(0.0));
-	AddEntity(cubo3);
-
+	Rigid* cubo3 = createRigidCubo("Cubo3", { 10, 50, 0 }, Dynamic, 1, false, 2.0, {2.0, 8.0, 2.0});
 
 	// Trigger
-	Cubo* trigger = new Cubo(0.5);
-	trigger->setTexture("default");
-	trigger->setShader("lights");
-	trigger->setPosition({ 10, 20, 0 });
-	trigger->getComponent<Renderer>()->setActive(false);
-	Collider* colTrigger = new Collider({ 1, 1, 1});
-	colTrigger->setVisible(true);
-	colTrigger->setTrigger(true);
-	trigger->addComponent(colTrigger);
-	Rigid* rigidTrigger = new Rigid(trigger->getModelMat());
-	rigidTrigger->useGravity(false);
-	trigger->addComponent(rigidTrigger);
-	trigger->addComponent(new BloqueComp());
-	AddEntity(trigger);
-
-	// Suelo estático
-	//Cubo* suelo = new Cubo(1);
-	//suelo->setTexture("cobre");
-	//suelo->setShader("default");
-	//suelo->scale({ 100, 3, 100 });
-	////suelo->getComponent<Renderer>()->setActive(false);
-	//Collider* colSuelo = new Collider(Collider::Cubo, 1.0);
-	////colSuelo->setVisible(true);
-	//suelo->addComponent(colSuelo);
-	//Rigid* rigidSuelo = new Rigid(suelo->getModelMat());
-	//rigidSuelo->useGravity(false);
-	//suelo->addComponent(rigidSuelo);
-	//AddEntity(suelo);
+	Rigid* trigger = createRigidCubo("Trigger", { 10, 20, 0 }, Dynamic, 1, false, 0.5, { 1, 1, 1});
+	trigger->getCollider()->setTrigger(true);
+	trigger->getEntity()->addComponent(new BloqueComp());
 
 	// - - - MUELLE - - - //
-	Cubo* extremo1 = new Cubo(2.0);
-	extremo1->setTexture("default");
-	extremo1->setShader("lights");
-	extremo1->setPosition({ 0, 0, 15 });
-	extremo1->getComponent<Renderer>()->setActive(false);
-	Collider* colExtremo1 = new Collider({2.0, 2.0, 2.0});
-	colExtremo1->setVisible(true);
-	extremo1->addComponent(colExtremo1);
-	Rigid* rigidExtremo1 = new Rigid(extremo1->getModelMat(), Static);
-	extremo1->addComponent(rigidExtremo1);
-	AddEntity(extremo1);
-
-	Cubo* extremo2 = new Cubo(2.0);
-	extremo2->setTexture("default");
-	extremo2->setShader("lights");
-	extremo2->setPosition({ 7.5, 0, 15 });
-	extremo2->getComponent<Renderer>()->setActive(false);
-	Collider* colExtremo2 = new Collider({2.0, 2.0, 2.0});
-	colExtremo2->setVisible(true);
-	extremo2->addComponent(colExtremo2);
-	Rigid* rigidExtremo2 = new Rigid(extremo2->getModelMat());
-	rigidExtremo2->setMass(1.0);
-	extremo2->addComponent(rigidExtremo2);
-	AddEntity(extremo2);
+	// Base
+	Rigid* baseMuelle = createRigidCubo("BaseMuelle", { 0, 0, 15 }, Static, 1, false, 2.0, {4.0, 2.0, 4.0});
+	// Extremo
+	Rigid* extremoMuelle = createRigidCubo("ExtremoMuelle", { 7.5, 0, 15 }, Dynamic, 1);
 
 	// Añadir el muelle
-	PhysicsSystem::Instance()->addMuelle(new Muelle(rigidExtremo1, rigidExtremo2, 20));
+	PhysicsSystem::Instance()->addMuelle(new Muelle(baseMuelle, extremoMuelle, 20));
 
 	// - -  FLOTACIÓN - - //
 	// Cubo flotacion
-	Cubo* cuboFlot = new Cubo(2.0);
-	cuboFlot->setTexture("default");
-	cuboFlot->setShader("lights");
-	cuboFlot->setPosition({ -110, 10, 20 });
-	cuboFlot->getComponent<Renderer>()->setActive(false);
-	Collider* colcuboFlot = new Collider({ 2.0, 2.0, 2.0 });
-	colcuboFlot->setVisible(true);
-	cuboFlot->addComponent(colcuboFlot);
-	Rigid* rigidcuboFlot = new Rigid(cuboFlot->getModelMat());
-	rigidcuboFlot->setMass(2000.0);
-	cuboFlot->addComponent(rigidcuboFlot);
-	AddEntity(cuboFlot);
+	Rigid* cuboFlot = createRigidCubo("CuboFlot", { -110, 10, 20 }, Dynamic, 2000.0, true);
 
 	// Líquido
 	Liquido* liquido = new Liquido(-10, 1000);
@@ -197,43 +69,20 @@ void PruebaFisicas::init()
 
 	// - -  ARTICULACIONES - - //
 	// Extremo 1
-	Cubo* art1 = new Cubo(2.0);
-	art1->setTexture("default");
-	art1->setShader("lights");
-	art1->setPosition({ -40, 40, 0 });
-	art1->getComponent<Renderer>()->setActive(false);
-	Collider* colArt1 = new Collider({ 2.0, 2.0, 2.0 });
-	colArt1->setVisible(true);
-	art1->addComponent(colArt1);
-	Rigid* rigidArt1 = new Rigid(art1->getModelMat(), Static);
-	rigidArt1->setMass(20.0);
-	art1->addComponent(rigidArt1);
-	AddEntity(art1);
-
+	Rigid* art1 = createRigidCubo("Art1", { -40, 40, 0 }, Static, 20, false);
 	// Extremo 2
-	Cubo* art2 = new Cubo(2.0);
-	art2->setTexture("default");
-	art2->setShader("lights");
-	art2->setPosition({ -45, 40, 0 });
-	art2->getComponent<Renderer>()->setActive(false);
-	Collider* colArt2 = new Collider({ 2.0, 2.0, 2.0 });
-	colArt2->setVisible(true);
-	art2->addComponent(colArt2);
-	Rigid* rigidArt2 = new Rigid(art2->getModelMat());
-	rigidArt2->setMass(20.0);
-	art2->addComponent(rigidArt2);
-	AddEntity(art2);
+	Rigid* art2 = createRigidCubo("Art2", { -45, 40, 0 }, Dynamic, 20, true);
 
 	// Añadir la articulación
-	//PhysicsSystem::Instance()->addArticulacion(new Articulacion(rigidArt1, rigidArt2, Articulacion::Fija));
-	//PhysicsSystem::Instance()->addArticulacion(new Articulacion(rigidArt1, rigidArt2, Articulacion::Bisagra));
-	PhysicsSystem::Instance()->addArticulacion(new Articulacion(rigidArt1, rigidArt2, Articulacion::Circular));
+	//PhysicsSystem::Instance()->addArticulacion(new Articulacion(art1, art2, Articulacion::Fija));
+	//PhysicsSystem::Instance()->addArticulacion(new Articulacion(art1, art2, Articulacion::Bisagra));
+	PhysicsSystem::Instance()->addArticulacion(new Articulacion(art1, art2, Articulacion::Circular));
 
 	// Dragón
-	createDragon(rigidArt2, 8, Articulacion::Circular);
+	createDragon(art2, 8, Articulacion::Circular);
 
 	// Sombra de la pelota
-	Entity* sombra = new Poligono(40, 3.0, true);
+	Entity* sombra = new Poligono(40, 10.0, true);
 	sombra->setTexture("sombra");
 	sombra->setShader("default");
 	sombra->rotate(-PI / 2, { 1, 0, 0 });
@@ -256,7 +105,7 @@ void PruebaFisicas::init()
 
 	// PhysicsMan
 	Entity* phyMan = new Entity("PhysicsManager");
-	PhysicsMan* phyManComp = new PhysicsMan(rigidEsfera2, sombra, liquido);
+	PhysicsMan* phyManComp = new PhysicsMan(esfera2, sombra, liquido);
 	phyMan->addComponent(phyManComp);
 	AddEntity(phyMan);
 
@@ -305,32 +154,73 @@ void PruebaFisicas::loadResources()
 
 }
 
+Rigid* PruebaFisicas::createRigidCubo(const std::string& name, vector3 pos, RigidType type, double masa,
+	bool useGravity, double tamLado, vector3 tamCollider)
+{
+	// NOTA: hay que añadir el componente Collider antes de añadir el Rigid.
+	// Entidad, nombre, material...
+	Cubo* cubo = new Cubo(tamLado);
+	cubo->setName(name);
+	cubo->setTexture("default");
+	cubo->setShader("lights");
+	cubo->setPosition(pos);
+	cubo->getComponent<Renderer>()->setActive(false);
+	// Collider
+	Collider* colCubo = new Collider(tamCollider);
+	colCubo->setVisible(true);
+	cubo->addComponent(colCubo);
+	// Rigid
+	Rigid* rigidCubo = new Rigid(cubo->getModelMat(), type);
+	rigidCubo->setMass(masa);
+	rigidCubo->useGravity(useGravity);
+	cubo->addComponent(rigidCubo);
+	// Añadir a la escena
+	AddEntity(cubo);
+	
+	return rigidCubo;
+}
+
+Rigid* PruebaFisicas::createRigidEsfera(const std::string& name, vector3 pos, RigidType type, double masa,
+	bool useGravity, double radio, real radioCollider)
+{
+	// NOTA: hay que añadir el componente Collider antes de añadir el Rigid.
+	// Entidad, nombre, material...
+	Esfera* esf = new Esfera(radio);
+	esf->setName(name);
+	esf->setTexture("default");
+	esf->setShader("lights");
+	esf->setPosition(pos);
+	esf->getComponent<Renderer>()->setActive(false);
+	// Collider
+	Collider* colEsfera = new Collider(radioCollider);
+	colEsfera->setVisible(true);
+	esf->addComponent(colEsfera);
+	// Rigid
+	Rigid* rigidEsfera = new Rigid(esf->getModelMat(), type);
+	rigidEsfera->setMass(masa);
+	rigidEsfera->useGravity(useGravity);
+	esf->addComponent(rigidEsfera);
+	// Añadirla a la escena
+	AddEntity(esf);
+
+	return rigidEsfera;
+}
+
+
 
 void PruebaFisicas::createDragon(Rigid* primerNodo, int numEslabones, int tipoUnion)
 {
 	vector3 pos = primerNodo->getEntity()->getPosition();
 	// Dragón
-	Rigid* rigidNodo1 = primerNodo;
-	Rigid* rigidNodo2;
+	Rigid* anterior = primerNodo;
 	for (int i = 0; i < numEslabones; i++)
 	{
-		// Extremo 2
-		Cubo* nodo2 = new Cubo(2.0);
-		nodo2->setTexture("default");
-		nodo2->setShader("lights");
-		nodo2->setPosition(pos - vector3(5, 0, 5));
-		nodo2->getComponent<Renderer>()->setActive(false);
-		Collider* colNodo2 = new Collider(vector3({ 2.0, 2.0, 2.0 }));// *(1.0 - i * 0.05));
-		colNodo2->setVisible(true);
-		nodo2->addComponent(colNodo2);
-		rigidNodo2 = new Rigid(nodo2->getModelMat());
-		rigidNodo2->setMass(20.0);
-		nodo2->addComponent(rigidNodo2);
-		AddEntity(nodo2);
+		// Crear eslabón
+		Rigid* siguiente = createRigidCubo("eslabon", pos - vector3(5, 0, 5), Dynamic, 20, true); //*(1.0 - i * 0.05));
 
 		// Añadir articulación
-		PhysicsSystem::Instance()->addArticulacion(new Articulacion(rigidNodo1, rigidNodo2, (Articulacion::Type)tipoUnion));
-		rigidNodo1 = rigidNodo2;
-		pos = rigidNodo1->getEntity()->getPosition();
+		PhysicsSystem::Instance()->addArticulacion(new Articulacion(anterior, siguiente, (Articulacion::Type)tipoUnion));
+		anterior = siguiente;
+		pos = anterior->getEntity()->getPosition();
 	}
 }

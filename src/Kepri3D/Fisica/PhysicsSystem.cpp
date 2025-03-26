@@ -91,7 +91,7 @@ void PhysicsSystem::simulateStep(real delta)
 #ifdef __DEBUG_INFO__
 	momentoTotal = { 0, 0 ,0 };
 #endif
-	// e) Comprobar y resolver colisiones entre Rigids
+	// e) Detección de colisiones
 	for (int i = 0; i < m_rigids.size(); i++)
 	{
 		Rigid* r1 = m_rigids[i];
@@ -106,51 +106,35 @@ void PhysicsSystem::simulateStep(real delta)
 			// Si al menos uno de los 2 no tiene collider, tampoco
 			if (r1->m_collider == nullptr || r2->m_collider == nullptr) { continue; }
 			// Hay colisión
-			if (checkOverlap(r1->m_collider, r2->m_collider))
+			if (Collider::checkOverlap(r1->m_collider, r2->m_collider))
 			{
 				//std::cout << "Colisión entre " << r1->getEntity()->getName() << " y " << r2->getEntity()->getName() << std::endl;
 				// Si alguno de lo 2 es trigger, no hay que resolver la colisión
-				if (r1->m_collider->m_trigger || r2->m_collider->m_trigger)
-				{
+				if (r1->m_collider->m_trigger || r2->m_collider->m_trigger) {
 					notifyTrigger(r1->m_collider, r2->m_collider);
 				}
-				else
-				{
-					// La resolvemos
-					solveCollision(r1, r2);
-
-					// Y notificamos a los implicados
-					notifyCollision(r1->m_collider, r2->m_collider);
+				// Crear una colisión
+				else {
+					m_colisiones.push_back(Colision(r1, r2, glm::normalize(*r2->m_position - *r1->m_position)));
 				}
 			}
 		}
 	}
+
+	// f) Resolver todas las colisiones
+	for(Colision c : m_colisiones)
+	{
+		// La resolvemos
+		solveCollision(&c);
+		// Y notificamos a los implicados
+		notifyCollision(&c);
+	}
+	m_colisiones.clear();
 }
 
-bool PhysicsSystem::checkOverlap(Collider* c1, Collider* c2)
+void PhysicsSystem::solveCollision(Colision* c)
 {
-	// Colisión Esfera-Esfera
-	if (c1->shape == Collider::Esfera && c2->shape == Collider::Esfera)
-	{
-		return Collider::sphereOverlap(c1, c2);
-	}
-	// Colisión Cubo-Cubo (AABB)
-	else if (c1->shape == Collider::Cubo && c2->shape == Collider::Cubo)
-	{
-		return Collider::aabbOverlap(c1, c2);
-	}
-	// Colisiones Esfera-Cubo
-	else if (c1->shape == Collider::Esfera && c2->shape == Collider::Cubo) {
-		return Collider::sphereCubeOverlap(c1, c2); 
-	}
-	else if (c1->shape == Collider::Cubo && c2->shape == Collider::Esfera) {
-		return Collider::sphereCubeOverlap(c2, c1);
-	}
-	return false;
-}
-
-void PhysicsSystem::solveCollision(Rigid* r1, Rigid* r2)
-{
+	Rigid* r1 = c->r1; Rigid* r2 = c->r2;
 	// - - - - (1) Hacer que dejen de solaparse (tirando hacia afuera) - - - - //
 	unsigned int iter = 0;
 	do
@@ -159,15 +143,13 @@ void PhysicsSystem::solveCollision(Rigid* r1, Rigid* r2)
 		r1->getEntity()->translate(-r1->m_velocity * m_deltaTime); // /2.0? para que sea mejor
 		r2->getEntity()->translate(-r2->m_velocity * m_deltaTime);
 		iter++;
-	} while (iter < MAX_ITER && checkOverlap(r1->m_collider, r2->m_collider));
+	} while (iter < MAX_ITER && Collider::checkOverlap(r1->m_collider, r2->m_collider));
 
 	// - - - - (2) Calcular el punto de contacto (según el tipo de los colliders) - - - - //
-	vector3 R1toR2;
 	// Esfera-Esfera
 	if (r1->m_collider->shape == Collider::Esfera && r2->m_collider->shape == Collider::Esfera)
 	{
-		R1toR2 = glm::normalize(r2->getEntity()->getPosition() - r1->getEntity()->getPosition());
-
+		vector3 n = c->n;
 		// Hay que descomponer las velocidades en sus componentes normal y tangente 
 		// respecto al plano de choque. La normal se transmite en la colisión, y la tangente se conserva
 		vector3 newV1 = { 0, 0, 0 };
@@ -176,16 +158,16 @@ void PhysicsSystem::solveCollision(Rigid* r1, Rigid* r2)
 		// Cómo afecta el cuerpo 1 al cuerpo 2
 		if (glm::length(r1->m_velocity) != 0)
 		{
-			real cosAlpha1 = glm::dot(glm::normalize(r1->m_velocity), R1toR2);
-			vector3 velNormal = R1toR2 * glm::length(r1->m_velocity) * cosAlpha1;
+			real cosAlpha1 = glm::dot(glm::normalize(r1->m_velocity), n);
+			vector3 velNormal = n * glm::length(r1->m_velocity) * cosAlpha1;
 			newV2 += velNormal;
 			newV1 += (r1->m_velocity - velNormal); // total - normal = tangencial
 		}
 		// Cómo afecta el cuerpo 2 al cuerpo 1
 		if (glm::length(r2->m_velocity) != 0)
 		{
-			real cosAlpha2 = glm::dot(glm::normalize(r2->m_velocity), -R1toR2);
-			vector3 velNormal = -R1toR2 * glm::length(r2->m_velocity) * cosAlpha2;
+			real cosAlpha2 = glm::dot(glm::normalize(r2->m_velocity), -n);
+			vector3 velNormal = -n * glm::length(r2->m_velocity) * cosAlpha2;
 			newV1 += velNormal;
 			newV2 += (r2->m_velocity - velNormal); // total - normal = tangencial
 		}
@@ -203,7 +185,7 @@ void PhysicsSystem::solveCollision(Rigid* r1, Rigid* r2)
 	// Cubo - Cubo
 	else //if (r1->m_collider->shape == Collider::Cubo && r2->m_collider->shape == Collider::Cubo)
 	{
-		R1toR2 = r2->getEntity()->getPosition() - r1->getEntity()->getPosition();
+		vector3 R1toR2 = r2->getEntity()->getPosition() - r1->getEntity()->getPosition();
 		vector3 absV = glm::abs(R1toR2 / r1->m_collider->halfExtents); //inspiración divina
 		// No se me ocurre una forma mejor
 		vector3 eje;
@@ -216,12 +198,6 @@ void PhysicsSystem::solveCollision(Rigid* r1, Rigid* r2)
 		// Ambos dinámicos
 		if (r1->m_type == Dynamic && r2->m_type == Dynamic)
 		{
-			// prueba
-			//std::pair<glm::vec3, glm::vec3> vels = calculateElasticCollision(r1->m_velocity, r2->m_velocity,
-			//	R1toR2, r1->m_mass, r2->m_mass);
-			//r1->m_velocity = vels.first;
-			//r2->m_velocity = vels.second;
-
 			// Intercambiar velocidades y multiplicar por coef.rest.
 			vector3 auxVel = r1->m_velocity;
 			r1->setVelocity(-R1toR2 * glm::length(r2->m_velocity) * COEF_RESTITUCION);
@@ -235,13 +211,13 @@ void PhysicsSystem::solveCollision(Rigid* r1, Rigid* r2)
 	}
 }
 
-void PhysicsSystem::notifyCollision(Collider* c1, Collider* c2)
+void PhysicsSystem::notifyCollision(Colision* col)
 {
 	// Notificamos a las entidades involucradas (a cada componente)
-	for (Component* c : c1->getEntity()->getComponents())
-		c->onCollision(c2);
-	for (Component* c : c2->getEntity()->getComponents())
-		c->onCollision(c1);
+	for (Component* c : col->r1->getEntity()->getComponents())
+		c->onCollision(col->r2->m_collider);
+	for (Component* c : col->r2->getEntity()->getComponents())
+		c->onCollision(col->r1->m_collider);
 }
 
 void PhysicsSystem::notifyTrigger(Collider* c1, Collider* c2)
@@ -270,6 +246,35 @@ bool PhysicsSystem::raycast(const vector3& origen, const vector3& dir, real dist
 				hit = true;
 		}
 		currDistance += RAYCAST_INCR;
+	}
+	return hit;
+}
+
+bool PhysicsSystem::raycast(const vector3& origen, const vector3& dir, real dist, vector3& impactPoint)
+{
+	real currDistance = 0;
+	bool hit = false;
+	Collider* collided = nullptr;
+	// Ir avanzando poco a poco
+	while (currDistance < dist && !hit)
+	{
+		impactPoint = origen + dir * currDistance;
+		// TODO: optimizar con Octrees/alguna otra técnica
+		for (Rigid* r : m_rigids)
+		{
+			if(Collider::pointInCollider(impactPoint, r->m_collider))
+			{
+				hit = true;
+				collided = r->m_collider;
+			}
+		}
+		currDistance += RAYCAST_INCR;
+	}
+	// Afinar el punto exacto de colisión (volvemos a la superficie)
+	if(hit)
+	{
+		while (Collider::pointInCollider(impactPoint, collided))
+			impactPoint -= dir * (RAYCAST_INCR / 2.0);
 	}
 	return hit;
 }

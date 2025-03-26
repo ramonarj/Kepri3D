@@ -46,6 +46,7 @@ public:
 
 	/* Lanza un rayo en la dirección dada y devuelve true si el rayo golpea un collider, false e.o.c. */
 	bool raycast(const vector3& origen, const vector3& dir, real dist);
+	bool raycast(const vector3& origen, const vector3& dir, real dist, vector3& impactPoint);
 
 	/* Lanza un rayo desde la posición de la pantalla dada (la dirección dependerá del tipo de cámara) */
 	bool raycastFromScreen(vector2 origen, real dist);
@@ -60,20 +61,32 @@ public:
 #endif
 
 private:
+	struct Colision
+	{
+		Colision(Rigid* r1, Rigid* r2, vector3 n)
+		{
+			this->r1 = r1;
+			this->r2 = r2;
+			this->n = n;
+		}
+		// Cuerpos implicados
+		Rigid* r1;
+		Rigid* r2;
+		// Normal de la colisión, vista de R1 a R2
+		vector3 n;
+	};
+
 	static PhysicsSystem* s_instance;
 	PhysicsSystem() : accumTime(0) {}
 
-	/* Vector de sólidos rígidos*/
+	/* Vectores de las entidades físicas */
 	std::vector<Rigid*> m_rigids;
-
-	/* Vector de muelles */
 	std::vector<Muelle*> m_muelles;
-
-	/* Vector del líquidos */
 	std::vector<Liquido*> m_liquidos;
-
-	/* Vector de articulaciones */
 	std::vector<Articulacion*> m_articulaciones;
+
+	/* Lista de colisiones por resolver */
+	std::vector<Colision> m_colisiones;
 
 	/* Tiempo entre el anterior frame y este */
 	real m_deltaTime;
@@ -84,10 +97,9 @@ private:
 
 	// Métodos privados
 	void simulateStep(real delta);
-	bool checkOverlap(Collider* r1, Collider* r2);
-	void solveCollision(Rigid* r1, Rigid* r2);
+	void solveCollision(Colision* c);
 	// Envío de mensajes a los demás componentes
-	void notifyCollision(Collider* c1, Collider* c2);
+	void notifyCollision(Colision* c);
 	void notifyTrigger(Collider* c1, Collider* c2);
 	// Cálculo de las velocidades resultantes tras una colisión elástica
 	std::pair<vector3, vector3> calculateElasticCollision(const vector3& v1, const vector3& v2,

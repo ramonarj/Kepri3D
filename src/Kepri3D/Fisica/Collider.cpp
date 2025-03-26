@@ -45,6 +45,29 @@ void Collider::render(Shader* sh)
 
 // - - - - - - - - - - - - - - - - - - - 
 
+
+bool Collider::checkOverlap(const Collider* c1, const Collider* c2)
+{
+	// Colisión Esfera-Esfera
+	if (c1->shape == Collider::Esfera && c2->shape == Collider::Esfera)
+		return Collider::sphereOverlap(c1, c2);
+
+	// Colisión Cubo-Cubo (AABB)
+	else if (c1->shape == Collider::Cubo && c2->shape == Collider::Cubo)
+		return Collider::aabbOverlap(c1, c2);
+
+	// Colisiones Esfera-Cubo
+	else if (c1->shape == Collider::Esfera && c2->shape == Collider::Cubo) {
+		return Collider::sphereCubeOverlap(c1, c2);
+	}
+	else if (c1->shape == Collider::Cubo && c2->shape == Collider::Esfera) {
+		return Collider::sphereCubeOverlap(c2, c1);
+	}
+	// TODO: colliders con otras formas ("custom")
+
+	return false;
+}
+
 bool Collider::sphereOverlap(const Collider* c1, const Collider* c2)
 {
 	// Distancia entre ambos centros
@@ -97,6 +120,14 @@ bool Collider::sphereCubeOverlap(const Collider* sphere, const Collider* cube)
 		dist_squared -= pow(posEsf.z - C2.z, 2);
 
 	return dist_squared > 0;
+}
+
+bool Collider::pointInCollider(const vector3& point, const Collider* col)
+{
+	if (col->shape == Collider::Esfera)
+		return pointInSphere(point, col);
+	else if(col->shape == Collider::Cubo)
+		return pointInCube(point, col);
 }
 
 bool Collider::pointInCube(const vector3& point, const Collider* cube)

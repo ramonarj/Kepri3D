@@ -74,9 +74,11 @@ void PhysicsMan::update(float deltaTime)
 	}
 	//std::cout << PhysicsSystem::Instance()->getFixedTime() << std::endl;
 
-	// Sombra
-	glm::dvec3 rigidPos = rigid->getEntity()->getPosition();
-	sombra->setPosition({ rigidPos.x, 0.51, rigidPos.z });
+	// Poner la sombra en la entidad que tenga debajo
+	glm::dvec3 origenRayo = rigid->getEntity()->getPosition() - vector3(0, rigid->getCollider()->getRadio()+0.01, 0);
+	glm::dvec3 impactPoint;
+	if(PhysicsSystem::Instance()->raycast(origenRayo, { 0, -1, 0 }, 300, impactPoint))
+		sombra->setPosition(impactPoint);
 
 	// Fixed timesteps
 	//std::cout << rigid->getEntity()->getPosition().y << std::endl;

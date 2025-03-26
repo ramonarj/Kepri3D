@@ -40,6 +40,9 @@ public:
 	inline void setCollider(Collider* col) { m_collider = col; }
 	inline void setType(RigidType type) { m_type = type; }
 
+	// Getters
+	inline Collider* getCollider() { return m_collider; }
+
 	/* Indica si el objeto será afectado por la fuerza de la Gravedad */
 	inline void useGravity(bool use) { m_useGravity = use; }
 
