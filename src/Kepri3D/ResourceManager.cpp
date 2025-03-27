@@ -6,13 +6,13 @@
 #include "Shader.h"
 #include "MeshLoader.h"
 #include "Utils.h"
+#include "Audio.h"
 
 #include <fstream>
 #include <iostream>
 
 #ifdef _WIN32
 	#include <Windows.h>
-	#include <regex>
 #endif
 
 ResourceManager* ResourceManager::instance = nullptr;
@@ -22,6 +22,7 @@ std::string ResourceManager::TEXTURES_PATH;
 std::string ResourceManager::MESHES_PATH;
 std::string ResourceManager::MATERIALS_PATH;
 std::string ResourceManager::SHADERS_PATH;
+std::string ResourceManager::AUDIO_PATH;
 std::string ResourceManager::COMPOSITES_PATH;
 
 bool ResourceManager::loadMesh(const std::string& meshName, const std::string& id, float scale)
@@ -345,6 +346,25 @@ bool ResourceManager::loadCubemapTexture(std::vector<std::string> facesNames, co
 	}
 }
 
+// - - - - - - - - 
+bool ResourceManager::loadAudio(const std::string& fileName, const std::string& id)
+{
+	Audio* audio = new Audio(AUDIO_PATH + fileName, Audio::WAV);
+	audios[id] = audio;
+	return true;
+}
+
+const Audio& ResourceManager::getAudio(const std::string& id)
+{
+	// Si no se encuentra el shader especificado, se devuelve el predeterminado
+	if (audios.find(id) != audios.end())
+		return *audios[id];
+	else
+		return *audios["default"];
+}
+
+// - - - - - - - - - - 
+
 void ResourceManager::enableMipmaps(bool b)
 {
 	// Actualizar los parámetros de todas las texturas para que usen/no mipmaps
@@ -379,6 +399,7 @@ void ResourceManager::setAssetsPath()
 	MESHES_PATH = ASSETS_PATH + "meshes\\";
 	MATERIALS_PATH = ASSETS_PATH + "materials\\";
 	SHADERS_PATH = ASSETS_PATH + "shaders\\";
+	AUDIO_PATH = ASSETS_PATH + "audio\\";
 	COMPOSITES_PATH = SHADERS_PATH + "postprocess\\";
 #endif
 }
@@ -398,6 +419,9 @@ void ResourceManager::Clean()
 
 	// Borrar todos los shaders
 	CleanMap(shaders);
+
+	// Borrar todos los audios
+	CleanMap(audios);
 
 	delete instance; 
 	instance = nullptr;

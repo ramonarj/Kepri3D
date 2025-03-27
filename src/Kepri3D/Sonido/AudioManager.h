@@ -15,12 +15,11 @@ public:
 
 private:
 	AudioManager() {}
-	~AudioManager() { std::cout << "Destroy" << std::endl; }
+	~AudioManager() {}
 
 	static AudioManager* s_instance;
 
 	void LoadAndPlay(const std::string& wavPath);
-	char* loadWAV(const char* fn, int& chan, int& samplerate, int& bps, int& size);
 };
 
 #endif

@@ -4,15 +4,15 @@
 #include <map>
 #include <string>
 #include <vector>
-#include <glew.h>
-#include <glm.hpp>
+
 #include "Texture.h"
+#include "Audio.h"
 
 class Mesh;
 class Texture;
 class Material;
 class Shader;
-
+class Audio;
 
 
 class ResourceManager
@@ -25,6 +25,7 @@ public:
 	static std::string MESHES_PATH;
 	static std::string MATERIALS_PATH;
 	static std::string SHADERS_PATH;
+	static std::string AUDIO_PATH;
 	static std::string COMPOSITES_PATH;
 
 	/* Acceso al TextureManager */
@@ -81,22 +82,16 @@ public:
 	/* Carga una textura de tipo Cubemap con los archivos dados, y le asigna el ID dado */
 	bool loadCubemapTexture(std::vector<std::string> facesNames, const std::string& id);
 
+	/* Carga un audio */
+	bool loadAudio(const std::string& audioName, const std::string& id);
+
 	// Proporcionar los recursos
-	/* Devuelve una textura dada */
 	const Mesh& getMesh(const std::string& id);
-
-	/* Devuelve una textura dada */
 	const Texture& getTexture(const std::string& id);
-
-	/* Devuelve un material dado */
 	const Material getMaterial(const std::string& id);
-
-	/* Devuelve un shader dado */
 	const Shader& getShader(const std::string& id);
-
-	/* Devuelve un composite dado */
 	const Shader& getComposite(const std::string& id);
-
+	const Audio& getAudio(const std::string& id);
 
 	// Otros métodos
 	void enableMipmaps(bool b);
@@ -108,17 +103,12 @@ private:
 	ResourceManager() {}
 	static ResourceManager* instance;
 
-	/* Diccionario de mallas accesibles por su nombre (string) */
+	/* Diccionarios para cada tipo de recurso, accesibles por su nombre (string) */
 	std::map<std::string, Mesh*> meshes;
-
-	/* Diccionario de texturas accesibles por su nombre (string) */
 	std::map<std::string, Texture*> textures;
-
-	/* Diccionario de materiales accesibles por su nombre (string) */
 	std::map<std::string, Material*> materials;
-
-	/* Diccionario de shaders accesibles por su nombre (string) */
 	std::map<std::string, Shader*> shaders;
+	std::map<std::string, Audio*> audios;
 
 	//
 	void setAssetsPath();

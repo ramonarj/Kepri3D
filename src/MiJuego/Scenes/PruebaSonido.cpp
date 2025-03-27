@@ -2,12 +2,18 @@
 
 #include "../Kepri3D.h"
 
+#include "../AudioMan.h"
+
 void PruebaSonido::loadResources()
 {
 	ResourceManager::Instance()->loadTexture("venus.bmp", "venus");
 
 	ResourceManager::Instance()->loadCubemapTexture({ "skyboxes/city/right.jpg", "skyboxes/city/left.jpg", "skyboxes/city/bottom.jpg",
 		"skyboxes/city/top.jpg", "skyboxes/city/front.jpg", "skyboxes/city/back.jpg" }, "citySkybox");
+
+	// - - - AUDIO - - - //
+	ResourceManager::Instance()->loadAudio("judia.wav", "judia");
+	ResourceManager::Instance()->loadAudio("concha.wav", "concha");
 }
 
 void PruebaSonido::init()
@@ -28,6 +34,16 @@ void PruebaSonido::init()
 	venus->setTexture("venus");
 	venus->setPosition({ 0,10,0 });
 	AddEntity(venus);
+
+	// Audio Source
+	AudioSource* audioComp = new AudioSource("judia");
+	venus->addComponent(audioComp);
+
+	// AudioManager
+	Audio* fxConcha = (Audio*)&ResourceManager::Instance()->getAudio("concha");
+	Entity* audioMan = new Entity("AudioMan");
+	audioMan->addComponent(new AudioMan(audioComp, fxConcha));
+	AddEntity(audioMan);
 
 	/* - - Skybox - - */
 	Skybox* sky = new Skybox("citySkybox");

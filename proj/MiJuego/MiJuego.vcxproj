@@ -156,6 +156,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="..\..\src\MiJuego\AguaComp.cpp" />
+    <ClCompile Include="..\..\src\MiJuego\AudioMan.cpp" />
     <ClCompile Include="..\..\src\MiJuego\BloqueComp.cpp" />
     <ClCompile Include="..\..\src\MiJuego\Callbacks.cpp" />
     <ClCompile Include="..\..\src\MiJuego\CameraController.cpp" />
@@ -172,6 +173,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\src\MiJuego\AguaComp.h" />
+    <ClInclude Include="..\..\src\MiJuego\AudioMan.h" />
     <ClInclude Include="..\..\src\MiJuego\BloqueComp.h" />
     <ClInclude Include="..\..\src\MiJuego\Callbacks.h" />
     <ClInclude Include="..\..\src\MiJuego\CameraController.h" />

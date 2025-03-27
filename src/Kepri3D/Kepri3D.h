@@ -17,6 +17,8 @@
 #include "Articulacion.h"
 #include "PhysicsSystem.h"
 // Audio
+#include "Audio.h"
+#include "AudioSource.h"
 #include "AudioManager.h"
 // Core
 #include "Entity.h"

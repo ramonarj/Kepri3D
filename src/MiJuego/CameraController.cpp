@@ -3,6 +3,7 @@
 #include "Kepri3D.h"
 #include "Scenes/PruebaFisicas.h"
 #include "Scenes/PruebaScene.h"
+#include "Scenes/PruebaSonido.h"
 
 CameraController::CameraController(Camera* cam)
 {
@@ -21,6 +22,8 @@ void CameraController::update(float deltaTime)
 		Game::Instance()->loadScene(new PruebaScene());
 	else if (InputManager::Instance()->getSpecialKeyDown(GLUT_KEY_F2))
 		Game::Instance()->loadScene(new PruebaFisicas());
+	else if (InputManager::Instance()->getSpecialKeyDown(GLUT_KEY_F3))
+		Game::Instance()->loadScene(new PruebaSonido());
 
 	// Cambiar la perspectiva
 	if (InputManager::Instance()->getKeyDown('p'))

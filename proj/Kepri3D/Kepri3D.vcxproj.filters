@@ -111,6 +111,12 @@
     <ClCompile Include="..\..\src\Kepri3D\Sonido\AudioManager.cpp">
       <Filter>Sonido</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\src\Kepri3D\Sonido\Audio.cpp">
+      <Filter>Sonido</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\Kepri3D\Sonido\AudioSource.cpp">
+      <Filter>Sonido</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\src\Kepri3D\Utils\checkML.h">
@@ -213,6 +219,12 @@
       <Filter>Fisicas</Filter>
     </ClInclude>
     <ClInclude Include="..\..\src\Kepri3D\Sonido\AudioManager.h">
+      <Filter>Sonido</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\Kepri3D\Sonido\Audio.h">
+      <Filter>Sonido</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\Kepri3D\Sonido\AudioSource.h">
       <Filter>Sonido</Filter>
     </ClInclude>
   </ItemGroup>
