@@ -32,8 +32,9 @@ void Game::init(int argc, char* argv[], int windowWidth, int windowHeight, const
 	iniciarGLEW();
 	this->windowName = windowName;
 
-	// Para que se inicialicen las variables estáticas
+	// Iniciar los subsistemas de input y audio
 	InputManager::Instance();
+	AudioManager::Instance();
 
 	// 2) Crear el puerto de vista y la cámara
 	viewport = new Viewport(windowWidth, windowHeight);

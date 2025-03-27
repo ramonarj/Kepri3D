@@ -563,6 +563,7 @@ void Scene::clean()
 {
 	// Borrar managers
 	InputManager::Instance()->Clean();
+	AudioManager::Instance()->Clean();
 
 	// Malla para el postprocesado
 	delete m_effectsMesh;

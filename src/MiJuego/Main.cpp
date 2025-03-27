@@ -2,7 +2,7 @@
 #include "Kepri3D.h"
 
 #include "Scenes/PruebaScene.h"
-#include "Scenes/SpaceScene.h"
+#include "Scenes/PruebaSonido.h"
 #include "Scenes/PruebaFisicas.h"
 
 int main(int argc, char*argv[])
@@ -15,7 +15,8 @@ int main(int argc, char*argv[])
 
 	// 2) Cargar la escena inicial
 	//Scene* escena = new PruebaScene();
-	Scene* escena = new PruebaFisicas();
+	//Scene* escena = new PruebaFisicas();
+	Scene* escena = new PruebaSonido();
 	Game::Instance()->loadScene(escena);
 
 	// 3) Bucle de 'juego' (lo maneja glut)

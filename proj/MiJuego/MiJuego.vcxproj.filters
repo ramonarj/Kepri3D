@@ -31,9 +31,6 @@
     <ClCompile Include="..\..\src\MiJuego\Scenes\PruebaFisicas.cpp">
       <Filter>Scenes</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\src\MiJuego\Scenes\SpaceScene.cpp">
-      <Filter>Scenes</Filter>
-    </ClCompile>
     <ClCompile Include="..\..\src\MiJuego\DebugText.cpp">
       <Filter>Archivos de origen</Filter>
     </ClCompile>
@@ -58,6 +55,9 @@
     <ClCompile Include="..\..\src\MiJuego\BloqueComp.cpp">
       <Filter>Archivos de origen\Fisicas</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\src\MiJuego\Scenes\PruebaSonido.cpp">
+      <Filter>Scenes</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\src\MiJuego\CameraController.h">
@@ -70,9 +70,6 @@
       <Filter>Scenes</Filter>
     </ClInclude>
     <ClInclude Include="..\..\src\MiJuego\Scenes\PruebaFisicas.h">
-      <Filter>Scenes</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\src\MiJuego\Scenes\SpaceScene.h">
       <Filter>Scenes</Filter>
     </ClInclude>
     <ClInclude Include="..\..\src\MiJuego\DebugText.h">
@@ -98,6 +95,9 @@
     </ClInclude>
     <ClInclude Include="..\..\src\MiJuego\BloqueComp.h">
       <Filter>Archivos de origen\Fisicas</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\MiJuego\Scenes\PruebaSonido.h">
+      <Filter>Scenes</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

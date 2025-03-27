@@ -16,6 +16,9 @@
     <Filter Include="Fisicas">
       <UniqueIdentifier>{52f4ab5d-f8cb-4116-bd1e-b696cb086bee}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Sonido">
+      <UniqueIdentifier>{ffad8381-9a8d-45ec-8f54-6ac2e0ad12e3}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\..\src\Kepri3D\Utils\MeshLoader.cpp">
@@ -104,6 +107,9 @@
     </ClCompile>
     <ClCompile Include="..\..\src\Kepri3D\Fisica\Articulacion.cpp">
       <Filter>Fisicas</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\Kepri3D\Sonido\AudioManager.cpp">
+      <Filter>Sonido</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -205,6 +211,9 @@
     </ClInclude>
     <ClInclude Include="..\..\src\Kepri3D\Fisica\Articulacion.h">
       <Filter>Fisicas</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\Kepri3D\Sonido\AudioManager.h">
+      <Filter>Sonido</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

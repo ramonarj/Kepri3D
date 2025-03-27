@@ -74,27 +74,27 @@
     <OutDir>$(SolutionDir)bin\</OutDir>
     <IntDir>$(SolutionDir)inter\$(ProjectName)\$(Platform)\$(Configuration)\</IntDir>
     <TargetName>$(ProjectName)_debug</TargetName>
-    <IncludePath>$(SolutionDir)dependencies\glm-1.0.1\glm\;$(SolutionDir)dependencies\freeglut-3.6.0\include\GL\;$(SolutionDir)dependencies\glew-2.2.0\include\GL\;$(IncludePath)</IncludePath>
+    <IncludePath>$(SolutionDir)dependencies\glm-1.0.1\glm\;$(SolutionDir)dependencies\freeglut-3.6.0\include\GL\;$(SolutionDir)dependencies\glew-2.2.0\include\GL\;$(SolutionDir)dependencies\openal-soft-1.20.0\include\AL\;$(IncludePath)</IncludePath>
     <LibraryPath>$(SolutionDir)dependencies\freeglut-3.6.0\libs\;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <OutDir>$(SolutionDir)bin\</OutDir>
     <IntDir>$(SolutionDir)inter\$(ProjectName)\$(Platform)\$(Configuration)\</IntDir>
-    <IncludePath>$(SolutionDir)dependencies\glm-1.0.1\glm\;$(SolutionDir)dependencies\freeglut-3.6.0\include\GL\;$(SolutionDir)dependencies\glew-2.2.0\include\GL\;$(IncludePath)</IncludePath>
+    <IncludePath>$(SolutionDir)dependencies\glm-1.0.1\glm\;$(SolutionDir)dependencies\freeglut-3.6.0\include\GL\;$(SolutionDir)dependencies\glew-2.2.0\include\GL\;$(SolutionDir)dependencies\openal-soft-1.20.0\include\AL\;$(IncludePath)</IncludePath>
     <LibraryPath>$(SolutionDir)dependencies\freeglut-3.6.0\libs\;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <OutDir>$(SolutionDir)bin\</OutDir>
     <IntDir>$(SolutionDir)inter\$(ProjectName)\$(Platform)\$(Configuration)\</IntDir>
     <TargetName>$(ProjectName)_debug</TargetName>
-    <IncludePath>$(SolutionDir)dependencies\glm-1.0.1\glm\;$(SolutionDir)dependencies\freeglut-3.6.0\include\GL\;$(SolutionDir)dependencies\glew-2.2.0\include\GL\;$(IncludePath)</IncludePath>
-    <LibraryPath>$(SolutionDir)dependencies\freeglut-3.6.0\VisualC\lib\$(Configuration)\;$(SolutionDir)dependencies\glew-2.2.0\lib\$(Configuration)\$(Platform)\;$(LibraryPath)</LibraryPath>
+    <IncludePath>$(SolutionDir)dependencies\glm-1.0.1\glm\;$(SolutionDir)dependencies\freeglut-3.6.0\include\GL\;$(SolutionDir)dependencies\glew-2.2.0\include\GL\;$(SolutionDir)dependencies\openal-soft-1.20.0\include\AL\;$(IncludePath)</IncludePath>
+    <LibraryPath>$(SolutionDir)dependencies\freeglut-3.6.0\VisualC\lib\$(Configuration)\;$(SolutionDir)dependencies\glew-2.2.0\lib\$(Configuration)\$(Platform)\;$(SolutionDir)dependencies\openal-soft-1.20.0\lib\$(Platform)\;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <OutDir>$(SolutionDir)bin\</OutDir>
     <IntDir>$(SolutionDir)inter\$(ProjectName)\$(Platform)\$(Configuration)\</IntDir>
-    <IncludePath>$(SolutionDir)dependencies\glm-1.0.1\glm\;$(SolutionDir)dependencies\freeglut-3.6.0\include\GL\;$(SolutionDir)dependencies\glew-2.2.0\include\GL\;$(IncludePath)</IncludePath>
-    <LibraryPath>$(SolutionDir)dependencies\freeglut-3.6.0\VisualC\lib\$(Configuration)\;$(SolutionDir)dependencies\glew-2.2.0\lib\$(Configuration)\$(Platform)\;$(LibraryPath)</LibraryPath>
+    <IncludePath>$(SolutionDir)dependencies\glm-1.0.1\glm\;$(SolutionDir)dependencies\freeglut-3.6.0\include\GL\;$(SolutionDir)dependencies\glew-2.2.0\include\GL\;$(SolutionDir)dependencies\openal-soft-1.20.0\include\AL\;$(IncludePath)</IncludePath>
+    <LibraryPath>$(SolutionDir)dependencies\freeglut-3.6.0\VisualC\lib\$(Configuration)\;$(SolutionDir)dependencies\glew-2.2.0\lib\$(Configuration)\$(Platform)\;$(SolutionDir)dependencies\openal-soft-1.20.0\lib\;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
@@ -102,7 +102,7 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>WIN32;_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>$(SolutionDir)src\$(ProjectName)\;$(SolutionDir)src\$(ProjectName)\Graficos\;$(SolutionDir)src\$(ProjectName)\Fisica\;$(SolutionDir)src\$(ProjectName)\Utils\;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)src\$(ProjectName)\;$(SolutionDir)src\$(ProjectName)\Graficos\;$(SolutionDir)src\$(ProjectName)\Fisica\;$(SolutionDir)src\$(ProjectName)\Sonido\;$(SolutionDir)src\$(ProjectName)\Utils\;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -120,7 +120,7 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>WIN32;NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>$(SolutionDir)src\$(ProjectName)\;$(SolutionDir)src\$(ProjectName)\Graficos\;$(SolutionDir)src\$(ProjectName)\Fisica\;$(SolutionDir)src\$(ProjectName)\Utils\;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)src\$(ProjectName)\;$(SolutionDir)src\$(ProjectName)\Graficos\;$(SolutionDir)src\$(ProjectName)\Fisica\;$(SolutionDir)src\$(ProjectName)\Sonido\;$(SolutionDir)src\$(ProjectName)\Utils\;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -138,7 +138,7 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>$(SolutionDir)src\$(ProjectName)\;$(SolutionDir)src\$(ProjectName)\Graficos\;$(SolutionDir)src\$(ProjectName)\Fisica\;$(SolutionDir)src\$(ProjectName)\Utils\;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)src\$(ProjectName)\;$(SolutionDir)src\$(ProjectName)\Graficos\;$(SolutionDir)src\$(ProjectName)\Fisica\;$(SolutionDir)src\$(ProjectName)\Sonido\;$(SolutionDir)src\$(ProjectName)\Utils\;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -146,7 +146,7 @@
       <AdditionalDependencies>glew32d.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <Lib>
-      <AdditionalDependencies>glew32d.lib</AdditionalDependencies>
+      <AdditionalDependencies>glew32d.lib;OpenAL32.lib;alut.lib</AdditionalDependencies>
     </Lib>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
@@ -157,7 +157,7 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>$(SolutionDir)src\$(ProjectName)\;$(SolutionDir)src\$(ProjectName)\Graficos\;$(SolutionDir)src\$(ProjectName)\Fisica\;$(SolutionDir)src\$(ProjectName)\Utils\;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)src\$(ProjectName)\;$(SolutionDir)src\$(ProjectName)\Graficos\;$(SolutionDir)src\$(ProjectName)\Fisica\;$(SolutionDir)src\$(ProjectName)\Sonido\;$(SolutionDir)src\$(ProjectName)\Utils\;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -167,7 +167,7 @@
       <AdditionalDependencies>glew32.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <Lib>
-      <AdditionalDependencies>glew32d.lib</AdditionalDependencies>
+      <AdditionalDependencies>glew32d.lib;OpenAL32.lib;alut.lib</AdditionalDependencies>
     </Lib>
   </ItemDefinitionGroup>
   <ItemGroup>
@@ -192,6 +192,7 @@
     <ClCompile Include="..\..\src\Kepri3D\ParticleSystem.cpp" />
     <ClCompile Include="..\..\src\Kepri3D\ResourceManager.cpp" />
     <ClCompile Include="..\..\src\Kepri3D\Scene.cpp" />
+    <ClCompile Include="..\..\src\Kepri3D\Sonido\AudioManager.cpp" />
     <ClCompile Include="..\..\src\Kepri3D\Terreno.cpp" />
     <ClCompile Include="..\..\src\Kepri3D\UI\Button.cpp" />
     <ClCompile Include="..\..\src\Kepri3D\UI\Canvas.cpp" />
@@ -225,6 +226,7 @@
     <ClInclude Include="..\..\src\Kepri3D\ParticleSystem.h" />
     <ClInclude Include="..\..\src\Kepri3D\ResourceManager.h" />
     <ClInclude Include="..\..\src\Kepri3D\Scene.h" />
+    <ClInclude Include="..\..\src\Kepri3D\Sonido\AudioManager.h" />
     <ClInclude Include="..\..\src\Kepri3D\Terreno.h" />
     <ClInclude Include="..\..\src\Kepri3D\UI\Button.h" />
     <ClInclude Include="..\..\src\Kepri3D\UI\Canvas.h" />

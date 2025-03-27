@@ -4,7 +4,7 @@
 #include "Shader.h"
 #include "ResourceManager.h"
 
-bool Renderer::visibleBounds = true;
+bool Renderer::visibleBounds = false;
 
 Renderer::Renderer(Mesh* mesh) : m_materials(nullptr)
 {
