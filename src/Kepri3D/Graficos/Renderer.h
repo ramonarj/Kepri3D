@@ -26,6 +26,7 @@ public:
 
 	/* Cómo debe pintarse la malla por delante y detrás (GL_FILL/GL_LINE/GL_POINT) */
 	void setPolygonMode(GLenum front, GLenum back);
+	GLenum getPolygonMode(int face); //0 = front, 1 = back
 
 	/* Devuelve el material que usael renderer */
 	Material* getMaterial() { return &m_materials[0]; }

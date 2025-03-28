@@ -8,21 +8,18 @@ void cullingButtonPressed()
 {
 	// Activar / desactivar el culling de polígonos traseros
 	Game::switchBoolParam(GL_CULL_FACE);
-	GameManager::centerMouse();
 }
 
 void blendingButtonPressed()
 {
 	// Activar / desactivar las transparencias en texturas y materiales
 	Game::switchBoolParam(GL_BLEND);
-	GameManager::centerMouse();
 }
 
 void lightingButtonPressed()
 {
 	// Activar / desactivar la iluminación
 	Game::switchBoolParam(GL_LIGHTING);
-	GameManager::centerMouse();
 }
 
 void texturesButtonPressed()
@@ -32,7 +29,6 @@ void texturesButtonPressed()
 	Game::switchBoolParam(GL_TEXTURE_2D);
 	// c/shaders
 	Material::s_useTextures = !Material::s_useTextures;
-	GameManager::centerMouse();
 }
 
 void shadingButtonPressed()
@@ -51,15 +47,12 @@ void shadingButtonPressed()
 		glShadeModel(GL_FLAT);
 		Material::setShadingType(GL_FLAT);
 	}
-
-	GameManager::centerMouse();
 }
 
 void alphaButtonPressed()
 {
 	// Activar / desactivar el alpha test
 	Game::switchBoolParam(GL_ALPHA_TEST);
-	GameManager::centerMouse();
 }
 
 void multisamplingButtonPressed()
@@ -67,7 +60,6 @@ void multisamplingButtonPressed()
 	// Activar / desactivar el multisampling
 	Game::switchBoolParam(GL_MULTISAMPLE);
 	Scene::msaa_active = !Scene::msaa_active;
-	GameManager::centerMouse();
 }
 
 void mipmapButtonPressed()
@@ -75,8 +67,6 @@ void mipmapButtonPressed()
 	// Activar / desactivar el uso de mipmaps
 	Scene::mipmapsActive = !Scene::mipmapsActive;
 	ResourceManager::Instance()->enableMipmaps(Scene::mipmapsActive);
-
-	GameManager::centerMouse();
 }
 
 void normalsButtonPressed()
@@ -89,16 +79,12 @@ void normalsButtonPressed()
 	}
 	else
 		Scene::normalsShader = nullptr;
-
-	GameManager::centerMouse();
 }
 
 void compositeButtonPressed()
 {
 	// Activar / desactivar los efectos composite
 	Scene::compositesActive = !Scene::compositesActive;
-
-	GameManager::centerMouse();
 }
 
 
@@ -110,39 +96,32 @@ void scissorButtonPressed()
 		glutGet(GLUT_WINDOW_HEIGHT) - proporcionBarra * 2);
 	// Activar / desactivar el Scissor Test (hay que hacerlo en este orden)
 	Game::switchBoolParam(GL_SCISSOR_TEST);
-
-	GameManager::centerMouse();
 }
 
 void skyboxButtonPressed()
 {
 	Scene::skyboxActive = !Scene::skyboxActive;
-	GameManager::centerMouse();
 }
 
 void gammaButtonPressed()
 {
 	Game::switchBoolParam(GL_FRAMEBUFFER_SRGB);
-	GameManager::centerMouse();
 }
 
 void fresnelButtonPressed()
 {
 	Material::fresnel = !Material::fresnel;
-	GameManager::centerMouse();
 }
 
 
 void stencilButtonPressed()
 {
 	Game::switchBoolParam(GL_STENCIL_TEST);
-	GameManager::centerMouse();
 }
 
 void shadowsButtonPressed()
 {
 	Game::Instance()->getScene()->toggleShadows();
-	GameManager::centerMouse();
 }
 
 void logicOpButtonPressed()
@@ -153,8 +132,6 @@ void logicOpButtonPressed()
 	// Tipo de operación que se hace sobre cada píxel
 	// Curiosas : GL_COPY (predet.), GL_COPY_INVERTED (negativo), GL_INVERT (b/n)
 	glLogicOp(GL_COPY_INVERTED);
-
-	GameManager::centerMouse();
 }
 
 
@@ -164,11 +141,9 @@ void instancingButtonPressed()
 	{
 		GameManager::particleSys->setActive(!GameManager::particleSys->isActive());
 	}
-	GameManager::centerMouse();
 }
 
 void volumesButtonPressed()
 {
 	Renderer::visibleBounds = !Renderer::visibleBounds;
-	GameManager::centerMouse();
 }

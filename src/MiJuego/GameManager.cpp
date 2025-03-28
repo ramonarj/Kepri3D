@@ -36,6 +36,23 @@ void GameManager::setLights(Light* dirLight, Light* circleLight, Light* spotLigh
 
 void GameManager::update(float deltaTime)
 {
+	// Seleccionar entidades usando el RaycastFromScreen
+	if (InputManager::Instance()->getMouseKeyDown(LEFT) && !lockedMouse)
+	{
+		glm::ivec2 mousePos = InputManager::Instance()->getMousePos();
+		// Tira un rayo desde el ratón
+		Collider* col = PhysicsSystem::Instance()->raycastFromScreenPro(mousePos, 100);
+		if (col != nullptr)
+		{
+			std::cout << "Seleccionado " << col->getEntity()->getName() << std::endl;
+			Renderer* rend = col->getEntity()->getComponent<Renderer>();
+			if(rend->getPolygonMode(0) == GL_FILL)
+				rend->setPolygonMode(GL_LINE, GL_LINE);
+			else
+				rend->setPolygonMode(GL_FILL, GL_LINE);
+		}		
+	}
+
 	// Salir de la aplicación / desbloquear el ratón
 	if (InputManager::Instance()->getKeyDown(27)) // escape
 	{
@@ -67,8 +84,8 @@ void GameManager::update(float deltaTime)
 	controlTerreno(deltaTime);
 
 
-	// Desbloquear el ratón con el clic izquierdo
-	if (InputManager::Instance()->getMouseKey(LEFT))
+	// Bloquear el ratón con el clic derecho
+	if (InputManager::Instance()->getMouseKey(RIGHT))
 	{
 		if (!lockedMouse)
 		{

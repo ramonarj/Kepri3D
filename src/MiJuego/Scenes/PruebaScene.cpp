@@ -539,6 +539,8 @@ void PruebaScene::PruebaMateriales()
 	esf->setPosition({ 0,10,25 });
 	esf->setMaterial("emerald");
 	esf->addComponent(new RotationComp(0.25));
+	esf->addComponent(new Collider(10));
+	esf->addComponent(new Rigid(esf->getModelMat(), Static));
 	AddEntity(esf);
 
 	// Cubo con reflejos

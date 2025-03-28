@@ -109,6 +109,12 @@ void Renderer::setPolygonMode(GLenum front, GLenum back)
 	m_polyModeBack = back;
 }
 
+GLenum Renderer::getPolygonMode(int face)
+{
+	if (face == 0) { return m_polyModeFront; }
+	else { return m_polyModeBack; }
+}
+
 void Renderer::setMaterial(const std::string& materialID)
 {
 	setMaterial(0, materialID);

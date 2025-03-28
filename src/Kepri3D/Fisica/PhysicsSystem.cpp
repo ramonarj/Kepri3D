@@ -115,7 +115,7 @@ void PhysicsSystem::simulateStep(real delta)
 				}
 				// Crear una colisión
 				else {
-					m_colisiones.push_back(Colision(r1, r2, glm::normalize(*r2->m_position - *r1->m_position)));
+					createCollision(r1, r2);
 				}
 			}
 		}
@@ -125,67 +125,26 @@ void PhysicsSystem::simulateStep(real delta)
 	for(Colision c : m_colisiones)
 	{
 		// La resolvemos
-		solveCollision(&c);
+		c.solveInterpenetration(m_deltaTime);
+		c.solveVelocity();
+
 		// Y notificamos a los implicados
 		notifyCollision(&c);
 	}
 	m_colisiones.clear();
 }
 
-void PhysicsSystem::solveCollision(Colision* c)
+void PhysicsSystem::createCollision(Rigid* r1, Rigid* r2)
 {
-	Rigid* r1 = c->r1; Rigid* r2 = c->r2;
-	// - - - - (1) Hacer que dejen de solaparse (tirando hacia afuera) - - - - //
-	unsigned int iter = 0;
-	do
-	{
-		// TODO: dejar de detectar colisiones cuando ambos objetos ya están quietos
-		r1->getEntity()->translate(-r1->m_velocity * m_deltaTime); // /2.0? para que sea mejor
-		r2->getEntity()->translate(-r2->m_velocity * m_deltaTime);
-		iter++;
-	} while (iter < MAX_ITER && Collider::checkOverlap(r1->m_collider, r2->m_collider));
-
-	// - - - - (2) Calcular el punto de contacto (según el tipo de los colliders) - - - - //
-	// Esfera-Esfera
+	// 1) Calcular la normal del contacto
+	vector3 n;
+	// Esfera-esfera
 	if (r1->m_collider->shape == Collider::Esfera && r2->m_collider->shape == Collider::Esfera)
+		n = glm::normalize(*r2->m_position - *r1->m_position);
+	// Ortoedro-ortoedro
+	else
 	{
-		vector3 n = c->n;
-		// Hay que descomponer las velocidades en sus componentes normal y tangente 
-		// respecto al plano de choque. La normal se transmite en la colisión, y la tangente se conserva
-		vector3 newV1 = { 0, 0, 0 };
-		vector3 newV2 = { 0, 0, 0 };
-
-		// Cómo afecta el cuerpo 1 al cuerpo 2
-		if (glm::length(r1->m_velocity) != 0)
-		{
-			real cosAlpha1 = glm::dot(glm::normalize(r1->m_velocity), n);
-			vector3 velNormal = n * glm::length(r1->m_velocity) * cosAlpha1;
-			newV2 += velNormal;
-			newV1 += (r1->m_velocity - velNormal); // total - normal = tangencial
-		}
-		// Cómo afecta el cuerpo 2 al cuerpo 1
-		if (glm::length(r2->m_velocity) != 0)
-		{
-			real cosAlpha2 = glm::dot(glm::normalize(r2->m_velocity), -n);
-			vector3 velNormal = -n * glm::length(r2->m_velocity) * cosAlpha2;
-			newV1 += velNormal;
-			newV2 += (r2->m_velocity - velNormal); // total - normal = tangencial
-		}
-
-		// Si uno de ellos es estático, al otro se le devuelve la componente normal (opuesta)
-		if (r1->m_type == Static) { newV2 -= newV1; }
-		else if (r2->m_type == Static) { newV1 -= newV2; }
-
-		// Asignar las nuevas velocidades
-		r1->setVelocity(newV1 * COEF_RESTITUCION);
-		r2->setVelocity(newV2 * COEF_RESTITUCION);
-		// TODO: tener masa en cuenta
-	}
-
-	// Cubo - Cubo
-	else //if (r1->m_collider->shape == Collider::Cubo && r2->m_collider->shape == Collider::Cubo)
-	{
-		vector3 R1toR2 = r2->getEntity()->getPosition() - r1->getEntity()->getPosition();
+		vector3 R1toR2 = *r2->m_position - *r1->m_position;
 		vector3 absV = glm::abs(R1toR2 / r1->m_collider->halfExtents); //inspiración divina
 		// No se me ocurre una forma mejor
 		vector3 eje;
@@ -193,22 +152,57 @@ void PhysicsSystem::solveCollision(Colision* c)
 		else if (absV.y > absV.x && absV.y > absV.z) { eje = { 0, 1, 0 }; }
 		else { eje = { 0, 0, 1 }; }
 		R1toR2 *= eje;
-		R1toR2 = glm::normalize(R1toR2);
-
-		// Ambos dinámicos
-		if (r1->m_type == Dynamic && r2->m_type == Dynamic)
-		{
-			// Intercambiar velocidades y multiplicar por coef.rest.
-			vector3 auxVel = r1->m_velocity;
-			r1->setVelocity(-R1toR2 * glm::length(r2->m_velocity) * COEF_RESTITUCION);
-			r2->setVelocity(R1toR2 * glm::length(auxVel) * COEF_RESTITUCION);
-		}
-		// Uno estático; se quedan con su velocidad
-		else if (r1->m_type == Static)
-			r2->setVelocity(R1toR2 * glm::length(r2->m_velocity) * COEF_RESTITUCION);
-		else if (r2->m_type == Static)
-			r1->setVelocity(-R1toR2 * glm::length(r1->m_velocity) * COEF_RESTITUCION);
+		n = glm::normalize(R1toR2);
 	}
+	// TODO: profundidad del contacto
+	// 2) Registrarlo
+	m_colisiones.push_back(Colision(r1, r2, n));
+}
+
+void PhysicsSystem::Colision::solveInterpenetration(real deltaTime)
+{
+	unsigned int iter = 0;
+	do
+	{
+		// TODO: dejar de detectar colisiones cuando ambos objetos ya están quietos
+		*r1->m_position -= (r1->m_velocity * deltaTime); // 2.0? para que sea mejor
+		*r2->m_position -= (r2->m_velocity * deltaTime);
+		iter++;
+	} while (iter < MAX_ITER && Collider::checkOverlap(r1->m_collider, r2->m_collider));
+}
+
+void PhysicsSystem::Colision::solveVelocity()
+{
+	// Hay que descomponer las velocidades en sus componentes normal y tangente 
+	// respecto al plano de choque. La normal se transmite en la colisión, y la tangente se conserva
+	vector3 newV1 = { 0, 0, 0 };
+	vector3 newV2 = { 0, 0, 0 };
+
+	// Cómo afecta el cuerpo 1 al cuerpo 2
+	if (glm::length(r1->m_velocity) != 0)
+	{
+		real cosAlpha1 = glm::dot(glm::normalize(r1->m_velocity), n);
+		vector3 velNormal = n * glm::length(r1->m_velocity) * cosAlpha1;
+		newV2 += velNormal;
+		newV1 += (r1->m_velocity - velNormal); // total - normal = tangencial
+	}
+	// Cómo afecta el cuerpo 2 al cuerpo 1
+	if (glm::length(r2->m_velocity) != 0)
+	{
+		real cosAlpha2 = glm::dot(glm::normalize(r2->m_velocity), -n);
+		vector3 velNormal = -n * glm::length(r2->m_velocity) * cosAlpha2;
+		newV1 += velNormal;
+		newV2 += (r2->m_velocity - velNormal); // total - normal = tangencial
+	}
+
+	// Si uno de ellos es estático, al otro se le devuelve la componente normal (opuesta)
+	if (r1->m_type == Static) { newV2 -= newV1; }
+	else if (r2->m_type == Static) { newV1 -= newV2; }
+
+	// Asignar las nuevas velocidades
+	r1->setVelocity(newV1 * COEF_RESTITUCION);
+	r2->setVelocity(newV2 * COEF_RESTITUCION);
+	// TODO: tener masa en cuenta
 }
 
 void PhysicsSystem::notifyCollision(Colision* col)
@@ -279,29 +273,98 @@ bool PhysicsSystem::raycast(const vector3& origen, const vector3& dir, real dist
 	return hit;
 }
 
+Collider* PhysicsSystem::raycastPro(const vector3& origen, const vector3& dir, real dist)
+{
+	real currDistance = 0;
+	bool hit = false;
+	Collider* collided = nullptr;
+	vector3 impactPoint;
+	// Ir avanzando poco a poco
+	while (currDistance < dist && !hit)
+	{
+		impactPoint = origen + dir * currDistance;
+		// TODO: optimizar con Octrees/alguna otra técnica
+		for (Rigid* r : m_rigids)
+		{
+			if (Collider::pointInCollider(impactPoint, r->m_collider))
+			{
+				hit = true;
+				collided = r->m_collider;
+			}
+		}
+		currDistance += RAYCAST_INCR;
+	}
+	// Afinar el punto exacto de colisión (volvemos a la superficie)
+	if (hit)
+	{
+		while (Collider::pointInCollider(impactPoint, collided))
+			impactPoint -= dir * (RAYCAST_INCR / 2.0);
+		return collided;
+	}
+	return nullptr;
+}
+
 bool PhysicsSystem::raycastFromScreen(vector2 origen, real dist)
 {
+	Camera* cam = Game::Instance()->getCamera();
 	// 1) Pasar de Screen Space a NDC [{800, 600} --> {-1, 1}]
-	vector2 screenSize = { Game::Instance()->getCamera()->getVP()->getW(), Game::Instance()->getCamera()->getVP()->getH() };
+	vector2 screenSize = { cam->getVP()->getW(), cam->getVP()->getH() };
 	vector2 NDCpos = (origen / screenSize) * 2.0 - 1.0;
 
 	// 2) Pasar de NDC a View Space
+	vector4 VIEWpos = glm::inverse(cam->getProjMat()) * vector4(NDCpos.x, -NDCpos.y, -1.0, 1.0); //-1 por el S.coords. mano derecha
+
+	// Método alternativo: usando los parámetros de la mat.proy. directamente
+	/*
 	real fov = 45.0;
 	real aspectRatio = 600.0 / 800.0;
+	real arInv = 1.0 / aspectRatio;
 	// d = distancia focal de la cámara
 	real d = 1.0 / glm::tan(fov);
-	vector4 VIEWpos = { NDCpos.x / d, aspectRatio * NDCpos.y / d, -1.0, 1.0 }; //-1 por el S.coords. mano derecha
-	// Método alternativo: usando la inversa de la matriz de proyección
-	// VIEWpos = glm::inverse(Game::Instance()->getCamera()->getProjMat()) * NDCpos;
+	vector4 VIEWpos = { NDCpos.x / d, aspectRatio * NDCpos.y / d, -1.0, 1.0 };
+	*/
 	
 	// 3) Pasar de View Space a World Space
-	vector4 WORLDpos = Game::Instance()->getCamera()->getModelMat() * VIEWpos;
+	vector4 WORLDpos = cam->getModelMat() * VIEWpos;
 
-	//std::cout << "{" << NDCpos.x << "," << NDCpos.y << "}" << std::endl;
-	//std::cout << "{" << VIEWpos.x << "," << VIEWpos.y << "," << VIEWpos.z << "}" << std::endl;
-	//std::cout << "{" << WORLDpos.x << "," << WORLDpos.y << "," << WORLDpos.z << "}" << std::endl;
+	/*
+	std::cout << "Screen Pos: " << origen.x << ", " << origen.y << std::endl;
+	std::cout << "NDC Pos: {" << NDCpos.x << "," << NDCpos.y << "}" << std::endl;
+	std::cout << "View Pos: {" << VIEWpos.x << "," << VIEWpos.y << "," << VIEWpos.z << "}" << std::endl;
+	std::cout << "World Pos: {" << WORLDpos.x << "," << WORLDpos.y << "," << WORLDpos.z << "}" << std::endl;
+	*/
 
-	return raycast(WORLDpos, Game::Instance()->getCamera()->forward(), dist);
+	// 4) Dirección del rayo
+	vector3 dir;
+	if (cam->isOrto())
+		dir = cam->forward();
+	else
+		dir = vector3(WORLDpos) - cam->getPosition();
+
+	return raycast(WORLDpos, dir, dist);
+}
+
+Collider* PhysicsSystem::raycastFromScreenPro(vector2 origen, real dist)
+{
+	Camera* cam = Game::Instance()->getCamera();
+	// 1) Pasar de Screen Space a NDC [{800, 600} --> {-1, 1}]
+	vector2 screenSize = { cam->getVP()->getW(), cam->getVP()->getH() };
+	vector2 NDCpos = (origen / screenSize) * 2.0 - 1.0;
+
+	// 2) Pasar de NDC a View Space
+	vector4 VIEWpos = glm::inverse(cam->getProjMat()) * vector4(NDCpos.x, -NDCpos.y, -1.0, 1.0); //-1 por el S.coords. mano derecha
+
+	// 3) Pasar de View Space a World Space
+	vector4 WORLDpos = cam->getModelMat() * VIEWpos;
+
+	// 4) Dirección del rayo
+	vector3 dir;
+	if (cam->isOrto())
+		dir = cam->forward();
+	else
+		dir = vector3(WORLDpos) - cam->getPosition();
+
+	return raycastPro(WORLDpos, dir, dist);
 }
 
 void PhysicsSystem::setFixedTime(real t)

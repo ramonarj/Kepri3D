@@ -20,7 +20,7 @@ Rigid::Rigid(const glm::dmat4& modelMat, RigidType type)
 
 	m_velocity = { 0, 0, 0 };
 	m_acceleration = { 0, 0 ,0 };
-	m_drag = 0.4;
+	m_drag = 0.0;
 	m_accumForces = { 0, 0, 0 };
 
 	m_angularVel = { 0, 0, 0 };
