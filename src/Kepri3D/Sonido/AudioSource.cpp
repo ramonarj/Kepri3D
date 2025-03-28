@@ -5,25 +5,35 @@
 
 #include "Audio.h"
 #include "ResourceManager.h"
+#include "Camera.h"
 
-AudioSource::AudioSource(Audio* audio)
+AudioSource::AudioSource(Audio* audio) : m_loop(false)
+{
+	setup(audio);
+}
+
+AudioSource::AudioSource(const std::string& audioID) : m_loop(false)
+{
+	Audio* audio = (Audio*)&ResourceManager::Instance()->getAudio(audioID);
+	setup(audio);
+}
+
+void AudioSource::setup(Audio* audio)
 {
 	// Generar la fuente y decirle qué audio usaremos
 	alGenSources(1, &sourceId);
-
 	alSourcei(sourceId, AL_BUFFER, audio->bufferId);
+	alSourcei(sourceId, AL_LOOPING, m_loop);
+
 	m_audio = audio;
 }
 
-AudioSource::AudioSource(const std::string& audioID)
+void AudioSource::update(float deltaTime)
 {
-	Audio* audio = (Audio*)&ResourceManager::Instance()->getAudio(audioID);
-
-	// Generar la fuente y decirle qué audio usaremos
-	alGenSources(1, &sourceId);
-
-	alSourcei(sourceId, AL_BUFFER, audio->bufferId);
-	m_audio = audio;
+	// Actualizar la posición de la fuente
+	//glm::dvec3 pos = entity->getPosition() - Game::Instance()->getCamera()->getPosition();
+	glm::dvec3 pos = entity->getPosition();
+	alSource3f(sourceId, AL_POSITION, pos.x, pos.y, pos.z);
 }
 
 void AudioSource::play()
@@ -35,9 +45,11 @@ void AudioSource::setAudio(Audio* audio)
 {
 	// Hay que borrar el source ya creado para cambiar el buffer
 	alDeleteSources(1, &sourceId);
+	setup(audio);
+}
 
-	// Volver a crear el source
-	alGenSources(1, &sourceId);
-	alSourcei(sourceId, AL_BUFFER, audio->bufferId);
-	m_audio = audio;
+void AudioSource::setLoop(bool loop)
+{
+	m_loop = loop;
+	alSourcei(sourceId, AL_LOOPING, m_loop);
 }

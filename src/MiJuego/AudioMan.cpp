@@ -12,7 +12,7 @@ AudioMan::AudioMan(AudioSource* src, Audio* altAudio)
 void AudioMan::update(float deltaTime)
 {
 	// Reproducir el sonido (espacio)
-	if (InputManager::Instance()->getKeyDown(32))
+	if (InputManager::Instance()->getKeyDown(13))
 	{
 		source->play();
 	}
@@ -25,4 +25,10 @@ void AudioMan::update(float deltaTime)
 		else
 			source->setAudio(audio1);
 	}
+
+	// Looping
+	if (InputManager::Instance()->getKeyDown('l'))
+	{
+		source->setLoop(true);
+	}	
 }

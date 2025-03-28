@@ -441,6 +441,9 @@ void Scene::renderEffects()
 
 void Scene::update(float deltaTime)
 {
+	// Actualizar sistema de audio
+	AudioManager::Instance()->Update();
+
 	// Actualizar el canvas. Importante hacerlo antes que el resto de entidades
 	if(m_canvas != nullptr)
 		m_canvas->update(deltaTime);

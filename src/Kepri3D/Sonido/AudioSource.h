@@ -12,17 +12,26 @@ public:
 	AudioSource(const std::string& audioID);
 	~AudioSource(){}
 
-	void update(float deltaTime) override {}
+	void update(float deltaTime) override;
 
 	/* Reproduce el sonido asociado a esta fuente */
 	void play();
-	/* Cambia el sonido asociado */
+
+	// Setters
 	void setAudio(Audio* audio);
+	void setLoop(bool loop);
+
+	// Gettters
 	inline Audio* getAudio() const { return m_audio; }
 
 private:
 	unsigned int sourceId;
 	Audio* m_audio;
+
+	bool m_loop;
+
+	// Funciones aauxiliares
+	void setup(Audio* audio);
 };
 
 #endif

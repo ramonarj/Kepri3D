@@ -3,6 +3,7 @@
 #include "../Kepri3D.h"
 
 #include "../AudioMan.h"
+#include "../CameraController.h"
 
 void PruebaSonido::loadResources()
 {
@@ -43,7 +44,11 @@ void PruebaSonido::init()
 	Audio* fxConcha = (Audio*)&ResourceManager::Instance()->getAudio("concha");
 	Entity* audioMan = new Entity("AudioMan");
 	audioMan->addComponent(new AudioMan(audioComp, fxConcha));
+	audioMan->addComponent(new CameraController(m_camera));
 	AddEntity(audioMan);
+
+	// Listener
+	AudioManager::Instance()->setListener(m_camera);
 
 	/* - - Skybox - - */
 	Skybox* sky = new Skybox("citySkybox");

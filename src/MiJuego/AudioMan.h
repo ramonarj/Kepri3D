@@ -5,6 +5,7 @@
 
 class AudioSource;
 class Audio;
+class Entity;
 
 class AudioMan : public Component
 {

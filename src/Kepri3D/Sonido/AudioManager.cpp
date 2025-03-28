@@ -4,7 +4,9 @@
 
 #include <cassert>
 #include <iostream>
+#include <iostream>
 #include <checkML.h>
+#include "Entity.h"
 
 #include "al.h"
 #include "alut.h"
@@ -22,35 +24,47 @@ AudioManager* AudioManager::Instance()
 		// Abrir el dispositivo
 		ALCdevice* Device = alcOpenDevice((ALCchar*)"DirectSound3D");
 		assert(Device != nullptr);
-		// Crear el contexto con los flags de configuracion
-		// (NULL suele ser suficiente)
+		// Crear el contexto con los flags de configuracion (NULL suele ser suficiente)
 		ALCcontext* Context = alcCreateContext(Device, NULL);
 		alcMakeContextCurrent(Context);
 		// Gestión de errores
-		if (alGetError() != AL_NO_ERROR) //limpiamos el bit de error
+		if (alGetError() != AL_NO_ERROR)
 			std::cout << "ERROR OPENAL" << std::endl;
 
 		// - Con ALUT - 
 		//alutInit(0, nullptr);
 
-		// Prueba de concepto
-		//s_instance->LoadAndPlay("judia.wav");
-		//s_instance->LoadAndPlay("C:\\Users\\Ramón\\Desktop\\Kepri3D\\bin\\judi.wav");
-
 		/*
 		//alutLoadWAVFile
 		// creamos buffer
 		ALuint Buffer = 1;// = alutCreateBufferFromFile("../wavdata/holaMundo.wav");
-		if (alGetError() != AL_NO_ERROR)
-			std::cout << "ERROR OPENAL" << std::endl;
-		// creamos source
-		ALuint Source;
-		alGenSources(1, &Source);
-		// enganchamos source al buffer
-		alSourcei(Source, AL_BUFFER, Buffer);
-		// reproducimos
-		alSourcePlay(Source);
 		*/
 	}
 	return s_instance;
+}
+
+void AudioManager::setListener(Entity* e)
+{
+	listener = e;
+
+	// Puntero a la posición de la entidad
+	//double* ptr = (double*)&e->getModelMat();
+	//m_position = (glm::dvec3*)&ptr[12];
+}
+
+void AudioManager::Update()
+{
+	glm::dvec3 pos = listener->getPosition();
+	glm::dvec3 forward = -listener->forward();
+	glm::dvec3 up = listener->up();
+	// Orientación = 'forward' seguido de 'up'
+	ALfloat ori[] = { forward.x, forward.y, forward.z, up.x, up.y, up.z };
+
+	// Actualizar la posición y orientación del listener
+	alListener3f(AL_POSITION, pos.x, pos.y, pos.z);
+	alListenerfv(AL_ORIENTATION, ori);
+
+	// Control de errores
+	if (alGetError() != AL_NO_ERROR)
+		std::cout << "ERROR OPENAL" << std::endl;
 }
