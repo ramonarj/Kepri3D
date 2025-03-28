@@ -52,6 +52,14 @@ void AudioManager::setListener(Entity* e)
 	//m_position = (glm::dvec3*)&ptr[12];
 }
 
+void AudioManager::setGlobalVolume(float vol)
+{
+	if (vol > 1 || vol < 0) { return; }
+
+	m_volume = vol;
+	alListenerf(AL_GAIN, vol);
+}
+
 void AudioManager::Update()
 {
 	glm::dvec3 pos = listener->getPosition();

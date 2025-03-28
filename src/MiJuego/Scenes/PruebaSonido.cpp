@@ -4,17 +4,21 @@
 
 #include "../AudioMan.h"
 #include "../CameraController.h"
+#include "../DebugText.h"
 
 void PruebaSonido::loadResources()
 {
+	/* - - Texturas - - */
 	ResourceManager::Instance()->loadTexture("venus.bmp", "venus");
+	ResourceManager::Instance()->loadTexture("UI\\panel.png", "panel");
 
 	ResourceManager::Instance()->loadCubemapTexture({ "skyboxes/city/right.jpg", "skyboxes/city/left.jpg", "skyboxes/city/bottom.jpg",
 		"skyboxes/city/top.jpg", "skyboxes/city/front.jpg", "skyboxes/city/back.jpg" }, "citySkybox");
 
-	// - - - AUDIO - - - //
+	/* - - Audio - - */
 	ResourceManager::Instance()->loadAudio("judia.wav", "judia");
 	ResourceManager::Instance()->loadAudio("concha.wav", "concha");
+	ResourceManager::Instance()->loadAudio("luigi.wav", "luigi");
 }
 
 void PruebaSonido::init()
@@ -40,11 +44,16 @@ void PruebaSonido::init()
 	AudioSource* audioComp = new AudioSource("judia");
 	venus->addComponent(audioComp);
 
-	// AudioManager
+	// - - AudioManager - - //
 	Audio* fxConcha = (Audio*)&ResourceManager::Instance()->getAudio("concha");
 	Entity* audioMan = new Entity("AudioMan");
 	audioMan->addComponent(new AudioMan(audioComp, fxConcha));
 	audioMan->addComponent(new CameraController(m_camera));
+	// música
+	AudioSource* musicSrc = new AudioSource("luigi");
+	audioMan->addComponent(musicSrc); // música de la escena
+	musicSrc->setVolume(0.5);
+	musicSrc->play();
 	AddEntity(audioMan);
 
 	// Listener
@@ -53,6 +62,17 @@ void PruebaSonido::init()
 	/* - - Skybox - - */
 	Skybox* sky = new Skybox("citySkybox");
 	SetSkybox(sky);
+
+	/* - - Canvas - - */
+	m_canvas = new Canvas();
+	m_canvas->setSize(800, 600);
+
+	// Información de Debug
+	Entity* debugTxt = new Entity("DebugText");
+	debugTxt->setPosition({ 0,0,0 });
+	debugTxt->addComponent(new DebugText(m_canvas, "panel"));
+	AddEntity(debugTxt);
+	debugTxt->setActive(true);
 
 
 	// Temporal

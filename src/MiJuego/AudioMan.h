@@ -18,6 +18,8 @@ private:
 	AudioSource* source;
 	Audio* audio1;
 	Audio* audio2;
+
+	bool pausedMusic;
 };
 
 #endif

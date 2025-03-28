@@ -19,6 +19,7 @@ private:
 	Text* text;
 	Button* fondo;
 
+	std::string sceneName;
 	bool physicsScene;
 };
 

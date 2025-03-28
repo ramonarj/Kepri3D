@@ -2,7 +2,7 @@
 
 #include "Kepri3D.h"
 
-AudioMan::AudioMan(AudioSource* src, Audio* altAudio)
+AudioMan::AudioMan(AudioSource* src, Audio* altAudio) : pausedMusic(false)
 {
 	this->source = src;
 	this->audio1 = source->getAudio();
@@ -31,4 +31,41 @@ void AudioMan::update(float deltaTime)
 	{
 		source->setLoop(true);
 	}	
+
+	// Subir/bajar el volumen global
+	if (InputManager::Instance()->getSpecialKey(GLUT_KEY_UP))
+	{
+		AudioManager::Instance()->setGlobalVolume(AudioManager::Instance()->getGlobalVolume() + deltaTime);
+	}
+	else if (InputManager::Instance()->getSpecialKey(GLUT_KEY_DOWN))
+	{
+		AudioManager::Instance()->setGlobalVolume(AudioManager::Instance()->getGlobalVolume() - deltaTime);
+	}
+
+	// Subir/bajar el volumen de la música
+	AudioSource* musicSrc = entity->getComponent<AudioSource>();
+	if (InputManager::Instance()->getSpecialKey(GLUT_KEY_RIGHT))
+	{
+		musicSrc->setVolume(musicSrc->getVolume() + deltaTime);
+	}
+	else if (InputManager::Instance()->getSpecialKey(GLUT_KEY_LEFT))
+	{
+		musicSrc->setVolume(musicSrc->getVolume() -deltaTime);
+	}
+
+	// Pausar la música
+	if (InputManager::Instance()->getKeyDown('m'))
+	{
+		if(pausedMusic)
+			musicSrc->play();
+		else
+			musicSrc->pause();
+		pausedMusic = !pausedMusic;
+	}
+	// Parar la música
+	if (InputManager::Instance()->getKeyDown('n'))
+	{
+		musicSrc->stop();
+		pausedMusic = true;
+	}
 }

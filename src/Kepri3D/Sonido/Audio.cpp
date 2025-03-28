@@ -39,6 +39,10 @@ Audio::Audio(const std::string& filePath, AudioFormat formato)
 	alGenBuffers(1, &bufferId);
 	alBufferData(bufferId, format, data, size, sampleRate);
 
+	ALenum error = alGetError();
+	if (error != AL_NO_ERROR)
+		std::cout << "Error " << error << " al crear el Audio Buffer para " << filePath << std::endl;
+
 	delete data; // Liberar la memoria
 }
 
@@ -64,9 +68,15 @@ int convertToInt(char* buffer, int len)
 
 char* Audio::loadWAV(const char* filePath, int& chan, int& samplerate, int& bps, int& size)
 {
+	// Los archivos RIFF están formados por bloques, que se componen de:
+	// - Identificador del bloque (4 bytes)
+	// - Entero sin signo Little-Endian con la longitud del bloque (4 bytes)
+	// - Información del bloque (longitud variable)
+	// - Relleno (1 byte) -> solo si la longitud del bloque no es par
+
 	char buffer[4];
 	std::ifstream file(filePath, std::ios::binary);
-	// RIFF
+	// Etiqueta 'RIFF'; debe tenerla para ser un WAV válido
 	file.read(buffer, 4);
 	if (strncmp(buffer, "RIFF", 4) != 0)
 	{
@@ -75,8 +85,10 @@ char* Audio::loadWAV(const char* filePath, int& chan, int& samplerate, int& bps,
 	}
 	//
 	file.read(buffer, 4);
-	file.read(buffer, 4);      //WAVE
-	file.read(buffer, 4);      //fmt
+	// Etiqueta "WAVEfmt "
+	file.read(buffer, 4);
+	file.read(buffer, 4);
+	//
 	file.read(buffer, 4);      //16
 	file.read(buffer, 2);      //1
 	// Número de canales
@@ -91,8 +103,8 @@ char* Audio::loadWAV(const char* filePath, int& chan, int& samplerate, int& bps,
 	// Bits per sample
 	file.read(buffer, 2);
 	bps = convertToInt(buffer, 2);
-	//
-	file.read(buffer, 4);   //data
+	// Etiqueta 'data'
+	file.read(buffer, 4);
 	// Tamaño total
 	file.read(buffer, 4);
 	size = convertToInt(buffer, 4);

@@ -9,7 +9,8 @@ DebugText::DebugText(Canvas* canvas, const std::string& backgroundTexID)
 {
 	visible = true;
 
-	physicsScene = (Game::Instance()->getScene()->getName() == "PruebaFisicas");
+	sceneName = Game::Instance()->getScene()->getName();
+
 	if(physicsScene)
 	{
 		//
@@ -67,7 +68,8 @@ void DebugText::update(float deltaTime)
 #ifdef __DEBUG_INFO__
 	if(visible)
 	{
-		if(physicsScene)
+		// Escena de gráficos
+		if(sceneName == "PruebaFisicas")
 		{
 			glm::vec3 momento = PhysicsSystem::Instance()->momentoTotal;
 			std::string s = "MOMENTO TOTAL " + VectorToString(momento) +
@@ -77,7 +79,8 @@ void DebugText::update(float deltaTime)
 
 			text->setText(s);
 		}
-		else
+		// Escena de físicas
+		else if(sceneName == "Prueba")
 		{
 			Game::DebugInfo info = Game::Instance()->debugInfo;
 			std::string s = "FPS " + std::to_string(info.fps) +
@@ -88,6 +91,16 @@ void DebugText::update(float deltaTime)
 				"\nLIGHTS " + std::to_string(info.numLuces) +
 				"\nTRANS ENT " + std::to_string(info.numTrans) +
 				"\nSHADER CHANGES " + std::to_string(info.programChanges);
+
+			text->setText(s);
+		}
+		// Escena de audio
+		else
+		{
+			float vol = AudioManager::Instance()->getGlobalVolume();
+			std::string s = "VOLUMEN GLOBAL " + std::to_string(vol) + 
+				"\nLISTENER POS " + VectorToString(AudioManager::Instance()->getListener()->getPosition()) + 
+				"\nNUM SOURCES " + std::to_string(AudioSource::numSources);
 
 			text->setText(s);
 		}
