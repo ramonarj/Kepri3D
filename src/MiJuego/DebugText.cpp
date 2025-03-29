@@ -55,6 +55,14 @@ std::string VectorToString(const glm::vec3& v)
 	return stream.str();
 }
 
+std::string FloatToString(float f)
+{
+	std::stringstream stream;
+	stream << std::fixed << std::setprecision(2) << f;
+
+	return stream.str();
+}
+
 void DebugText::update(float deltaTime)
 {
 	// Activar/desactivar
@@ -72,7 +80,10 @@ void DebugText::update(float deltaTime)
 		if(sceneName == "PruebaFisicas")
 		{
 			glm::vec3 momento = PhysicsSystem::Instance()->momentoTotal;
-			std::string s = "MOMENTO TOTAL " + VectorToString(momento) +
+			
+			std::string s = "MOMENTO TOTAL " + VectorToString(momento) + 
+				"\nMOMENTO (MAGNITUD) " + FloatToString(glm::length(momento)) +
+				"\nRESTITUCION " + FloatToString(COEF_RESTITUCION) +
 				"\nENERGIA CINETICA " + 
 				"\nRIGIDS DESPIERTOS " + std::to_string(PhysicsSystem::Instance()->rigidsDespiertos) + 
 				"\nFIXED TIME STEP " + std::to_string(PhysicsSystem::Instance()->getFixedTime());

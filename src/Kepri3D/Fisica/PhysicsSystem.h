@@ -14,7 +14,7 @@ class Articulacion;
 
 // Indica cómo de elástico es un choque. Por ahora, es compartido para todos los choques.
 // 0 = totalmente inelástico (se quedan pegados), 1 = totalmente elástico (no se pierde Ec)
-const real COEF_RESTITUCION = 0.75f;
+const real COEF_RESTITUCION = 1.0f;
 
 // Número máximo de iteraciones para resolver una colisión
 const unsigned int MAX_ITER = 10;
@@ -78,8 +78,10 @@ private:
 		vector3 n;
 
 		// Métodos auxiliares
+		real separatingVelocity() const;
 		void solveInterpenetration(real time);
 		void solveVelocity();
+		void solveVelocityAntiguo();
 	};
 
 	static PhysicsSystem* s_instance;

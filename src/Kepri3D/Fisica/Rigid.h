@@ -101,6 +101,8 @@ private:
 	void integrate(real t);
 	// Actualiza un paso en la simulación
 	void updateStep(real deltaTime);
+	// Calcula la Ec del Rigid
+	real kineticEnergy();
 };
 
 #endif

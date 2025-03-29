@@ -44,9 +44,12 @@ void Rigid::updateStep(real delta)
 	// Integrador
 	integrate(delta);
 
+	/*
 	// - - Otros - - //
-	// Ponerlo a dormir si es necesario
-	if(glm::length(m_velocity) < 0.1 && glm::length(m_angularVel) < 0.1)
+	// Ponerlo a dormir si su energía cinética no supera cierto umbral
+	// Importante que sea la Ec y no la velocidad, porque los objetos muy pesados que se mueven
+	// aunque sea muy lentamente, no deberían pararse con facilidad
+	if(kineticEnergy() < 0.1 && glm::length(m_angularVel) < 0.1)
 	{
 		m_tiempoInactivo+=delta;
 		if (m_tiempoInactivo >= TIME_UNTIL_SLEEP)
@@ -54,6 +57,7 @@ void Rigid::updateStep(real delta)
 	}
 	// Reiniciar la cuenta
 	else { m_tiempoInactivo = 0; }
+	*/
 }
 
 void Rigid::integrate(real t)
@@ -95,7 +99,7 @@ void Rigid::integrate(real t)
 
 void Rigid::addForce(const vector3& force)
 {
-	if (m_type == Static || glm::length(force) < WAKEUP_FORCE) { return; }
+	if (m_type == Static || glm::length(force) < WAKEUP_FORCE) { std::cout << "Muy chica" << std::endl;  return; }
 
 	m_accumForces += force;
 	wakeUp();
@@ -143,6 +147,7 @@ void Rigid::wakeUp()
 	m_tiempoInactivo = 0;
 #ifdef __DEBUG_INFO__
 	PhysicsSystem::Instance()->rigidsDespiertos++;
+	std::cout << entity->getName() << " desperto" << std::endl;
 #endif
 }
 
@@ -154,6 +159,7 @@ void Rigid::sleep()
 	m_velocity = { 0, 0, 0 };
 #ifdef __DEBUG_INFO__
 	PhysicsSystem::Instance()->rigidsDespiertos--;
+	std::cout << entity->getName() << " a dormir" << std::endl;
 #endif
 }
 
@@ -165,4 +171,9 @@ void Rigid::setVelocity(const vector3& vel)
 	// Despertarlo si es preciso
 	if (m_sleeping && glm::length(m_velocity) > 0.05)
 		wakeUp();
+}
+
+real Rigid::kineticEnergy()
+{
+	return m_mass * glm::length(m_velocity * m_velocity) / 2.0;
 }

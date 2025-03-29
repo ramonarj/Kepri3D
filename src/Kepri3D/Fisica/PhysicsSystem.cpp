@@ -159,6 +159,12 @@ void PhysicsSystem::createCollision(Rigid* r1, Rigid* r2)
 	m_colisiones.push_back(Colision(r1, r2, n));
 }
 
+real PhysicsSystem::Colision::separatingVelocity() const
+{
+	vector3 relativeVel = r2->m_velocity - r1->m_velocity;
+	return glm::dot(relativeVel, n);
+}
+
 void PhysicsSystem::Colision::solveInterpenetration(real deltaTime)
 {
 	unsigned int iter = 0;
@@ -172,6 +178,35 @@ void PhysicsSystem::Colision::solveInterpenetration(real deltaTime)
 }
 
 void PhysicsSystem::Colision::solveVelocity()
+{
+	// 1) Calcular la nueva velocidad de separación
+	real vs = separatingVelocity();
+
+	// Contacto estacionario/separándose -> NO hace falta aplicar impulsos
+	if (vs > 0) { return; }
+
+	// Aplicar el coeficiente de restitución. TODO: arreglar choques inelásticos
+	real newVs = -COEF_RESTITUCION * vs;
+	real deltaVel = newVs - vs;
+
+	// 2) Dividirla de manera proporcional a sus masas
+	if (r1->m_type == Static) { 
+		r2->setVelocity(r2->m_velocity + deltaVel * n);
+	}
+	else if (r2->m_type == Static) {
+		r1->setVelocity(r1->m_velocity + deltaVel * (-n));
+	}
+	else 
+	{
+		real masaTotal = r1->m_mass + r2->m_mass;
+		real prop1 = r1->m_mass / masaTotal;
+		real prop2 = r2->m_mass / masaTotal;
+		r1->setVelocity(r1->m_velocity + deltaVel * prop2 * (-n));
+		r2->setVelocity(r2->m_velocity + deltaVel * prop1 * n);
+	}
+}
+
+void PhysicsSystem::Colision::solveVelocityAntiguo()
 {
 	// Hay que descomponer las velocidades en sus componentes normal y tangente 
 	// respecto al plano de choque. La normal se transmite en la colisión, y la tangente se conserva

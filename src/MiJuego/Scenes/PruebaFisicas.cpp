@@ -31,19 +31,25 @@ void PruebaFisicas::init()
 
 	// - - ESFERAS - - //
 	// Esfera con componente Rigid y Collider visible
-	Rigid* esfera1 = createRigidEsfera("Esfera1", { 0, 0, 0 }, Static, 1, false);
+	Rigid* esfera1 = createRigidEsfera("Esfera1", { 0, 50, 0 }, Dynamic, 10, false);
+	esfera1->setVelocity({ 0, -5, 0 });
 
-	// Esfera 2
-	Rigid* esfera2 = createRigidEsfera("Esfera2", { -80, 30, 0 }, Dynamic, 1, true, 1.0, 5.0);
-	esfera2->setMass(esfera2->getCollider()->volume() * 500); // mitad de densidad que el agua
+	// Clones
+	for (int i = 0; i < 5; i++)
+		Rigid* r = createRigidEsfera("Clon" + std::to_string(i), { 0, 40 - 5 * i, 0 }, Dynamic, 10, false);
+
+	// Esfera grande y pesada
+	Rigid* esfera2 = createRigidEsfera("Esfera2", { 0, 10, 0 }, Dynamic, 1000, false, 1.0, 5.0);
+	//esfera2->setVelocity({ 0, -10, 0 });
+	//esfera2->setMass(esfera2->getCollider()->volume() * 500); // mitad de densidad que el agua
 
 	// - - CUBOS - - //
 	// Cubo 1
-	Rigid* cubo1 = createRigidCubo("Cubo1", { 10, 5, 0 }, Static, 1, false, 2.0, { 3, 3, 3 });
+	//Rigid* cubo1 = createRigidCubo("Cubo1", { 10, 5, 0 }, Static, 1, false, 2.0, { 3, 3, 3 });
 	// Cubo 2
-	Rigid* cubo2 = createRigidCubo("Cubo2", { 10, 60, 0 }, Dynamic, 1, true);
+	//Rigid* cubo2 = createRigidCubo("Cubo2", { 10, 60, 0 }, Dynamic, 1, true);
 	// Cubo 3
-	Rigid* cubo3 = createRigidCubo("Cubo3", { 10, 50, 0 }, Dynamic, 1, false, 2.0, {2.0, 8.0, 2.0});
+	//Rigid* cubo3 = createRigidCubo("Cubo3", { 10, 50, 0 }, Dynamic, 1, false, 2.0, {2.0, 8.0, 2.0});
 
 	// Trigger
 	Rigid* trigger = createRigidCubo("Trigger", { 10, 20, 0 }, Dynamic, 1, false, 0.5, { 1, 1, 1});
@@ -52,16 +58,16 @@ void PruebaFisicas::init()
 
 	// - - - MUELLE - - - //
 	// Base
-	Rigid* baseMuelle = createRigidCubo("BaseMuelle", { 0, 0, 15 }, Static, 1, false, 2.0, {4.0, 2.0, 4.0});
+	//Rigid* baseMuelle = createRigidCubo("BaseMuelle", { 0, 0, 15 }, Static, 1, false, 2.0, {4.0, 2.0, 4.0});
 	// Extremo
-	Rigid* extremoMuelle = createRigidCubo("ExtremoMuelle", { 7.5, 0, 15 }, Dynamic, 1);
+	//Rigid* extremoMuelle = createRigidCubo("ExtremoMuelle", { 7.5, 0, 15 }, Dynamic, 1);
 
 	// Añadir el muelle
-	PhysicsSystem::Instance()->addMuelle(new Muelle(baseMuelle, extremoMuelle, 20));
+	//PhysicsSystem::Instance()->addMuelle(new Muelle(baseMuelle, extremoMuelle, 20));
 
 	// - -  FLOTACIÓN - - //
 	// Cubo flotacion
-	Rigid* cuboFlot = createRigidCubo("CuboFlot", { -110, 10, 20 }, Dynamic, 2000.0, true);
+	//Rigid* cuboFlot = createRigidCubo("CuboFlot", { -110, 10, 20 }, Dynamic, 2000.0, true);
 
 	// Líquido
 	Liquido* liquido = new Liquido(-10, 1000);
@@ -69,17 +75,17 @@ void PruebaFisicas::init()
 
 	// - -  ARTICULACIONES - - //
 	// Extremo 1
-	Rigid* art1 = createRigidCubo("Art1", { -40, 40, 0 }, Static, 20, false);
+	//Rigid* art1 = createRigidCubo("Art1", { -40, 40, 0 }, Static, 20, false);
 	// Extremo 2
-	Rigid* art2 = createRigidCubo("Art2", { -45, 40, 0 }, Dynamic, 20, true);
+	//Rigid* art2 = createRigidCubo("Art2", { -45, 40, 0 }, Dynamic, 20, true);
 
 	// Añadir la articulación
 	//PhysicsSystem::Instance()->addArticulacion(new Articulacion(art1, art2, Articulacion::Fija));
 	//PhysicsSystem::Instance()->addArticulacion(new Articulacion(art1, art2, Articulacion::Bisagra));
-	PhysicsSystem::Instance()->addArticulacion(new Articulacion(art1, art2, Articulacion::Circular));
+	//PhysicsSystem::Instance()->addArticulacion(new Articulacion(art1, art2, Articulacion::Circular));
 
 	// Dragón
-	createDragon(art2, 8, Articulacion::Circular);
+	//createDragon(art2, 8, Articulacion::Circular);
 
 	// Sombra de la pelota
 	Entity* sombra = new Poligono(40, 10.0, true);

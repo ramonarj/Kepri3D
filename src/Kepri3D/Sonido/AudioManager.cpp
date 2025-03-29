@@ -62,6 +62,8 @@ void AudioManager::setGlobalVolume(float vol)
 
 void AudioManager::Update()
 {
+	if (listener == nullptr) { return; }
+
 	glm::dvec3 pos = listener->getPosition();
 	glm::dvec3 forward = -listener->forward();
 	glm::dvec3 up = listener->up();
