@@ -5,6 +5,8 @@
 
 class Entity;
 
+const float DOPPLER_FACTOR = 0.8f;
+
 class AudioManager
 {
 public:
@@ -21,7 +23,7 @@ public:
 	/* Limpia la instancia; debe llamarse explícitamente */
 	inline void Clean() { delete s_instance; s_instance = nullptr; }
 
-	void Update();
+	void Update(float deltaTime);
 
 private:
 	AudioManager() : listener(nullptr), m_volume(1) {}
@@ -34,6 +36,7 @@ private:
 
 	// Volumen total 
 	float m_volume;
+
 	//glm::dvec3* m_position;
 };
 

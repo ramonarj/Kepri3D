@@ -24,10 +24,12 @@ public:
 	void setAudio(Audio* audio);
 	void setVolume(float vol);
 	void setLoop(bool loop);
+	void setPitch(float pitch);
 
 	// Gettters
 	inline Audio* getAudio() const { return m_audio; }
 	inline float getVolume() const { return m_volume; }
+	inline float getPitch() const { return m_pitch; }
 
 #ifdef __DEBUG_INFO__
 	static unsigned int numSources;
@@ -39,6 +41,10 @@ private:
 
 	bool m_loop;
 	float m_volume;
+	float m_pitch;
+
+	// Velocidad a la que se mueve la fuente de audio
+	glm::vec3 m_vel;
 
 	// Funciones aauxiliares
 	void setup(Audio* audio);

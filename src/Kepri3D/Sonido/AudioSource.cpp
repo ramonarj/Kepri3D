@@ -11,7 +11,7 @@
 unsigned int AudioSource::numSources = 0;
 #endif
 
-AudioSource::AudioSource(Audio* audio) : m_loop(false), m_volume(1)
+AudioSource::AudioSource(Audio* audio) : m_loop(false), m_volume(1), m_pitch(1)
 {
 	setup(audio);
 #ifdef __DEBUG_INFO__
@@ -19,7 +19,7 @@ AudioSource::AudioSource(Audio* audio) : m_loop(false), m_volume(1)
 #endif
 }
 
-AudioSource::AudioSource(const std::string& audioID) : m_loop(false), m_volume(1)
+AudioSource::AudioSource(const std::string& audioID) : m_loop(false), m_volume(1), m_pitch(1)
 {
 	Audio* audio = (Audio*)&ResourceManager::Instance()->getAudio(audioID);
 	setup(audio);
@@ -39,16 +39,31 @@ void AudioSource::setup(Audio* audio)
 	alGenSources(1, &sourceId);
 	alSourcei(sourceId, AL_BUFFER, audio->bufferId);
 	alSourcei(sourceId, AL_LOOPING, m_loop);
+	// Otros parámetros
+	//alSourcef(sourceId, AL_MAX_DISTANCE, 100.0f); // a partir de qué distancia deja de atenuarse
+	//alSourcef(sourceId, AL_REFERENCE_DISTANCE, 1.0f); // radio dentro del cual la ganancia no aumenta más
+	//alSourcef(sourceId, AL_ROLLOFF_FACTOR, 3.0f); // penddiente de la recta/curva de atenuación
 
 	m_audio = audio;
 }
 
 void AudioSource::update(float deltaTime)
 {
-	// Actualizar la posición de la fuente
-	//glm::dvec3 pos = entity->getPosition() - Game::Instance()->getCamera()->getPosition();
+	alGetSource3f(sourceId, AL_POSITION, &m_vel.x, &m_vel.y, &m_vel.z);
+	//glm::dvec3 pos = entity->getPosition() - Game::Instance()->getCamera()->getPosition(); // relativo
+
+	// Actualizar la posición
 	glm::dvec3 pos = entity->getPosition();
 	alSource3f(sourceId, AL_POSITION, pos.x, pos.y, pos.z);
+
+	// Calcular la velocidad de la fuente
+	m_vel = ((glm::vec3)pos - m_vel) / deltaTime;
+
+	// Aplicarla si es necesario
+	if (!isnan(m_vel.x)) // && ha variado significativamente?
+	{
+		alSource3f(sourceId, AL_VELOCITY, m_vel.x, m_vel.y, m_vel.z);
+	}
 }
 
 void AudioSource::play()
@@ -85,4 +100,12 @@ void AudioSource::setLoop(bool loop)
 {
 	m_loop = loop;
 	alSourcei(sourceId, AL_LOOPING, m_loop);
+}
+
+void AudioSource::setPitch(float pitch)
+{
+	if (pitch < 0) { return; } // ¿pitch maximo?
+
+	m_pitch = pitch;
+	alSourcef(sourceId, AL_PITCH, m_pitch);
 }

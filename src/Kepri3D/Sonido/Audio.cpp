@@ -17,6 +17,7 @@ Audio::Audio(const std::string& filePath, AudioFormat formato)
 		data = nullptr;
 
 	// Tipo de formato (mono/estéreo y bitrate [8/16 bits/sample])
+	// OpenAL NO soporta resoluciones mayores a 16bits/sample(24,32)
 	unsigned int format;
 	// Sonido monofónico
 	if (channel == 1)

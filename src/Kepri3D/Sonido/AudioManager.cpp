@@ -34,6 +34,13 @@ AudioManager* AudioManager::Instance()
 		// - Con ALUT - 
 		//alutInit(0, nullptr);
 
+		// - - Otros parámetros - - //
+		// Modelo de atenuación (inverso/lineal/exponencial/ninguno, y con/sin clamp)
+		alDistanceModel(AL_INVERSE_DISTANCE_CLAMPED);
+		// Cantidad de efecto Doppler
+		alDopplerFactor(DOPPLER_FACTOR);
+		//alSpeedOfSound(1000);
+
 		/*
 		//alutLoadWAVFile
 		// creamos buffer
@@ -60,9 +67,12 @@ void AudioManager::setGlobalVolume(float vol)
 	alListenerf(AL_GAIN, vol);
 }
 
-void AudioManager::Update()
+void AudioManager::Update(float deltaTime)
 {
 	if (listener == nullptr) { return; }
+
+	// Posición del frame anterior
+	glm::vec3 vel; alGetListener3f(AL_POSITION, &vel.x, &vel.y, &vel.z);
 
 	glm::dvec3 pos = listener->getPosition();
 	glm::dvec3 forward = -listener->forward();
@@ -73,6 +83,12 @@ void AudioManager::Update()
 	// Actualizar la posición y orientación del listener
 	alListener3f(AL_POSITION, pos.x, pos.y, pos.z);
 	alListenerfv(AL_ORIENTATION, ori);
+
+	// Calcular la velocidad del listener y actualizarla si es necesario
+	vel = ((glm::vec3)pos - vel) / deltaTime;
+	if (!isnan(vel.x)) {
+		//alListener3f(AL_VELOCITY, vel.x, vel.y, vel.z);
+	} // Esto queda regular en la mayoría de los casos (en juegos de carreras sí interesaría)
 
 	// Control de errores
 	if (alGetError() != AL_NO_ERROR)

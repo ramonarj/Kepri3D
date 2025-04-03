@@ -42,7 +42,12 @@ void AudioMan::update(float deltaTime)
 		AudioManager::Instance()->setGlobalVolume(AudioManager::Instance()->getGlobalVolume() - deltaTime);
 	}
 
-	// Subir/bajar el volumen de la música
+	controlMusica(deltaTime);
+}
+
+void AudioMan::controlMusica(float deltaTime)
+{	
+	// Subir/bajar el volumen
 	AudioSource* musicSrc = entity->getComponent<AudioSource>();
 	if (InputManager::Instance()->getSpecialKey(GLUT_KEY_RIGHT))
 	{
@@ -50,22 +55,33 @@ void AudioMan::update(float deltaTime)
 	}
 	else if (InputManager::Instance()->getSpecialKey(GLUT_KEY_LEFT))
 	{
-		musicSrc->setVolume(musicSrc->getVolume() -deltaTime);
+		musicSrc->setVolume(musicSrc->getVolume() - deltaTime);
 	}
 
 	// Pausar la música
 	if (InputManager::Instance()->getKeyDown('m'))
 	{
-		if(pausedMusic)
+		if (pausedMusic)
 			musicSrc->play();
 		else
 			musicSrc->pause();
 		pausedMusic = !pausedMusic;
 	}
+
 	// Parar la música
 	if (InputManager::Instance()->getKeyDown('n'))
 	{
 		musicSrc->stop();
 		pausedMusic = true;
+	}
+
+	// Subir/bajar el pitch
+	if (InputManager::Instance()->getKey('9'))
+	{
+		musicSrc->setPitch(musicSrc->getPitch() - deltaTime);
+	}
+	else if (InputManager::Instance()->getKey('0'))
+	{
+		musicSrc->setPitch(musicSrc->getPitch() + deltaTime);
 	}
 }

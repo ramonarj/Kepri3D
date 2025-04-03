@@ -5,6 +5,7 @@
 #include "../AudioMan.h"
 #include "../CameraController.h"
 #include "../DebugText.h"
+#include "../Ambulancia.h"
 
 void PruebaSonido::loadResources()
 {
@@ -19,6 +20,8 @@ void PruebaSonido::loadResources()
 	ResourceManager::Instance()->loadAudio("judia.wav", "judia");
 	ResourceManager::Instance()->loadAudio("concha.wav", "concha");
 	ResourceManager::Instance()->loadAudio("luigi.wav", "luigi");
+	ResourceManager::Instance()->loadAudio("ambulancia.wav", "ambulancia");
+	ResourceManager::Instance()->loadAudio("seno.wav", "seno");
 }
 
 void PruebaSonido::init()
@@ -35,14 +38,23 @@ void PruebaSonido::init()
 
 	// Venus
 	Esfera* venus = new Esfera(3, 20, 40);
+	venus->setName("Venus");
 	venus->setMaterial("default");
 	venus->setTexture("venus");
-	venus->setPosition({ 0,10,0 });
+	venus->setPosition({ -150,10,0 });
 	AddEntity(venus);
 
-	// Audio Source
-	AudioSource* audioComp = new AudioSource("judia");
+	// Efecto Doppler
+	venus->addComponent(new Ambulancia());
+
+	// Audio Source. IMPORTANTE: EL UPDATE DEL AUDIOSOURCE DEBE EJECUTARSE EL ÚLTIMO, YA QUE USA 
+	// EL INCREMENTO EN LA POSICIÓN DE LA ENTIDAD PARA EL EFECTO DOPPLER
+	AudioSource* audioComp = new AudioSource("ambulancia"); //seno
+	//audioComp->setVolume(0.5);
+	audioComp->setLoop(true);
 	venus->addComponent(audioComp);
+	audioComp->play();
+
 
 	// - - AudioManager - - //
 	Audio* fxConcha = (Audio*)&ResourceManager::Instance()->getAudio("concha");
@@ -52,8 +64,8 @@ void PruebaSonido::init()
 	// música
 	AudioSource* musicSrc = new AudioSource("luigi");
 	audioMan->addComponent(musicSrc); // música de la escena
-	musicSrc->setVolume(0.5);
-	musicSrc->play();
+	musicSrc->setVolume(0.4);
+	//musicSrc->play();
 	AddEntity(audioMan);
 
 	// Listener

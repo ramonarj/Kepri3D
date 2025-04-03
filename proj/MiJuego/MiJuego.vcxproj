@@ -156,6 +156,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="..\..\src\MiJuego\AguaComp.cpp" />
+    <ClCompile Include="..\..\src\MiJuego\Ambulancia.cpp" />
     <ClCompile Include="..\..\src\MiJuego\AudioMan.cpp" />
     <ClCompile Include="..\..\src\MiJuego\BloqueComp.cpp" />
     <ClCompile Include="..\..\src\MiJuego\Callbacks.cpp" />
@@ -166,6 +167,7 @@
     <ClCompile Include="..\..\src\MiJuego\MultitexComp.cpp" />
     <ClCompile Include="..\..\src\MiJuego\ParallaxComp.cpp" />
     <ClCompile Include="..\..\src\MiJuego\PhysicsMan.cpp" />
+    <ClCompile Include="..\..\src\MiJuego\Piano.cpp" />
     <ClCompile Include="..\..\src\MiJuego\RotationComp.cpp" />
     <ClCompile Include="..\..\src\MiJuego\Scenes\PruebaScene.cpp" />
     <ClCompile Include="..\..\src\MiJuego\Scenes\PruebaFisicas.cpp" />
@@ -173,6 +175,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\src\MiJuego\AguaComp.h" />
+    <ClInclude Include="..\..\src\MiJuego\Ambulancia.h" />
     <ClInclude Include="..\..\src\MiJuego\AudioMan.h" />
     <ClInclude Include="..\..\src\MiJuego\BloqueComp.h" />
     <ClInclude Include="..\..\src\MiJuego\Callbacks.h" />
@@ -182,6 +185,7 @@
     <ClInclude Include="..\..\src\MiJuego\MultitexComp.h" />
     <ClInclude Include="..\..\src\MiJuego\ParallaxComp.h" />
     <ClInclude Include="..\..\src\MiJuego\PhysicsMan.h" />
+    <ClInclude Include="..\..\src\MiJuego\Piano.h" />
     <ClInclude Include="..\..\src\MiJuego\RotationComp.h" />
     <ClInclude Include="..\..\src\MiJuego\Scenes\PruebaScene.h" />
     <ClInclude Include="..\..\src\MiJuego\Scenes\PruebaFisicas.h" />

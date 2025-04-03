@@ -111,7 +111,8 @@ void DebugText::update(float deltaTime)
 			float vol = AudioManager::Instance()->getGlobalVolume();
 			std::string s = "VOLUMEN GLOBAL " + std::to_string(vol) + 
 				"\nLISTENER POS " + VectorToString(AudioManager::Instance()->getListener()->getPosition()) + 
-				"\nNUM SOURCES " + std::to_string(AudioSource::numSources);
+				"\nNUM SOURCES " + std::to_string(AudioSource::numSources) +
+				"\nDOPPLER FACTOR " + std::to_string(DOPPLER_FACTOR);
 
 			text->setText(s);
 		}

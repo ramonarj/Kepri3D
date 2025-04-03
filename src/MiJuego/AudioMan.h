@@ -20,6 +20,9 @@ private:
 	Audio* audio2;
 
 	bool pausedMusic;
+
+	// Funciones auxiliares
+	void controlMusica(float deltaTime);
 };
 
 #endif

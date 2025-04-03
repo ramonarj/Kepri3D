@@ -15,7 +15,7 @@ public:
 private:
 	Camera* cam;
 
-	double velocidad = 16.0f;
+	double velocidad = 40.0f;
 	float sensibilidad = 0.25;
 
 	// Métodos
