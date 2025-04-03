@@ -14,7 +14,7 @@ void Ambulancia::update(float deltaTime)
 	if(InputManager::Instance()->getKeyDown('r'))
 	{
 		if (estado == 0)
-			vel = 100.0f;
+			vel = 27.0f;
 		else if (estado == 1)
 			vel = 0.0f;
 		else

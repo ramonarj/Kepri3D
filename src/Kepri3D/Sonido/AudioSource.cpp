@@ -104,7 +104,7 @@ void AudioSource::setLoop(bool loop)
 
 void AudioSource::setPitch(float pitch)
 {
-	if (pitch < 0) { return; } // ¿pitch maximo?
+	if (pitch < 0) { return; } // NOTA: el pitch máximo que permite OpenAL es de 4.0f
 
 	m_pitch = pitch;
 	alSourcef(sourceId, AL_PITCH, m_pitch);

@@ -14,7 +14,7 @@ public:
 
 	void update(float deltaTime) override;
 private:
-	float vel = 80.0f;
+	float vel = 27.0f; //Importante: esto está en metros/segundo!!
 	unsigned char estado;
 };
 

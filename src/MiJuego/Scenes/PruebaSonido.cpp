@@ -6,6 +6,7 @@
 #include "../CameraController.h"
 #include "../DebugText.h"
 #include "../Ambulancia.h"
+#include "../Piano.h"
 
 void PruebaSonido::loadResources()
 {
@@ -21,7 +22,8 @@ void PruebaSonido::loadResources()
 	ResourceManager::Instance()->loadAudio("concha.wav", "concha");
 	ResourceManager::Instance()->loadAudio("luigi.wav", "luigi");
 	ResourceManager::Instance()->loadAudio("ambulancia.wav", "ambulancia");
-	ResourceManager::Instance()->loadAudio("seno.wav", "seno");
+	ResourceManager::Instance()->loadAudio("seno.wav", "senoLa");
+	ResourceManager::Instance()->loadAudio("senoDo.wav", "senoDo");
 }
 
 void PruebaSonido::init()
@@ -67,6 +69,13 @@ void PruebaSonido::init()
 	musicSrc->setVolume(0.4);
 	//musicSrc->play();
 	AddEntity(audioMan);
+
+	// - - Piano - - //
+	AudioSource* pianoSrc = new AudioSource("senoLa");
+	audioMan->addComponent(pianoSrc);
+	audioMan->addComponent(new Piano(pianoSrc));
+	pianoSrc->setLoop(true);
+	//pianoSrc->play();
 
 	// Listener
 	AudioManager::Instance()->setListener(m_camera);
