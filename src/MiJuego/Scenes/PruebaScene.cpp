@@ -368,7 +368,7 @@ void PruebaScene::loadResources()
 	ResourceManager::Instance()->loadMaterial("fluorescente.material", "fluorescente");
 	ResourceManager::Instance()->loadMaterial("blinn.material", "blinn");
 	ResourceManager::Instance()->loadMaterial("oceano.material", "oceano", "agua");
-	ResourceManager::Instance()->loadMaterial("emerald.material", "emerald");
+	ResourceManager::Instance()->loadMaterial("emerald.material", "emerald", "flat");
 	ResourceManager::Instance()->loadMaterial("specularCube.material", "specularCube");
 	ResourceManager::Instance()->loadMaterial("iceland.material", "iceland", "terreno");
 	ResourceManager::Instance()->loadMaterial("redead.material", "redead");
@@ -377,7 +377,7 @@ void PruebaScene::loadResources()
 	ResourceManager::Instance()->loadMaterial("coke.material", "coke");
 	ResourceManager::Instance()->loadMaterial("zelda.material", "zelda");
 	ResourceManager::Instance()->loadMaterial("caja.material", "caja");
-	ResourceManager::Instance()->loadMaterial("star.material", "star", "default");
+	ResourceManager::Instance()->loadMaterial("star.material", "star", "flat");
 	ResourceManager::Instance()->loadMaterial("espejo.material", "espejo", "reflejos");
 	ResourceManager::Instance()->loadMaterial("reflejos.material", "reflejos", "reflejos");
 	ResourceManager::Instance()->loadMaterial("lego.material", "lego", "multitexture");

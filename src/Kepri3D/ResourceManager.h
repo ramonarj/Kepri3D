@@ -41,6 +41,7 @@ public:
 			instance->loadShader("shadows.vert", "", "shadows.frag", "shadows");
 			instance->loadShader("shadows_point.vert", "shadows_point.geom", "shadows_point.frag", "shadows_point");
 			instance->loadShader("lights.vert", "", "lights.frag", "lights");
+			instance->loadShader("lights.vert", "flat.geom", "lights.frag", "flat");
 			instance->loadShader("skybox.vert", "", "skybox.frag", "skybox");
 			instance->loadShader("billboard.vert", "", "billboard.frag", "billboard");
 			instance->loadShader("particle.vert", "", "billboard.frag", "particle");
