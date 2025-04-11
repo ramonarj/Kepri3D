@@ -12,7 +12,7 @@ class Mesh;
 class Texture;
 class Material;
 class Shader;
-class Audio;
+struct Audio;
 
 
 class ResourceManager

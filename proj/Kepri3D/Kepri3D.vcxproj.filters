@@ -117,6 +117,9 @@
     <ClCompile Include="..\..\src\Kepri3D\Sonido\AudioSource.cpp">
       <Filter>Sonido</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\src\Kepri3D\UI\Editor.cpp">
+      <Filter>UI</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\src\Kepri3D\Utils\checkML.h">
@@ -226,6 +229,9 @@
     </ClInclude>
     <ClInclude Include="..\..\src\Kepri3D\Sonido\AudioSource.h">
       <Filter>Sonido</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\Kepri3D\UI\Editor.h">
+      <Filter>UI</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

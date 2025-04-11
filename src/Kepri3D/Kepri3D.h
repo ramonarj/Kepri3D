@@ -26,10 +26,11 @@
 #include "Scene.h"
 #include "ResourceManager.h"
 #include "InputManager.h"
-// UI
+// UI y Editor
 #include "UI/Button.h"
 #include "UI/Text.h"
 #include "UI/Canvas.h"
+#include "UI/Editor.h"
 // Otros
 #include "Terreno.h"
 #include "MeshLoader.h"

@@ -20,6 +20,7 @@
 class Scene;
 class Camera;
 class Viewport;
+struct Editor;
 
 #define __DEBUG_INFO__
 
@@ -92,6 +93,7 @@ public:
 #endif
 
 private:
+	friend struct Editor;
 	Game() : camera(nullptr), scene(nullptr), viewport(nullptr), nextScene(nullptr){}
 
 	/* Instancia del singleton */
@@ -109,10 +111,12 @@ private:
 
 	/* ID de la ventana de GLUT */
 	int glutWindow = 0;
-	int editorWindow = 0;
 
 	/* Nombre de la ventana, dado por el usuario */
 	std::string windowName;
+
+	/* Referencia al editor */
+	Editor* pEditor;
 
 	/* Instante del último update */
 	GLuint last_update_tick = 0;
@@ -143,9 +147,6 @@ private:
 
 	// - - - Funciones para hilos - - - //
 	void thread_loadResources();
-
-	// EDITOR //
-	void updateMenuInfo();
 };
 
 #endif

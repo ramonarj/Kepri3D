@@ -135,6 +135,7 @@ protected:
 	static Shader* m_shadowComp;
 
 private:
+	friend struct Editor;
 	friend class Game;
 
 	/* Crea e inicializa los framebuffers correspondientes */
