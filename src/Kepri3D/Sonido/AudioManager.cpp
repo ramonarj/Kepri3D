@@ -4,7 +4,6 @@
 
 #include <cassert>
 #include <iostream>
-#include <iostream>
 #include <checkML.h>
 #include "Entity.h"
 

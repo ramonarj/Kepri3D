@@ -13,6 +13,7 @@
 #include <glew.h>
 #include <freeglut.h>
 
+#include "Defines.h"
 #include "InputManager.h"
 #include "checkML.h"
 #include <string>
@@ -21,8 +22,6 @@ class Scene;
 class Camera;
 class Viewport;
 struct Editor;
-
-#define __DEBUG_INFO__
 
 const int MSAA_SAMPLES = 4;
 

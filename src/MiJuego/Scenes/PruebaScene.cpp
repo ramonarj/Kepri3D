@@ -95,7 +95,8 @@ void PruebaScene::init()
 	redead->setMaterial("redead");
 	redead->getRenderer()->setMaterial(1, "star");
 	redead->getRenderer()->setMaterial(2, "oceano");
-	redead->setPosition({ -8,2,-6 });
+	redead->setPosition({ -10,2,-6 });
+	redead->rotate(PI / 4, { 0, 0, 1 });
 	AddEntity(redead);
 
 	// Peon de ajedrez

@@ -3,7 +3,7 @@
 
 #include <vector>
 #include <glew.h>
-#include "Game.h"
+#include "Defines.h"
 #include "CorePhysics.h"
 
 class Collider;

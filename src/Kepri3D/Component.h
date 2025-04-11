@@ -1,7 +1,6 @@
 #ifndef __COMPONENT__
 #define __COMPONENT__
 
-#include <glew.h>
 #include "Entity.h"
 
 /* Clase abstracta para que herede cualquier componente */

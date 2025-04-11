@@ -5,7 +5,7 @@
 #include <string>
 #include <vector>
 #include <glm.hpp>
-#include "Game.h"
+#include "Defines.h"
 
 // GL_RGBA -> sin correción gamma
 // GL_SRGB_ALPHA -> con corrección gamma

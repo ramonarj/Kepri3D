@@ -5,7 +5,7 @@
 #include <glew.h>
 #include <string>
 #include "checkML.h"
-#include "Game.h"
+#include "Defines.h"
 
 
 #include <gtc/type_ptr.hpp>
@@ -53,6 +53,8 @@ public:
 
 	// Letra mayúscula hecha con GL_LINE_STRIP de un color dado
 	static Mesh* generateLetter(char letter, const glm::vec4& color = {1, 1, 1, 1});
+
+	glm::dvec3 volumeCenter = { 0, 0, 0 };
 
 #ifdef __DEBUG_INFO__
 	static GLuint numVerts;

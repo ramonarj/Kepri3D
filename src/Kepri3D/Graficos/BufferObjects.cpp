@@ -1,5 +1,6 @@
 #include "BufferObjects.h"
 
+#include "Game.h"
 #include "Texture.h"
 #include <freeglut.h>
 #include <iostream>

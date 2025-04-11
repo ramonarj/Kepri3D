@@ -1,8 +1,6 @@
 #ifndef __SOUND_MANAGER__
 #define __SOUND_MANAGER__
 
-#include <string>
-
 class Entity;
 
 const float DOPPLER_FACTOR = 0.8f;

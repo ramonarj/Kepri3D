@@ -98,6 +98,12 @@ void Renderer::draw(Shader* sh)
 
 void Renderer::drawVolume(Shader* sh)
 {
+	// Centrar el volumen delimitador. TODO: comunicación excesiva con la GPU
+	glm::dmat4 modelMat = sh->getMat4d("model");
+	modelMat[3] += modelMat * glm::dvec4(m_mesh->volumeCenter, 0.0); // se aplica la rotación de la entidad
+	sh->setMat4d("model", modelMat);
+
+	// Pintarlo con líneas
 	glPolygonMode(GL_FRONT, GL_LINE);
 	glPolygonMode(GL_BACK, GL_LINE);
 	m_volumeMesh->draw();

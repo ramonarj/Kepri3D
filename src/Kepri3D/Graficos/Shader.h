@@ -5,7 +5,7 @@
 #include <string>
 #include <glm.hpp>
 
-#include "Game.h"
+#include "Defines.h"
 
 class Texture;
 
@@ -48,30 +48,19 @@ public:
 #endif
 	}
 
-	// - - - Paso de uniforms - - - // 
-	/* Pasa un uniform de tipo INT al shader */
+	// - - - Paso de uniforms al shader - - - // 
 	void setInt(const std::string& name, int value) const;
-
-	/* Pasa un uniform de tipo FLOAT al shader */
 	void setFloat(const std::string& name, float value) const;
-
-	/* Pasa un uniform de tipo VEC2 al shader */
 	void setVec2(const std::string& name, const glm::vec2 value) const;
-
-	/* Pasa un uniform de tipo VEC3 al shader */
 	void setVec3(const std::string& name, const glm::vec3 value) const; 
-
-	/* Pasa un uniform de tipo VEC4 al shader */
 	void setVec4(const std::string& name, const glm::vec4 value) const;
-
-	/* Pasa un uniform de tipo MAT4 al shader */
 	void setMat4(const std::string& name, const glm::mat4 matValue) const;
-
-	/* Pasa un uniform de tipo DMAT4 al shader */
 	void setMat4d(const std::string& name, const glm::dmat4 value) const; // TODO por referencia
 
-	/* Pasa un uniform de tipo Texture al shader */
 	void setTexture(const std::string& name, int index, Texture* tex) const;
+
+	// - - - Obtención de uniforms del shader - - - //
+	glm::dmat4 getMat4d(const std::string& name) const;
 
 	// - - - Configurar los Uniform blocks - - - //
 	void bindUniformBlock(const std::string& name, unsigned int bindingPoint);

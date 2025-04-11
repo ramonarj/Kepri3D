@@ -2,7 +2,7 @@
 #define __AUDIO_SOURCE__
 
 #include "Component.h"
-#include "Game.h"
+#include "Defines.h"
 
 struct Audio;
 

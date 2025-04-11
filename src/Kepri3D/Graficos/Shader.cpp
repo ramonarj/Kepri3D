@@ -189,6 +189,16 @@ void Shader::setTexture(const std::string& name, int index, Texture* tex) const
 }
 
 // - - - - - - - - - - - - - - -
+
+glm::dmat4 Shader::getMat4d(const std::string& name) const
+{
+	glm::dmat4 mat;
+	GLint loc = glGetUniformLocation(programId, name.c_str());
+	glGetUniformdv(programId, loc, glm::value_ptr(mat));
+	return mat;
+}
+
+// - - - - - - - - - - - - - - -
 void Shader::bindUniformBlock(const std::string& name, unsigned int bindingPoint)
 {
 	GLuint uboIndex = glGetUniformBlockIndex(programId, name.c_str());

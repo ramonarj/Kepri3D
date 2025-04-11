@@ -146,6 +146,7 @@ void Mesh::calculateVolume()
 			maxZ = vertices[i].z;
 	}
 	volume = { maxX - minX, maxY - minY, maxZ - minZ };
+	volumeCenter = glm::dvec3{ minX + maxX, minY + maxY, minZ + maxZ } / 2.0;
 }
 
 void Mesh::scale(const glm::dvec3& scale)

@@ -207,6 +207,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\src\Kepri3D\Component.h" />
+    <ClInclude Include="..\..\src\Kepri3D\Defines.h" />
     <ClInclude Include="..\..\src\Kepri3D\Entity.h" />
     <ClInclude Include="..\..\src\Kepri3D\Fisica\Articulacion.h" />
     <ClInclude Include="..\..\src\Kepri3D\Fisica\Collider.h" />

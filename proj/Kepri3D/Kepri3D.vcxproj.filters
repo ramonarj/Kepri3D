@@ -233,5 +233,8 @@
     <ClInclude Include="..\..\src\Kepri3D\UI\Editor.h">
       <Filter>UI</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\src\Kepri3D\Defines.h">
+      <Filter>Core</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>
