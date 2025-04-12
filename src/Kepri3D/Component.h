@@ -25,7 +25,9 @@ public:
 	inline void setEntity(Entity* e) { this->entity = e; }
 
 	// Callbacks
-	/* Método virtual puro que debe implementar cada tipo de componente */
+	/* Se llama una vez al inicio de la escena */
+	virtual void start() {}
+	/* Método virtual puro que debe implementar cada tipo de componente. Se llama cada frame */
 	virtual void update(float deltaTime) = 0;
 	/* Callback que se llama en cada paso de la simulación física */
 	virtual void fixedUpdate(float fixedDeltatime) {}

@@ -71,6 +71,7 @@ void Game::loadScene(Scene* sc)
 #else
 		scene->loadResources();
 		scene->init();
+		scene->startComponents();
 #endif
 		// Crear las entidades y colocarlas
 		//scene->init();
@@ -94,6 +95,7 @@ void Game::loadScenePriv(Scene* sc)
 	scene = sc;
 	scene->loadResources();
 	scene->init();
+	scene->startComponents();
 
 	last_update_tick = glutGet(GLUT_ELAPSED_TIME);
 	std::cout << "Cargada escena '" << scene->getName() << "'" << std::endl;
@@ -107,6 +109,7 @@ void Game::thread_loadResources()
 	// Cargar los recursos de la escena en cuestión
 	scene->loadResources();
 	scene->init();
+	scene->startComponents();
 	// Quitar el contexto
 	wglMakeCurrent(0, 0);
 #endif

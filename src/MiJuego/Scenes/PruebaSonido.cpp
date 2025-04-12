@@ -55,7 +55,7 @@ void PruebaSonido::init()
 	//audioComp->setVolume(0.5);
 	audioComp->setLoop(true);
 	venus->addComponent(audioComp);
-	audioComp->play();
+	//audioComp->play();
 
 
 	// - - AudioManager - - //
@@ -67,15 +67,21 @@ void PruebaSonido::init()
 	AudioSource* musicSrc = new AudioSource("luigi");
 	audioMan->addComponent(musicSrc); // música de la escena
 	musicSrc->setVolume(0.4);
-	//musicSrc->play();
+	musicSrc->setLoop(true);
+	musicSrc->play();
 	AddEntity(audioMan);
 
 	// - - Piano - - //
-	AudioSource* pianoSrc = new AudioSource("senoLa");
-	audioMan->addComponent(pianoSrc);
-	audioMan->addComponent(new Piano(pianoSrc));
-	pianoSrc->setLoop(true);
-	//pianoSrc->play();
+	//AudioSource* pianoSrc = new AudioSource("senoLa");
+	audioMan->addComponent(new Piano());
+
+	// - - Audio sintetizado - - //
+	//Audio* seno = new Audio(Triangular, 440.5);
+	////Audio* seno = new Audio(Ruido, 440);
+	//AudioSource* synthSrc = new AudioSource(seno);
+	//audioMan->addComponent(synthSrc);
+	//synthSrc->setLoop(true);
+	//synthSrc->play();
 
 	// Listener
 	AudioManager::Instance()->setListener(m_camera);

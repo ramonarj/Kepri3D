@@ -9,13 +9,16 @@ AudioMan::AudioMan(AudioSource* src, Audio* altAudio) : pausedMusic(false)
 	this->audio2 = altAudio;
 }
 
+void AudioMan::start()
+{
+	musicSrc = entity->getComponent<AudioSource>();
+}
+
 void AudioMan::update(float deltaTime)
 {
 	// Reproducir el sonido (espacio)
 	if (InputManager::Instance()->getKeyDown(13))
-	{
 		source->play();
-	}
 
 	// Cambiar el sonido que usa la fuente (tabulador)
 	if (InputManager::Instance()->getKeyDown(9))
@@ -28,17 +31,13 @@ void AudioMan::update(float deltaTime)
 
 	// Looping
 	if (InputManager::Instance()->getKeyDown('l'))
-	{
 		source->setLoop(true);
-	}	
 
 	// Subir/bajar el volumen global
-	if (InputManager::Instance()->getSpecialKey(GLUT_KEY_UP))
-	{
+	if (InputManager::Instance()->getSpecialKey(GLUT_KEY_UP))  {
 		AudioManager::Instance()->setGlobalVolume(AudioManager::Instance()->getGlobalVolume() + deltaTime);
 	}
-	else if (InputManager::Instance()->getSpecialKey(GLUT_KEY_DOWN))
-	{
+	else if (InputManager::Instance()->getSpecialKey(GLUT_KEY_DOWN)) {
 		AudioManager::Instance()->setGlobalVolume(AudioManager::Instance()->getGlobalVolume() - deltaTime);
 	}
 
@@ -48,7 +47,6 @@ void AudioMan::update(float deltaTime)
 void AudioMan::controlMusica(float deltaTime)
 {	
 	// Subir/bajar el volumen
-	AudioSource* musicSrc = entity->getComponent<AudioSource>();
 	if (InputManager::Instance()->getSpecialKey(GLUT_KEY_RIGHT))
 	{
 		musicSrc->setVolume(musicSrc->getVolume() + deltaTime);

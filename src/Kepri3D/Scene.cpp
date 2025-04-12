@@ -58,6 +58,13 @@ void Scene::setupStatics(Camera* cam)
 	m_shadowComp->setInt("depthMap", 0);
 }
 
+void Scene::startComponents()
+{
+	for (Entity* e : m_entities)
+		for (Component* c : e->getComponents())
+			c->start();
+}
+
 void Scene::AddEntity(Entity* e)
 {
 	// Vector general

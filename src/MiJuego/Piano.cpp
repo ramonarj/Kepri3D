@@ -10,9 +10,20 @@ const int NUM_TECLAS = 13;
 float frecuencias[NUM_TECLAS] = { 1, 1.06, 1.12, 1.19, 1.26, 1.33, 1.41, 1.5, 1.59, 1.68, 1.78, 1.89, 2 };
 char teclas[NUM_TECLAS] = { 'a', 'w', 's', 'e', 'd', 'f', 't', 'g', 'y', 'h', 'u', 'j', 'k' };
 
-Piano::Piano(AudioSource* src)
+Piano::Piano()
 {
-	this->source = src;
+	onda = new Audio(Seno, 440);
+	source = new AudioSource(onda);
+	source->setLoop(true);
+}
+Piano::~Piano()
+{
+	delete onda;
+}
+
+void Piano::start()
+{
+	entity->addComponent(source);
 }
 
 void Piano::update(float deltaTime)
@@ -53,6 +64,9 @@ void Piano::update(float deltaTime)
 		source->pause();
 		playing = false;
 	}
+
+	// 'Cambiar de instrumento'
+	cambioSinte();
 }
 
 void Piano::playNote(int nota)
@@ -65,4 +79,24 @@ void Piano::playNote(int nota)
 
 	// Cambiar el pitch de acuerdo a la nota y a la escala
 	source->setPitch(frecuencias[nota] * pow(2, escala));
+}
+
+void Piano::cambioSinte()
+{
+	// Teclas 1 - 5
+	bool keyPressed = false; int i = 0;
+	while (!keyPressed && i < 5)
+	{
+		if (InputManager::Instance()->getKeyDown('1' + i))
+		{
+			// Borrar la onda anterior
+			delete onda;
+
+			// Poner una con la forma especificada
+			onda = new Audio(WaveForm(i), 440);
+			source->setAudio(onda);
+			keyPressed = true;
+		}
+		i++;
+	}
 }

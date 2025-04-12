@@ -5,6 +5,7 @@
 
 #include "al.h"
 #include "alut.h"
+#include "Utils.h" // PI
 
 Audio::Audio(const std::string& filePath, AudioFormat formato)
 {
@@ -45,6 +46,86 @@ Audio::Audio(const std::string& filePath, AudioFormat formato)
 		std::cout << "Error " << error << " al crear el Audio Buffer para " << filePath << std::endl;
 
 	delete data; // Liberar la memoria
+}
+
+Audio::Audio(WaveForm tipoOnda, float freq)
+{
+	int sampleRate = 44100; int bps = 8; int maxAmp = 255; //para 8 bit
+	// Duración variable (depende de la frecuencia); hacemos que el audio contenga solamente 1 ciclo de la onda
+	// menos para el ruido, que lo hacemos de 1 segundo
+	float dur = tipoOnda == Ruido ? 1.0 : 1.0 / freq;
+
+	// Crear (sintetizar) la onda
+	int size = dur * sampleRate;
+	char* data = new char[size];
+	switch(tipoOnda)
+	{
+	case Seno:
+	{
+		for (int i = 0; i < size; i++)
+		{
+			float val = (float)i / (float)sampleRate; //entre 0-1
+			float dato = 127 * (sin(val * 2 * PI * freq) + 1);
+			data[i] = dato;
+		}
+		break;
+	}
+	case Cuadrado:
+	{
+		for (int i = 0; i < size; i++)
+		{
+			float val = (float)i / ((float)sampleRate / freq); 
+			val -= (int)val; //entre 0-1
+			if (val >= 0.5) val = 1;
+			else val = 0;
+			data[i] = (float)(255.0 * val);
+		}
+		break;
+	}
+	case Sierra:
+	{
+		for (int i = 0; i < size; i++)
+		{
+			float val = (float)i / ((float)sampleRate / freq); 
+			val -= (int)val; //entre 0-1
+			data[i] = (float)(255.0 * val);
+		}
+		break;
+	}
+	case Triangular:
+	{
+		for (int i = 0; i < size; i++)
+		{
+			float val = (float)i / ((float)sampleRate / freq);
+			val -= (int)val; //entre 0-1
+			if (val < 0.25) val = val * 2 + 0.5;
+			else if (val < 0.75) val = 1 - ((val - 0.25) / 0.5);
+			else val = (val - 0.75) * 2;
+
+			data[i] = (float)(255.0 * val);
+		}
+		break;
+	}
+	case Ruido:
+	{
+		for (int i = 0; i < size; i++)
+			data[i] = float(rand() % 255);
+		break;
+	}
+	default:
+		break;
+	}
+
+	// Crear buffer de sonido y rellenarlo con los datos y formato correcto
+	alGenBuffers(1, &bufferId);
+	alBufferData(bufferId, AL_FORMAT_MONO8, data, size, sampleRate);
+
+	// Comprobación de errores
+	ALenum error = alGetError();
+	if (error != AL_NO_ERROR)
+		std::cout << "Error " << error << " al crear la onda de audio" << std::endl;
+
+	delete data; 
 }
 
 // - - - - - - - - - - - - - - - 

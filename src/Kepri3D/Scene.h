@@ -34,11 +34,14 @@ public:
 
 	static void clean();
 
+	// Métodos abstractos
 	/* Carga todos los recursos necesarios para esta escena */
 	virtual void loadResources() = 0;
 
 	/* Crea las entidades y componentes que aparecerán en escena */
 	virtual void init() = 0;
+
+	void startComponents();
 
 	/* Pinta todas las entidades */
 	void render();
@@ -53,22 +56,18 @@ public:
 	/* Añade un efecto de postprocesado a la escena */
 	void AddComposite(Shader* sh, bool active = true);
 
-	/* Establece el skybox de la escena */
-	inline void SetSkybox(Skybox* skybox) { m_skybox = skybox; }
-
-	/* Establece la cámara de la escena */
-	inline void setCamera(Camera* cam) { this->m_camera = cam; }
-
 	/* Cambia el tamaño de los framebuffers */
-	void resize(int width, int height);
-
-	/* Devuelve el nombre de la escena */
-	inline const std::string& getName() const { return m_name; }
+	void resize(int width, int height);	
 
 	/* Cambia entre el modelo Phong y el Blinn-Phong */
 	inline void switchBlinnPhong() { blinn = !blinn; }
 
+	// Setters
+	inline void SetSkybox(Skybox* skybox) { m_skybox = skybox; }
+	inline void setCamera(Camera* cam) { this->m_camera = cam; }
+
 	// Getters
+	inline const std::string& getName() const { return m_name; }
 	inline Entity* getEntity(int n) { return m_entities[n]; }
 
 	void toggleShadows();

@@ -3,11 +3,15 @@
 
 #include <string>
 
+enum WaveForm { Seno, Cuadrado, Sierra, Triangular, Ruido };
+
 struct Audio
 {
 	enum AudioFormat { WAV = 0, MP3 = 1};
 
 	Audio(const std::string& filePath, AudioFormat formato);
+	/* Crea un audio conteniendo una forma de onda básica */
+	Audio(WaveForm tipoOnda, float freq);
 	~Audio(){}
 
 private:
