@@ -31,6 +31,10 @@ public:
 	inline float getVolume() const { return m_volume; }
 	inline float getPitch() const { return m_pitch; }
 
+	// Efectos
+	void configureSends();
+	void attachFilter();
+
 #ifdef __DEBUG_INFO__
 	static unsigned int numSources;
 #endif

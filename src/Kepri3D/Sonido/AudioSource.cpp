@@ -1,9 +1,12 @@
 #include "AudioSource.h"
 
 #include "al.h"
+#include "alc.h"
+#include "alext.h"
 #include "alut.h"
 
 #include "Audio.h"
+#include "AudioManager.cpp" // TEMPORAL
 #include "ResourceManager.h"
 #include "Camera.h"
 
@@ -43,7 +46,9 @@ void AudioSource::setup(Audio* audio)
 	//alSourcef(sourceId, AL_MAX_DISTANCE, 100.0f); // a partir de qué distancia deja de atenuarse
 	//alSourcef(sourceId, AL_REFERENCE_DISTANCE, 1.0f); // radio dentro del cual la ganancia no aumenta más
 	//alSourcef(sourceId, AL_ROLLOFF_FACTOR, 3.0f); // penddiente de la recta/curva de atenuación
-
+	// Efectos
+	configureSends();
+	attachFilter();
 	m_audio = audio;
 }
 
@@ -108,4 +113,62 @@ void AudioSource::setPitch(float pitch)
 
 	m_pitch = pitch;
 	alSourcef(sourceId, AL_PITCH, m_pitch);
+}
+
+
+void AudioSource::configureSends()
+{
+	std::cout << "Marca" << std::endl;
+	/* Configure Source Auxiliary Effect Slot Sends */
+	/* uiEffectSlot[0] and uiEffectSlot[1] are Auxiliary */
+	/* Effect Slot IDs */
+	/* uiEffect[0] is an Effect ID */
+	/* uiFilter[0] is a Filter ID */
+	/* uiSource is a Source ID */
+
+	/* Set Source Send 0 to feed effectSlots[0] without filtering */
+	alSource3i(sourceId, AL_AUXILIARY_SEND_FILTER, effectSlots[0], 0, NULL);
+	if (alGetError() != AL_NO_ERROR)
+		printf("Failed to configure Source Send 0\n");
+
+	/* Set Source Send 1 to feed effectSlots[1] with filter "filters[0]" */
+	alSource3i(sourceId, AL_AUXILIARY_SEND_FILTER, effectSlots[1], 1, filters[0]);
+	if (alGetError() != AL_NO_ERROR)
+		printf("Failed to configure Source Send 1\n");
+
+	/* Disable Send 0 */
+	alSource3i(sourceId, AL_AUXILIARY_SEND_FILTER, AL_EFFECTSLOT_NULL, 0, NULL);
+	if (alGetError() != AL_NO_ERROR)
+		printf("Failed to disable Source Send 0\n");
+
+	/* Disable Send 1 */
+	alSource3i(sourceId, AL_AUXILIARY_SEND_FILTER, AL_EFFECTSLOT_NULL, 1, NULL);
+	if (alGetError() != AL_NO_ERROR)
+		printf("Failed to disable Source Send 1\n");
+}
+
+void AudioSource::attachFilter()
+{
+	/* Filter 'sourceId', a generated Source */
+	alSourcei(sourceId, AL_DIRECT_FILTER, filters[0]);
+	if (alGetError() == AL_NO_ERROR)
+	{
+		printf("Successfully applied a direct path filter\n");
+		/* Remove filter from 'uiSource' */
+		alSourcei(sourceId, AL_DIRECT_FILTER, AL_FILTER_NULL);
+		if (alGetError() == AL_NO_ERROR)
+			printf("Successfully removed direct filter\n");
+	}
+
+	/* Filter the Source send 0 from 'sourceId' to */
+	/* Auxiliary Effect Slot "effectSlots[0]" using Filter filters[0] */
+	alSource3i(sourceId, AL_AUXILIARY_SEND_FILTER, effectSlots[0], 0, filters[0]);
+	if (alGetError() == AL_NO_ERROR)
+	{
+		printf("Successfully applied aux send filter\n");
+		/* Remove Filter from Source Auxiliary Send */
+		alSource3i(sourceId, AL_AUXILIARY_SEND_FILTER, effectSlots[0], 0, AL_FILTER_NULL);
+		if (alGetError() == AL_NO_ERROR)
+			printf("Successfully removed filter\n");
+	}
 }

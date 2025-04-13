@@ -18,6 +18,9 @@ public:
 	inline Entity* getListener() { return listener; }
 	inline float getGlobalVolume() const { return m_volume; }
 
+	// Efectos
+	void createEffect();
+
 	/* Limpia la instancia; debe llamarse explícitamente */
 	inline void Clean() { delete s_instance; s_instance = nullptr; }
 
