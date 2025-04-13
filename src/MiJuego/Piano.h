@@ -22,9 +22,21 @@ private:
 	AudioSource* source;
 	Audio* onda;
 
+	// Vibrato
+	float vibratoInit = 0;
+	float vibratoNote;
+	// Portamento
+	bool portamento = false;
+	bool porting = false;
+	float targetPitch;
+
 	// Toca una de las 12 notas disponibles, de semitono en semitono (0 = 440Hz, 11 = 880Hz)
 	void playNote(int nota);
+	void controlEscalas();
+	void controlNotas();
 	void cambioSinte();
+	void controlVibrato(float deltaTime);
+	void controlPortamento(float deltaTime);
 };
 
 #endif

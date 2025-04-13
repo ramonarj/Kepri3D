@@ -7,6 +7,9 @@
 
 const int NUM_ESCALAS = 3;
 const int NUM_TECLAS = 13;
+const float VIBRATO_FREQ = 40;
+const float VIBRATO_RANGE = 0.04; // entre 0.01 y 0.05 está bien
+const float PORTAMENTO_VEL = 4;
 float frecuencias[NUM_TECLAS] = { 1, 1.06, 1.12, 1.19, 1.26, 1.33, 1.41, 1.5, 1.59, 1.68, 1.78, 1.89, 2 };
 char teclas[NUM_TECLAS] = { 'a', 'w', 's', 'e', 'd', 'f', 't', 'g', 'y', 'h', 'u', 'j', 'k' };
 
@@ -41,44 +44,48 @@ void Piano::update(float deltaTime)
 	if (!pianoActive) { return; }
 
 	// Subir/bajar la escala
-	if (InputManager::Instance()->getSpecialKeyDown(GLUT_KEY_UP))
-		escala = (escala+1) % NUM_ESCALAS;
-	else if (InputManager::Instance()->getSpecialKeyDown(GLUT_KEY_DOWN))
-		escala = (NUM_ESCALAS + (escala - 1)) % NUM_ESCALAS;
+	controlEscalas();
 
-	// Comprobar si se está tocando alguna de las teclas del instrumento
-	int i = 0; bool tocada = false;
-	while(i < NUM_TECLAS && !tocada)
-	{
-		if(InputManager::Instance()->getKey(teclas[i]))
-		{
-			playNote(i);
-			tocada = true;
-		}
-		i++;
-	}
-
-	// Detener la reproducción del audio
-	if(!tocada && playing)
-	{
-		source->pause();
-		playing = false;
-	}
+	// Tocar una nota
+	controlNotas();
 
 	// 'Cambiar de instrumento'
 	cambioSinte();
+
+	// Vibrato
+	controlVibrato(deltaTime);
+
+	// Portamento
+	controlPortamento(deltaTime);
 }
 
 void Piano::playNote(int nota)
 {
-	if (!playing) 
+	// Cambiar el pitch de acuerdo a la nota y a la escala
+	float pitch = frecuencias[nota] * pow(2, escala);
+	if(pitch != source->getPitch())
+	{
+		if (portamento)
+		{
+			porting = true;
+			targetPitch = pitch;
+		}
+		else
+		{
+			source->setPitch(pitch);
+			vibratoNote = pitch;
+		}
+	}
+
+	// Empezar a tocar nota si no estaba ya tocandose alguna
+	if (!playing)
 	{
 		source->play();
 		playing = true;
-	}
 
-	// Cambiar el pitch de acuerdo a la nota y a la escala
-	source->setPitch(frecuencias[nota] * pow(2, escala));
+		porting = false;
+		source->setPitch(pitch);
+	}
 }
 
 void Piano::cambioSinte()
@@ -98,5 +105,72 @@ void Piano::cambioSinte()
 			keyPressed = true;
 		}
 		i++;
+	}
+}
+
+void Piano::controlEscalas()
+{
+	if (InputManager::Instance()->getSpecialKeyDown(GLUT_KEY_UP))
+		escala = (escala + 1) % NUM_ESCALAS;
+	else if (InputManager::Instance()->getSpecialKeyDown(GLUT_KEY_DOWN))
+		escala = (NUM_ESCALAS + (escala - 1)) % NUM_ESCALAS;
+}
+
+void Piano::controlNotas()
+{
+	// Comprobar si se está tocando alguna de las teclas del instrumento
+	int i = 0; bool tocada = false;
+	while (i < NUM_TECLAS && !tocada)
+	{
+		if (InputManager::Instance()->getKey(teclas[i]))
+		{
+			playNote(i);
+			tocada = true;
+		}
+		i++;
+	}
+
+	// Detener la reproducción del audio
+	if (!tocada && playing)
+	{
+		source->pause();
+		playing = false;
+		porting = false;
+	}
+}
+
+void Piano::controlVibrato(float deltaTime)
+{
+	if (InputManager::Instance()->getKeyDown('v'))
+		vibratoNote = source->getPitch();
+	if (InputManager::Instance()->getKey('v'))
+	{
+		vibratoInit += deltaTime;
+		source->setPitch(vibratoNote + VIBRATO_RANGE * sin(vibratoInit * VIBRATO_FREQ));
+	}
+}
+
+void Piano::controlPortamento(float deltaTime)
+{
+	if (InputManager::Instance()->getKeyDown(9))
+		portamento = !portamento;
+
+	if(porting)
+	{
+		// Avanzar un poco la nota
+		float newPitch;
+		if(targetPitch < source->getPitch())
+			newPitch = source->getPitch() - deltaTime * PORTAMENTO_VEL;
+		else
+			newPitch = source->getPitch() + deltaTime * PORTAMENTO_VEL;
+		source->setPitch(newPitch);
+		vibratoNote = newPitch;
+
+		// Fin del portamento
+		if (abs(targetPitch - newPitch) < 0.05)
+		{
+			porting = false;
+			source->setPitch(targetPitch);
+		}
 	}
 }
