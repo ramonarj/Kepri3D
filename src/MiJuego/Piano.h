@@ -25,6 +25,9 @@ private:
 	// Vibrato
 	float vibratoInit = 0;
 	float vibratoNote;
+	// Tremolo
+	float tremoloInit = 0;
+	float noteVolume;
 	// Portamento
 	bool portamento = false;
 	bool porting = false;
@@ -36,6 +39,7 @@ private:
 	void controlNotas();
 	void cambioSinte();
 	void controlVibrato(float deltaTime);
+	void controlTremolo(float deltaTime);
 	void controlPortamento(float deltaTime);
 };
 

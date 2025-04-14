@@ -109,8 +109,10 @@ void initOpenAL(bool useEffects)
 
 		/* Query for Effect Extension */
 		if (alcIsExtensionPresent(pDevice, "ALC_EXT_EFX") == AL_FALSE)
+		{
+			printf("ERROR: EFX Extension not found!\n");
 			return;
-		printf("EFX Extension found!\n");
+		}
 
 		/* Use Context creation hint to request 4 Auxiliary sends per Source */
 		attribs[0] = ALC_MAX_AUXILIARY_SENDS;
@@ -224,7 +226,7 @@ void AudioManager::createEffect()
 			printf("Reverb Effect not supported\n");
 		// change Decay Time
 		else
-			alEffectf(effects[0], AL_REVERB_DECAY_TIME, 5.0f);
+			alEffectf(effects[0], AL_REVERB_DECAY_TIME, 2.0f);
 	}
 
 	/* b) Flanger */
@@ -233,7 +235,7 @@ void AudioManager::createEffect()
 	{
 		alEffecti(effects[1], AL_EFFECT_TYPE, AL_EFFECT_FLANGER);
 		if (alGetError() != AL_NO_ERROR)
-			printf("Flanger effect not support\n");
+			printf("Flanger effect not supported\n");
 		// change Phase
 		else
 			alEffecti(effects[1], AL_FLANGER_PHASE, 180);
@@ -242,8 +244,8 @@ void AudioManager::createEffect()
 	/* (2) Try to create a Filter */
 	alGetError();
 	alGenFilters(1, &filters[0]);
-	if (alGetError() == AL_NO_ERROR)
-		printf("Generated a Filter\n");
+	if (alGetError() != AL_NO_ERROR)
+		printf("Error: could not generate filter\n");
 	if (alIsFilter(filters[0]))
 	{
 		/* Set Filter type to Low-Pass and set parameters */
@@ -259,9 +261,7 @@ void AudioManager::createEffect()
 
 
 	/* (3) Attach Effect/Filter to Auxiliary Effect Slot */
-	/* uiEffectSlot[0] is the ID of an Aux Effect Slot */
-	/* uiEffect[0] is the ID of an Effect */
 	alAuxiliaryEffectSloti(effectSlots[0], AL_EFFECTSLOT_EFFECT, effects[0]);
-	if (alGetError() == AL_NO_ERROR)
-		printf("Successfully loaded effect into effect slot\n");
+	if (alGetError() != AL_NO_ERROR)
+		printf("Error: could not load effect into effect slot\n");
 }

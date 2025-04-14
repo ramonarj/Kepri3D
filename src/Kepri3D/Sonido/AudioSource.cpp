@@ -47,8 +47,8 @@ void AudioSource::setup(Audio* audio)
 	//alSourcef(sourceId, AL_REFERENCE_DISTANCE, 1.0f); // radio dentro del cual la ganancia no aumenta más
 	//alSourcef(sourceId, AL_ROLLOFF_FACTOR, 3.0f); // penddiente de la recta/curva de atenuación
 	// Efectos
-	configureSends();
-	attachFilter();
+	//configureSends();
+	//attachFilter();
 	m_audio = audio;
 }
 
@@ -95,7 +95,7 @@ void AudioSource::setAudio(Audio* audio)
 
 void AudioSource::setVolume(float vol)
 {
-	if (vol > 1 || vol < 0) { return; }
+	if (vol > 10 || vol < 0) { return; }
 
 	m_volume = vol;
 	alSourcef(sourceId, AL_GAIN, m_volume);
@@ -118,13 +118,7 @@ void AudioSource::setPitch(float pitch)
 
 void AudioSource::configureSends()
 {
-	std::cout << "Marca" << std::endl;
 	/* Configure Source Auxiliary Effect Slot Sends */
-	/* uiEffectSlot[0] and uiEffectSlot[1] are Auxiliary */
-	/* Effect Slot IDs */
-	/* uiEffect[0] is an Effect ID */
-	/* uiFilter[0] is a Filter ID */
-	/* uiSource is a Source ID */
 
 	/* Set Source Send 0 to feed effectSlots[0] without filtering */
 	alSource3i(sourceId, AL_AUXILIARY_SEND_FILTER, effectSlots[0], 0, NULL);
@@ -153,22 +147,20 @@ void AudioSource::attachFilter()
 	alSourcei(sourceId, AL_DIRECT_FILTER, filters[0]);
 	if (alGetError() == AL_NO_ERROR)
 	{
-		printf("Successfully applied a direct path filter\n");
 		/* Remove filter from 'uiSource' */
 		alSourcei(sourceId, AL_DIRECT_FILTER, AL_FILTER_NULL);
-		if (alGetError() == AL_NO_ERROR)
-			printf("Successfully removed direct filter\n");
-	}
+		if (alGetError() != AL_NO_ERROR)
+			printf("Error: could not remove direct filter\n");
+	} else printf("Error: could not apply a direct path filter\n");
 
 	/* Filter the Source send 0 from 'sourceId' to */
 	/* Auxiliary Effect Slot "effectSlots[0]" using Filter filters[0] */
 	alSource3i(sourceId, AL_AUXILIARY_SEND_FILTER, effectSlots[0], 0, filters[0]);
 	if (alGetError() == AL_NO_ERROR)
 	{
-		printf("Successfully applied aux send filter\n");
 		/* Remove Filter from Source Auxiliary Send */
 		alSource3i(sourceId, AL_AUXILIARY_SEND_FILTER, effectSlots[0], 0, AL_FILTER_NULL);
-		if (alGetError() == AL_NO_ERROR)
-			printf("Successfully removed filter\n");
-	}
+		if (alGetError() != AL_NO_ERROR)
+			printf("Error: could not remove filter\n");
+	} else printf("Error: could not apply aux send filter\n");
 }

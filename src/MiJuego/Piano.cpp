@@ -7,8 +7,10 @@
 
 const int NUM_ESCALAS = 3;
 const int NUM_TECLAS = 13;
-const float VIBRATO_FREQ = 40;
+const float VIBRATO_FREQ = 40; // LFO
 const float VIBRATO_RANGE = 0.04; // entre 0.01 y 0.05 está bien
+const float TREMOLO_FREQ = 30; // LFO
+const float TREMOLO_RANGE = 1;
 const float PORTAMENTO_VEL = 4;
 float frecuencias[NUM_TECLAS] = { 1, 1.06, 1.12, 1.19, 1.26, 1.33, 1.41, 1.5, 1.59, 1.68, 1.78, 1.89, 2 };
 char teclas[NUM_TECLAS] = { 'a', 'w', 's', 'e', 'd', 'f', 't', 'g', 'y', 'h', 'u', 'j', 'k' };
@@ -54,6 +56,9 @@ void Piano::update(float deltaTime)
 
 	// Vibrato
 	controlVibrato(deltaTime);
+
+	// Trémolo
+	controlTremolo(deltaTime);
 
 	// Portamento
 	controlPortamento(deltaTime);
@@ -148,6 +153,18 @@ void Piano::controlVibrato(float deltaTime)
 		vibratoInit += deltaTime;
 		source->setPitch(vibratoNote + VIBRATO_RANGE * sin(vibratoInit * VIBRATO_FREQ));
 	}
+}
+
+void Piano::controlTremolo(float deltaTime)
+{
+	if (InputManager::Instance()->getKeyDown('c')) // la 't' ya está pillada por una nota
+		noteVolume = source->getVolume();
+	if (InputManager::Instance()->getKey('c'))
+	{
+		tremoloInit += deltaTime;
+		source->setVolume(noteVolume + TREMOLO_RANGE * sin(tremoloInit * TREMOLO_FREQ));
+	}
+	else source->setVolume(1); // el valor por defecto
 }
 
 void Piano::controlPortamento(float deltaTime)
