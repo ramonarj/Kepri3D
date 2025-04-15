@@ -14,7 +14,7 @@ class GameManager : public Component
 {
 public:
 	GameManager(Scene* scene, Camera* cam, UIElement* botonesMenu, Entity* particleSystem) :
-		dirLight(nullptr), circleLight(nullptr), spotLight(nullptr), luzBlinn(nullptr), tessTerrain(nullptr)
+		circleLight(nullptr), spotLight(nullptr), luzBlinn(nullptr), tessTerrain(nullptr)
 	{
 		this->scene = scene;
 		this->cam = cam;
@@ -25,7 +25,7 @@ public:
 	}
 	~GameManager(){}
 
-	void setLights(Light* dirLight, Light* circleLight, Light* spotLight, Light* luzBlinn);
+	void setLights(Light* circleLight, Light* spotLight, Light* luzBlinn);
 	void setTessTerrain(Terreno* tesTerrain) { this->tessTerrain = tesTerrain; }
 	void setParticleSys(ParticleSystem* partSys) { this->particleSys = partSys; }
 
@@ -40,7 +40,7 @@ private:
 	// Referencias a los GameObjects
 	Camera* cam;
 	Scene* scene;
-	Light* dirLight, *circleLight, *spotLight, *luzBlinn;
+	Light *circleLight, *spotLight, *luzBlinn;
 	Entity* pSystem;
 	UIElement* botonesMenu;
 	Terreno* tessTerrain;
@@ -51,7 +51,6 @@ private:
 	glm::ivec2 windowDim;
 	// Luces
 	float totalTime = 0;
-	float sunVel = 0.15;
 	float lightVel = 0.5f;
 	bool movingLights = true;
 	// Partículas

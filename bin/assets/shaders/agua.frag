@@ -29,6 +29,7 @@ layout (std140) uniform Lights
 uniform sampler2D textura;
 uniform sampler2D dispMap;
 uniform samplerCube skybox;
+uniform vec3 color_skybox = {1, 1, 1};
 
 // - - Material - - //
 uniform Material material;
@@ -77,5 +78,6 @@ void main()
 	R = vec3(R.x, -R.y, -R.z);
 
 	// Mezclar el color de la textura con el reflejo dependiendo del ángulo de visión
-	FragColor = mix(color * material.diffuse, textureLod(skybox, R, 3), reflejo);
+	vec4 colorCielo = vec4(textureLod(skybox, R, 3).rgb * color_skybox, 1.0);
+	FragColor = mix(color * material.diffuse, colorCielo, reflejo);
 }

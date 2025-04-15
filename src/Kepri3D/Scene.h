@@ -69,6 +69,7 @@ public:
 	// Getters
 	inline const std::string& getName() const { return m_name; }
 	inline Entity* getEntity(int n) { return m_entities[n]; }
+	inline Skybox* getSkybox() { return m_skybox; }
 
 	void toggleShadows();
 

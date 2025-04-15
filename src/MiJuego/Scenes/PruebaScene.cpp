@@ -3,6 +3,7 @@
 #include "../Kepri3D.h"
 
 #include "../GameManager.h"
+#include "../DayCicle.h"
 #include "../RotationComp.h"
 #include "../CameraController.h"
 #include "../MultitexComp.h"
@@ -32,20 +33,11 @@ instancingButtonPressed, shadowsButtonPressed, logicOpButtonPressed, gammaButton
 void PruebaScene::init()
 {
 	// LUCES
-	// Direccional
-	Light* dirLight = new Light(DIRECTIONAL_LIGHT);
-	dirLight->setDirection({ -1,0 , 0 });
-	dirLight->setDiffuse({ 1, 1, 1, 1.0 });
-	dirLight->setAmbient({ 0.05, 0.05, 0.2, 0.0 });
-	dirLight->setActive(true);
-	Entity* dirLightEnt = new Entity();
-	dirLightEnt->addComponent(dirLight);
-	AddEntity(dirLightEnt);
 
 	// Puntual (va en círculos)
-	Light* circleLight = new Light(POINT_LIGHT, { 1, 1, 0, 1 });
-	circleLight->setAmbient({ 0.1, 0.3, 0.1, 1.0 });
-	circleLight->setSpecular({ 0.8, 0.8, 0, 1.0 });
+	Light* circleLight = new Light(POINT_LIGHT, { 1, 1, 0 });
+	circleLight->setAmbient({ 0.1, 0.3, 0.1});
+	circleLight->setSpecular({ 0.8, 0.8, 0});
 	circleLight->emitShadows(true);
 	Entity* circleLightEnt = new Esfera(0.5);
 	((Material*)circleLightEnt->getMaterial())->setEmission(circleLight->getDiffuse()); //que la bolita sea del color de la luz
@@ -53,14 +45,14 @@ void PruebaScene::init()
 	AddEntity(circleLightEnt);
 
 	// Foco (linterna)
-	Light* spotLight = new Light(SPOT_LIGHT, { 0.7, 0.7, 0.7, 1 });
-	spotLight->setSpecular({ 0.6, 0.6, 0.6, 1.0 });
+	Light* spotLight = new Light(SPOT_LIGHT, { 0.7, 0.7, 0.7 });
+	spotLight->setSpecular({ 0.6, 0.6, 0.6 });
 	Entity* spotLightEnt = new Entity();
 	spotLightEnt->addComponent(spotLight);
 	AddEntity(spotLightEnt);
 
 	// Nueva luz para el Blinn
-	Light* luzBlinn = new Light(POINT_LIGHT, { 0.4, 0.4, 0.3, 1 });
+	Light* luzBlinn = new Light(POINT_LIGHT, { 0.4, 0.4, 0.3 });
 	luzBlinn->setAttenuationFactors(0.3, 0.3, 0.02);
 	Entity* e = new Entity({ luzBlinn }, "LuzBlinn");
 	e->setPosition({ 60, 4, -40 });
@@ -231,8 +223,8 @@ void PruebaScene::init()
 
 
 	/* - - Skybox - - */
-	Skybox* sky = new Skybox("lakeSkybox");
-	SetSkybox(sky);
+	//Skybox* sky = new Skybox("lakeSkybox");
+	//SetSkybox(sky);
 
 	/* - - Sistema de partículas - - */
 	// Con 10.000, empieza a ir demasiado lento
@@ -264,13 +256,16 @@ void PruebaScene::init()
 	/* - - GameManager - - */
 	// Componente GM
 	GameManager* gmComponent = new GameManager(this, m_camera, botonesMenu, torre);
-	gmComponent->setLights(dirLight, circleLight, spotLight, luzBlinn);
+	gmComponent->setLights(circleLight, spotLight, luzBlinn);
 	gmComponent->setTessTerrain(terrainComp);
 	gmComponent->setParticleSys(particleSys);
 	// Componente CameraController
 	CameraController* camComp = new CameraController(m_camera);
-	Entity* gm = new Entity({ gmComponent, camComp }, "GameManager");
+	// Componente DayCicle
+	DayCicle* daynightComp = new DayCicle(1); // crea el cielo y el sol
+	Entity* gm = new Entity({ gmComponent, camComp, daynightComp }, "GameManager");
 	AddEntity(gm);
+
 
 	/* - - - Efectos de postprocesado (el orden importa) - - - */
 	AddComposite((Shader*)&ResourceManager::Instance()->getComposite("byn"));

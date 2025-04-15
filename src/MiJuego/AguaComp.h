@@ -4,6 +4,7 @@
 #include "Component.h"
 
 class Material;
+class Skybox;
 
 // Componente muy sencillo que envía un valor al Material
 class AguaComp : public Component
@@ -12,12 +13,14 @@ public:
 	AguaComp(Material* mat);
 	~AguaComp() {}
 
-	void update(float deltaTime);
+	void start() override;
+	void update(float deltaTime) override;
 
 	void setSpeeds(glm::vec2 texSpeed, glm::vec2 dispSpeed);
 
 private:
 	Material* mat;
+	Skybox* cielo;
 };
 
 #endif

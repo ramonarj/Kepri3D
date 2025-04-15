@@ -53,7 +53,7 @@ class Light : public Component
 {
 public:
 	/* Constructora por defecto */
-	Light(LightType type, glm::fvec4 diffuse = {1, 1, 1, 1});
+	Light(LightType type, glm::fvec3 diffuse = {1, 1, 1});
 
 	/* Destructora */
 	~Light();
@@ -95,9 +95,9 @@ public:
 	void setActive(bool active);
 
 	/* Componentes de la luz */
-	inline void setDiffuse(glm::fvec4 diffuse) { this->diffuse = diffuse; }
-	inline void setAmbient(glm::fvec4 ambient) { this->ambient = ambient; }
-	inline void setSpecular(glm::fvec4 specular) { this->specular = specular; }
+	inline void setDiffuse(glm::fvec3 diffuse) { this->diffuse = glm::fvec4(diffuse, 1.0); }
+	inline void setAmbient(glm::fvec3 ambient) { this->ambient = glm::fvec4(ambient, 1.0); }
+	inline void setSpecular(glm::fvec3 specular) { this->specular = glm::fvec4(specular, 1.0); }
 
 	/* Cambia la dirección de la luz, y la convierte en direccional */
 	inline void setDirection(glm::fvec3 dir) { direction = glm::fvec4(-dir, 0.0f); } //-dir

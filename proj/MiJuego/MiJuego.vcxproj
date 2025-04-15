@@ -161,6 +161,7 @@
     <ClCompile Include="..\..\src\MiJuego\BloqueComp.cpp" />
     <ClCompile Include="..\..\src\MiJuego\Callbacks.cpp" />
     <ClCompile Include="..\..\src\MiJuego\CameraController.cpp" />
+    <ClCompile Include="..\..\src\MiJuego\DayCicle.cpp" />
     <ClCompile Include="..\..\src\MiJuego\DebugText.cpp" />
     <ClCompile Include="..\..\src\MiJuego\GameManager.cpp" />
     <ClCompile Include="..\..\src\MiJuego\Main.cpp" />
@@ -180,6 +181,7 @@
     <ClInclude Include="..\..\src\MiJuego\BloqueComp.h" />
     <ClInclude Include="..\..\src\MiJuego\Callbacks.h" />
     <ClInclude Include="..\..\src\MiJuego\CameraController.h" />
+    <ClInclude Include="..\..\src\MiJuego\DayCicle.h" />
     <ClInclude Include="..\..\src\MiJuego\DebugText.h" />
     <ClInclude Include="..\..\src\MiJuego\GameManager.h" />
     <ClInclude Include="..\..\src\MiJuego\MultitexComp.h" />

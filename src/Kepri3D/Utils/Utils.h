@@ -85,4 +85,9 @@ void CleanMap(std::map<std::string, T*>& map)
 /* Convierte un archivo en una cadena de texto, incluyendo los saltos de línea que haya */
 std::string FileToString(const char* fileName);
 
+namespace Kepri
+{
+	glm::vec3 lerp(const glm::vec3& a, const glm::vec3& b, float l);
+}
+
 #endif

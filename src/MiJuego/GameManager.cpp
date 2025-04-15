@@ -11,9 +11,8 @@
 
 ParticleSystem* GameManager::particleSys = nullptr;
 
-void GameManager::setLights(Light* dirLight, Light* circleLight, Light* spotLight, Light* luzBlinn)
+void GameManager::setLights(Light* circleLight, Light* spotLight, Light* luzBlinn)
 {
-	this->dirLight = dirLight;
 	this->circleLight = circleLight;
 	this->spotLight = spotLight;
 	this->luzBlinn = luzBlinn;
@@ -148,29 +147,6 @@ void GameManager::controlLuces(float deltaTime)
 	//if (movingLights)
 	//	circleLight->setPosition({ 20 * cos(totalTime * lightVel), 1, 8 * sin(totalTime * lightVel) });
 
-	// 3) Luz direccional
-	// Parar el movimiento de luces
-	if (InputManager::Instance()->getKeyDown('t'))
-	{
-		movingLights = !movingLights;
-	}
-	// Apagarlo
-	if (InputManager::Instance()->getKeyDown('l'))
-	{
-		dirLight->setActive(!dirLight->isActive());
-	}
-
-	// Moverlo
-	if (movingLights)
-	{
-		dirLight->setDirection({ -cos(totalTime * sunVel),
-			-sin(totalTime * sunVel), 0 });
-		// Cambiar el color del cielo y de la luz
-		float luminosidad = (dirLight->getDirection().y + 1) / 2.0f;
-		Camera::setBackgroundColor(luminosidad, luminosidad, luminosidad);
-		//dirLight->setDiffuse({ luminosidad, luminosidad, luminosidad, 1.0 });
-	}
-
 	totalTime += deltaTime;
 }
 
@@ -216,8 +192,8 @@ void GameManager::controlTorre(float deltaTime)
 		float g = int(rand() % 255) / 255.0f;
 		float b = int(rand() % 255) / 255.0f;
 
-		circleLight->setDiffuse({ r, g, b, 1 });
-		circleLight->setSpecular({ r, g, b, 1 });
+		circleLight->setDiffuse({ r, g, b });
+		circleLight->setSpecular({ r, g, b });
 		((Material*)circleLight->getEntity()->getMaterial())->setEmission(circleLight->getDiffuse());
 	}
 

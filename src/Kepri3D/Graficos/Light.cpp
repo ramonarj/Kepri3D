@@ -28,7 +28,7 @@ Shadowmap::~Shadowmap()
 
 // - - - - - - - - - - - - - - - - - - 
 
-Light::Light(LightType type, glm::fvec4 diffuse) : id(GL_MAX_LIGHTS), m_active(true), direction({0,0,0})
+Light::Light(LightType type, glm::fvec3 diffuse) : id(GL_MAX_LIGHTS), m_active(true), direction({0,0,0})
 {
 	this->type = type;
 
@@ -51,7 +51,7 @@ Light::Light(LightType type, glm::fvec4 diffuse) : id(GL_MAX_LIGHTS), m_active(t
 		cont++;
 
 		this->ambient = { 0,0,0,1 };
-		this->diffuse = diffuse;
+		this->diffuse = glm::fvec4(diffuse, 1.0);
 		this->specular = { 1,1,1,1 };
 	}
 

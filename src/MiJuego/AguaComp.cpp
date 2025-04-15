@@ -10,11 +10,19 @@ AguaComp::AguaComp(Material* mat)
 	setSpeeds({ 2, 0 }, { -1, -1 });
 }
 
+void AguaComp::start()
+{
+	cielo = Game::Instance()->getScene()->getSkybox();
+}
+
 void AguaComp::update(float deltaTime)
 {
 	// Pasarle el tiempo y velocidad de desplazamiento al material
 	float t = glutGet(GLUT_ELAPSED_TIME);
 	mat->setFloat("tiempo", t / 10000.0f);
+
+	// Color del cielo
+	mat->setVec3("color_skybox", cielo->getMaterial()->getVec3("color"));
 }
 
 void AguaComp::setSpeeds(glm::vec2 texSpeed, glm::vec2 dispSpeed)

@@ -37,3 +37,10 @@ void PrintVector(const glm::vec3& v)
 
 	std::cout << stream.str();
 }
+
+glm::vec3 Kepri::lerp(const glm::vec3& a, const glm::vec3& b, float l)
+{
+	if (l < 0) l = 0;
+	else if (l > 1) l = 1;
+	return a + (b - a) * l;
+}

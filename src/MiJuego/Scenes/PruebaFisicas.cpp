@@ -15,8 +15,8 @@ void PruebaFisicas::init()
 	// Direccional
 	Light* dirLight = new Light(DIRECTIONAL_LIGHT);
 	dirLight->setDirection({ 0,-1 , 0 });
-	dirLight->setDiffuse({ 1, 1, 1, 1.0 });
-	dirLight->setAmbient({ 0.05, 0.05, 0.2, 0.0 });
+	dirLight->setDiffuse({ 1, 1, 1 });
+	dirLight->setAmbient({ 0.05, 0.05, 0.2 });
 	Entity* dirLightEnt = new Entity({ dirLight });
 	AddEntity(dirLightEnt);
 
