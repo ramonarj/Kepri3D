@@ -87,11 +87,11 @@ public:
 	bool loadAudio(const std::string& audioName, const std::string& id);
 
 	// Proporcionar los recursos
-	const Mesh& getMesh(const std::string& id);
-	const Texture& getTexture(const std::string& id);
+	Mesh* getMesh(const std::string& id);
+	Texture* getTexture(const std::string& id);
 	const Material getMaterial(const std::string& id);
-	const Shader& getShader(const std::string& id);
-	const Shader& getComposite(const std::string& id);
+	Shader* getShader(const std::string& id);
+	Shader* getComposite(const std::string& id);
 	const Audio& getAudio(const std::string& id);
 
 	// Otros métodos

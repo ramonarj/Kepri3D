@@ -17,6 +17,9 @@
     <Filter Include="Archivos de origen\Audio">
       <UniqueIdentifier>{3ef00209-4149-4f2b-aa3e-1aebb154aaef}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Archivos de origen\Sandbox">
+      <UniqueIdentifier>{cd8ec647-0086-412b-ad02-7a95dd310b27}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\..\src\MiJuego\CameraController.cpp">
@@ -70,11 +73,14 @@
     <ClCompile Include="..\..\src\MiJuego\Ambulancia.cpp">
       <Filter>Archivos de origen\Audio</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\src\MiJuego\DayCicle.cpp">
-      <Filter>Archivos de origen</Filter>
-    </ClCompile>
     <ClCompile Include="..\..\src\MiJuego\Scenes\Sandbox.cpp">
       <Filter>Scenes</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\MiJuego\DayCicle.cpp">
+      <Filter>Archivos de origen\Sandbox</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\MiJuego\SandboxMan.cpp">
+      <Filter>Archivos de origen\Sandbox</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -126,11 +132,14 @@
     <ClInclude Include="..\..\src\MiJuego\Ambulancia.h">
       <Filter>Archivos de origen\Audio</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\src\MiJuego\DayCicle.h">
-      <Filter>Archivos de origen</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\src\MiJuego\Scenes\Sandbox.h">
       <Filter>Scenes</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\MiJuego\DayCicle.h">
+      <Filter>Archivos de origen\Sandbox</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\MiJuego\SandboxMan.h">
+      <Filter>Archivos de origen\Sandbox</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

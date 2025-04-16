@@ -50,13 +50,13 @@ bool ResourceManager::loadMesh(const std::string& meshName, const std::string& i
 	}
 }
 
-const Mesh& ResourceManager::getMesh(const std::string& id)
+Mesh* ResourceManager::getMesh(const std::string& id)
 {
 	// Si no se encuentra la malla dada, se devuelve por defecto... TODO
 	if (meshes.find(id) != meshes.end())
-		return *meshes[id];
+		return meshes[id];
 	else
-		return *meshes["default"];
+		return meshes["default"];
 }
 
 // - - - - - - - - - - - - 
@@ -66,19 +66,20 @@ bool ResourceManager::loadTexture(const std::string& textureName, const std::str
 	Texture* tex = new Texture();
 	try
 	{
-		tex->load(TEXTURES_PATH + textureName, alpha, internalFormat);
-		textures[id] = tex;
-		return true;
+		if (tex->load(TEXTURES_PATH + textureName, alpha, internalFormat))
+		{
+			textures[id] = tex;
+			return true;
+		}
 	}
-
 	catch(const std::ios_base::failure& f)
 	{
 		std::cout << "No se pudo cargar la textura " << "\"" << textureName << "\"" << std::endl;
 		//std::cout << f.what() << std::endl;
-		// Como no se ha podido cargar la imagen, borramos la textura creada
-		delete tex;
-		return false;
 	}
+	// Como no se ha podido cargar la imagen, borramos la textura creada
+	delete tex;
+	return false;
 }
 
 bool ResourceManager::loadTexture(const std::string& textureName, const std::string& id, const glm::ivec3& colorTrans)
@@ -101,13 +102,13 @@ bool ResourceManager::loadTexture(const std::string& textureName, const std::str
 	}
 }
 
-const Texture& ResourceManager::getTexture(const std::string& id)
+Texture* ResourceManager::getTexture(const std::string& id)
 {
 	// Si no se encuentra la textura dada, se devuelve por defecto una magenta chillón
 	if (textures.find(id) != textures.end())
-		return *textures[id];
+		return textures[id];
 	else
-		return *textures["default"];
+		return textures["default"];
 }
 
 // - - - - - - - - - - - - 
@@ -175,24 +176,34 @@ bool ResourceManager::loadMaterial(const std::string& materialName, const std::s
 
 		// Añadirle las texturas que usará
 		if (diffuseMap != "")
-			material->setTexture(0, (Texture*)&getTexture(diffuseMap));
+		{
+			// No existe; intentamos cargarla nosotros (probando extensión .jpg, .png y .bmp)
+			Texture* t = getTexture(diffuseMap);
+			if(t->getWidth() == 1)
+			{
+				if (!loadTexture(diffuseMap + ".jpg", diffuseMap))
+					if (!loadTexture(diffuseMap + ".png", diffuseMap))
+						loadTexture(diffuseMap + ".bmp", diffuseMap);
+			}
+			material->setTexture(0, getTexture(diffuseMap));
+		}
 		if (secondaryMap != "")
-			material->setTexture(1, (Texture*)&getTexture(secondaryMap));
+			material->setTexture(1, getTexture(secondaryMap));
 		if (specularMap != "")
-			material->setTexture(2, (Texture*)&getTexture(specularMap));
+			material->setTexture(2, getTexture(specularMap));
 		if (normalMap != "")
-			material->setTexture(3, (Texture*)&getTexture(normalMap));
+			material->setTexture(3, getTexture(normalMap));
 		if (parallaxMap != "")
-			material->setTexture(4, (Texture*)&getTexture(parallaxMap));
+			material->setTexture(4, getTexture(parallaxMap));
 		if (reflectionMap != "")
-			material->setTexture(5, (Texture*)&getTexture(reflectionMap));
+			material->setTexture(5, getTexture(reflectionMap));
 		if (skybox != "")
-			material->setTexture(6, (Texture*)&getTexture(skybox));
+			material->setTexture(6, getTexture(skybox));
 		if (emissionMap != "")
-			material->setTexture(7, (Texture*)&getTexture(emissionMap));
+			material->setTexture(7, getTexture(emissionMap));
 
 		// Indicarle qué shader usa
-		material->setShader((Shader*)&getShader(shaderId));
+		material->setShader(getShader(shaderId));
 
 		// Por último, añadirlo al diccionario
 		materials[id] = material;
@@ -272,13 +283,13 @@ bool ResourceManager::loadShader(const std::string& vertexName, const std::strin
 	}
 }
 
-const Shader& ResourceManager::getShader(const std::string& id)
+Shader* ResourceManager::getShader(const std::string& id)
 {
 	// Si no se encuentra el shader especificado, se devuelve el predeterminado
 	if (shaders.find(id) != shaders.end())
-		return *shaders[id];
+		return shaders[id];
 	else
-		return *shaders["default"];
+		return shaders["default"];
 }
 
 // - - - - - - - - - - - - 
@@ -315,8 +326,9 @@ bool ResourceManager::loadComposite(const std::string& compositeName, const std:
 	}
 }
 
-const Shader& ResourceManager::getComposite(const std::string& id)
+Shader* ResourceManager::getComposite(const std::string& id)
 {
+	// capa de cebolla
 	return getShader(id);
 }
 

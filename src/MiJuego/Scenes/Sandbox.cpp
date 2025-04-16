@@ -4,6 +4,7 @@
 
 #include "../CameraController.h"
 #include "../DebugText.h"
+#include "../SandboxMan.h"
 
 void Sandbox::setup()
 {
@@ -19,7 +20,8 @@ void Sandbox::setup()
 
 	// Suelo
 	Grid* grid = new Grid(500, 500, 5, 5);
-	grid->setMaterial("cesped");
+	grid->setMaterial("tierra");
+	grid->getMaterial()->setVec2("tiling", { 20, 20 });
 	AddEntity(grid);
 
 	/* - - Skybox - - */
@@ -35,6 +37,9 @@ void Sandbox::setup()
 	// Componente CameraController
 	CameraController* camComp = new CameraController(m_camera);
 	gm->addComponent(camComp);
+	// Componente SandboxMan
+	SandboxManager* sandboxMan = new SandboxManager(grid);
+	gm->addComponent(sandboxMan);
 	AddEntity(gm);
 
 	// Información de Debug
@@ -51,10 +56,12 @@ void Sandbox::loadResources()
 	/* - - Texturas - - */
 	ResourceManager::Instance()->loadTexture("UI\\panel.png", "panel");
 	ResourceManager::Instance()->loadTexture("cesped.jpg", "cesped");
+	ResourceManager::Instance()->loadTexture("tierra.jpg", "tierra");
 
 	ResourceManager::Instance()->loadCubemapTexture({ "skyboxes/techno/right.png", "skyboxes/techno/left.png", "skyboxes/techno/bottom.png",
 		"skyboxes/techno/top.png", "skyboxes/techno/front.png", "skyboxes/techno/back.png" }, "technoSkybox");
 
 	/* - -  Materiales - - */
-	ResourceManager::Instance()->loadMaterial("cesped.material", "cesped");
+	ResourceManager::Instance()->loadMaterial("cesped.material", "cesped", "default");
+	ResourceManager::Instance()->loadMaterial("tierra.material", "tierra", "default");
 }

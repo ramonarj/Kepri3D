@@ -7,7 +7,7 @@
 
 Canvas::Canvas() : width(0), height(0)
 {
-	canvasSh = (Shader*)&ResourceManager::Instance()->getShader("UI");
+	canvasSh = ResourceManager::Instance()->getShader("UI");
 }
 
 void Canvas::addElement(UIElement* e) 

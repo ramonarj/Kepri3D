@@ -53,7 +53,7 @@ void Scene::setupStatics(Camera* cam)
 
 	// Debug
 	ResourceManager::Instance()->loadComposite("shadowDebug.frag", "shadowComp");
-	m_shadowComp = ((Shader*)&ResourceManager::Instance()->getComposite("shadowComp"));
+	m_shadowComp = (ResourceManager::Instance()->getComposite("shadowComp"));
 	m_shadowComp->use();
 	m_shadowComp->setInt("depthMap", 0);
 }

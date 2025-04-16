@@ -170,6 +170,7 @@
     <ClCompile Include="..\..\src\MiJuego\PhysicsMan.cpp" />
     <ClCompile Include="..\..\src\MiJuego\Piano.cpp" />
     <ClCompile Include="..\..\src\MiJuego\RotationComp.cpp" />
+    <ClCompile Include="..\..\src\MiJuego\SandboxMan.cpp" />
     <ClCompile Include="..\..\src\MiJuego\Scenes\PruebaScene.cpp" />
     <ClCompile Include="..\..\src\MiJuego\Scenes\PruebaFisicas.cpp" />
     <ClCompile Include="..\..\src\MiJuego\Scenes\PruebaSonido.cpp" />
@@ -190,6 +191,7 @@
     <ClInclude Include="..\..\src\MiJuego\PhysicsMan.h" />
     <ClInclude Include="..\..\src\MiJuego\Piano.h" />
     <ClInclude Include="..\..\src\MiJuego\RotationComp.h" />
+    <ClInclude Include="..\..\src\MiJuego\SandboxMan.h" />
     <ClInclude Include="..\..\src\MiJuego\Scenes\PruebaScene.h" />
     <ClInclude Include="..\..\src\MiJuego\Scenes\PruebaFisicas.h" />
     <ClInclude Include="..\..\src\MiJuego\Scenes\PruebaSonido.h" />

@@ -62,6 +62,7 @@ public:
 	void setTexture(const std::string& name, Texture* value);
 
 	// Getters
+	glm::vec2 getVec2(const std::string& name);
 	glm::vec3 getVec3(const std::string& name);
 
 	static bool fresnel;

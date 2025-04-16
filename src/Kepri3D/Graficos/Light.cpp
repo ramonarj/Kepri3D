@@ -59,7 +59,7 @@ Light::Light(LightType type, glm::fvec3 diffuse) : id(GL_MAX_LIGHTS), m_active(t
 	Framebuffer* shadowFB; Shader* shadowSh;
 	if (type == DIRECTIONAL_LIGHT)
 	{
-		shadowSh = (Shader*)&ResourceManager::Instance()->getShader("shadows");
+		shadowSh = ResourceManager::Instance()->getShader("shadows");
 		shadowSh->useTextures(false); // para no pasar ni una textura de más (que no se usarían)
 		m_shadowMap = new Shadowmap(shadowSh, SHADOW_SIZE, SHADOW_SIZE, 1.0f, 150.0f, false);
 
@@ -69,7 +69,7 @@ Light::Light(LightType type, glm::fvec3 diffuse) : id(GL_MAX_LIGHTS), m_active(t
 	}
 	else if (type == POINT_LIGHT)
 	{
-		shadowSh = (Shader*)&ResourceManager::Instance()->getShader("shadows_point");
+		shadowSh = ResourceManager::Instance()->getShader("shadows_point");
 		shadowSh->useTextures(false);
 		m_shadowMap = new Shadowmap(shadowSh, SHADOW_SIZE, SHADOW_SIZE, 1.0f, 50.0f, true);
 	}

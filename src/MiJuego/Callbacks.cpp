@@ -74,7 +74,7 @@ void normalsButtonPressed()
 	// Activar / desactivar la visualización de vectores normales a cada vértice
 	if (Scene::normalsShader == nullptr)
 	{
-		Scene::normalsShader = (Shader*)&ResourceManager::Instance()->getShader("normals");
+		Scene::normalsShader = ResourceManager::Instance()->getShader("normals");
 		Scene::normalsShader->useTextures(false);
 	}
 	else

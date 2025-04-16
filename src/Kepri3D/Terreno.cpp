@@ -23,7 +23,7 @@ void Terreno::update(float deltaTime)
 
 void Terreno::setHeightMap(const std::string& texID, float elevacion)
 {
-	this->heightMap = (Texture*)&ResourceManager::Instance()->getTexture(texID);
+	this->heightMap = ResourceManager::Instance()->getTexture(texID);
 	this->elevacion = elevacion;
 
 	mat->setTexture("heightMap", heightMap);

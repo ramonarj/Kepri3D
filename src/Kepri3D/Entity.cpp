@@ -219,7 +219,7 @@ void Entity::setMesh(const std::string& meshID)
 {
 	if (m_renderer != nullptr)
 		delete m_renderer;
-	Mesh* m = (Mesh*)&ResourceManager::Instance()->getMesh(meshID);
+	Mesh* m = ResourceManager::Instance()->getMesh(meshID);
 	if (m != nullptr)
 	{
 		m_renderer = new Renderer(m);
@@ -245,12 +245,12 @@ void Entity::setMaterial(const std::string& materialID)
 
 void Entity::setShader(const std::string& shaderID)
 {
-	getMaterial()->setShader((Shader*)&ResourceManager::Instance()->getShader(shaderID));
+	getMaterial()->setShader(ResourceManager::Instance()->getShader(shaderID));
 }
 
 void Entity::setTexture(const std::string& textureID)
 {
-	getMaterial()->setTexture(0, (Texture*)&ResourceManager::Instance()->getTexture(textureID));
+	getMaterial()->setTexture(0, ResourceManager::Instance()->getTexture(textureID));
 }
 
 // - - - - - - - - - - - - - - - - - 

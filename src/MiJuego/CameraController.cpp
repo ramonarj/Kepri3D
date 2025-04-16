@@ -38,7 +38,7 @@ void CameraController::update(float deltaTime)
 	movimientoCamara(deltaTime);
 	rotacionesCamara(deltaTime);
 	volumenVistaCamara(deltaTime);
-	puntosFijosCamara();
+	//puntosFijosCamara();
 
 	// Devolver el ratón al medio
 	InputManager::Instance()->setMousePos(cam->getVP()->getW() / 2, cam->getVP()->getH() / 2);

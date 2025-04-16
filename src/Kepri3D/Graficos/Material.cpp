@@ -173,6 +173,11 @@ void Material::setTexture(const std::string& name, Texture* value)
 
 // - - - - - - - - -
 
+glm::vec2 Material::getVec2(const std::string& name)
+{
+	return m_vec2Uniforms[name];
+}
+
 glm::vec3 Material::getVec3(const std::string& name)
 {
 	return m_vec3Uniforms[name];

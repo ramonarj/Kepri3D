@@ -49,6 +49,8 @@ bool Texture::load(const std::string& filePath, GLubyte alpha, GLint intFormat)
 	int numChannels;
 	stbi_set_flip_vertically_on_load(true);
 	unsigned char* data = stbi_load(filePath.c_str(), (int*)&w, (int*)&h, &numChannels, 4);
+	if (data == nullptr) { return false; }
+
 	// Dar la transparencia indicada
 	if(alpha != 255)
 	{

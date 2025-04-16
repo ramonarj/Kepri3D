@@ -148,7 +148,7 @@ void PruebaScene::setup()
 
 	// Hierba
 	Hierba* hierba = new Hierba(2.5, 3);
-	hierba->getMaterial()->setTexture(0, (Texture*)&ResourceManager::Instance()->getTexture("hierba"));
+	hierba->getMaterial()->setTexture(0, ResourceManager::Instance()->getTexture("hierba"));
 	hierba->setPosition({ 15, 0.5, 5 });
 	hierba->rotate(-PI / 2, { 0, 1, 0 }, GLOBAL);
 	hierba->addComponent(new RotationComp(0.75));
@@ -268,11 +268,11 @@ void PruebaScene::setup()
 
 
 	/* - - - Efectos de postprocesado (el orden importa) - - - */
-	AddComposite((Shader*)&ResourceManager::Instance()->getComposite("byn"));
-	//AddComposite((Shader*)&ResourceManager::Instance()->getComposite("waves"));
-	//AddComposite((Shader*)&ResourceManager::Instance()->getComposite("bordes"));
-	//AddComposite((Shader*)&ResourceManager::Instance()->getComposite("interference"));
-	AddComposite((Shader*)&ResourceManager::Instance()->getComposite("fog"));
+	AddComposite(ResourceManager::Instance()->getComposite("byn"));
+	//AddComposite(ResourceManager::Instance()->getComposite("waves"));
+	//AddComposite(ResourceManager::Instance()->getComposite("bordes"));
+	//AddComposite(ResourceManager::Instance()->getComposite("interference"));
+	AddComposite(ResourceManager::Instance()->getComposite("fog"));
 }
 
 void PruebaScene::loadResources()
@@ -534,7 +534,7 @@ void PruebaScene::PruebaMateriales()
 	// Esfera con reflejos
 	Esfera* esfReflejos = new Esfera(6, 30, 40);
 	esfReflejos->setMaterial("reflejos");
-	//esfReflejos->getMaterial()->setTexture(6, (Texture*)&ResourceManager::Instance()->getTexture("citySkybox"));
+	//esfReflejos->getMaterial()->setTexture(6, ResourceManager::Instance()->getTexture("citySkybox"));
 	esfReflejos->setPosition({ 40,25,0 });
 	AddEntity(esfReflejos);
 
