@@ -570,6 +570,35 @@ void Scene::toggleShadows()
 	}
 }
 
+void Scene::init()
+{
+	// 1) Cargar recursos necesarios
+	loadResources();
+	// 2) Crear las entidades y componentes
+	setup();
+	// 3) Gestionar VRAM
+	bindUBOs();
+	// 4) Llamar al start() de todos los componentes
+	startComponents();
+}
+
+void Scene::bindUBOs()
+{
+	// Establecer el punto de enlace de los shaders que usen el UBO
+	for (Entity* e : m_entities)
+	{
+		if (e->getRenderer() != nullptr)
+		{
+			Shader* sh = (Shader*)e->getShader();
+			if (sh != nullptr)
+			{
+				sh->bindUniformBlock("Matrices", 0);
+				sh->bindUniformBlock("Lights", 1);
+			}
+		}
+	}
+}
+
 void Scene::clean()
 {
 	// Borrar managers

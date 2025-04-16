@@ -30,7 +30,7 @@ normalsButtonPressed, compositeButtonPressed, scissorButtonPressed, skyboxButton
 instancingButtonPressed, shadowsButtonPressed, logicOpButtonPressed, gammaButtonPressed };
 
 
-void PruebaScene::init()
+void PruebaScene::setup()
 {
 	// LUCES
 
@@ -273,21 +273,6 @@ void PruebaScene::init()
 	//AddComposite((Shader*)&ResourceManager::Instance()->getComposite("bordes"));
 	//AddComposite((Shader*)&ResourceManager::Instance()->getComposite("interference"));
 	AddComposite((Shader*)&ResourceManager::Instance()->getComposite("fog"));
-
-	// Temporal
-	// Establecer el punto de enlace de los shaders que usen el UBO
-	for (Entity* e : m_entities)
-	{
-		if(e->getRenderer() != nullptr)
-		{
-			Shader* sh = (Shader*)e->getShader();
-			if (sh != nullptr)
-			{
-				sh->bindUniformBlock("Matrices", 0);
-				sh->bindUniformBlock("Lights", 1);
-			}
-		}
-	}
 }
 
 void PruebaScene::loadResources()

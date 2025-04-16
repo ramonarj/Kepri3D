@@ -13,7 +13,7 @@ public:
 
 	// Métodos a implementar de 'Scene'
 	void loadResources() override;
-	void init() override;
+	void setup() override;
 
 private:
 	// Vector de callbacks

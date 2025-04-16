@@ -10,7 +10,7 @@ public:
 	~PruebaSonido() {}
 
 	void loadResources() override;
-	void init() override;
+	void setup() override;
 };
 
 #endif

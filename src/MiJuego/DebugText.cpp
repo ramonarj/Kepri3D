@@ -106,7 +106,7 @@ void DebugText::update(float deltaTime)
 			text->setText(s);
 		}
 		// Escena de audio
-		else
+		else if (sceneName == "PruebaSonido")
 		{
 			float vol = AudioManager::Instance()->getGlobalVolume();
 			std::string s = "VOLUMEN GLOBAL " + std::to_string(vol) + 

@@ -39,9 +39,10 @@ public:
 	virtual void loadResources() = 0;
 
 	/* Crea las entidades y componentes que aparecerán en escena */
-	virtual void init() = 0;
+	virtual void setup() = 0;
 
-	void startComponents();
+	//
+	void init();
 
 	/* Pinta todas las entidades */
 	void render();
@@ -116,7 +117,6 @@ protected:
 	/* Lista de efectos de postprocesado que se aplicarán (en este orden) a la escena */
 	std::vector<Shader*> m_composites;
 
-
 	// Framebuffers usados para los efectos
 	static Framebuffer* frameBuf;
 	static Framebuffer* frameBuf2;
@@ -140,6 +140,10 @@ private:
 
 	/* Crea e inicializa los framebuffers correspondientes */
 	static void setupStatics(Camera* cam);
+
+	/* Llama al start() de todos los componentes */
+	void startComponents();
+	void bindUBOs();
 
 	// Sub-métodos del render() para que sea más legible
 	void loadLights();

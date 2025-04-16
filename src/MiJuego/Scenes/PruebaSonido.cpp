@@ -26,7 +26,7 @@ void PruebaSonido::loadResources()
 	ResourceManager::Instance()->loadAudio("senoDo.wav", "senoDo");
 }
 
-void PruebaSonido::init()
+void PruebaSonido::setup()
 {
 	Camera::setBackgroundColor(0, 0, 0);
 
@@ -101,7 +101,6 @@ void PruebaSonido::init()
 	AddEntity(debugTxt);
 	debugTxt->setActive(true);
 
-
 	// - - - Tranformada Discreta de Fourier - - - //
 	// Prueba de Fourier
 	std::vector<float> ondaTotal = { 1, 0.5, -0.5, -1 };
@@ -123,18 +122,4 @@ void PruebaSonido::init()
 		ondaCombinada.push_back(ondaFija[i] + onda1[i] + onda2[i]);
 	}
 	Kepri::DFT(ondaCombinada, 1.0 / freq_muestreo, frecuencias, amplitudes, true);
-
-	// Temporal
-	for (Entity* e : m_entities)
-	{
-		if (e->getRenderer() != nullptr)
-		{
-			Shader* sh = (Shader*)e->getShader();
-			if (sh != nullptr)
-			{
-				sh->bindUniformBlock("Matrices", 0);
-				sh->bindUniformBlock("Lights", 1);
-			}
-		}
-	}
 }

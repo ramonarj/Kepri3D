@@ -12,7 +12,7 @@ public:
 	~PruebaFisicas() {}
 
 	void loadResources() override;
-	void init() override;
+	void setup() override;
 
 private:
 	Rigid* createRigidCubo(const std::string& name, vector3 pos, RigidType type = Dynamic, double masa = 1.0, 

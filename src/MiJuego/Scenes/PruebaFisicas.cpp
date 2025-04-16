@@ -8,7 +8,7 @@
 #include "../DebugText.h"
 #include "../BloqueComp.h"
 
-void PruebaFisicas::init()
+void PruebaFisicas::setup()
 {
 	//m_camera->setPosition({ -100, 10, 20 });
 	// LUCES
@@ -125,19 +125,6 @@ void PruebaFisicas::init()
 
 	/* - - - Efectos de postprocesado (el orden importa) - - - */
 
-	// Temporal
-	for (Entity* e : m_entities)
-	{
-		if (e->getRenderer() != nullptr)
-		{
-			Shader* sh = (Shader*)e->getShader();
-			if (sh != nullptr)
-			{
-				sh->bindUniformBlock("Matrices", 0);
-				sh->bindUniformBlock("Lights", 1);
-			}
-		}
-	}
 }
 
 void PruebaFisicas::loadResources()

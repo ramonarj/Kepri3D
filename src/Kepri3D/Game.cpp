@@ -69,12 +69,9 @@ void Game::loadScene(Scene* sc)
 		// Devolver el contexto a este hilo
 		assert(wglMakeCurrent(hdc, hglrc));
 #else
-		scene->loadResources();
-		scene->init();
-		scene->startComponents();
-#endif
 		// Crear las entidades y colocarlas
-		//scene->init();
+		scene->init();
+#endif
 
 		last_update_tick = glutGet(GLUT_ELAPSED_TIME);
 		std::cout << "Cargada escena '" << scene->getName() << "'" << std::endl;
@@ -93,9 +90,7 @@ void Game::loadScenePriv(Scene* sc)
 	delete scene;
 
 	scene = sc;
-	scene->loadResources();
 	scene->init();
-	scene->startComponents();
 
 	last_update_tick = glutGet(GLUT_ELAPSED_TIME);
 	std::cout << "Cargada escena '" << scene->getName() << "'" << std::endl;
@@ -106,10 +101,8 @@ void Game::thread_loadResources()
 #ifdef _WIN32
 	// Transmitir el contexto a este hilo
 	assert(wglMakeCurrent(hdc, hglrc));
-	// Cargar los recursos de la escena en cuestión
-	scene->loadResources();
+	// Cargar la escena
 	scene->init();
-	scene->startComponents();
 	// Quitar el contexto
 	wglMakeCurrent(0, 0);
 #endif
