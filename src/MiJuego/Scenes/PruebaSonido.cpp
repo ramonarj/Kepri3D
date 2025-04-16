@@ -102,6 +102,28 @@ void PruebaSonido::init()
 	debugTxt->setActive(true);
 
 
+	// - - - Tranformada Discreta de Fourier - - - //
+	// Prueba de Fourier
+	std::vector<float> ondaTotal = { 1, 0.5, -0.5, -1 };
+	std::vector<float> frecuencias; 
+	std::vector<float> amplitudes;
+	//Kepri::DFT(ondaTotal, 1, frecuencias, amplitudes);
+
+	// Prueba 2 de Fourier
+	float freq_muestreo = 450; // 100 muestras en un audio de 1 segundo
+	std::vector<float> ondaFija;
+	std::vector<float> onda1;
+	std::vector<float> onda2;
+	std::vector<float> ondaCombinada;
+	for(int i = 0; i < freq_muestreo; i++)
+	{
+		ondaFija.push_back(-1.25);
+		onda1.push_back(0.6 * sin(2.0 * PI * 12.0 * ((float)i / freq_muestreo)));
+		onda2.push_back(2.0 * sin(2.0 * PI * 203.0 * ((float)i / freq_muestreo)));
+		ondaCombinada.push_back(ondaFija[i] + onda1[i] + onda2[i]);
+	}
+	Kepri::DFT(ondaCombinada, 1.0 / freq_muestreo, frecuencias, amplitudes, true);
+
 	// Temporal
 	for (Entity* e : m_entities)
 	{
