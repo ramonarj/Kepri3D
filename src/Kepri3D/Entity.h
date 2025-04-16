@@ -53,62 +53,31 @@ public:
 	/* Escala la entidad la cantidad dada en cada eje */
 	void scale(const glm::dvec3& scale);
 
-	// Setters
-	/* Activa / desactiva la entidad */
+	// - - - - Setters - - - - //
 	inline void setActive(bool b) { m_active = b; }
-
-	/* Establece el nombre de la entidad */
 	inline void setName(const std::string& name) { m_name = name; }
-
-	/* Mueve la entidad a la posición dada */
 	void setPosition(const glm::dvec3& pos);
-
-	/* Establece el padre de la entidad */
 	void setParent(Entity* e);
-
-	/* Establece la malla (ya creada) que usará la entidad */
 	void setMesh(const std::string& meshID);
-
-	/* Establece el material (ya creado) que usará la entidad */
+	void setTexture(const std::string& textureID);
 	void setMaterial(const std::string& materialID);
-
-	/* Establece el shader (ya creado) que usará la entidad */
 	void setShader(const std::string& shaderID);
 
-	/* Establece la textura principal (diffuse) que usará la entidad */
-	void setTexture(const std::string& textureID);
-
-	// Getters
-	/* Devuelve el nombre de la entidad */
-	const std::string& getName() const { return m_name; }
-
-	/* Devuelve la posición de la entidad */
-	glm::dvec3 getPosition() const { return modelMat[3]; }
-
-	/* Devuelve la matriz de modelado de la entidad */
-	const glm::dmat4& getModelMat() const { return modelMat; }
-
-	/* Devuelve el renderer que usa la entidad */
-	Renderer* getRenderer() const { return m_renderer; }
-
-	/* Devuelve el material que usa la entidad */
-	inline Material* getMaterial() const;
-
-	/* Devuelve el shader que usa la entidad */
-	const Shader* getShader() const;
-
-	/* Devuelve 'true' si la entidad debe pintarse, false e.o.c. */
+	// - - - - Getters - - - - //
 	inline bool isActive() const { return m_active; }
+	inline const std::string& getName() const { return m_name; }
+	inline glm::dvec3 getPosition() const { return modelMat[3]; }
+	inline Entity* getParent() { return m_parent; }
+	Material* getMaterial() const;
+	const Shader* getShader() const;
+	inline Renderer* getRenderer() const { return m_renderer; }
+	inline std::vector<Component*> getComponents() { return m_componentes; }
+	inline const glm::dmat4& getModelMat() const { return modelMat; }
 
 	// Ejes locales de la entidad
 	inline glm::dvec3 right() { return modelMat[0]; }
 	inline glm::dvec3 up() { return modelMat[1]; }
 	inline glm::dvec3 forward() { return modelMat[2]; }
-
-	/* Devuelve la lista de componentes de la entidad */
-	inline std::vector<Component*> getComponents() { return m_componentes; }
-
-	inline Entity* getParent() { return m_parent; }
 
 	/* Devuelve un componente del tipo requerido */
 	template<typename T>

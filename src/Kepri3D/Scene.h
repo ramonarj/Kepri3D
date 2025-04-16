@@ -17,6 +17,7 @@ class Skybox;
 class Renderer;
 class Uniformbuffer;
 class Framebuffer;
+class Component;
 
 const int MAX_LUCES = 5;
 // Lo que ocupa el struct "Light" del FS teniendo en cuenta alineamiento
@@ -70,7 +71,9 @@ public:
 	// Getters
 	inline const std::string& getName() const { return m_name; }
 	inline Entity* getEntity(int n) { return m_entities[n]; }
+	inline const std::vector<Entity*>& getEntities() { return m_entities; }
 	inline Skybox* getSkybox() { return m_skybox; }
+	inline Canvas* getCanvas() { return m_canvas; }
 
 	void toggleShadows();
 

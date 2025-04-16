@@ -666,6 +666,27 @@ Mesh* Mesh::generateLetter(char l, const glm::vec4& color)
 	return m;
 }
 
+Mesh* Mesh::generateWaveform(const std::vector<float>& samples, const glm::vec4& color)
+{
+	Mesh* m = new Mesh();
+	m->type = GL_LINE_STRIP;
+
+	m->numVertices = samples.size();
+	m->vertices = new dvec3[m->numVertices];
+	float incr = 1.0 / m->numVertices;
+	for(int i = 0; i < m->numVertices; i++)
+	{
+		m->vertices[i] = { incr * i, samples[i] / 2.0, 0 };
+	}
+
+	/* Colores */
+	m->colores = new glm::dvec4[m->numVertices];
+	for (int i = 0; i < m->numVertices; i++)
+		m->colores[i] = color;
+
+	return m;
+}
+
 
 // - - - - - - - - Mallas indexadas - - - - - - - - - //
 

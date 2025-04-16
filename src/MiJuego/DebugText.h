@@ -6,6 +6,8 @@
 class Canvas;
 class Text;
 class Button;
+class UIElement;
+class Piano;
 
 class DebugText : public Component
 {
@@ -20,7 +22,7 @@ private:
 	Button* fondo;
 
 	std::string sceneName;
-	bool physicsScene;
+	bool physicsScene;	
 };
 
 #endif

@@ -69,7 +69,7 @@ void Kepri::DFT(std::vector<float> ondaTotal, float intervalo_muestreo,
 		}
 	}
 
-	// 3) Calcular la amplitud, frecuencia y fase de cada onda contribuyenteAmplitud de cada onda contribuyente (hacer el módulo y tener en cuenta el nº de muestras)
+	// 3) Calcular la amplitud, frecuencia y fase de cada onda contribuyente
 	amplitudes.reserve(N); frecuencias.reserve(N); fases.reserve(N);
 	for (int k = 0; k < N; k++)
 	{

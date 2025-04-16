@@ -128,6 +128,81 @@ Audio::Audio(WaveForm tipoOnda, float freq)
 	delete data; 
 }
 
+unsigned char* Audio::generateWave(WaveForm tipoOnda, float freq, float sampleRate)
+{
+	// Duración variable (depende de la frecuencia); hacemos que el audio contenga solamente 1 ciclo de la onda
+	// menos para el ruido, que lo hacemos de 1 segundo
+	float dur = tipoOnda == Ruido ? 1.0 : 1.0 / freq;
+
+	return generateWave(tipoOnda, freq, sampleRate, dur);
+}
+
+unsigned char* Audio::generateWave(WaveForm tipoOnda, float freq, float sampleRate, float duracion)
+{
+	// Crear (sintetizar) la onda
+	int size = duracion * sampleRate;
+	unsigned char* data = new unsigned char[size];
+	switch (tipoOnda)
+	{
+	case Seno:
+	{
+		for (int i = 0; i < size; i++)
+		{
+			float val = (float)i / (float)sampleRate; //entre 0-1
+			float dato = 127 * (sin(val * 2 * PI * freq) + 1);
+			data[i] = dato;
+		}
+		break;
+	}
+	case Cuadrado:
+	{
+		for (int i = 0; i < size; i++)
+		{
+			float val = (float)i / ((float)sampleRate / freq);
+			val -= (int)val; //entre 0-1
+			if (val >= 0.5) val = 1;
+			else val = 0;
+			data[i] = (float)(255.0 * val);
+		}
+		break;
+	}
+	case Sierra:
+	{
+		for (int i = 0; i < size; i++)
+		{
+			float val = (float)i / ((float)sampleRate / freq);
+			val -= (int)val; //entre 0-1
+			data[i] = (float)(255.0 * val);
+		}
+		break;
+	}
+	case Triangular:
+	{
+		for (int i = 0; i < size; i++)
+		{
+			float val = (float)i / ((float)sampleRate / freq);
+			val -= (int)val; //entre 0-1
+			if (val < 0.25) val = val * 2 + 0.5;
+			else if (val < 0.75) val = 1 - ((val - 0.25) / 0.5);
+			else val = (val - 0.75) * 2;
+
+			data[i] = (float)(255.0 * val);
+		}
+		break;
+	}
+	case Ruido:
+	{
+		for (int i = 0; i < size; i++)
+			data[i] = float(rand() % 255);
+		break;
+	}
+	default:
+		break;
+	}
+
+	return data;
+}
+
 // - - - - - - - - - - - - - - - 
 
 bool isBigEndian()

@@ -13,6 +13,7 @@ void PruebaSonido::loadResources()
 	/* - - Texturas - - */
 	ResourceManager::Instance()->loadTexture("venus.bmp", "venus");
 	ResourceManager::Instance()->loadTexture("UI\\panel.png", "panel");
+	ResourceManager::Instance()->loadTexture("UI\\boton.png", "boton");
 
 	ResourceManager::Instance()->loadCubemapTexture({ "skyboxes/city/right.jpg", "skyboxes/city/left.jpg", "skyboxes/city/bottom.jpg",
 		"skyboxes/city/top.jpg", "skyboxes/city/front.jpg", "skyboxes/city/back.jpg" }, "citySkybox");

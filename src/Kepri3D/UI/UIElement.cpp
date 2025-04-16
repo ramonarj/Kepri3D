@@ -7,6 +7,8 @@ UIElement::UIElement() : x(0), y(0), width(0), height(0), canvas(nullptr)
 
 void UIElement::setPositionUI(float x, float y, ALLIGNMENT_TYPE allignment)
 {
+	if (canvas == nullptr) { return; }
+
 	// Cambiamos la última columna, que contiene la posición
 	//pasar de (0, 1) a (-1, 1)
 	modelMat[3][0] = x * 2 - 1;

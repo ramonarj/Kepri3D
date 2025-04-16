@@ -4,6 +4,7 @@
 #include <glm.hpp>
 #include <glew.h>
 #include <string>
+#include <vector>
 #include "checkML.h"
 #include "Defines.h"
 
@@ -53,6 +54,9 @@ public:
 
 	// Letra mayúscula hecha con GL_LINE_STRIP de un color dado
 	static Mesh* generateLetter(char letter, const glm::vec4& color = {1, 1, 1, 1});
+
+	// Onda hecha con GL_LINE_STRIP de un color dado
+	static Mesh* generateWaveform(const std::vector<float>& samples, const glm::vec4& color = { 0, 0.5, 0.1, 1 });
 
 	glm::dvec3 volumeCenter = { 0, 0, 0 };
 

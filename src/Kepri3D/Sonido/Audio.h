@@ -14,6 +14,9 @@ struct Audio
 	Audio(WaveForm tipoOnda, float freq);
 	~Audio(){}
 
+	/* Genera datos PCM para una onda dada, con resolución de 8bps */
+	static unsigned char* generateWave(WaveForm tipoOnda, float freq, float sampleRate);
+	static unsigned char* generateWave(WaveForm tipoOnda, float freq, float sampleRate, float duracion);
 private:
 	friend class AudioSource;
 	unsigned int bufferId;

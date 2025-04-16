@@ -13,6 +13,7 @@ public:
 	Renderer(Mesh* mesh);
 	~Renderer();
 
+	void setMesh(Mesh* m) { m_mesh = m; }
 	Mesh* getMesh() const { return m_mesh; }
 
 	void draw(Shader* sh);

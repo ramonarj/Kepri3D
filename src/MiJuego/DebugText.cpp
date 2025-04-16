@@ -4,6 +4,7 @@
 
 #include <iomanip>
 #include <sstream>
+#include "Piano.h"
 
 DebugText::DebugText(Canvas* canvas, const std::string& backgroundTexID)
 {
