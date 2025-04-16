@@ -91,11 +91,11 @@ namespace Kepri
 	/* Interpolación lineal */
 	glm::vec3 lerp(const glm::vec3& a, const glm::vec3& b, float l);
 
-	/* Transformada discreta de Fourier; devuelve dos listas del mismo tamaño,
-	con la frecuencia y amplitud de cada onda participante en la total */
+	/* Transformada discreta de Fourier; devuelve 3 listas del mismo tamaño,
+	con la frecuencia, amplitud y fase de cada onda participante en la total */
 	void DFT(std::vector<float> ondaTotal, float intervalo_muestreo,
-		std::vector<float>& frecuencias, std::vector<float>& amplitudes,
-		bool debug = false, float MIN_AMPLITUDE = 0.001);
+		std::vector<float>& frecuencias, std::vector<float>& amplitudes, std::vector<float>& fases,
+		bool debug = false, float MIN_AMPLITUDE = 0.005);
 }
 
 #endif

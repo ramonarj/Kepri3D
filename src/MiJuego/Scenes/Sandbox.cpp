@@ -19,7 +19,7 @@ void Sandbox::setup()
 	AddEntity(dirLightEnt);
 
 	// Suelo
-	Grid* grid = new Grid(500, 500, 5, 5);
+	Grid* grid = new Grid(100, 100, 5, 5);
 	grid->setMaterial("tierra");
 	grid->getMaterial()->setVec2("tiling", { 20, 20 });
 	AddEntity(grid);

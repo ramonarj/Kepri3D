@@ -47,7 +47,8 @@ glm::vec3 Kepri::lerp(const glm::vec3& a, const glm::vec3& b, float l)
 }
 
 void Kepri::DFT(std::vector<float> ondaTotal, float intervalo_muestreo,
-	std::vector<float>& frecuencias, std::vector<float>& amplitudes, bool debug, float MIN_AMPLITUDE)
+	std::vector<float>& frecuencias, std::vector<float>& amplitudes, std::vector<float>& fases, 
+	bool debug, float MIN_AMPLITUDE)
 {
 	using namespace std::complex_literals;
 
@@ -69,7 +70,7 @@ void Kepri::DFT(std::vector<float> ondaTotal, float intervalo_muestreo,
 	}
 
 	// 3) Calcular la amplitud, frecuencia y fase de cada onda contribuyenteAmplitud de cada onda contribuyente (hacer el módulo y tener en cuenta el nº de muestras)
-	amplitudes.reserve(N); frecuencias.reserve(N); //fases.reserve(N)
+	amplitudes.reserve(N); frecuencias.reserve(N); fases.reserve(N);
 	for (int k = 0; k < N; k++)
 	{
 		// a) Amplitud; hacer el módulo y tener en cuenta el nº de muestras
@@ -77,12 +78,13 @@ void Kepri::DFT(std::vector<float> ondaTotal, float intervalo_muestreo,
 		// b) Frecuencia
 		frecuencias.push_back(k / (intervalo_muestreo * N));
 		// c) Fase
-		//fases.push_back(atan2();
+		fases.push_back(atan2(X[k].imag(), X[k].real()) + PI / 2.0); // devolvemos senos, no cosenos
 	}
 
 	// 4) Aplicar el teorema de Nyquist; no podemos detectar ondas con frecuencia superior o igual a Fm/2
 	amplitudes.resize(N / 2 + 1); // tener en cuenta A(0)
 	frecuencias.resize(N / 2 + 1);
+	fases.resize(N / 2 + 1);
 	// Para compensar las frecuencias descartadas (son simétricas respecto a N/2)
 	for (int k = 1; k < amplitudes.size(); k++)
 		amplitudes[k] *= 2;
@@ -95,6 +97,7 @@ void Kepri::DFT(std::vector<float> ondaTotal, float intervalo_muestreo,
 		{
 			amplitudes.erase(amplitudes.begin() + k);
 			frecuencias.erase(frecuencias.begin() + k);
+			fases.erase(fases.begin() + k);
 			k--;
 		}
 	}
@@ -102,10 +105,19 @@ void Kepri::DFT(std::vector<float> ondaTotal, float intervalo_muestreo,
 	// Escribir los resultados
 	if(debug)
 	{
-		std::cout << "~ ~ ~ Transformada Discreta de Fourier: ~ ~ ~" << std::endl;
+		std::cout << "|~~~~~~~~~~~~~~~~[Transformada Discreta de Fourier]~~~~~~~~~~~~~~~~|" << std::endl;
+		std::cout << "|-| Parametros |-| Duracion: " << intervalo_muestreo * N << "s |-| " << N << " muestras"
+			<< " |-| Fmax: " << N / 2.0 - 0.5 << "Hz |-|" << std::endl;
+		std::cout << std::setfill('_') << std::setw(68) << "" << std::endl << std::setfill(' ');
+		// Cada una de las componentes
 		for (int i = 0; i < frecuencias.size(); i++)
-			std::cout << "->Onda " << i << " | Frecuencia: " << frecuencias[i]
-			<< "Hz, amplitud: " << amplitudes[i] << ", fase: " << std::endl;
+		{
+			std::cout << "| Onda " << std::setw(2) << i << " | Frecuencia: " << std::fixed << std::setprecision(0) <<
+				std::right << std::setw(5) << frecuencias[i] << "Hz | ";
+			std::cout << std::fixed << std::setprecision(3) << "Amplitud: " << amplitudes[i] <<
+				" | Fase: " << std::setw(6) << fases[i] / PI << "pi |" << std::endl;
+		}
+		std::cout << std::setfill('_') << std::setw(68) << "" << std::endl << std::setfill(' ');
 	}
 	// Limpiar
 	delete[] X;
