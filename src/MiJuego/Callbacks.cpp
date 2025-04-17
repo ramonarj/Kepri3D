@@ -137,10 +137,10 @@ void logicOpButtonPressed()
 
 void instancingButtonPressed()
 {
-	if (GameManager::particleSys != nullptr)
-	{
-		GameManager::particleSys->setActive(!GameManager::particleSys->isActive());
-	}
+	//if (GameManager::particleSys != nullptr)
+	//{
+	//	GameManager::particleSys->setActive(!GameManager::particleSys->isActive());
+	//}
 }
 
 void volumesButtonPressed()

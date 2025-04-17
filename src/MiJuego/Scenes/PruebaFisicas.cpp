@@ -4,6 +4,7 @@
 
 #include "../RotationComp.h"
 #include "../CameraController.h"
+#include "../GameManager.h"
 #include "../PhysicsMan.h"
 #include "../DebugText.h"
 #include "../BloqueComp.h"
@@ -109,18 +110,30 @@ void PruebaFisicas::setup()
 	AddEntity(debugTxt);
 	debugTxt->setActive(true);
 
+	/* - - Sistema de partículas - - */
+	// Con 10.000, empieza a ir demasiado lento
+	ParticleSystem* particleSys = new ParticleSystem(0.4, 10000, SPHERE, PARTICLE_3D);
+	particleSys->setPosition({ -25, 0, 10 });
+	//particleSys->setTexture("sombra");
+	particleSys->setParticleSpeed(2.0);
+	particleSys->setLifetime(5);
+	//particleSys->useGravity(true);
+	//particleSys->setBurst(true);
+	particleSys->setLoop(false);
+	AddEntity(particleSys);
+
 	// PhysicsMan
 	Entity* phyMan = new Entity("PhysicsManager");
-	PhysicsMan* phyManComp = new PhysicsMan(esfera2, sombra, liquido);
+	PhysicsMan* phyManComp = new PhysicsMan(nullptr, sombra, liquido);
 	phyMan->addComponent(phyManComp);
 	AddEntity(phyMan);
 
 	/* - - GameManager - - */
-	Entity* gm = new Entity();
 	// Componente CameraController
 	CameraController* camComp = new CameraController(m_camera);
-	gm->addComponent(camComp);
-	AddEntity(gm);
+	// Componente GameManager
+	GameManager* gmComp = new GameManager(this, m_camera, nullptr, particleSys);
+	AddEntity(new Entity({camComp, gmComp}, "GameManager"));
 
 
 	/* - - - Efectos de postprocesado (el orden importa) - - - */
@@ -134,6 +147,7 @@ void PruebaFisicas::loadResources()
 	/* Texturas */
 	ResourceManager::Instance()->loadTexture("cobre.bmp", "cobre");
 	ResourceManager::Instance()->loadTexture("sombra.png", "sombra");
+	ResourceManager::Instance()->loadTexture("blanco.png", "blanco");
 	ResourceManager::Instance()->loadTexture("UI\\panel.png", "panel");
 
 	ResourceManager::Instance()->loadCubemapTexture({ "skyboxes/right.jpg", "skyboxes/left.jpg", "skyboxes/bottom.jpg",

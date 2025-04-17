@@ -25,36 +25,22 @@ public:
 	/* Carga el material al shader (lo mismo pero con shaders) */
 	void loadToShader(Shader* sh);
 
+	// Setters
+	inline void setShader(Shader* sh) { m_shader = sh; }
+	inline void setEmission(const glm::vec3& emission) { m_emission = glm::vec4(emission, 1.0); }
 	void setTexture(unsigned int i, Texture* tex);
 
-	// Setters
-	/* Indica el tipo de sombreado que se usará para TODOS los materiales */
-	static inline void setShadingType(GLuint sh) { m_shading = sh; }
-
-	void setShader(Shader* sh) { m_shader = sh; }
-
-	void setEmission(const glm::vec3& emission) { m_emission = glm::vec4(emission, 1.0); }
-
 	// Getters
-	Shader* getShader() const { return m_shader; }
-
-	/* Devuelve la componente ambiente del material */
+	inline Shader* getShader() const { return m_shader; }
 	inline const glm::vec3& getAmbient() const { return m_ambient; }
-
-	/* Devuelve la componente difusa del material */
 	inline const glm::vec4& getDiffuse() const { return m_diffuse; }
-
-	/* Devuelve la componente especular del material */
 	inline const glm::vec3& getSpecular() const { return m_specular; }
-
-	/* Devuelve el brillo especular del material (0 - 128)*/
-	inline GLfloat getBrillo() const { return m_brillo; }
-
+	inline GLfloat getBrillo() const { return m_brillo; } // (0 - 128)
 	inline const Texture* getTexture(GLuint i) const { return m_textures[i]; }
-
 	inline bool needsTangents() { return m_needsTangents; }
 
-	/* - - Uniforms - - */
+	/* - - - - - Uniforms - - - - - */
+	// Setters
 	void setFloat(const std::string& name, float value);
 	void setInt(const std::string& name, int value);
 	void setVec2(const std::string& name, glm::vec2 value);
@@ -65,9 +51,16 @@ public:
 	glm::vec2 getVec2(const std::string& name);
 	glm::vec3 getVec3(const std::string& name);
 
+
+	/* - - - - Estaticos - - - - */
+	static inline void setShadingType(GLuint sh) { m_shading = sh; }
+
 	static bool fresnel;
 	static bool s_useTextures;
 private:
+	/* Tipo de sombreado para los materiales (compartido) */
+	static GLuint m_shading;
+
 	/* Shader usado por el material */
 	Shader* m_shader;
 
@@ -85,10 +78,10 @@ private:
 	/* Cara en la que se usará el material */
 	GLuint m_face;
 
-	/* Tipo de sombreado para los materiales (compartido) */
-	static GLuint m_shading;
+	/* Necesita que la malla provea vectores tangentes/no */
+	bool m_needsTangents;
 
-	/* Texturas utilizadas por el material*/
+	/* Texturas utilizadas por el material */
 	// 0 = Textura Principal
 	// 1 = Textura Secundaria
 	// 2 = Specular Map
@@ -110,9 +103,6 @@ private:
 	/* Manda las texturas al shader */
 	void bindTextures(Shader* sh);
 	void sendCustomUniforms(Shader* sh);
-
-	/* Necesita que la malla provea vectores tangentes/no */
-	bool m_needsTangents;
 };
 
 #endif

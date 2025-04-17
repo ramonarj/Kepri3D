@@ -12,11 +12,13 @@ enum PARTICLE_TYPE
 	PARTICLE_3D = 1
 };
 
+enum EMISSION_TYPE { SPHERE = 0, CIRCLE = 1, CONE = 2, VOLUMETRIC = 3 };
+
 
 class ParticleSystem : public Entity
 {
 public:
-	ParticleSystem(GLdouble size, GLuint maxParticles, PARTICLE_TYPE partType = PARTICLE_2D); 
+	ParticleSystem(GLdouble size, GLuint maxParticles, EMISSION_TYPE = SPHERE, PARTICLE_TYPE partType = PARTICLE_2D); 
 	~ParticleSystem();
 
 	void render() override;
@@ -24,14 +26,15 @@ public:
 	void update(float deltaTime) override;
 
 	// Setters
-	/* Establece la rapidez de las partículas */
-	inline void setParticleSpeed(float speed) { this->m_particleSpeed = speed; }
-	/* Establece el tiempo de vida (en segundos) de las partículas */
+	void setParticleSpeed(float speed);
 	void setLifetime(double time);
+	inline void useGravity(bool use) { m_useGravity = use; }
+	void setBurst(bool burst);
+	inline void setLoop(bool loop) { m_loop = loop; }
 
 private:
-	/* Número actual de partículas activas */
-	//GLuint numParticles;
+	/* Forma de la emisión */
+	EMISSION_TYPE m_emissionType;
 
 	/* Número máximo de partículas */
 	GLuint maxParticles;
@@ -39,11 +42,15 @@ private:
 	/* Rapidez de las partículas */
 	float m_particleSpeed;
 
-	/* Tamaño de las partículas */
+	// ¿Usan gravedad?
+	bool m_useGravity = false;
 
+	// ¿Ráfagas o flujo emisión contante?
+	bool m_burst = false;
+	bool m_loop = true;
 
-	/* Tiempo de vida de las partículas */
-	GLuint m_maxLifetime;
+	/* Tiempo de vida de las partículas, en segundos */
+	float m_maxLifetime;
 
 	/* Dirección de la emisión */
 	glm::dvec3 emissionDir;
@@ -57,6 +64,10 @@ private:
 
 	/* Tiempo que lleva viva cada partícula */
 	float* m_life;
+
+	// Metodos
+	void assignStartingPosition(int i);
+	void assignStartingVelocity(int i);
 };
 
 // - - - - - - - - - - 

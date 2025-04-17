@@ -11,24 +11,8 @@ PhysicsMan::PhysicsMan(Rigid* r, Entity* sombra, Liquido* liquido)
 
 void PhysicsMan::update(float deltaTime)
 {
-	// Los impulsos y otros eventos instantáneos (getkeyDOWN) 
-	// pueden aplicarse tanto en el Update como en el FixedUpdate
-
-	// Salto
-	if (InputManager::Instance()->getMouseKeyDown(LEFT))
-		rigid->addImpulse({ 0, jumpImpulse, 0 });
-
-	// Torque
-	if (InputManager::Instance()->getMouseKeyDown(RIGHT))
-		rigid->addTorque({ 0, torque, 0 });
-
-	// Rozamientos
-	if (InputManager::Instance()->getKeyDown('t'))
-		rigid->setDrag(1.5);
-
-	if (InputManager::Instance()->getKeyDown('r'))
-		rigid->setAngularDrag(0.8);
-
+	// Impulsos, fuerzas y rozamiento
+	controlRigid();
 
 	// RayCast
 	if (InputManager::Instance()->getKey('c'))
@@ -72,20 +56,12 @@ void PhysicsMan::update(float deltaTime)
 	{
 		PhysicsSystem::Instance()->setFixedTime(fixedTime + deltaTime * 0.1);
 	}
-	//std::cout << PhysicsSystem::Instance()->getFixedTime() << std::endl;
-
-	// Poner la sombra en la entidad que tenga debajo
-	glm::dvec3 origenRayo = rigid->getEntity()->getPosition() - vector3(0, rigid->getCollider()->getRadio()+0.01, 0);
-	glm::dvec3 impactPoint;
-	if(PhysicsSystem::Instance()->raycast(origenRayo, { 0, -1, 0 }, 300, impactPoint))
-		sombra->setPosition(impactPoint);
-
-	// Fixed timesteps
-	//std::cout << rigid->getEntity()->getPosition().y << std::endl;
 }
 
 void PhysicsMan::fixedUpdate(float fixedTime)
 {
+	if (rigid == nullptr) { return; }
+
 	// Las fuerzas continuas (que se ejercen cada frame y no en un instante) [getKey]
 	// deben aplicarse en el FixedUpdate, porque si no se acumulan de más
 
@@ -110,4 +86,30 @@ void PhysicsMan::fixedUpdate(float fixedTime)
 		rigid->addForce(pointForce * -rigid->getEntity()->forward(),
 			-rigid->getEntity()->forward() / 2.0 - rigid->getEntity()->up() / 2.0);
 	}
+}
+
+void PhysicsMan::controlRigid()
+{
+	if (rigid == nullptr) { return; }
+
+	// Los impulsos y otros eventos instantáneos (getkeyDOWN) 
+	// pueden aplicarse tanto en el Update como en el FixedUpdate
+	if (InputManager::Instance()->getMouseKeyDown(LEFT))
+		rigid->addImpulse({ 0, jumpImpulse, 0 });
+
+	// Torque
+	if (InputManager::Instance()->getMouseKeyDown(RIGHT))
+		rigid->addTorque({ 0, torque, 0 });
+
+	// Rozamientos
+	if (InputManager::Instance()->getKeyDown('t'))
+		rigid->setDrag(1.5);
+	if (InputManager::Instance()->getKeyDown('r'))
+		rigid->setAngularDrag(0.8);
+
+	// Poner la sombra en la entidad que tenga debajo
+	glm::dvec3 origenRayo = rigid->getEntity()->getPosition() - vector3(0, rigid->getCollider()->getRadio() + 0.01, 0);
+	glm::dvec3 impactPoint;
+	if (PhysicsSystem::Instance()->raycast(origenRayo, { 0, -1, 0 }, 300, impactPoint))
+		sombra->setPosition(impactPoint);
 }

@@ -13,7 +13,7 @@ class Terreno;
 class GameManager : public Component
 {
 public:
-	GameManager(Scene* scene, Camera* cam, UIElement* botonesMenu, Entity* particleSystem) :
+	GameManager(Scene* scene, Camera* cam, UIElement* botonesMenu, ParticleSystem* particleSystem) :
 		circleLight(nullptr), spotLight(nullptr), luzBlinn(nullptr), tessTerrain(nullptr)
 	{
 		this->scene = scene;
@@ -27,21 +27,18 @@ public:
 
 	void setLights(Light* circleLight, Light* spotLight, Light* luzBlinn);
 	void setTessTerrain(Terreno* tesTerrain) { this->tessTerrain = tesTerrain; }
-	void setParticleSys(ParticleSystem* partSys) { this->particleSys = partSys; }
+	void setParticleSys(ParticleSystem* partSys) { this->pSystem = partSys; }
 
 	void update(float deltaTime) override;
 
 	static void centerMouse();
-
-	// Sistema de partículas
-	static ParticleSystem* particleSys;
 
 private:
 	// Referencias a los GameObjects
 	Camera* cam;
 	Scene* scene;
 	Light *circleLight, *spotLight, *luzBlinn;
-	Entity* pSystem;
+	ParticleSystem* pSystem;
 	UIElement* botonesMenu;
 	Terreno* tessTerrain;
 
@@ -58,7 +55,7 @@ private:
 
 	// Métodos
 	void controlLuces(float deltaTime);
-	void controlTorre(float deltaTime);
+	void controlMovimiento(Entity* e, float deltaTime);
 	void controlTerreno(float deltaTime);
 };
 

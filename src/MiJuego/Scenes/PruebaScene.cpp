@@ -228,7 +228,7 @@ void PruebaScene::setup()
 
 	/* - - Sistema de partículas - - */
 	// Con 10.000, empieza a ir demasiado lento
-	ParticleSystem* particleSys = new ParticleSystem(0.4, 1000, PARTICLE_2D);
+	ParticleSystem* particleSys = new ParticleSystem(0.4, 1000, SPHERE, PARTICLE_2D);
 	particleSys->setTexture("emoji");
 	particleSys->setParticleSpeed(3.0);
 	particleSys->setLifetime(2);
@@ -255,7 +255,7 @@ void PruebaScene::setup()
 
 	/* - - GameManager - - */
 	// Componente GM
-	GameManager* gmComponent = new GameManager(this, m_camera, botonesMenu, torre);
+	GameManager* gmComponent = new GameManager(this, m_camera, botonesMenu, particleSys);
 	gmComponent->setLights(circleLight, spotLight, luzBlinn);
 	gmComponent->setTessTerrain(terrainComp);
 	gmComponent->setParticleSys(particleSys);

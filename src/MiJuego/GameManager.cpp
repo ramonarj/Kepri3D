@@ -9,8 +9,6 @@
 #include <iostream>
 
 
-ParticleSystem* GameManager::particleSys = nullptr;
-
 void GameManager::setLights(Light* circleLight, Light* spotLight, Light* luzBlinn)
 {
 	this->circleLight = circleLight;
@@ -63,7 +61,8 @@ void GameManager::update(float deltaTime)
 			InputManager::Instance()->setCursor(GLUT_CURSOR_RIGHT_ARROW);
 
 			// Mostrar el panel de botones
-			botonesMenu->setActive(true);
+			if(botonesMenu != nullptr)
+				botonesMenu->setActive(true);
 
 			// Desactivar el componente hermano que controla la cámara
 			entity->getComponent<CameraController>()->setActive(false);
@@ -76,8 +75,8 @@ void GameManager::update(float deltaTime)
 	// Controlar las luces
 	controlLuces(deltaTime);
 
-	// Controlar la torre
-	controlTorre(deltaTime);
+	// Controlar el sist. particulas
+	controlMovimiento(pSystem, deltaTime); //circleLight->getEntity()
 
 	// Controlar el terreno
 	controlTerreno(deltaTime);
@@ -93,7 +92,8 @@ void GameManager::update(float deltaTime)
 			InputManager::Instance()->setMousePos(cam->getVP()->getW() / 2, cam->getVP()->getH() / 2);
 
 			// Esconder el panel de botones
-			botonesMenu->setActive(false);
+			if(botonesMenu != nullptr)
+				botonesMenu->setActive(false);
 			// Activar el componente hermano
 			entity->getComponent<CameraController>()->setActive(true);
 		}	
@@ -132,6 +132,8 @@ void GameManager::update(float deltaTime)
 
 void GameManager::controlLuces(float deltaTime)
 {
+	if (spotLight == nullptr) { return; }
+
 	// 1) Luz de foco (linterna)
 	// Posición y dirección
 	spotLight->getEntity()->setPosition(cam->getPosition());
@@ -143,48 +145,11 @@ void GameManager::controlLuces(float deltaTime)
 		spotLight->setActive(!spotLight->isActive());
 	}
 
-	// 2) Luz puntual (trayectoria circular)
+	// 2) Luz puntual
+	// Trayectoria circular
 	//if (movingLights)
 	//	circleLight->setPosition({ 20 * cos(totalTime * lightVel), 1, 8 * sin(totalTime * lightVel) });
-
-	totalTime += deltaTime;
-}
-
-void GameManager::controlTorre(float deltaTime)
-{
-	glm::dvec3 movTorre = { 0,0,0 };
-
-	// Girar a los lados
-	if(InputManager::Instance()->getSpecialKey(GLUT_KEY_RIGHT))
-	{
-		movTorre.x += 1;
-		//pSystem->rotate(3.5 * deltaTime, { 0,1,0 });
-	}
-	if (InputManager::Instance()->getSpecialKey(GLUT_KEY_LEFT))
-	{
-		movTorre.x -= 1;
-		//pSystem->rotate(3.5 * deltaTime, { 0,1,0 });
-	}
-	// Moverse adelante / atrás
-	if (InputManager::Instance()->getSpecialKey(GLUT_KEY_UP))
-	{
-		movTorre.z += -1;
-	}
-	if (InputManager::Instance()->getSpecialKey(GLUT_KEY_DOWN))
-	{
-		movTorre.z += 1;
-	}
-
-	// Moverse arriba / abajo
-	if (InputManager::Instance()->getKey('9'))
-	{
-		movTorre.y += -1;
-	}
-	if (InputManager::Instance()->getKey('0'))
-	{
-		movTorre.y += 1;
-	}
-
+	
 	// Cambiar el color con el Enter
 	if (InputManager::Instance()->getKeyDown(13))
 	{
@@ -197,11 +162,34 @@ void GameManager::controlTorre(float deltaTime)
 		((Material*)circleLight->getEntity()->getMaterial())->setEmission(circleLight->getDiffuse());
 	}
 
+	totalTime += deltaTime;
+}
+
+void GameManager::controlMovimiento(Entity* e, float deltaTime)
+{
+	glm::dvec3 direccion = { 0,0,0 };
+
+	// Moverse iza/dcha
+	if(InputManager::Instance()->getSpecialKey(GLUT_KEY_RIGHT))
+		direccion.x += 1;
+	if (InputManager::Instance()->getSpecialKey(GLUT_KEY_LEFT))
+		direccion.x -= 1;
+
+	// Moverse adelante / atrás
+	if (InputManager::Instance()->getSpecialKey(GLUT_KEY_UP))
+		direccion.z += -1;
+	if (InputManager::Instance()->getSpecialKey(GLUT_KEY_DOWN))
+		direccion.z += 1;
+
+	// Moverse arriba / abajo
+	if (InputManager::Instance()->getKey('9'))
+		direccion.y += -1;
+	if (InputManager::Instance()->getKey('0'))
+		direccion.y += 1;
 
 	// Mover la luz circular
-	movTorre = movTorre * velTorre * (double)deltaTime;
-	//pSystem->translate(movTorre, GLOBAL);
-	circleLight->getEntity()->translate(movTorre);
+	direccion = direccion * velTorre * (double)deltaTime;
+	e->translate(direccion, GLOBAL);
 }
 
 void GameManager::controlTerreno(float deltaTime)
