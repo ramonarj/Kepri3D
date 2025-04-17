@@ -3,6 +3,7 @@
 #include "Mesh.h"
 #include "Renderer.h"
 #include "PhysicsSystem.h"
+#include "ForceGenerator.h"
 
 ParticleSystem::ParticleSystem(GLdouble size, GLuint maxParticles, EMISSION_TYPE emisssionType, PARTICLE_TYPE partType)
 {
@@ -84,7 +85,7 @@ ParticleSystem::~ParticleSystem()
 {
 	delete[] m_particles;
 	delete[] m_positions;
-	// ?
+	CleanVector(m_generators);
 }
 
 void ParticleSystem::render()
@@ -130,6 +131,10 @@ void ParticleSystem::update(float deltaTime)
 		// Actualizar posición y vida
 		*m_particles[i].position += (m_particles[i].velocity * (real)deltaTime);
 		m_particles[i].life += deltaTime;
+
+		// Actualizar fuerzas que ejerzan sobre el sistema
+		for(ForceGenerator* fg : m_generators)
+			fg->applyForce(&m_particles[i], deltaTime);
 
 		// Partícula se muere de vieja
 		if(m_particles[i].life > m_maxLifetime)
@@ -204,7 +209,7 @@ void ParticleSystem::killParticle(int i)
 	{
 		m_particles[i].life = 0;
 		assignStartingPosition(i);
-		//assignStartingVelocity(i); // depende de para qué
+		assignStartingVelocity(i); // depende de para qué
 	}
 	else
 	{

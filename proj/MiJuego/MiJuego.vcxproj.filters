@@ -82,6 +82,9 @@
     <ClCompile Include="..\..\src\MiJuego\SandboxMan.cpp">
       <Filter>Archivos de origen\Sandbox</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\src\MiJuego\Viento.cpp">
+      <Filter>Archivos de origen\Fisicas</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\src\MiJuego\CameraController.h">
@@ -140,6 +143,9 @@
     </ClInclude>
     <ClInclude Include="..\..\src\MiJuego\SandboxMan.h">
       <Filter>Archivos de origen\Sandbox</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\MiJuego\Viento.h">
+      <Filter>Archivos de origen\Fisicas</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

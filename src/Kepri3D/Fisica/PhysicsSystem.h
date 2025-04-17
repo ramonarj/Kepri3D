@@ -9,8 +9,8 @@
 class Collider;
 class Rigid;
 class Muelle;
-class Liquido;
 class Articulacion;
+class ForceGenerator;
 
 // Indica cómo de elástico es un choque. Por ahora, es compartido para todos los choques.
 // 0 = totalmente inelástico (se quedan pegados), 1 = totalmente elástico (no se pierde Ec)
@@ -40,8 +40,8 @@ public:
 
 	// Añadir entidades físicas a la simulación
 	void addRigid(Rigid* r);
+	void addForceGenerator(ForceGenerator* fg);
 	void addMuelle(Muelle* m);
-	void addLiquido(Liquido* l);
 	void addArticulacion(Articulacion* a);
 
 	/* Lanza un rayo en la dirección dada y devuelve true si el rayo golpea un collider, false e.o.c. */
@@ -90,7 +90,7 @@ private:
 	/* Vectores de las entidades físicas */
 	std::vector<Rigid*> m_rigids;
 	std::vector<Muelle*> m_muelles;
-	std::vector<Liquido*> m_liquidos;
+	std::vector<ForceGenerator*> m_generators;
 	std::vector<Articulacion*> m_articulaciones;
 
 	/* Lista de colisiones por resolver */

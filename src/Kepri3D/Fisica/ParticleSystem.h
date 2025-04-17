@@ -3,6 +3,14 @@
 
 #include "Entity.h"
 #include "CorePhysics.h"
+class ForceGenerator;
+
+struct Particle
+{
+	vector3* position;
+	vector3 velocity;
+	real life;
+};
 
 enum PARTICLE_TYPE
 {
@@ -31,15 +39,9 @@ public:
 	inline void setLoop(bool loop) { m_loop = loop; }
 	inline void setGravity(real gravity) { m_gravity = gravity; m_useGravity = true; }
 	void setVolume(const vector3& vol);
+	void addForceGenerator(ForceGenerator* fg) { m_generators.push_back(fg); }
 
 private:
-	struct Particle
-	{
-		vector3* position;
-		vector3 velocity;
-		real life;
-	};
-
 	/* Lista de partículas */
 	Particle* m_particles;
 
@@ -71,6 +73,9 @@ private:
 	// ¿Usan gravedad?
 	bool m_useGravity = false;
 	real m_gravity = -1.0;
+
+	// Generadores de fuerzas
+	std::vector<ForceGenerator*> m_generators;
 
 	// - - - - RENDERIZADO - - - - //
 	// Necesitamos esto para dibujar instanciado

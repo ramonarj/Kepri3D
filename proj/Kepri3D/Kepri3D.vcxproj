@@ -175,6 +175,7 @@
     <ClCompile Include="..\..\src\Kepri3D\Entity.cpp" />
     <ClCompile Include="..\..\src\Kepri3D\Fisica\Articulacion.cpp" />
     <ClCompile Include="..\..\src\Kepri3D\Fisica\Collider.cpp" />
+    <ClCompile Include="..\..\src\Kepri3D\Fisica\ForceGenerator.cpp" />
     <ClCompile Include="..\..\src\Kepri3D\Fisica\Liquido.cpp" />
     <ClCompile Include="..\..\src\Kepri3D\Fisica\Muelle.cpp" />
     <ClCompile Include="..\..\src\Kepri3D\Fisica\ParticleSystem.cpp" />
@@ -212,6 +213,7 @@
     <ClInclude Include="..\..\src\Kepri3D\Fisica\Articulacion.h" />
     <ClInclude Include="..\..\src\Kepri3D\Fisica\Collider.h" />
     <ClInclude Include="..\..\src\Kepri3D\Fisica\CorePhysics.h" />
+    <ClInclude Include="..\..\src\Kepri3D\Fisica\ForceGenerator.h" />
     <ClInclude Include="..\..\src\Kepri3D\Fisica\Liquido.h" />
     <ClInclude Include="..\..\src\Kepri3D\Fisica\Muelle.h" />
     <ClInclude Include="..\..\src\Kepri3D\Fisica\ParticleSystem.h" />

@@ -4,8 +4,8 @@
 #include "Muelle.h"
 #include "Collider.h"
 #include "Camera.h"
-#include "Liquido.h"
 #include "Articulacion.h"
+#include "ForceGenerator.h"
 #include "Scene.h"
 #include <iostream>
 
@@ -17,8 +17,8 @@ vector3 PhysicsSystem::s_gravity = { 0, -9.8, 0 };
 
 void PhysicsSystem::Clean()
 {
+	CleanVector(m_generators);
 	CleanVector(m_muelles);
-	CleanVector(m_liquidos);
 	CleanVector(m_articulaciones);
 
 	delete s_instance;
@@ -43,8 +43,8 @@ void PhysicsSystem::addMuelle(Muelle* m) {
 	m_muelles.push_back(m);
 }
 
-void PhysicsSystem::addLiquido(Liquido* l) {
-	m_liquidos.push_back(l);
+void PhysicsSystem::addForceGenerator(ForceGenerator* l) {
+	m_generators.push_back(l);
 }
 
 void PhysicsSystem::addArticulacion(Articulacion* a) {
@@ -73,19 +73,20 @@ void PhysicsSystem::update(float deltaTime)
 void PhysicsSystem::simulateStep(real delta)
 {
 	m_deltaTime = delta;
-	// a) Actualizar rigids
+	// a) Actualizar rigids y aplicarles las fuerzas con los generadores
 	for (Rigid* r : m_rigids)
+	{
 		r->updateStep(delta);
+		// Los líquidos se incluyen aquí
+		for(ForceGenerator* l : m_generators)
+			l->applyForce(r, delta);
+	}
 
 	// b) Actualizar muelles
 	for (Muelle* m : m_muelles)
 		m->applyForce();
 
-	// c) Actualizar líquidos
-	for (Liquido* l : m_liquidos)
-		l->applyBuoyancy(m_rigids);
-
-	// d) Actualizar articulaciones
+	// c) Actualizar articulaciones
 	for (Articulacion* a : m_articulaciones)
 		a->applyConstraints();
 #ifdef __DEBUG_INFO__

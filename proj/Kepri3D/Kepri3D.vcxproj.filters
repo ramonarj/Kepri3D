@@ -120,6 +120,9 @@
     <ClCompile Include="..\..\src\Kepri3D\Fisica\ParticleSystem.cpp">
       <Filter>Fisicas</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\src\Kepri3D\Fisica\ForceGenerator.cpp">
+      <Filter>Fisicas</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\src\Kepri3D\Utils\checkML.h">
@@ -234,6 +237,9 @@
       <Filter>Core</Filter>
     </ClInclude>
     <ClInclude Include="..\..\src\Kepri3D\Fisica\ParticleSystem.h">
+      <Filter>Fisicas</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\Kepri3D\Fisica\ForceGenerator.h">
       <Filter>Fisicas</Filter>
     </ClInclude>
   </ItemGroup>

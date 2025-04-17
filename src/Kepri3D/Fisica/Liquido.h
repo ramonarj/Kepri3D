@@ -3,18 +3,21 @@
 
 #include <vector>
 #include "CorePhysics.h"
+#include "ForceGenerator.h"
 
 class Rigid;
 class Collider;
 
-class Liquido
+class Liquido : public ForceGenerator
 {
 public:
 	Liquido(real altura = 0, real densidad = 1000.0); // valores por defecto -> agua
 	~Liquido(){}
 
 	/* Aplica la flotación a los Rigids dados */
-	void applyBuoyancy(std::vector<Rigid*> rigids) const;
+	void applyForce(Rigid* r, real deltaTime) override;
+	// Versión partículas
+	void applyForce(Particle* p, real deltaTime) override;
 
 	/* Cambia la altura de la superficie del fluido */
 	inline void setAltura(real alt) { m_altura = alt; }

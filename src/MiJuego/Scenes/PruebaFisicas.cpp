@@ -8,6 +8,7 @@
 #include "../PhysicsMan.h"
 #include "../DebugText.h"
 #include "../BloqueComp.h"
+#include "../Viento.h"
 
 void PruebaFisicas::setup()
 {
@@ -40,9 +41,9 @@ void PruebaFisicas::setup()
 		Rigid* r = createRigidEsfera("Clon" + std::to_string(i), { 0, 40 - 5 * i, 0 }, Dynamic, 10, false);
 
 	// Esfera grande y pesada
-	Rigid* esfera2 = createRigidEsfera("Esfera2", { 0, 10, 0 }, Dynamic, 1000, false, 1.0, 5.0);
+	Rigid* esfera2 = createRigidEsfera("Esfera2", { -120, 10, 0 }, Dynamic, 1000, true, 1.0, 5.0);
 	//esfera2->setVelocity({ 0, -10, 0 });
-	//esfera2->setMass(esfera2->getCollider()->volume() * 500); // mitad de densidad que el agua
+	esfera2->setMass(esfera2->getCollider()->volume() * 500); // mitad de densidad que el agua
 
 	// - - CUBOS - - //
 	// Cubo 1
@@ -72,7 +73,7 @@ void PruebaFisicas::setup()
 
 	// Líquido
 	Liquido* liquido = new Liquido(-10, 1000);
-	PhysicsSystem::Instance()->addLiquido(liquido);
+	PhysicsSystem::Instance()->addForceGenerator(liquido);
 
 	// - -  ARTICULACIONES - - //
 	// Extremo 1
@@ -113,15 +114,17 @@ void PruebaFisicas::setup()
 	/* - - Sistema de partículas - - */
 	// Con 10.000, empieza a ir demasiado lento
 	ParticleSystem* particleSys = new ParticleSystem(0.4, 10000, VOLUMETRIC, PARTICLE_2D);
-	particleSys->setPosition({ -25, -9, 10 });
+	particleSys->setPosition({ -25, -9, 50 });
 	particleSys->setTexture("sombra");
 	particleSys->setParticleSpeed(0.0);
-	particleSys->setLifetime(5);
+	particleSys->setLifetime(8);
 	particleSys->setVolume(glm::vec3(50, 0, 50));
-	particleSys->setGravity(0.5);
+	particleSys->setGravity(-1);
 	//particleSys->useGravity(true);
 	//particleSys->setBurst(true);
 	//particleSys->setLoop(false);
+	particleSys->addForceGenerator(new Viento({-0.5, 0, 0}));
+	particleSys->addForceGenerator(liquido);
 	AddEntity(particleSys);
 
 	// PhysicsMan

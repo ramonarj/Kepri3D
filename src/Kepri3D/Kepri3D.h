@@ -16,6 +16,7 @@
 #include "Liquido.h"
 #include "Articulacion.h"
 #include "PhysicsSystem.h"
+#include "ForceGenerator.h"
 // Audio
 #include "Audio.h"
 #include "AudioSource.h"
