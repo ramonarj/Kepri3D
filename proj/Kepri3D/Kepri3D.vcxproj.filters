@@ -72,9 +72,6 @@
     <ClCompile Include="..\..\src\Kepri3D\InputManager.cpp">
       <Filter>Core</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\src\Kepri3D\ParticleSystem.cpp">
-      <Filter>Core</Filter>
-    </ClCompile>
     <ClCompile Include="..\..\src\Kepri3D\ResourceManager.cpp">
       <Filter>Core</Filter>
     </ClCompile>
@@ -119,6 +116,9 @@
     </ClCompile>
     <ClCompile Include="..\..\src\Kepri3D\UI\Editor.cpp">
       <Filter>UI</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\Kepri3D\Fisica\ParticleSystem.cpp">
+      <Filter>Fisicas</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -182,9 +182,6 @@
     <ClInclude Include="..\..\src\Kepri3D\Kepri3D.h">
       <Filter>Core</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\src\Kepri3D\ParticleSystem.h">
-      <Filter>Core</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\src\Kepri3D\ResourceManager.h">
       <Filter>Core</Filter>
     </ClInclude>
@@ -235,6 +232,9 @@
     </ClInclude>
     <ClInclude Include="..\..\src\Kepri3D\Defines.h">
       <Filter>Core</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\Kepri3D\Fisica\ParticleSystem.h">
+      <Filter>Fisicas</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

@@ -1,9 +1,6 @@
 #include "ParticleSystem.h"
 
 #include "Mesh.h"
-#include "Texture.h"
-#include "Camera.h"
-#include "Shader.h"
 #include "Renderer.h"
 #include "PhysicsSystem.h"
 
@@ -25,22 +22,22 @@ ParticleSystem::ParticleSystem(GLdouble size, GLuint maxParticles, EMISSION_TYPE
 	this->maxParticles = maxParticles;
 
 	// Valores por defecto
-	this->emissionDir = { 0, -1, 0 };
+	if (m_emissionType == VOLUMETRIC)
+		this->m_volume = { 10, 10, 10 };
+	else
+		this->emissionDir = { 0, -1, 0 };
 	this->m_particleSpeed = 1.5f;
 	this->m_maxLifetime = 3.0f;
 
-	// Específico de cada partícula
-	// Tiempo de vida (segundos)
-	m_life = new float[maxParticles];
-	// Posición
-	m_positions = new glm::dvec3[maxParticles];
-	// Velocidad normalizada
-	m_velocities = new glm::vec3[maxParticles];
+	// Lista de partículas
+	m_particles = new Particle[maxParticles];
+	// Las posiciones se crean contiguas en otra parte de la memoria, para poder mandarlas juntas al shader
+	m_positions = new vector3[maxParticles];
 	
 	// Valores iniciales
 	for (int i = 0; i < maxParticles; i++)
 	{
-		m_life[i] = ((double)m_maxLifetime / maxParticles) * i;
+		m_particles[i].life = (m_maxLifetime / (real)maxParticles) * i;
 		assignStartingPosition(i);
 		assignStartingVelocity(i);
 	}
@@ -52,8 +49,16 @@ void ParticleSystem::setBurst(bool burst)
 	if(burst)
 	{
 		for (int i = 0; i < maxParticles; i++)
-			m_life[i] = 0;
+			m_particles[i].life = 0;
 	}
+}
+
+void ParticleSystem::setVolume(const vector3& vol)
+{
+	m_volume = vol;
+
+	for (int i = 0; i < maxParticles; i++)
+		assignStartingPosition(i);
 }
 
 void ParticleSystem::setParticleSpeed(float speed) 
@@ -61,7 +66,7 @@ void ParticleSystem::setParticleSpeed(float speed)
 	this->m_particleSpeed = speed;
 	for (int i = 0; i < maxParticles; i++)
 	{
-		m_velocities[i] *= speed;
+		m_particles[i].velocity *= speed;
 	}
 }
 
@@ -70,19 +75,16 @@ void ParticleSystem::setLifetime(double time)
 	this->m_maxLifetime = time;
 	for (int i = 0; i < maxParticles; i++)
 	{
-		m_life[i] = (m_maxLifetime / (float)maxParticles) * i;
+		m_particles[i].life = (m_maxLifetime / (real)maxParticles) * i;
 	}
 }
 
 
 ParticleSystem::~ParticleSystem()
 {
-	if (m_positions != nullptr)
-		delete[] m_positions;
-	if (m_velocities != nullptr)
-		delete[] m_velocities;
-	if (m_life != nullptr)
-		delete[] m_life;
+	delete[] m_particles;
+	delete[] m_positions;
+	// ?
 }
 
 void ParticleSystem::render()
@@ -91,7 +93,7 @@ void ParticleSystem::render()
 	glPolygonMode(GL_FRONT, GL_FILL);
 	glPolygonMode(GL_BACK, GL_LINE);
 
-	// Activar la textura si la tiene
+	// Cargar el material al shader
 	getMaterial()->loadToShader(getMaterial()->getShader());
 
 	// 2) Dibujar las mallas de todas las partículas a la vez
@@ -119,42 +121,33 @@ void ParticleSystem::update(float deltaTime)
 	// Actualizar la posición y el tiempo de vida de cada partícula
 	for (int i = 0; i < maxParticles; i++)
 	{
-		if (m_life[i] > m_maxLifetime) { continue; } // partícula muerta
+		if (m_particles[i].life > m_maxLifetime) { continue; } // partícula muerta
 
-		//Gravedad
-		if (m_useGravity && m_velocities[i].y > -150.0)
-			m_velocities[i] += vector3(0, -9.8, 0) * (real)deltaTime;
+		// Aplicar gravedad
+		if (m_useGravity && m_particles[i].velocity.y > -150.0)
+			m_particles[i].velocity.y += m_gravity * deltaTime;
 
-		// Posición y vida
-		m_positions[i] += (m_velocities[i] * deltaTime );
-		m_life[i] += deltaTime;
+		// Actualizar posición y vida
+		*m_particles[i].position += (m_particles[i].velocity * (real)deltaTime);
+		m_particles[i].life += deltaTime;
 
-		// Partícula se muere
-		if(m_life[i] > m_maxLifetime)
+		// Partícula se muere de vieja
+		if(m_particles[i].life > m_maxLifetime)
 		{
-			// La revivimos (devolverla al estado inicial
-			if(m_loop)
-			{
-				m_life[i] = 0;
-				assignStartingPosition(i);
-				//assignStartingVelocity(i); // depende de para qué
-			}
-			else
-			{
-				assignStartingVelocity(i);
-			}
+			killParticle(i);
 		}
 	}
 }
 
 void ParticleSystem::assignStartingPosition(int i)
 {
+	m_particles[i].position = &m_positions[i]; // trucaso para no repetir datos
+
 	if(m_emissionType == VOLUMETRIC)
 	{
-		float volumeSize = 50.0;
-		m_positions[i].x = ((rand() % 1000) / 500.0 - 1) * volumeSize;
-		m_positions[i].y = ((rand() % 1000) / 500.0 - 1) * volumeSize;
-		m_positions[i].z = ((rand() % 1000) / 500.0 - 1) * volumeSize;
+		m_positions[i].x = ((rand() % 1000) / 500.0 - 1) * m_volume.x;
+		m_positions[i].y = ((rand() % 1000) / 500.0 - 1) * m_volume.y;
+		m_positions[i].z = ((rand() % 1000) / 500.0 - 1) * m_volume.z;
 
 		m_positions[i] += getPosition();
 		return;
@@ -164,7 +157,7 @@ void ParticleSystem::assignStartingPosition(int i)
 
 void ParticleSystem::assignStartingVelocity(int i)
 {
-	float dirX, dirY, dirZ;
+	real dirX, dirY, dirZ;
 	switch (m_emissionType)
 	{
 	case SPHERE:
@@ -184,7 +177,7 @@ void ParticleSystem::assignStartingVelocity(int i)
 	}
 	case CONE:
 	{
-		float ang = (rand() % 360) * PI / 180;
+		real ang = (rand() % 360) * PI / 180.0;
 		dirX = cos(ang);
 		dirY = -1;
 		dirZ = sin(ang);
@@ -200,6 +193,21 @@ void ParticleSystem::assignStartingVelocity(int i)
 	default:
 		break;
 	}
-	m_velocities[i] = glm::normalize(glm::vec3({ dirX, dirY, dirZ }));
-	m_velocities[i] *= m_particleSpeed;
+	m_particles[i].velocity = glm::normalize(vector3({ dirX, dirY, dirZ }));
+	m_particles[i].velocity *= m_particleSpeed;
+}
+
+void ParticleSystem::killParticle(int i)
+{
+	// La revivimos (devolverla al estado inicial
+	if (m_loop)
+	{
+		m_particles[i].life = 0;
+		assignStartingPosition(i);
+		//assignStartingVelocity(i); // depende de para qué
+	}
+	else
+	{
+		assignStartingVelocity(i);
+	}
 }

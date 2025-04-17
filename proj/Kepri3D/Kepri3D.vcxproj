@@ -177,6 +177,7 @@
     <ClCompile Include="..\..\src\Kepri3D\Fisica\Collider.cpp" />
     <ClCompile Include="..\..\src\Kepri3D\Fisica\Liquido.cpp" />
     <ClCompile Include="..\..\src\Kepri3D\Fisica\Muelle.cpp" />
+    <ClCompile Include="..\..\src\Kepri3D\Fisica\ParticleSystem.cpp" />
     <ClCompile Include="..\..\src\Kepri3D\Fisica\PhysicsSystem.cpp" />
     <ClCompile Include="..\..\src\Kepri3D\Fisica\Rigid.cpp" />
     <ClCompile Include="..\..\src\Kepri3D\Game.cpp" />
@@ -189,7 +190,6 @@
     <ClCompile Include="..\..\src\Kepri3D\Graficos\Shader.cpp" />
     <ClCompile Include="..\..\src\Kepri3D\Graficos\Texture.cpp" />
     <ClCompile Include="..\..\src\Kepri3D\InputManager.cpp" />
-    <ClCompile Include="..\..\src\Kepri3D\ParticleSystem.cpp" />
     <ClCompile Include="..\..\src\Kepri3D\ResourceManager.cpp" />
     <ClCompile Include="..\..\src\Kepri3D\Scene.cpp" />
     <ClCompile Include="..\..\src\Kepri3D\Sonido\AudioManager.cpp" />
@@ -214,6 +214,7 @@
     <ClInclude Include="..\..\src\Kepri3D\Fisica\CorePhysics.h" />
     <ClInclude Include="..\..\src\Kepri3D\Fisica\Liquido.h" />
     <ClInclude Include="..\..\src\Kepri3D\Fisica\Muelle.h" />
+    <ClInclude Include="..\..\src\Kepri3D\Fisica\ParticleSystem.h" />
     <ClInclude Include="..\..\src\Kepri3D\Fisica\PhysicsSystem.h" />
     <ClInclude Include="..\..\src\Kepri3D\Fisica\Rigid.h" />
     <ClInclude Include="..\..\src\Kepri3D\Game.h" />
@@ -227,7 +228,6 @@
     <ClInclude Include="..\..\src\Kepri3D\Graficos\Texture.h" />
     <ClInclude Include="..\..\src\Kepri3D\InputManager.h" />
     <ClInclude Include="..\..\src\Kepri3D\Kepri3D.h" />
-    <ClInclude Include="..\..\src\Kepri3D\ParticleSystem.h" />
     <ClInclude Include="..\..\src\Kepri3D\ResourceManager.h" />
     <ClInclude Include="..\..\src\Kepri3D\Scene.h" />
     <ClInclude Include="..\..\src\Kepri3D\Sonido\AudioManager.h" />

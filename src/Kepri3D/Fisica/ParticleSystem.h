@@ -2,9 +2,7 @@
 #define __PARTICLE_SYSTEM__
 
 #include "Entity.h"
-#include <string>
-
-class Camera;
+#include "CorePhysics.h"
 
 enum PARTICLE_TYPE
 {
@@ -31,46 +29,60 @@ public:
 	inline void useGravity(bool use) { m_useGravity = use; }
 	void setBurst(bool burst);
 	inline void setLoop(bool loop) { m_loop = loop; }
+	inline void setGravity(real gravity) { m_gravity = gravity; m_useGravity = true; }
+	void setVolume(const vector3& vol);
 
 private:
-	/* Forma de la emisión */
-	EMISSION_TYPE m_emissionType;
+	struct Particle
+	{
+		vector3* position;
+		vector3 velocity;
+		real life;
+	};
+
+	/* Lista de partículas */
+	Particle* m_particles;
 
 	/* Número máximo de partículas */
 	GLuint maxParticles;
 
-	/* Rapidez de las partículas */
-	float m_particleSpeed;
+	// - - - - EMISIÓN - - - - //
+	/* Forma de la emisión */
+	EMISSION_TYPE m_emissionType;
 
-	// ¿Usan gravedad?
-	bool m_useGravity = false;
-
-	// ¿Ráfagas o flujo emisión contante?
+	// ¿Ráfagas o emisión contante?
 	bool m_burst = false;
 	bool m_loop = true;
 
+	/* Dirección/volumen de la emisión */
+	union
+	{
+		vector3 emissionDir;
+		vector3 m_volume = { 2, 8, 2 };
+	};
+
 	/* Tiempo de vida de las partículas, en segundos */
-	float m_maxLifetime;
+	real m_maxLifetime;
 
-	/* Dirección de la emisión */
-	glm::dvec3 emissionDir;
+	// - - - - FISICAS - - - - //
+	/* Rapidez de las partículas */
+	real m_particleSpeed;
 
-	// ----- Específico de cada partícula ----- //
-	/* Posición de cada partícula */
-	glm::dvec3* m_positions;
+	// ¿Usan gravedad?
+	bool m_useGravity = false;
+	real m_gravity = -1.0;
 
-	/* Velocidad (normalizada) de cada partícula */
-	glm::vec3* m_velocities;
+	// - - - - RENDERIZADO - - - - //
+	// Necesitamos esto para dibujar instanciado
+	vector3* m_positions;
 
-	/* Tiempo que lleva viva cada partícula */
-	float* m_life;
 
-	// Metodos
+	// ++++ Metodos ++++ //
 	void assignStartingPosition(int i);
 	void assignStartingVelocity(int i);
+	void killParticle(int i);
 };
 
 // - - - - - - - - - - 
-
 
 #endif

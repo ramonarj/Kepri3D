@@ -112,14 +112,16 @@ void PruebaFisicas::setup()
 
 	/* - - Sistema de partículas - - */
 	// Con 10.000, empieza a ir demasiado lento
-	ParticleSystem* particleSys = new ParticleSystem(0.4, 10000, SPHERE, PARTICLE_3D);
-	particleSys->setPosition({ -25, 0, 10 });
-	//particleSys->setTexture("sombra");
-	particleSys->setParticleSpeed(2.0);
+	ParticleSystem* particleSys = new ParticleSystem(0.4, 10000, VOLUMETRIC, PARTICLE_2D);
+	particleSys->setPosition({ -25, -9, 10 });
+	particleSys->setTexture("sombra");
+	particleSys->setParticleSpeed(0.0);
 	particleSys->setLifetime(5);
+	particleSys->setVolume(glm::vec3(50, 0, 50));
+	particleSys->setGravity(0.5);
 	//particleSys->useGravity(true);
 	//particleSys->setBurst(true);
-	particleSys->setLoop(false);
+	//particleSys->setLoop(false);
 	AddEntity(particleSys);
 
 	// PhysicsMan
