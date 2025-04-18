@@ -16,6 +16,12 @@ CameraController::CameraController(Camera* cam)
 	InputManager::Instance()->setMousePos(cam->getVP()->getW() / 2, cam->getVP()->getH() / 2);
 }
 
+void CameraController::start()
+{
+	Game::Instance()->getCamera()->setAspectRatio(1200.0 / 600.0);
+	Game::Instance()->getCamera()->setFOVX(120);
+}
+
 void CameraController::update(float deltaTime)
 {
 	// Cambiar/recargar la escena

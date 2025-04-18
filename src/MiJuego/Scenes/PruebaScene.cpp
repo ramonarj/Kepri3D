@@ -11,6 +11,7 @@
 #include "../AguaComp.h"
 #include "../DebugText.h"
 #include "../Callbacks.h"
+#include "../Multiplayer.h"
 
 const float buttonScale = 0.28f;
 const float buttonMargin = 0.1f;
@@ -263,7 +264,9 @@ void PruebaScene::setup()
 	CameraController* camComp = new CameraController(m_camera);
 	// Componente DayCicle
 	DayCicle* daynightComp = new DayCicle(1); // crea el cielo y el sol
-	Entity* gm = new Entity({ gmComponent, camComp, daynightComp }, "GameManager");
+	// Componente Multiplayer
+	Multiplayer* multiplayerComp = new Multiplayer(2);
+	Entity* gm = new Entity({ gmComponent, camComp, daynightComp, multiplayerComp }, "GameManager");
 	AddEntity(gm);
 
 

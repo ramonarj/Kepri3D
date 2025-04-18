@@ -21,16 +21,21 @@ void Viewport::setPosition(GLint x, GLint y)
 	glViewport(x, y, w, h);
 }
 
+void Viewport::update()
+{
+	glViewport(x, y, w, h);
+}
+
 // - - - - - - - - - - - - -
 
 Camera::Camera(Viewport* viewport) : vp(viewport), projMat(1.0), orto(false)
 {
 	// Volumen de vista por defecto
-	nearW = 0;
-	nearH = 0;
+	fovX = 90;
+	fovY = 45; //a.r. = 2:1
 	nearPlane = 1.0;
-	farPlane = 200.0;
-	ortoSize = 15.0; // por ejemplo
+	farPlane = 300.0;
+	ortoSize = 35.0; // por ejemplo
 
 	setPosition({ 0, 12, 13 });
 	//updatePM(); // no es estrictamente necesario
@@ -47,10 +52,17 @@ void Camera::lookAt(const glm::dvec3& point, const glm::dvec3& up)
 	modelMat = glm::inverse(glm::lookAt(glm::dvec3(modelMat[3]), point, up));
 }
 
-void Camera::setSize(GLdouble w, GLdouble h)
+void Camera::setAspectRatio(GLdouble ar)
 {
-	nearW = w;
-	nearH = h;
+	this->fovY = fovX / ar;
+	updatePM();
+}
+
+void Camera::setFOVX(GLdouble fovx)
+{
+	double ar = fovX / fovY;
+	this->fovX = fovx;	
+	this->fovY = fovX / ar;
 	updatePM();
 }
 
@@ -74,30 +86,26 @@ void Camera::setOrtoSize(GLdouble ortoSize)
 
 void Camera::updatePM()
 {
-	// Dependerá de si es una resolución apaisada o retrato
-	double maxSize = std::max(nearW, nearH);
-
-	// Left, Right, Bottom, Top, Near, Far
-	// Los valores por defecto son: -1, 1, -1, 1, 1, -1 (están al revés zNear y zFar)
+	// { Left, Right, Bottom, Top, Near, Far }
 	// NOTA: usar DOUBLES (con enteros no funciona)
 
 	// Ortogonal
 	if (orto)
 	{
-		projMat = glm::ortho(-nearW / maxSize * ortoSize, nearW / maxSize * ortoSize,
-			-nearH / maxSize * ortoSize, nearH / maxSize * ortoSize, nearPlane, farPlane);
-		//projMat = glm::ortho(-nearW / maxSize * 50, nearW / maxSize * 50, 
-		//	-nearH / maxSize * 50, nearH / maxSize * 50, 0.0, 500.0);
+		double right = (ortoSize * (fovX / fovY)) / 2.0;
+		projMat = glm::ortho(-right, right, -ortoSize / 2, ortoSize / 2, nearPlane, farPlane);
+		// Far > Near > 0
 	}
-	// Perspectiva; teniendo en cuenta el aspect ratio
+	// Perspectiva
 	else
 	{
-		//projMat = glm::frustum(-1.0, 1.0, -1.0, 1.0, 1.0, -1.0);
-		//projMat = glm::frustum(-1.0, 1.0, -1.0, 1.0, 1.0, 500.0);
+		double maxSize = std::max(fovX, fovY);
 		// Cuanto más cercano a 0 sea el valor 'near', más sensación de velocidad da
 		// Cuanto más grande (>1), mayor efecto zoom (de apuntado) da
-		projMat = glm::frustum(-nearW / maxSize, nearW / maxSize, -nearH / maxSize, nearH / maxSize, nearPlane, farPlane);
-		// Far > Near > 0
+		double ar = fovX / fovY;
+		projMat = glm::frustum(-fovX / maxSize, fovX / maxSize, -fovY / maxSize, fovY / maxSize, nearPlane, farPlane);
+		//projMat = glm::perspective(glm::radians(fovY), ar, nearPlane, farPlane); // con esta si
+		//projMat = glm::frustum(-1.0, 1.0, -1.0, 1.0, 1.0, 500.0);
 	}
 
 	// Actualizar el tipo de proyección

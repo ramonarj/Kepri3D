@@ -20,11 +20,14 @@ public:
 	/* Cambia la posición del viewport en la ventana */
 	void setPosition(GLint x, GLint y);
 
+	/* Llama a glViewport con la información de este viewport */
+	void update();
+
 	// Getters
-	inline GLsizei getX() { return x; };
-	inline GLsizei getY() { return y; };
-	inline GLsizei getW() { return w; };
-	inline GLsizei getH() { return h; };
+	inline GLsizei getX() const { return x; };
+	inline GLsizei getY() const { return y; };
+	inline GLsizei getW() const { return w; };
+	inline GLsizei getH() const{ return h; };
 
 protected:
 	/* Posición del puerto de vista */
@@ -51,22 +54,20 @@ public:
 
 	/* Necesario invertir el parámetro Z antes de llamar al método de Entity */
 	void translate(glm::dvec3 transVector, ReferenceSystem refSys = GLOBAL);
-
-	/* Esto también */
 	inline glm::dvec3 forward() { return -modelMat[2]; }
 
+	/* Orienta la cámara hacia el punto dado, en coordenadas globales */
+	void lookAt(const glm::dvec3& point, const glm::dvec3& up = { 0, 1, 0 });
+
+	/* Cambia la perspectiva entre ortogonal y frustrum */
+	void changePerspective();
 
 	// Getters
 	/* Devuelve la matriz de vista (inversa de la de modelado) */
 	inline const glm::dmat4& getViewMat() { return glm::inverse(modelMat); }
 
-	/* Devuelve la matriz de proyección de la escena */
 	inline const glm::dmat4& getProjMat() { return projMat; }
-
-	/* Devuelve el puerto de vista */
 	inline Viewport* getVP() { return vp; }
-
-	/* Devuelve la distancia al plano cercano */
 	inline GLdouble getNearPlane() const { return nearPlane; }
 	inline GLdouble getFarPlane() const { return farPlane; }
 	inline GLdouble getOrtoSize() const { return ortoSize; }
@@ -75,18 +76,11 @@ public:
 	inline bool isOrto() const { return orto; }
 
 	// Setters
-	/* Cambia la perspectiva entre ortogonal y frustrum */
-	void changePerspective();
-
-	/* Orienta la cámara hacia el punto dado, en coordenadas globales */
-	void lookAt(const glm::dvec3& point, const glm::dvec3& up = {0, 1, 0});
-
-	/* Establece las dimensiones de la cámara */
-	void setSize(GLdouble aw, GLdouble ah);
-
-	/* Cambia la distancia al plano cercano */
+	void setAspectRatio(GLdouble ar);
+	void setFOVX(GLdouble fovx);
 	void setNearPlane(GLdouble nearPlane);
 	void setFarPlane(GLdouble farPlane);
+
 	void setOrtoSize(GLdouble ortoSize);
 
 	// Estáticos
@@ -119,8 +113,8 @@ protected:
 	GLdouble nearPlane;
 	GLdouble farPlane;
 
-	GLdouble nearW;
-	GLdouble nearH;
+	GLdouble fovX;
+	GLdouble fovY;
 
 	GLdouble ortoSize;
 

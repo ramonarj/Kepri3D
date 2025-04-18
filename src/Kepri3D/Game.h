@@ -17,6 +17,7 @@
 #include "InputManager.h"
 #include "checkML.h"
 #include <string>
+#include <vector>
 
 class Scene;
 class Camera;
@@ -61,9 +62,14 @@ public:
 	/* Limpia la instancia */
 	void clean();
 
+	// Añade un puerto de vista
+	Viewport* addViewport(int w, int h, int x, int y);
+	Viewport* getViewport(int i = 0) { return m_viewports[i]; }
+
 	// Getters
-	inline Camera* getCamera() const { return camera; }
+	Camera* getCamera(int i = 0) const;
 	inline Scene* getScene() const { return scene; }
+	glm::ivec2 getWindowSize() const;
 
 	/* Activa/desactiva un parámetro booleano de OpenGL */
 	static void switchBoolParam(GLenum param);
@@ -87,16 +93,26 @@ public:
 		GLuint numTrans;
 		glm::ivec2 fbSize;
 		GLuint programChanges;
+		GLuint culledEntities;
 	};
 	DebugInfo debugInfo;
 #endif
 
 private:
 	friend struct Editor;
-	Game() : camera(nullptr), scene(nullptr), viewport(nullptr), nextScene(nullptr){}
+	Game() : scene(nullptr), nextScene(nullptr){}
 
 	/* Instancia del singleton */
 	static Game* instance;
+
+	/* - - - - Ventana - - - - */
+	// ID
+	int glutWindow = 0;
+	// Nombre
+	std::string windowName;
+	// Dimensiones
+	GLuint windowWidth;
+	GLuint windowHeight;
 
 	/* Escena actual */
 	Scene* scene;
@@ -104,15 +120,8 @@ private:
 	/* Escena demandada */
 	Scene* nextScene;
 
-	/* Cámara y puerto de vista para mostrar la escena */
-	Camera* camera;
-	Viewport* viewport;
-
-	/* ID de la ventana de GLUT */
-	int glutWindow = 0;
-
-	/* Nombre de la ventana, dado por el usuario */
-	std::string windowName;
+	/* Puertos de vista para mostrar la escena */
+	std::vector<Viewport*> m_viewports;
 
 	/* Referencia al editor */
 	Editor* pEditor;

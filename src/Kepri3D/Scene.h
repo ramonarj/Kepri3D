@@ -18,6 +18,7 @@ class Renderer;
 class Uniformbuffer;
 class Framebuffer;
 class Component;
+class Viewport;
 
 const int MAX_LUCES = 5;
 // Lo que ocupa el struct "Light" del FS teniendo en cuenta alineamiento
@@ -45,7 +46,7 @@ public:
 	//
 	void init();
 
-	/* Pinta todas las entidades */
+	/* Pinta el resultado de todas las cámaras activas a sus respectivos puertos de vista */
 	void render();
 
 	/* Actualiza todas las entidades */
@@ -54,6 +55,9 @@ public:
 
 	/* Añade una entidad a la escena */
 	void AddEntity(Entity* e);
+	// Camara
+	Camera* addCamera(Viewport* vp);
+	inline Camera* getCamera(int i = 0) const { return m_cameras[i]; }
 
 	/* Añade un efecto de postprocesado a la escena */
 	void AddComposite(Shader* sh, bool active = true);
@@ -87,6 +91,7 @@ public:
 #ifdef __DEBUG_INFO__
 	/* Número de entidades translúcidas */
 	GLuint numberOfTrans() const { return m_transEntities.size(); }
+	GLuint culledEntities = 0;
 	static glm::ivec2 fbSize;
 #endif
 
@@ -104,6 +109,9 @@ protected:
 
 	/* Lista de renderers */
 	std::vector<Renderer*> m_renderers;
+
+	/* Todas las cámaras de la escena, y la que está activa */
+	std::vector<Camera*> m_cameras;
 
 	/* Cámara activa */
 	static Camera* m_camera;
@@ -142,13 +150,14 @@ private:
 	friend class Game;
 
 	/* Crea e inicializa los framebuffers correspondientes */
-	static void setupStatics(Camera* cam);
+	static void setupStatics(Viewport* vp);
 
 	/* Llama al start() de todos los componentes */
 	void startComponents();
 	void bindUBOs();
 
 	// Sub-métodos del render() para que sea más legible
+	void render(Camera* cam);
 	void loadLights();
 	void loadMatrices();
 	void renderOpaques();
@@ -165,6 +174,7 @@ private:
 	void bakeShadows();
 	void debugDepthMap();
 	void Blit(Framebuffer* readFB, Framebuffer* writeFB);
+	bool onFrustrum(Entity* e);
 
 	// Modelo de iluminación. 0 = Phong, 1 = Blinn-phong
 	bool blinn = false;

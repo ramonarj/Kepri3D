@@ -102,7 +102,8 @@ void DebugText::update(float deltaTime)
 				"\nBUFFER SIZE " + std::to_string(info.fbSize.x) + "X" + std::to_string(info.fbSize.y) +
 				"\nLIGHTS " + std::to_string(info.numLuces) +
 				"\nTRANS ENT " + std::to_string(info.numTrans) +
-				"\nSHADER CHANGES " + std::to_string(info.programChanges);
+				"\nSHADER CHANGES " + std::to_string(info.programChanges) + 
+				"\nCULLED ENTITIES " + std::to_string(info.culledEntities);
 
 			text->setText(s);
 		}

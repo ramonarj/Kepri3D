@@ -165,6 +165,7 @@
     <ClCompile Include="..\..\src\MiJuego\DebugText.cpp" />
     <ClCompile Include="..\..\src\MiJuego\GameManager.cpp" />
     <ClCompile Include="..\..\src\MiJuego\Main.cpp" />
+    <ClCompile Include="..\..\src\MiJuego\Multiplayer.cpp" />
     <ClCompile Include="..\..\src\MiJuego\MultitexComp.cpp" />
     <ClCompile Include="..\..\src\MiJuego\ParallaxComp.cpp" />
     <ClCompile Include="..\..\src\MiJuego\PhysicsMan.cpp" />
@@ -187,6 +188,7 @@
     <ClInclude Include="..\..\src\MiJuego\DayCicle.h" />
     <ClInclude Include="..\..\src\MiJuego\DebugText.h" />
     <ClInclude Include="..\..\src\MiJuego\GameManager.h" />
+    <ClInclude Include="..\..\src\MiJuego\Multiplayer.h" />
     <ClInclude Include="..\..\src\MiJuego\MultitexComp.h" />
     <ClInclude Include="..\..\src\MiJuego\ParallaxComp.h" />
     <ClInclude Include="..\..\src\MiJuego\PhysicsMan.h" />

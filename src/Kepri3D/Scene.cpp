@@ -23,26 +23,26 @@ bool Scene::skyboxActive = true;
 bool Scene::mipmapsActive = false;
 Shader* Scene::normalsShader = nullptr;
 
+const unsigned int MAX_CAMERAS = 4;
+
 Scene::Scene() : m_canvas(nullptr), m_skybox(nullptr)
 {
 
 }
 
-void Scene::setupStatics(Camera* cam)
+void Scene::setupStatics(Viewport* vp)
 {
-	m_camera = cam;
-
 	// Crear la malla de rectángulo para el postprocesado. ({2, 2} para que ocupe la pantalla entera)
 	m_effectsMesh = Mesh::generateRectangle(2, 2);
 
 	// - - Framebuffers - - //
 	// efectos
-	frameBuf = new Framebuffer(m_camera->getVP()->getW(), m_camera->getVP()->getH(), false);
-	frameBuf2 = new Framebuffer(m_camera->getVP()->getW(), m_camera->getVP()->getH(), false);
+	frameBuf = new Framebuffer(vp->getW(), vp->getH(), false);
+	frameBuf2 = new Framebuffer(vp->getW(), vp->getH(), false);
 	// multisampling
-	msBuf = new Framebuffer(m_camera->getVP()->getW(), m_camera->getVP()->getH(), true);
+	msBuf = new Framebuffer(vp->getW(), vp->getH(), true);
 	// MRT
-	mrtBuf = Framebuffer::createMRTBuffer(m_camera->getVP()->getW(), m_camera->getVP()->getH());
+	mrtBuf = Framebuffer::createMRTBuffer(vp->getW(), vp->getH());
 
 	// - - UBOs - - //
 	// matrices VP
@@ -100,6 +100,23 @@ void Scene::AddEntity(Entity* e)
 
 void Scene::render()
 {
+	// Pintar la escena desde cada una de las cámaras activas
+	for (Camera* cam : m_cameras)
+		if (cam->isActive())
+			render(cam);
+
+	//Hacer swap de buffers
+	// Hay 2 buffers; uno se está mostrando por ventana, y el otro es el que usamos
+	// para dibujar con la GPU. Cuando se ha terminado de dibujar y llega el siguiente 
+	// frame, se intercambian las referencias y se repite el proceso
+	glutSwapBuffers();
+}
+
+void Scene::render(Camera* cam)
+{
+	cam->getVP()->update();
+	m_camera = cam;
+
 	//if(glGetError() != GL_NO_ERROR)
 	//	std::cout << "ERROR OPENGL" << std::endl;
 
@@ -135,12 +152,6 @@ void Scene::render()
 
 	// 8) Post-procesar la imagen del color buffer
 	renderEffects();
-
-	// 9) Hacer swap de buffers
-	// Hay 2 buffers; uno se está mostrando por ventana, y el otro es el que usamos
-	// para dibujar con la GPU. Cuando se ha terminado de dibujar y llega el siguiente 
-	// frame, se intercambian las referencias y se repite el proceso
-	glutSwapBuffers();
 }
 
 void Scene::loadLights()
@@ -269,6 +280,15 @@ void Scene::renderEntities(const std::vector<Entity*>& entityList)
 		//Entity* e = r->getEntity();
 		if (e->isActive())
 		{
+			// Frustrum culling
+			if(!onFrustrum(e)) 
+			{
+#ifdef __DEBUG_INFO__
+				culledEntities++;
+#endif
+				continue;
+			}
+
 			Shader* shader = (Shader*)e->getShader();
 			// No usa shaders; los 'apagamos'
 			if (shader == nullptr)
@@ -396,6 +416,7 @@ void Scene::Blit(Framebuffer* readFB, Framebuffer* writeFB)
 	GLint h = m_camera->getVP()->getH();
 	glBlitFramebuffer(0, 0, w, h, 0, 0, w, h, GL_COLOR_BUFFER_BIT, GL_NEAREST);
 }
+
 
 void Scene::renderEffects()
 {
@@ -537,6 +558,11 @@ void Scene::AddComposite(Shader* sh, bool active)
 
 void Scene::resize(int width, int height)
 {
+	// Resize Scene Visible Area 
+	for (Camera* cam : m_cameras)
+		cam->setAspectRatio((float)width / (float)height);
+
+	// Resize framebuffers
 	delete frameBuf; delete frameBuf2; delete msBuf; delete mrtBuf;
 	frameBuf = new Framebuffer(width, height, false);
 	frameBuf2 = new Framebuffer(width, height, false);
@@ -574,12 +600,28 @@ void Scene::init()
 {
 	// 1) Cargar recursos necesarios
 	loadResources();
-	// 2) Crear las entidades y componentes
+	// 2) Crear entidades por defecto (cámara, canvas, skybox)
+	addCamera(Game::Instance()->getViewport(0));
+	// 3) Crear las entidades y componentes específicas de la escena
 	setup();
-	// 3) Gestionar VRAM
+	// 4) Gestionar VRAM
 	bindUBOs();
-	// 4) Llamar al start() de todos los componentes
+	// 5) Llamar al start() de todos los componentes
 	startComponents();
+}
+
+Camera* Scene::addCamera(Viewport* vp)
+{
+	if (m_cameras.size() < MAX_CAMERAS)
+	{
+		Camera* cam = new Camera(vp);
+		m_cameras.push_back(cam);
+		// Ponerla como la principal
+		if (m_cameras.size() == 1)
+			m_camera = cam;
+		return cam;
+	}
+	return nullptr;
 }
 
 void Scene::bindUBOs()
@@ -597,6 +639,12 @@ void Scene::bindUBOs()
 			}
 		}
 	}
+}
+
+bool Scene::onFrustrum(Entity* e)
+{
+	return true;
+	//return (e->getName() != "Redead");
 }
 
 void Scene::clean()
@@ -648,4 +696,7 @@ Scene::~Scene()
 
 	// Skybox
 	delete m_skybox;
+
+	// Cámaras
+	CleanVector(m_cameras);
 }

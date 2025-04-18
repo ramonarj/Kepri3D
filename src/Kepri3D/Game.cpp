@@ -31,14 +31,15 @@ void Game::init(int argc, char* argv[], int windowWidth, int windowHeight, const
 	iniciarGlut(argc, argv, windowWidth, windowHeight);
 	iniciarGLEW();
 	this->windowName = windowName;
+	this->windowWidth = windowWidth;
+	this->windowHeight = windowHeight;
 
 	// Iniciar los subsistemas de input y audio
 	InputManager::Instance();
 	AudioManager::Instance();
 
-	// 2) Crear el puerto de vista y la cámara
-	viewport = new Viewport(windowWidth, windowHeight);
-	camera = new Camera(viewport);
+	// 2) Crear el puerto de vista predeterminado
+	m_viewports.push_back(new Viewport(windowWidth, windowHeight));
 
 	// 3) Registrar los distintos callbacks de teclado, ratón y ventana
 	registerGlutCallbacks();
@@ -47,7 +48,7 @@ void Game::init(int argc, char* argv[], int windowWidth, int windowHeight, const
 	initGLSubsystems();
 
 	// 5) Crear Framebuffers y asignar referencias necesarias para las escenas
-	Scene::setupStatics(camera);
+	Scene::setupStatics(m_viewports[0]);
 }
 
 void Game::loadScene(Scene* sc)
@@ -91,6 +92,8 @@ void Game::loadScenePriv(Scene* sc)
 
 	scene = sc;
 	scene->init();
+	// Temporal
+	resize(windowWidth, windowHeight);
 
 	last_update_tick = glutGet(GLUT_ELAPSED_TIME);
 	std::cout << "Cargada escena '" << scene->getName() << "'" << std::endl;
@@ -131,9 +134,11 @@ void Game::render()
 	debugInfo.fbSize = scene->fbSize;
 	debugInfo.numTrans = scene->numberOfTrans();
 	debugInfo.programChanges = Shader::programChanges;
+	debugInfo.culledEntities = scene->culledEntities;
 
 	Mesh::numVerts = Mesh::numTris = Texture::numBinds = 0;
 	Shader::programChanges = 0;
+	scene->culledEntities = 0;
 #endif
 }
 
@@ -180,6 +185,25 @@ void Game::clean()
 		glutDestroyWindow(glutWindow);
 }
 
+Viewport* Game::addViewport(int w, int h, int x, int y)
+{
+	Viewport* vp = new Viewport(w, h);
+	vp->setPosition(x, y);
+	m_viewports.push_back(vp);
+
+	return vp;
+}
+
+Camera* Game::getCamera(int i) const 
+{ 
+	return scene->getCamera(i);
+}
+
+glm::ivec2 Game::getWindowSize() const
+{
+	return { windowWidth, windowHeight };
+}
+
 Game::~Game()
 {
 	// Desactivar los parámetros de OpenGL
@@ -192,8 +216,7 @@ Game::~Game()
 
 	// Borrar la escena, cámara y puerto de vista (en orden inverso)
 	delete scene;
-	delete camera;
-	delete viewport;
+	CleanVector(m_viewports);
 	Scene::clean();
 }
 
@@ -357,16 +380,25 @@ void Game::resize(int newWidth, int newHeight)
 		int rect[4];
 		glGetIntegerv(GL_SCISSOR_BOX, rect);
 
-		glm::ivec2 incr = { newWidth - viewport->getW(), newHeight - viewport->getH() };
+		glm::ivec2 incr = { newWidth - m_viewports[0]->getW(), newHeight - m_viewports[0]->getH() };
 		updateScissorBox(rect[0], rect[1], rect[2] + incr.x, rect[3] + incr.y);
 	}
 
 	// Resize Viewport 
-	viewport->setSize(newWidth, newHeight);
-	// Resize Scene Visible Area 
-	camera->setSize(newWidth, newHeight);
-	// Resize framebuffers
+	for (Viewport* vp : m_viewports)
+	{
+		// Conservan su porción relativa de la ventana
+		vp->setSize((vp->getW() / (float)windowWidth) * newWidth,
+			(vp->getH() / (float)windowHeight) * newHeight);
+		vp->setPosition((vp->getX() / (float)windowWidth) * newWidth,
+			(vp->getY() / (float)windowHeight) * newHeight);
+	}
+		
+	// Resize camera & framebuffers
 	scene->resize(newWidth, newHeight);
+
+	windowWidth = newWidth;
+	windowHeight = newHeight;
 }
 
 void Game::updateScissorBox(int x, int y, int width, int height)

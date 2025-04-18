@@ -11,6 +11,7 @@ public:
 	CameraController(Camera* cam);
 	~CameraController(){}
 
+	void start() override;
 	void update(float deltaTime) override;
 private:
 	Camera* cam;

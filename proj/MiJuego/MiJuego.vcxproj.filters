@@ -85,6 +85,9 @@
     <ClCompile Include="..\..\src\MiJuego\Viento.cpp">
       <Filter>Archivos de origen\Fisicas</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\src\MiJuego\Multiplayer.cpp">
+      <Filter>Archivos de origen</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\src\MiJuego\CameraController.h">
@@ -146,6 +149,9 @@
     </ClInclude>
     <ClInclude Include="..\..\src\MiJuego\Viento.h">
       <Filter>Archivos de origen\Fisicas</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\MiJuego\Multiplayer.h">
+      <Filter>Archivos de origen</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>
