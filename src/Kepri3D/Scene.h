@@ -58,6 +58,7 @@ public:
 	// Camara
 	Camera* addCamera(Viewport* vp);
 	inline Camera* getCamera(int i = 0) const { return m_cameras[i]; }
+	inline unsigned int numberOfCameras() const { return m_cameras.size(); }
 
 	/* Añade un efecto de postprocesado a la escena */
 	void AddComposite(Shader* sh, bool active = true);

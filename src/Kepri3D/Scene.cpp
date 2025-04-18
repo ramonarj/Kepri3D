@@ -23,7 +23,7 @@ bool Scene::skyboxActive = true;
 bool Scene::mipmapsActive = false;
 Shader* Scene::normalsShader = nullptr;
 
-const unsigned int MAX_CAMERAS = 4;
+const unsigned int MAX_CAMERAS = 5;
 
 Scene::Scene() : m_canvas(nullptr), m_skybox(nullptr)
 {
@@ -411,10 +411,13 @@ void Scene::Blit(Framebuffer* readFB, Framebuffer* writeFB)
 		Framebuffer::unbind(GL_DRAW_FRAMEBUFFER);
 	else
 		writeFB->bind(GL_DRAW_FRAMEBUFFER);
-
+	// Esquinas del rectángulo fuente y del rectángulo destino
+	GLint x = m_camera->getVP()->getX();
+	GLint y = m_camera->getVP()->getY();
 	GLint w = m_camera->getVP()->getW();
 	GLint h = m_camera->getVP()->getH();
-	glBlitFramebuffer(0, 0, w, h, 0, 0, w, h, GL_COLOR_BUFFER_BIT, GL_NEAREST);
+	glBlitFramebuffer(x, y, x + w, y + h, 
+		x, y, x + w, y + h, GL_COLOR_BUFFER_BIT, GL_NEAREST);
 }
 
 

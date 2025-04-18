@@ -7,33 +7,43 @@ void Multiplayer::start()
 	scene = Game::Instance()->getScene();
 	glm::vec2 windowSize = Game::Instance()->getWindowSize();
 
-	// Crear una nueva cámara y un nuevo viewport
-	//Viewport* newVP = Game::Instance()->addViewport(windowSize.x / 2.0, windowSize.y / 2.0, 0, 0);
-	//Camera* newCam = scene->addCamera(newVP);
-	Camera* newCam = scene->addCamera(Game::Instance()->getViewport(0)); // usa el mismo VP existente
+	glm::ivec2 positions[] = { {0, windowSize.y / 2.0} , {windowSize.x / 2.0, windowSize.y / 2.0},  {0, 0}, {windowSize.x / 2.0, 0} };
+	for(int i = 0; i < numJugadores; i++)
+	{
+		// Crear una nueva cámara y un nuevo viewport
+		Viewport* newVP = Game::Instance()->addViewport(windowSize.x / 2.0, windowSize.y / 2.0, positions[i].x, positions[i].y);
+		Camera* newCam = scene->addCamera(newVP);
 
-	// Poisicionarla
-	newCam->setPosition({ 0, 20, -10 });
-	newCam->lookAt({ 0, 0, 0 });
+		// Poisicionarla
+		if(newCam == nullptr)
+		{
+			std::cout << "[Multiplayer] Error: no hay soporte para mas camaras" << std::endl;
+			break;
+		}
+		newCam->changePerspective();
+		newCam->setOrtoSize(100);
+		newCam->setPosition({ 0, 100, 0 });
+		newCam->lookAt({ 0, 0, 0 }, { 0, 0, -1 });
+	}
 
-	//scene->getCamera(0)->getVP()->setPosition(400, 0);
-	//scene->getCamera(0)->getVP()->setSize(400, 100);
-	//scene->getCamera(1)->getVP()->setPosition(0, 0);
-	//scene->getCamera(1)->getVP()->setSize(400, 300);
+	scene->getCamera(0)->setActive(false);
 }
 
 void Multiplayer::update(float deltaTime)
 {
-	// Cámara 1
-	if(InputManager::Instance()->getKeyDown('1'))
+	// Activar/desactivar las cámaras manualmente (teclas 0 - 5)
+	for(int i = 0; i < 5; i++)
 	{
-		scene->getCamera(0)->setActive(true);
-		scene->getCamera(1)->setActive(false);
+		if (InputManager::Instance()->getKeyDown('0' + i))
+		{
+			//disableAllCameras();
+			scene->getCamera(i)->setActive(!scene->getCamera(i)->isActive());
+		}
 	}
-	// Cámara 2
-	else if (InputManager::Instance()->getKeyDown('2'))
-	{
-		scene->getCamera(0)->setActive(false);
-		scene->getCamera(1)->setActive(true);
-	}
+}
+
+void Multiplayer::disableAllCameras()
+{
+	for (int i = 0; i < scene->numberOfCameras();i++)
+		scene->getCamera(i)->setActive(false);
 }

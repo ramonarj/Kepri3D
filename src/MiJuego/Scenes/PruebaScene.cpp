@@ -265,7 +265,7 @@ void PruebaScene::setup()
 	// Componente DayCicle
 	DayCicle* daynightComp = new DayCicle(1); // crea el cielo y el sol
 	// Componente Multiplayer
-	Multiplayer* multiplayerComp = new Multiplayer(2);
+	Multiplayer* multiplayerComp = new Multiplayer(8);
 	Entity* gm = new Entity({ gmComponent, camComp, daynightComp, multiplayerComp }, "GameManager");
 	AddEntity(gm);
 
