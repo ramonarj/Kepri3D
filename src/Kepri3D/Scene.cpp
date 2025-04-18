@@ -247,11 +247,10 @@ void Scene::bakeShadows()
 		// Valores prederminados
 		if (cull) { glEnable(GL_CULL_FACE); }
 		//glCullFace(GL_BACK);
-
-		// Volver al frameBuffer anterior
-		activeFB->bind();
-		glViewport(0, 0, m_camera->getVP()->getW(), m_camera->getVP()->getH());
 	}
+	// Volver al frameBuffer anterior
+	activeFB->bind();
+	m_camera->getVP()->update();
 }
 
 void Scene::renderSkybox()
@@ -529,7 +528,7 @@ void Scene::sendUniforms(Shader* sh)
 	for(int i = 0; i < m_lights.size(); i++)
 	{
 		Shadowmap* map = m_lights[i]->getShadowMap();
-		if (map == nullptr) { continue; }
+		if (map == nullptr || !m_lights[i]->isActive()) { continue; }
 
 		std::string str = "shadowMaps[" + std::to_string(i) + "]";
 		glActiveTexture(GL_TEXTURE0 + ini_index + i);

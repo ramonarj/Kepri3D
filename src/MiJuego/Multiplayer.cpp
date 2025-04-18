@@ -8,11 +8,12 @@ void Multiplayer::start()
 	glm::vec2 windowSize = Game::Instance()->getWindowSize();
 
 	glm::ivec2 positions[] = { {0, windowSize.y / 2.0} , {windowSize.x / 2.0, windowSize.y / 2.0},  {0, 0}, {windowSize.x / 2.0, 0} };
+	Camera* newCam = nullptr;
 	for(int i = 0; i < numJugadores; i++)
 	{
 		// Crear una nueva cámara y un nuevo viewport
 		Viewport* newVP = Game::Instance()->addViewport(windowSize.x / 2.0, windowSize.y / 2.0, positions[i].x, positions[i].y);
-		Camera* newCam = scene->addCamera(newVP);
+		newCam = scene->addCamera(newVP);
 
 		// Poisicionarla
 		if(newCam == nullptr)
@@ -22,9 +23,15 @@ void Multiplayer::start()
 		}
 		newCam->changePerspective();
 		newCam->setOrtoSize(100);
-		newCam->setPosition({ 0, 100, 0 });
+		newCam->setPosition({ 0, 50, 0 }); // más alto nos saldríamos del shadow map
 		newCam->lookAt({ 0, 0, 0 }, { 0, 0, -1 });
 	}
+
+	// Prueba de sombras
+	newCam = Game::Instance()->getScene()->getCamera(4);
+	newCam->changePerspective();
+	newCam->setPosition({ -20, 10, -10 });
+	newCam->lookAt({ -20, -5, 0 });
 
 	scene->getCamera(0)->setActive(false);
 }
