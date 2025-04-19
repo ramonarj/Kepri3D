@@ -279,8 +279,8 @@ void Scene::renderEntities(const std::vector<Entity*>& entityList)
 		//Entity* e = r->getEntity();
 		if (e->isActive())
 		{
-			// Frustrum culling
-			if(!onFrustrum(e)) 
+			// Frustum culling; descartar entidades fuera del VV
+			if(frustrumCulling && !onFrustrum(e)) 
 			{
 #ifdef __DEBUG_INFO__
 				culledEntities++;
@@ -645,8 +645,22 @@ void Scene::bindUBOs()
 
 bool Scene::onFrustrum(Entity* e)
 {
-	return true;
-	//return (e->getName() != "Redead");
+	//return true;
+
+	Frustum f = m_camera->getFrustum();
+	Plano planos[] = { f.nearPlane, f.farPlane, f.rightPlane, f.leftPlane, f.bottomPlane, f.topPlane };
+	glm::vec3 point = e->getPosition();
+
+	// Comprobar que todos los planos miran a la entidad
+	bool in = true; int i = 0;
+	while (in && i < 6)
+	{
+		// Distancia del plano a la entidad negativa -> está fuera del VV
+		if (planos[i].distanceTo(point) < 0)
+			in = false;
+		i++;
+	}
+	return in;
 }
 
 void Scene::clean()
@@ -702,3 +716,14 @@ Scene::~Scene()
 	// Cámaras
 	CleanVector(m_cameras);
 }
+
+#ifdef __DEBUG_INFO__
+GLuint Scene::activeLights() const
+{
+	GLuint num = 0;
+	for (Light* l : m_lights)
+		if (l->isActive())
+			num++;
+	return num;
+}
+#endif __DEBUG_INFO_

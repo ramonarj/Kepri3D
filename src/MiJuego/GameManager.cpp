@@ -114,11 +114,11 @@ void GameManager::update(float deltaTime)
 	}
 
 	// Hacer una foto
-	if (InputManager::Instance()->getKeyDown('f'))
-	{
-		Texture::save("foto.bmp", GL_BACK);
-		std::cout << "Se ha hecho una foto" << std::endl;
-	}
+	//if (InputManager::Instance()->getKeyDown('f'))
+	//{
+	//	Texture::save("foto.bmp", GL_BACK);
+	//	std::cout << "Se ha hecho una foto" << std::endl;
+	//}
 
 	// Cambiar entre el modelo Phong y el Blinn-Phong
 	if(InputManager::Instance()->getKeyDown('i'))

@@ -92,6 +92,7 @@ public:
 #ifdef __DEBUG_INFO__
 	/* Número de entidades translúcidas */
 	GLuint numberOfTrans() const { return m_transEntities.size(); }
+	GLuint activeLights() const;
 	GLuint culledEntities = 0;
 	static glm::ivec2 fbSize;
 #endif
@@ -182,6 +183,7 @@ private:
 	// Sombras
 	// 0 = sin sombras, 1 = sombras duras, 2 = sombras suaves
 	int shadowsState = 0;
+	bool frustrumCulling = true;
 };
 
 #endif

@@ -8,6 +8,28 @@
 
 #include "Entity.h"
 
+struct Plano
+{
+	Plano(){}
+	Plano(const glm::vec3& normal, const glm::vec3& point);
+	float distanceTo(const glm::vec3& point);
+
+	// Vector unitario con la normal del plano
+	glm::vec3 normal;
+	// Distancia mínima al origen de coordenadas
+	float d;
+};
+
+struct Frustum
+{
+	Plano nearPlane;
+	Plano farPlane;
+	Plano leftPlane;
+	Plano rightPlane;
+	Plano topPlane;
+	Plano bottomPlane;
+};
+
 //-------------------------------------------------------------------------
 
 class Viewport {
@@ -74,6 +96,9 @@ public:
 
 	/* Devuelve 'true' si la cámara usa VV ortográfico (isométrico incluido), false e.o.c. */
 	inline bool isOrto() const { return orto; }
+
+	/* Devuelve el volumen de vista de la cámara, compuesto por los 6 planos */
+	Frustum getFrustum();
 
 	// Setters
 	void setAspectRatio(GLdouble ar);

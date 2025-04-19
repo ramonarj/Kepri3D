@@ -265,8 +265,8 @@ void PruebaScene::setup()
 	// Componente DayCicle
 	DayCicle* daynightComp = new DayCicle(1); // crea el cielo y el sol
 	// Componente Multiplayer
-	Multiplayer* multiplayerComp = new Multiplayer(8);
-	Entity* gm = new Entity({ gmComponent, camComp, daynightComp, multiplayerComp }, "GameManager");
+	//Multiplayer* multiplayerComp = new Multiplayer(8);
+	Entity* gm = new Entity({ gmComponent, camComp, daynightComp }, "GameManager");
 	AddEntity(gm);
 
 
@@ -578,6 +578,17 @@ void PruebaScene::PruebaMateriales()
 	sponza->setMesh("sponza1");
 	sponza->setMaterial("cobre");
 	AddEntity(sponza);
+
+	// Muchas entidades para ver los efectos del Frustum culling
+	for(int i = 0; i < 10; i++)
+	{
+		for (int j = 0; j < 10; j++)
+		{
+			Entity* arbol = new Cilindro(2.0, 10.0);
+			arbol->setPosition({ -300 + i * 20, 20, -300 + j * 20 });
+			AddEntity(arbol);
+		}
+	}
 }
 
 void PruebaScene::ViewportTest()

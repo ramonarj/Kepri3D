@@ -44,7 +44,7 @@ public:
 	/* Crea la ventana, inicializa OpenGL y inicializa la primera escena */
 	void init(int argc, char* argv[], int windowWidth, int windowHeight, const std::string& windowName);
 
-	/* Carga la escena inicial del juego*/
+	/* Carga la escena inicial del juego */
 	void loadScene(Scene* scene);
 
 	/* Sale del juego */
@@ -77,6 +77,10 @@ public:
 	/* Actualiza la Scissor Box, limpiando antes a negro el/los buffers */
 	static void updateScissorBox(int x, int y, int width, int height);
 
+	/* Activa/desactiva el Frustum Culling */
+	bool getFrustrumCulling();
+	void setFrustumCulling(bool b);
+
 	// Para callbacks
 	/* Redimensiona el */
 	void resize(int newWidth, int newHeight);
@@ -89,7 +93,7 @@ public:
 		GLuint numTris;
 		GLuint numTextureBinds;
 		GLuint fps;
-		GLuint numLuces;
+		GLuint lucesActivas;
 		GLuint numTrans;
 		glm::ivec2 fbSize;
 		GLuint programChanges;

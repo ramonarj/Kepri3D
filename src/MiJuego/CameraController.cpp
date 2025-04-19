@@ -18,8 +18,8 @@ CameraController::CameraController(Camera* cam)
 
 void CameraController::start()
 {
-	Game::Instance()->getCamera()->setAspectRatio(1200.0 / 600.0);
-	Game::Instance()->getCamera()->setFOVX(120);
+	Game::Instance()->getCamera()->setFOVX(90);
+	Game::Instance()->getCamera()->setAspectRatio(800.0 / 800.0);
 }
 
 void CameraController::update(float deltaTime)
@@ -45,6 +45,12 @@ void CameraController::update(float deltaTime)
 	rotacionesCamara(deltaTime);
 	volumenVistaCamara(deltaTime);
 	//puntosFijosCamara();
+	
+	// Activar/dedsactivar frustrum culling
+	if (InputManager::Instance()->getKeyDown('f'))
+	{
+		Game::Instance()->setFrustumCulling(!Game::Instance()->getFrustrumCulling());
+	}
 
 	// Devolver el ratón al medio
 	InputManager::Instance()->setMousePos(cam->getVP()->getW() / 2, cam->getVP()->getH() / 2);

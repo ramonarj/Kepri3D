@@ -130,7 +130,7 @@ void Game::render()
 	debugInfo.numVerts = Mesh::numVerts;
 	debugInfo.numTris = Mesh::numTris;
 	debugInfo.numTextureBinds = Texture::numBinds;
-	debugInfo.numLuces = Light::cont;
+	debugInfo.lucesActivas = scene->activeLights();
 	debugInfo.fbSize = scene->fbSize;
 	debugInfo.numTrans = scene->numberOfTrans();
 	debugInfo.programChanges = Shader::programChanges;
@@ -418,6 +418,16 @@ void Game::updateScissorBox(int x, int y, int width, int height)
 
 	// Volver a dejar el color de fondo a blanco
 	glClearColor(1, 1, 1, 0);
+}
+
+bool Game::getFrustrumCulling()
+{
+	return scene->frustrumCulling;
+}
+
+void Game::setFrustumCulling(bool b)
+{
+	scene->frustrumCulling = b;
 }
 
 void Game::switchBoolParam(GLenum param)
