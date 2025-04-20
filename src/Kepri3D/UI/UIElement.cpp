@@ -10,9 +10,9 @@ void UIElement::setPositionUI(float x, float y, ALLIGNMENT_TYPE allignment)
 	if (canvas == nullptr) { return; }
 
 	// Cambiamos la última columna, que contiene la posición
-	//pasar de (0, 1) a (-1, 1)
+	// pasar de (0, 1) a (-1, 1)
 	modelMat[3][0] = x * 2 - 1;
-	modelMat[3][1] = (y * 2 - 1) * (1 / canvas->aspectRatio());
+	modelMat[3][1] = (y * 2 - 1); // * (1 / canvas->aspectRatio());
 
 	this->x = canvas->getWidth() * x;
 	this->y = canvas->getHeight() * y;

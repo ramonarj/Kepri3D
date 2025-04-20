@@ -5,6 +5,9 @@
 #include "ResourceManager.h"
 #include "Renderer.h"
 
+#include "Mesh.h"
+#include "Camera.h"
+
 Button::Button(unsigned int w, unsigned int h, Canvas* canvas) : m_callback(nullptr)
 {
 	// Dimenssiones

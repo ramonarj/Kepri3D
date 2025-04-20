@@ -15,7 +15,7 @@
 
 const float buttonScale = 0.28f;
 const float buttonMargin = 0.1f;
-const float buttonSep = 0.15f;
+const float buttonSep = 0.12f;
 
 std::vector<std::string> buttonNames = { "botonCulling", "botonBlending", "botonLighting", "botonTextures", "botonShading",
 "botonAlpha", "botonMultisampling", "botonMipmaps", "botonNormales", "botonPostprocess", "botonScissor",
@@ -201,23 +201,23 @@ void PruebaScene::setup()
 	for (int i = 0; i < buttonNames.size(); i++) 
 	{
 		// Su textura, posición, escala y callback
-		Button* b = new Button(400, 200, m_canvas);
+		Button* b = new Button(125, 60, m_canvas);
 		b->setName(buttonNames[i]);
 		glm::vec2 pos;
 		if (i < 8)
-			pos = { buttonMargin, 1.02 - i * buttonSep };
+			pos = { buttonMargin, 1 - buttonMargin - i * buttonSep };
 		else
-			pos = { 1 - buttonMargin, 1.02 - (i - 8) * buttonSep };
+			pos = { 1 - buttonMargin, 1 - buttonMargin - (i - 8) * buttonSep };
 		b->setPositionUI(pos.x, pos.y);
-		b->setScaleUI(buttonScale, buttonScale);
+		//b->setScaleUI(buttonScale, buttonScale);
 		b->setCallback(callbacks[i]);
 		b->setTexture("boton");
 		b->setParent(botonesMenu); // hijos del nodo vacío
 
 		// El texto que contiene
 		Text* t = new Text(buttonTexts[i], m_canvas, {1, 1, 1, 1});
-		t->setPositionUI(0.3, 0.5); // alineado a la izquierda
-		t->setScaleUI(2.25, 2.25);
+		t->setPositionUI(0.43, 0.5); // alineado a la izquierda
+		t->setScaleUI(0.7, 0.7);
 		t->setGrosor(1.5);
 		t->setParent(b);
 	}
