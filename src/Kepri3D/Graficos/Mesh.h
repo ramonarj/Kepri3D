@@ -2,15 +2,12 @@
 #define __MESH__
 
 #include <glm.hpp>
-#include <glew.h>
+
 #include <string>
 #include <vector>
 #include "checkML.h"
 #include "Defines.h"
-
-
-#include <gtc/type_ptr.hpp>
-
+#include <glew.h>
 
 class Mesh
 {
@@ -118,31 +115,22 @@ public:
 
 	inline GLuint numSubmallas() { return m_numSubmallas; }
 
-	// Creación de mallas con triángulos indexados
-
-	/* - - Cubo - - */
+	// Creación de mallas in-situ
+	/* - - - Formas 3D básicas - - - */
 	static IndexMesh* generateCube(GLdouble size, bool equalFaces = true);
-
-	/* - - Esfera - - */
 	static IndexMesh* generateSphere(GLdouble radio, GLuint paralelos, GLuint meridianos);
-
-	/* - - Cilindro - - */
 	static IndexMesh* generateCilindro(GLdouble radio, GLdouble altura, GLuint lados);
-
-	/* - - Toro - - */
+	static IndexMesh* generateCone(GLdouble radio, GLdouble altura, GLuint lados);
 	static IndexMesh* generateToro(GLdouble radioExterior, GLdouble radioInterior, GLuint anillos, GLuint lineas);
 
-	/* - - Grid - - */
+	/* - - - Cuadrículas y terrenos - - - */
 	static IndexMesh* generateGrid(GLint filas, GLint columnas, GLdouble tamFila, GLdouble tamColumna);
-
-	/* - - Terreno - - */
 	static IndexMesh* generateTerrain(const std::string& filename, GLdouble scale, bool rawFile);
-
-	/* - - Cubemap - - */
-	static IndexMesh* generateCubemap(GLdouble size = 4.0);
-
-	/* - - Grid usando primitiva GL_PATCHES - - */
+	// Usa la primitiva GL_PATCHES
 	static IndexMesh* generateTessGrid(GLint filas, GLint columnas, GLdouble tamFila, GLdouble tamColumna);
+
+	/* - - - Cubemaps - - - */
+	static IndexMesh* generateCubemap(GLdouble size = 4.0);
 
 	/* Rellena el vector de tangentes usando los triángulos y las UV */
 	void setTangents();

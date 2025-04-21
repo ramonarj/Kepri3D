@@ -174,6 +174,15 @@ public:
 
 // - - - - - - - - - - - - 
 
+class Cono : public Entity
+{
+public:
+	Cono(GLdouble radio = 1, GLdouble altura = 2, GLuint lados = 20);
+	~Cono() {};
+};
+
+// - - - - - - - - - - - - 
+
 class Toro : public Entity
 {
 public:

@@ -304,6 +304,15 @@ Cilindro::Cilindro(GLdouble radio, GLdouble altura, GLuint lados)
 	m_name = "Cilindro";
 }
 
+// - - - - - - - - - - - - - - - - - 
+
+Cono::Cono(GLdouble radio, GLdouble altura, GLuint lados)
+{
+	Renderer* rend = new Renderer(IndexMesh::generateCone(radio, altura, lados));
+	addComponent(rend);
+	m_name = "Cono";
+}
+
 
 // - - - - - - - - - - - - - - - - - 
 

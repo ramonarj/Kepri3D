@@ -131,6 +131,12 @@ void PruebaScene::setup()
 	cilindro->setMaterial("coke");
 	AddEntity(cilindro);
 
+	// Un cono
+	Cono* cono = new Cono(2, 5, 30);
+	cono->setPosition({ 24,-0.95,10 });
+	cono->setMaterial("cobre");
+	AddEntity(cono);
+
 	// Un cubo multitextura
 	Cubo* cuboMT = new Cubo(2);
 	cuboMT->setName("CuboMT");

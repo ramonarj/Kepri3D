@@ -4,6 +4,7 @@
 #include <fstream>
 #include "Utils.h"
 #include "Pixmap32RGBA.h"
+#include <gtc/type_ptr.hpp>
 
 using namespace glm;
 
@@ -995,6 +996,77 @@ IndexMesh* IndexMesh::generateCilindro(GLdouble radio, GLdouble altura, GLuint l
 
 	return m;
 }
+
+IndexMesh* IndexMesh::generateCone(GLdouble radio, GLdouble altura, GLuint lados)
+{
+	IndexMesh* m = new IndexMesh();
+	m->type = GL_TRIANGLES;
+	m->numVertices = 3 * lados + 1; // teniendo en cuenta que son bordes duros (vértices repetidos)
+	m->numIndices = 6 * lados;
+
+	// Vértices
+	float angleIncr = 2 * PI / lados;
+	m->vertices = new glm::dvec3[m->numVertices];
+	for (int i = 0; i < lados; i++)
+	{
+		double posX = radio * cos(angleIncr * i);
+		double posZ = radio * -sin(angleIncr * i);
+		// Base repetida
+		m->vertices[i] = { posX, 0, posZ };
+		m->vertices[i + lados] = m->vertices[i];
+		// Pico repetido
+		m->vertices[i + 2 * lados] = { 0, altura, 0 };
+	}
+	// Centro de la base y pico del cono
+	int centroBase = m->numVertices - 1;
+	m->vertices[centroBase] = { 0, 0, 0 };
+
+
+	// Índices
+	m->indices = new GLuint[m->numIndices];
+	int i = 0;
+	for (int k = 0; k < lados; k++)
+	{
+		// Triángulo de la base
+		m->indices[i] = k;
+		m->indices[i + 1] = centroBase;
+		m->indices[i + 2] = (k + 1) % lados;
+
+		// Triángulo con el pico
+		m->indices[lados * 3 + i] = lados + k;
+		m->indices[lados * 3 + i + 1] = lados + (k + 1) % lados;
+		m->indices[lados * 3 + i + 2] = lados * 2 + k;
+
+		i+=3;
+	}
+
+	// Colores
+	m->colores = new glm::dvec4[m->numVertices];
+	for (int i = 0; i < m->numVertices; i++)
+		m->colores[i] = { 0.8, 0.8, 0.8, 1 };
+
+	// Normales
+	m->SetNormals();
+
+	// Coordenadas de textura
+	m->texCoords = new glm::dvec2[m->numVertices];
+	for (int i = 0; i < lados; i++)
+	{
+		double coordX = (cos(angleIncr * i) + 1) / 2.0;
+		double coordY = (sin(angleIncr * i) + 1) / 2.0;
+
+		// Base
+		m->texCoords[i] = { 1 - coordX, coordY };
+		// Cuerpo
+		m->texCoords[i + lados] = { coordX, 0 };
+		// Picos
+		m->texCoords[i + lados * 2] = { 0.5, 1 };
+	}
+	m->texCoords[centroBase] = { 0.5, 0.5 };
+
+	return m;
+}
+
 
 IndexMesh* IndexMesh::generateToro(GLdouble radExt, GLdouble radInt, GLuint anillos, GLuint lineas)
 {
