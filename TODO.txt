@@ -1,0 +1,63 @@
+// Hecho:
++ Specular maps
++ Transparencias c/shaders
++ Billboards (partículas y entidades)
++ Mapas de desplazamiento (displacement maps)
++ Fragment shader con iluminación -> (Spotlights)
++ Iluminación blinn-phong
++ Clip planes
++ Normal/bump maps
++ Renderizar texto
++ Gamma correction
++ Derivativas GLSL
++ Framebuffer Objects
++ Uniform Buffer Objects (UBOs)
++ Compartir código entre shaders (#include)
++ Parallax mapping
++ Materiales emisivos
++ Niebla
++ Leer texturas del material
++ Submeshes y varios materiales en una misma malla
+
+// Por hacer:
+- Blend Maps
+- Leer material del OBJ
+- VSYNC
+- Buffer objects (VRAM) -> VAO
+- Orden de transparencias -> mejorar alg. ordenacion
+- Environment mapping -> reflection probes
+- Shadow maps -> focos
+- FOV de la cámara
+- Perspective division
+- Multiple Render Targets (MRT)
+- Información de debug (tris, vertices, binds de texturas...) -> pulir
+- Teselation shaders -> afinar LOD
+- Light maps
+- Level of detail (LOD), Clipmapping
+- Decals
+- Stencil masking
+- Shadow volumes
+- HDR
+- Desenfoque gaussiano
+- Bloom
+- Frustrum & occlusion culling
+- BRDF
+- Baked lighting
+- Deferred lighting (aka deferred shading) y G-buffer
+- Leer escenas enteras del OBJ
+- Screen-Space Ambient Occlusion
+- Screen-Space Reflections
+- Kernel effects
+- Multitexture para crear terrenos
+- Refracciones (environment maps)
+- Lens flare (destello de lente)
+- Raytracing
+- Instancing -> mejorar
+- Batching ( + Texture Atlas)
+- SSAA
+- Cel shading
+- Slerp (spherical linear interpolation)
+- Approaching Zero Driver Overhead (AZDO) -> Indirect rendering, SSBO
+- glDrawElementsBaseVertex
+- Array de samplers
+- Parallax corrected cubemaps
