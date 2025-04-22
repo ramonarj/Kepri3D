@@ -12,6 +12,7 @@ public:
 	PhysicsMan(Rigid* r, Entity* sombra, Liquido* liquido);
 	~PhysicsMan() {}
 
+	void start() override;
 	void update(float deltaTime) override;
 	void fixedUpdate(float fixedTime) override;
 private:
@@ -26,6 +27,7 @@ private:
 
 	// Metodos
 	void controlRigid();
+	Rigid* spawnBall(float size, const glm::vec3& pos);
 };
 
 #endif

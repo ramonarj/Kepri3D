@@ -67,6 +67,11 @@ void Scene::startComponents()
 
 void Scene::AddEntity(Entity* e)
 {
+	// Si ya está metida, no hacemos nada
+	for (Entity* eIt : m_entities)
+		if (eIt == e)
+			return;
+
 	// Vector general
 	m_entities.push_back(e);
 
@@ -475,10 +480,10 @@ void Scene::update(float deltaTime)
 	if(m_canvas != nullptr)
 		m_canvas->update(deltaTime);
 
-	// Actualizar las entidades
-	for (Entity* e : m_entities)
-		if(e->isActive())
-			e->update(deltaTime);
+	// Actualizar las entidades (si recorremos con iterador, explota al añadir entidades nuevas)
+	for(int i = 0; i < m_entities.size(); i++)
+		if (m_entities[i]->isActive())
+			m_entities[i]->update(deltaTime);
 
 	// Actualizar sistema de audio
 	AudioManager::Instance()->Update(deltaTime);
@@ -610,6 +615,7 @@ void Scene::init()
 	bindUBOs();
 	// 5) Llamar al start() de todos los componentes
 	startComponents();
+
 }
 
 Camera* Scene::addCamera(Viewport* vp)
@@ -618,6 +624,8 @@ Camera* Scene::addCamera(Viewport* vp)
 	{
 		Camera* cam = new Camera(vp);
 		m_cameras.push_back(cam);
+		AddEntity(cam);
+		//m_entities.push_back(cam); // de momento sobra
 		// Ponerla como la principal
 		if (m_cameras.size() == 1)
 			m_camera = cam;
@@ -714,7 +722,7 @@ Scene::~Scene()
 	delete m_skybox;
 
 	// Cámaras
-	CleanVector(m_cameras);
+	//CleanVector(m_cameras);
 }
 
 #ifdef __DEBUG_INFO__

@@ -41,6 +41,7 @@ public:
 	inline void setType(RigidType type) { m_type = type; }
 
 	// Getters
+	inline const vector3& getVelocity() { return m_velocity; }
 	inline Collider* getCollider() { return m_collider; }
 
 	/* Indica si el objeto será afectado por la fuerza de la Gravedad */

@@ -9,6 +9,22 @@ PhysicsMan::PhysicsMan(Rigid* r, Entity* sombra, Liquido* liquido)
 	this->liquido = liquido;
 }
 
+void PhysicsMan::start()
+{
+	// Ponerle un Rigid a la cámara
+	Collider* colEsfera = new Collider(2.0);
+	colEsfera->setVisible(true);
+	entity->addComponent(colEsfera);
+	// Rigid
+	Rigid* rigidEsfera = new Rigid(entity->getModelMat());
+	rigidEsfera->setMass(1000.0);
+	rigidEsfera->useGravity(true);
+	entity->addComponent(rigidEsfera);
+	// Añadirla a la escena
+	//colCamara->setParent(entity);
+	//Game::Instance()->getScene()->AddEntity(colCamara);
+}
+
 void PhysicsMan::update(float deltaTime)
 {
 	// Impulsos, fuerzas y rozamiento
@@ -30,12 +46,15 @@ void PhysicsMan::update(float deltaTime)
 	// RayCast from screen
 	if (InputManager::Instance()->getMouseKeyDown(LEFT))
 	{
-		glm::ivec2 mousePos = InputManager::Instance()->getMousePos();
-		// Tira un rayo desde el ratón
-		bool hit = PhysicsSystem::Instance()->raycastFromScreen(mousePos, 100);
+		//glm::ivec2 mousePos = InputManager::Instance()->getMousePos();
+		//// Tira un rayo desde el ratón
+		//bool hit = PhysicsSystem::Instance()->raycastFromScreen(mousePos, 100);
+		//if (hit)
+		//	std::cout << "Chocado desde pantalla" << std::endl;
 
-		if (hit)
-			std::cout << "Chocado desde pantalla" << std::endl;
+		// Crear una bola y lanzarla
+		Rigid* ball = spawnBall(1.0, entity->getPosition() - entity->forward() * 5.0); 
+		ball->addImpulse(-entity->forward() * 100.0);
 	}
 
 	// Cambiar nivel del agua
@@ -112,4 +131,27 @@ void PhysicsMan::controlRigid()
 	glm::dvec3 impactPoint;
 	if (PhysicsSystem::Instance()->raycast(origenRayo, { 0, -1, 0 }, 300, impactPoint))
 		sombra->setPosition(impactPoint);
+}
+
+Rigid* PhysicsMan::spawnBall(float size, const glm::vec3& pos)
+{
+	// NOTA: hay que añadir el componente Collider antes de añadir el Rigid.
+	// Entidad, nombre, material...
+	Esfera* esf = new Esfera(size);
+	esf->setName("Esfera");
+	esf->setTexture("default");
+	esf->setShader("lights");
+	esf->setPosition(pos);
+	// Collider
+	Collider* colEsfera = new Collider(size);
+	esf->addComponent(colEsfera);
+	// Rigid
+	Rigid* rigidEsfera = new Rigid(esf->getModelMat(), Dynamic);
+	rigidEsfera->setMass(1.0);
+	rigidEsfera->useGravity(true);
+	esf->addComponent(rigidEsfera);
+	// Añadirla a la escena
+	Game::Instance()->getScene()->AddEntity(esf);
+
+	return rigidEsfera;
 }

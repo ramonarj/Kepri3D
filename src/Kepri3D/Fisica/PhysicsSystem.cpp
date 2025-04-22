@@ -27,11 +27,18 @@ void PhysicsSystem::Clean()
 
 void PhysicsSystem::addRigid(Rigid* r)
 {
+	// Ya está en la simulación; no hacemos nada
+	for (Rigid* rIt : m_rigids)
+		if (rIt == r)
+			return;
+
+	// Comprobar que tenga collider
 	Collider* col = r->getEntity()->getComponent<Collider>();
 	if (col == nullptr)
 		std::cout << "La entidad " << r->getEntity()->getName() << " necesita un Collider" << std::endl;
 	r->setCollider(col);
 
+	// Añadirlo a la lista
 	m_rigids.push_back(r);
 #ifdef __DEBUG_INFO__
 	if(!r->m_sleeping)

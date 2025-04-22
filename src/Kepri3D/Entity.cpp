@@ -61,6 +61,10 @@ void Entity::addComponent(Component* c)
 	// Comprobar si es un Renderer
 	Renderer* rend = dynamic_cast<Renderer*>(c);
 	if (rend != nullptr) { m_renderer = rend; }
+
+	// Comprobar si es un Rigid
+	Rigid* rigid = dynamic_cast<Rigid*>(c);
+	if(rigid != nullptr) { PhysicsSystem::Instance()->addRigid(rigid); }
 }
 
 void Entity::render(glm::dmat4 const& viewMat)

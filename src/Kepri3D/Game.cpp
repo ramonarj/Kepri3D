@@ -215,6 +215,7 @@ Game::~Game()
 	glDisable(GL_DEPTH_TEST);
 
 	// Borrar la escena, cámara y puerto de vista (en orden inverso)
+	
 	delete scene;
 	CleanVector(m_viewports);
 	Scene::clean();

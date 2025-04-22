@@ -20,7 +20,7 @@ Rigid::Rigid(const glm::dmat4& modelMat, RigidType type)
 
 	m_velocity = { 0, 0, 0 };
 	m_acceleration = { 0, 0 ,0 };
-	m_drag = 0.0;
+	m_drag = 0.2;
 	m_accumForces = { 0, 0, 0 };
 
 	m_angularVel = { 0, 0, 0 };
@@ -99,7 +99,7 @@ void Rigid::integrate(real t)
 
 void Rigid::addForce(const vector3& force)
 {
-	if (m_type == Static || glm::length(force) < WAKEUP_FORCE) { std::cout << "Muy chica" << std::endl;  return; }
+	if (m_type == Static || glm::length(force) < WAKEUP_FORCE) { return; }
 
 	m_accumForces += force;
 	wakeUp();
