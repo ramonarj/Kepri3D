@@ -52,6 +52,7 @@ private:
 	// Graficos
 	void renderWave();
 	void renderEffect(unsigned int effect, bool render);
+	void createVisualizers();
 };
 
 #endif

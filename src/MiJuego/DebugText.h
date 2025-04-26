@@ -23,6 +23,7 @@ private:
 
 	std::string sceneName;
 	bool physicsScene;	
+
 };
 
 #endif

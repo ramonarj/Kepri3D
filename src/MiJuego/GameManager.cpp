@@ -1,6 +1,7 @@
 #include "GameManager.h"
 
 #include "../Kepri3D.h"
+#include "Animacion/Animacion.h"
 
 #include "../Scene.h"
 #include "CameraController.h"
@@ -29,6 +30,13 @@ void GameManager::setLights(Light* circleLight, Light* spotLight, Light* luzBlin
 	// 
 	//cam->setPosition({ 60, 8, 8 });
 	windowDim = { cam->getVP()->getW(),  cam->getVP()->getH() };
+}
+
+void GameManager::start()
+{
+	// Animaciones
+	animValue = 0;
+	entity->addComponent(new Animacion<float>(&animValue, 0, 100, 5, true));
 }
 
 void GameManager::update(float deltaTime)
@@ -127,6 +135,8 @@ void GameManager::update(float deltaTime)
 	// Fijar la cámara en la luz circular
 	if (InputManager::Instance()->getKey('k'))
 		cam->lookAt(circleLight->getEntity()->getPosition());
+
+	std::cout << animValue << std::endl;
 }
 
 

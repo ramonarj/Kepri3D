@@ -171,6 +171,7 @@
     </Lib>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="..\..\src\Kepri3D\Animacion\Animacion.cpp" />
     <ClCompile Include="..\..\src\Kepri3D\Component.cpp" />
     <ClCompile Include="..\..\src\Kepri3D\Entity.cpp" />
     <ClCompile Include="..\..\src\Kepri3D\Fisica\Articulacion.cpp" />
@@ -207,6 +208,7 @@
     <ClCompile Include="..\..\src\Kepri3D\Utils\Utils.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="..\..\src\Kepri3D\Animacion\Animacion.h" />
     <ClInclude Include="..\..\src\Kepri3D\Component.h" />
     <ClInclude Include="..\..\src\Kepri3D\Defines.h" />
     <ClInclude Include="..\..\src\Kepri3D\Entity.h" />

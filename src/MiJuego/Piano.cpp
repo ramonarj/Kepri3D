@@ -33,63 +33,13 @@ void Piano::start()
 	entity->addComponent(source);
 	m_instrument = Seno;
 
-	// Visualizador de ondas
-	Canvas* c = Game::Instance()->getScene()->getCanvas();
-	waveVisualizer = new UIElement();
-	waveVisualizer->setCanvas(c);
-	waveVisualizer->addComponent(new Renderer(Mesh::generateWaveform({ 0.1, 0.2, 0.5, 1, 0.5, 0.2, 0.1 })));
-	waveVisualizer->setScaleUI(0.3, 0.3);
-	waveVisualizer->setPositionUI(0.05, 0.9);
-	c->addElement(waveVisualizer);
-
-	//  - - - De efectos - - - //
-	// Vibrato
-	effectVisualizers.push_back(new UIElement());
-	effectVisualizers[0]->setCanvas(c);
-	// Crear las muestras de la onda
-	unsigned char* datosPtr = Audio::generateWave(Seno, 5, 100, 1);
-	std::vector<float> data; data.reserve(100);
-	for (int i = 0; i < 100; i++)
-		data.push_back((float)datosPtr[i] / 127.0);
-	effectVisualizers[0]->addComponent(new Renderer(Mesh::generateWaveform(data, {0.6, 0.4, 0.0, 1.0})));
-	delete datosPtr;
-	effectVisualizers[0]->setScaleUI(0.08, 0.08);
-	effectVisualizers[0]->setPositionUI(0.22, 1);
-	c->addElement(effectVisualizers[0]);
-
-	// Tremolo
-	effectVisualizers.push_back(new UIElement());
-	effectVisualizers[1]->setCanvas(c);
-	// Crear las muestras de la onda
-	datosPtr = Audio::generateWave(Seno, 1, 100, 0.5);
-	data.clear(); data.reserve(50);
-	for (int i = 0; i < 50; i++)
-		data.push_back((float)datosPtr[i] / 127.0);
-	effectVisualizers[1]->addComponent(new Renderer(Mesh::generateWaveform(data, { 0.4, 0.1, 0.15, 1.0 })));
-	delete datosPtr;
-	effectVisualizers[1]->setScaleUI(0.08, 0.08);
-	effectVisualizers[1]->setPositionUI(0.22, 0.9);
-	c->addElement(effectVisualizers[1]);
-
-	// Tremolo
-	effectVisualizers.push_back(new UIElement());
-	effectVisualizers[2]->setCanvas(c);
-	// Crear las muestras de la onda
-	datosPtr = Audio::generateWave(Triangular, 1, 4);
-	data.clear(); data.reserve(4);
-	for (int i = 0; i < 2; i++)
-		data.push_back((float)datosPtr[i + 2] / 127.0);
-	effectVisualizers[2]->addComponent(new Renderer(Mesh::generateWaveform(data, { 0.0, 0.2, 0.85, 1.0 })));
-	delete datosPtr;
-	effectVisualizers[2]->setScaleUI(0.15, 0.15);
-	effectVisualizers[2]->setPositionUI(0.05, 0.8);
-	c->addElement(effectVisualizers[2]);
+	// Crea las mallas para el visualizador
+	createVisualizers();
 
 	// Pintado inicial
 	renderWave();
-	renderEffect(Vibrato, false);
-	renderEffect(Tremolo, false);
-	renderEffect(Portamento, true);
+	for(int i = 0; i < 3; i++)
+		renderEffect(NoteEffect(i), false);
 }
 
 void Piano::update(float deltaTime)
@@ -272,6 +222,8 @@ void Piano::controlPortamento(float deltaTime)
 	}
 }
 
+// - - - - - - - Graficos - - - - - - - - //
+
 void Piano::renderWave()
 {
 	if (m_instrument > 4) { return; }
@@ -291,4 +243,59 @@ void Piano::renderWave()
 void Piano::renderEffect(unsigned int effect, bool render)
 {
 	effectVisualizers[effect]->getRenderer()->setActive(render);
+}
+
+void Piano::createVisualizers()
+{
+	// Visualizador de ondas
+	Canvas* c = Game::Instance()->getScene()->getCanvas();
+	waveVisualizer = new UIElement();
+	waveVisualizer->setCanvas(c);
+	waveVisualizer->addComponent(new Renderer(Mesh::generateWaveform({ 0.1, 0.2, 0.5, 1, 0.5, 0.2, 0.1 })));
+	waveVisualizer->setScaleUI(0.3, 0.3);
+	waveVisualizer->setPositionUI(0.05, 0.8);
+	c->addElement(waveVisualizer);
+
+	//  - - - De efectos - - - //
+	// Vibrato
+	effectVisualizers.push_back(new UIElement());
+	effectVisualizers[0]->setCanvas(c);
+	// Crear las muestras de la onda
+	unsigned char* datosPtr = Audio::generateWave(Seno, 5, 100, 1);
+	std::vector<float> data; data.reserve(100);
+	for (int i = 0; i < 100; i++)
+		data.push_back((float)datosPtr[i] / 127.0);
+	effectVisualizers[0]->addComponent(new Renderer(Mesh::generateWaveform(data, { 0.6, 0.4, 0.0, 1.0 })));
+	delete datosPtr;
+	effectVisualizers[0]->setScaleUI(0.35, 0.35);
+	effectVisualizers[0]->setPositionUI(1.0, 0.75);
+	effectVisualizers[0]->setParent(waveVisualizer);
+
+	// Tremolo
+	effectVisualizers.push_back(new UIElement());
+	effectVisualizers[1]->setCanvas(c);
+	// Crear las muestras de la onda
+	datosPtr = Audio::generateWave(Seno, 1, 100, 0.5);
+	data.clear(); data.reserve(50);
+	for (int i = 0; i < 50; i++)
+		data.push_back((float)datosPtr[i] / 127.0);
+	effectVisualizers[1]->addComponent(new Renderer(Mesh::generateWaveform(data, { 0.4, 0.1, 0.15, 1.0 })));
+	delete datosPtr;
+	effectVisualizers[1]->setScaleUI(0.35, 0.35);
+	effectVisualizers[1]->setPositionUI(1.0, 0.5);
+	effectVisualizers[1]->setParent(waveVisualizer);
+
+	// Portamento
+	effectVisualizers.push_back(new UIElement());
+	effectVisualizers[2]->setCanvas(c);
+	// Crear las muestras de la onda
+	datosPtr = Audio::generateWave(Triangular, 1, 4);
+	data.clear(); data.reserve(4);
+	for (int i = 0; i < 2; i++)
+		data.push_back((float)datosPtr[i + 2] / 127.0);
+	effectVisualizers[2]->addComponent(new Renderer(Mesh::generateWaveform(data, { 0.0, 0.2, 0.85, 1.0 })));
+	delete datosPtr;
+	effectVisualizers[2]->setScaleUI(0.5, 0.5);
+	effectVisualizers[2]->setPositionUI(0.4, 0.4);
+	effectVisualizers[2]->setParent(waveVisualizer);
 }

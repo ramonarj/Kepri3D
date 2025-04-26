@@ -89,6 +89,7 @@ std::string FileToString(const char* fileName);
 namespace Kepri
 {
 	/* Interpolación lineal */
+	float lerp(float a, float b, float l);
 	glm::vec3 lerp(const glm::vec3& a, const glm::vec3& b, float l);
 
 	/* Transformada discreta de Fourier; devuelve 3 listas del mismo tamaño,

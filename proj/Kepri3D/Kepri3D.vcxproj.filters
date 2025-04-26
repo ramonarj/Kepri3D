@@ -19,6 +19,9 @@
     <Filter Include="Sonido">
       <UniqueIdentifier>{ffad8381-9a8d-45ec-8f54-6ac2e0ad12e3}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Animacion">
+      <UniqueIdentifier>{4981c807-b39f-497d-8a20-f0161bf517fa}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\..\src\Kepri3D\Utils\MeshLoader.cpp">
@@ -122,6 +125,9 @@
     </ClCompile>
     <ClCompile Include="..\..\src\Kepri3D\Fisica\ForceGenerator.cpp">
       <Filter>Fisicas</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\Kepri3D\Animacion\Animacion.cpp">
+      <Filter>Animacion</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -241,6 +247,9 @@
     </ClInclude>
     <ClInclude Include="..\..\src\Kepri3D\Fisica\ForceGenerator.h">
       <Filter>Fisicas</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\Kepri3D\Animacion\Animacion.h">
+      <Filter>Animacion</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

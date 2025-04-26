@@ -29,6 +29,7 @@ public:
 	void setTessTerrain(Terreno* tesTerrain) { this->tessTerrain = tesTerrain; }
 	void setParticleSys(ParticleSystem* partSys) { this->pSystem = partSys; }
 
+	void start() override;
 	void update(float deltaTime) override;
 
 	static void centerMouse();
@@ -57,6 +58,8 @@ private:
 	void controlLuces(float deltaTime);
 	void controlMovimiento(Entity* e, float deltaTime);
 	void controlTerreno(float deltaTime);
+
+	float animValue;
 };
 
 #endif
