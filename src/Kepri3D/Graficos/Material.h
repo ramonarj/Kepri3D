@@ -35,6 +35,7 @@ public:
 	inline const glm::vec3& getAmbient() const { return m_ambient; }
 	inline const glm::vec4& getDiffuse() const { return m_diffuse; }
 	inline const glm::vec3& getSpecular() const { return m_specular; }
+	inline const glm::vec4& getEmission() const { return m_emission; }
 	inline GLfloat getBrillo() const { return m_brillo; } // (0 - 128)
 	inline const Texture* getTexture(GLuint i) const { return m_textures[i]; }
 	inline bool needsTangents() { return m_needsTangents; }

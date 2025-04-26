@@ -91,6 +91,8 @@ namespace Kepri
 	/* Interpolación lineal */
 	float lerp(float a, float b, float l);
 	glm::vec3 lerp(const glm::vec3& a, const glm::vec3& b, float l);
+	glm::vec4 lerp(const glm::vec4& a, const glm::vec4& b, float l);
+	glm::dmat4 lerp(const glm::dmat4& a, const glm::dmat4& b, float l);
 
 	/* Transformada discreta de Fourier; devuelve 3 listas del mismo tamaño,
 	con la frecuencia, amplitud y fase de cada onda participante en la total */

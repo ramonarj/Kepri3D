@@ -35,8 +35,44 @@ void GameManager::setLights(Light* circleLight, Light* spotLight, Light* luzBlin
 void GameManager::start()
 {
 	// Animaciones
-	animValue = 0;
-	entity->addComponent(new Animacion<float>(&animValue, 0, 100, 5, true));
+	if(circleLight != nullptr)
+	{
+		animValue = 0;
+
+		// De posición X (double)
+		double* posX = (double*) & (circleLight->getEntity()->getModelMat()[3].x);
+		//entity->addComponent(new Animacion<double>(posX, 0, 100, 5, true));
+
+		// De posición (dvector3)
+		glm::dvec3* pos = (glm::dvec3*)&(circleLight->getEntity()->getModelMat()[3]);
+		Animacion<glm::dvec3>* positionAnim = new Animacion<glm::dvec3>(pos, { 0, 0, 0 }, { 10, 10, 10 }, 6, true);
+		entity->addComponent(positionAnim);
+
+		// De colores (vector4)
+		glm::fvec4* colorLuz = (glm::fvec4*)&(circleLight->getEntity()->getComponent<Light>()->getDiffuse4());
+		//entity->addComponent(new Animacion<glm::fvec4>(colorLuz, { 1, 1, 1, 0 }, { 1, 0, 0, 0 }, 1.5, true));
+
+		glm::vec4* colorMat = (glm::vec4*)&(circleLight->getEntity()->getRenderer()->getMaterial()->getDiffuse());
+		//entity->addComponent(new Animacion<glm::fvec4>(colorMat, { 1, 1, 1, 1 }, { 1, 0, 0, 1 }, 1.5, true));
+
+		glm::vec4* colorEmision = (glm::vec4*)&(circleLight->getEntity()->getRenderer()->getMaterial()->getEmission());
+		//entity->addComponent(new Animacion<glm::fvec4>(colorEmision, { 1, 1, 1, 1 }, { 1, 0, 0, 1 }, 1.5, true));
+
+		// De rotaciones (glm::dmat4)
+		/*
+		glm::dmat4 ini = cam->getModelMat();
+		cam->lookAt({ 100, 15, 0 });
+		glm::dmat4 objetivo = cam->getModelMat();
+		cam->lookAt({ 0, 0, 0 });
+		glm::dmat4* rot = (glm::dmat4*)&(cam->getModelMat());
+		entity->addComponent(new Animacion<glm::dmat4>(rot, ini, objetivo, 3, true));
+		*/
+
+		// Keyframes
+		positionAnim->addKeyframe({ -10, 5, 0 }, 4);
+		positionAnim->addKeyframe({ 10, 5, 0 }, 2);
+		positionAnim->addKeyframe({ 0, 0, 0 }, 8); // para que no se note el bucle
+	}
 }
 
 void GameManager::update(float deltaTime)
@@ -135,8 +171,6 @@ void GameManager::update(float deltaTime)
 	// Fijar la cámara en la luz circular
 	if (InputManager::Instance()->getKey('k'))
 		cam->lookAt(circleLight->getEntity()->getPosition());
-
-	std::cout << animValue << std::endl;
 }
 
 

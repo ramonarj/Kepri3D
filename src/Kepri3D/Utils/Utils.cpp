@@ -53,6 +53,20 @@ glm::vec3 Kepri::lerp(const glm::vec3& a, const glm::vec3& b, float l)
 	return a + (b - a) * l;
 }
 
+glm::vec4 Kepri::lerp(const glm::vec4& a, const glm::vec4& b, float l)
+{
+	if (l < 0) l = 0;
+	else if (l > 1) l = 1;
+	return a + (b - a) * l;
+}
+
+glm::dmat4 Kepri::lerp(const glm::dmat4& a, const glm::dmat4& b, float l)
+{
+	if (l < 0) l = 0;
+	else if (l > 1) l = 1;
+	return a + (b - a) * (double)l;
+}
+
 void Kepri::DFT(std::vector<float> ondaTotal, float intervalo_muestreo,
 	std::vector<float>& frecuencias, std::vector<float>& amplitudes, std::vector<float>& fases, 
 	bool debug, float MIN_AMPLITUDE)

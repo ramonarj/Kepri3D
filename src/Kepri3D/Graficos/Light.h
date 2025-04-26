@@ -78,6 +78,10 @@ public:
 	inline const glm::fvec3& getDiffuse() const { return diffuse; }
 	inline const glm::fvec3& getSpecular() const { return specular; }
 
+	inline const glm::fvec4& getAmbient4() const { return ambient; }
+	inline const glm::fvec4& getDiffuse4() const { return diffuse; }
+	inline const glm::fvec4& getSpecular4() const { return specular; }
+
 	/* Devuelve el factor de atenuación de la luz (0 = constante, 1 = lineal, 2 = cuadrático) */
 	float getAttenuation(GLuint i) const;
 
