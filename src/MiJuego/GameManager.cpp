@@ -2,6 +2,7 @@
 
 #include "../Kepri3D.h"
 #include "Animacion/Animacion.h"
+#include "Animacion/AnimationClip.h"
 
 #include "../Scene.h"
 #include "CameraController.h"
@@ -37,26 +38,20 @@ void GameManager::start()
 	// Animaciones
 	if(circleLight != nullptr)
 	{
-		animValue = 0;
-
 		// De posición X (double)
-		double* posX = (double*) & (circleLight->getEntity()->getModelMat()[3].x);
-		//entity->addComponent(new Animacion<double>(posX, 0, 100, 5, true));
+		double* posX = (double*)&(circleLight->getEntity()->getModelMat()[3].x);
+		AnimatedProperty<double> posXProp(posX);
 
 		// De posición (dvector3)
 		glm::dvec3* pos = (glm::dvec3*)&(circleLight->getEntity()->getModelMat()[3]);
-		Animacion<glm::dvec3>* positionAnim = new Animacion<glm::dvec3>(pos, { 0, 0, 0 }, { 10, 10, 10 }, 6, true);
-		entity->addComponent(positionAnim);
+		AnimatedProperty<glm::dvec3> positionProp(pos);
 
 		// De colores (vector4)
 		glm::fvec4* colorLuz = (glm::fvec4*)&(circleLight->getEntity()->getComponent<Light>()->getDiffuse4());
-		//entity->addComponent(new Animacion<glm::fvec4>(colorLuz, { 1, 1, 1, 0 }, { 1, 0, 0, 0 }, 1.5, true));
-
-		glm::vec4* colorMat = (glm::vec4*)&(circleLight->getEntity()->getRenderer()->getMaterial()->getDiffuse());
-		//entity->addComponent(new Animacion<glm::fvec4>(colorMat, { 1, 1, 1, 1 }, { 1, 0, 0, 1 }, 1.5, true));
+		AnimatedProperty<glm::fvec4> luzProp(colorLuz, {{{1, 0, 0, 1}, 0}, {{0, 1, 0, 1}, 5}});
 
 		glm::vec4* colorEmision = (glm::vec4*)&(circleLight->getEntity()->getRenderer()->getMaterial()->getEmission());
-		//entity->addComponent(new Animacion<glm::fvec4>(colorEmision, { 1, 1, 1, 1 }, { 1, 0, 0, 1 }, 1.5, true));
+		AnimatedProperty<glm::fvec4> emisionProp(colorEmision, { {{1, 0, 0, 1}, 0}, {{0, 1, 0, 1}, 5} });
 
 		// De rotaciones (glm::dmat4)
 		/*
@@ -69,9 +64,26 @@ void GameManager::start()
 		*/
 
 		// Keyframes
-		positionAnim->addKeyframe({ -10, 5, 0 }, 4);
-		positionAnim->addKeyframe({ 10, 5, 0 }, 2);
-		positionAnim->addKeyframe({ 0, 0, 0 }, 8); // para que no se note el bucle
+		positionProp.addKeyframe({ 0, 0, 0 }, 0);
+		positionProp.addKeyframe({ -10, 5, 0 }, 4);
+		positionProp.addKeyframe({ 10, 5, 0 }, 2);
+		positionProp.addKeyframe({ 10, 10, 10 }, 6);
+		positionProp.addKeyframe({ 0, 0, 0 }, 8); // para que no se note el bucle
+
+		posXProp.addKeyframe(0, 0);
+		posXProp.addKeyframe(-3, 2);
+		posXProp.addKeyframe(3, 4);
+		posXProp.addKeyframe(50, 6);
+
+		// Crear el clip de animación
+		animClip = new AnimationClip("CaminoLuz", 8, true); // clip de 8 segundos
+		animClip->addProperty(positionProp);
+		animClip->addProperty(luzProp);
+		animClip->addProperty(emisionProp);
+
+		// Crear el componente que reproduzca el clip y añadirlo
+		Animacion* animComp = new Animacion(animClip);
+		entity->addComponent(animComp);
 	}
 }
 
@@ -204,6 +216,20 @@ void GameManager::controlLuces(float deltaTime)
 		circleLight->setDiffuse({ r, g, b });
 		circleLight->setSpecular({ r, g, b });
 		((Material*)circleLight->getEntity()->getMaterial())->setEmission(circleLight->getDiffuse());
+	}
+
+	// Parar/reaudar la animación también con el Enter
+	if (InputManager::Instance()->getKeyDown(13))
+	{
+		if (animClip->paused)
+			animClip->play();
+		else
+			animClip->pause();
+	}
+	// Reiniciar la animación
+	if (InputManager::Instance()->getKeyDown('r'))
+	{
+		animClip->restart();
 	}
 
 	totalTime += deltaTime;

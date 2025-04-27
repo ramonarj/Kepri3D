@@ -9,6 +9,7 @@ class Light;
 class UIElement;
 class ParticleSystem;
 class Terreno;
+class AnimationClip;
 
 class GameManager : public Component
 {
@@ -42,6 +43,7 @@ private:
 	ParticleSystem* pSystem;
 	UIElement* botonesMenu;
 	Terreno* tessTerrain;
+	AnimationClip* animClip;
 
 	// Cursor y pantalla
 	bool lockedMouse = true;
@@ -58,8 +60,6 @@ private:
 	void controlLuces(float deltaTime);
 	void controlMovimiento(Entity* e, float deltaTime);
 	void controlTerreno(float deltaTime);
-
-	float animValue;
 };
 
 #endif
