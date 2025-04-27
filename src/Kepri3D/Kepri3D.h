@@ -19,6 +19,7 @@
 #include "ForceGenerator.h"
 // Audio
 #include "Audio.h"
+#include "Filter.h"
 #include "AudioSource.h"
 #include "AudioManager.h"
 // Animaciones

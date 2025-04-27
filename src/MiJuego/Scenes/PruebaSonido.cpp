@@ -25,6 +25,7 @@ void PruebaSonido::loadResources()
 	ResourceManager::Instance()->loadAudio("ambulancia.wav", "ambulancia");
 	ResourceManager::Instance()->loadAudio("seno.wav", "senoLa");
 	ResourceManager::Instance()->loadAudio("senoDo.wav", "senoDo");
+	ResourceManager::Instance()->loadAudio("doFlauta.wav", "doFlauta");
 }
 
 void PruebaSonido::setup()

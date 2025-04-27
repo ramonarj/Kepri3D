@@ -15,9 +15,9 @@ int main(int argc, char*argv[])
 	Game::Instance()->init(argc, argv, 800, 600, "Mi juego");
 
 	// 2) Cargar la escena inicial
-	Scene* escena = new PruebaScene();
+	//Scene* escena = new PruebaScene();
 	//Scene* escena = new PruebaFisicas();
-	//Scene* escena = new PruebaSonido();
+	Scene* escena = new PruebaSonido();
 	//Scene* escena = new Sandbox();
 	Game::Instance()->loadScene(escena);
 

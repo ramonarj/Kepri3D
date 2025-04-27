@@ -20,6 +20,7 @@
 + Submeshes y varios materiales en una misma malla
 
 // Por hacer:
+- Añadir licencias de las librerías usadas
 - Blend Maps
 - Leer material del OBJ
 - VSYNC

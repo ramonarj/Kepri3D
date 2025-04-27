@@ -132,6 +132,9 @@
     <ClCompile Include="..\..\src\Kepri3D\Animacion\AnimationClip.cpp">
       <Filter>Animacion</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\src\Kepri3D\Sonido\Filter.cpp">
+      <Filter>Sonido</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\src\Kepri3D\Utils\checkML.h">
@@ -256,6 +259,9 @@
     </ClInclude>
     <ClInclude Include="..\..\src\Kepri3D\Animacion\AnimationClip.h">
       <Filter>Animacion</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\Kepri3D\Sonido\Filter.h">
+      <Filter>Sonido</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

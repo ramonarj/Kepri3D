@@ -7,6 +7,7 @@ class AudioSource;
 class Audio;
 class Entity;
 class UIElement;
+class Filter;
 
 class Piano : public Component
 {
@@ -35,6 +36,12 @@ private:
 	bool portamento = false;
 	bool porting = false;
 	float targetPitch;
+
+	// Filtros
+	Filter* LPF;
+	Filter* BPF;
+	Filter* activeFilter;
+
 	// Visualizador de la onda
 	UIElement* waveVisualizer;
 	std::vector<UIElement*> effectVisualizers;
@@ -48,6 +55,7 @@ private:
 	void controlVibrato(float deltaTime);
 	void controlTremolo(float deltaTime);
 	void controlPortamento(float deltaTime);
+	void controlFiltros(float deltaTime);
 
 	// Graficos
 	void renderWave();

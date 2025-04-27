@@ -1,6 +1,7 @@
 #include "AudioManager.h"
 
 #include "Audio.h"
+#include "Filter.h"
 
 #include <cassert>
 #include <iostream>
@@ -17,11 +18,6 @@ AudioManager* AudioManager::s_instance = nullptr;
 void initOpenAL(bool useEffects = false);
 void assignFunctionPointers();
 
-// Temporal
-ALuint effectSlots[4] = { 0 }; // deberian ser 'ALuint'
-ALuint effects[2] = { 0 };
-ALuint filters[1] = { 0 };
-
 /* Punteros a todas las funciones necesarias de la extensión EFX */
 LPALGENEFFECTS alGenEffects;
 LPALDELETEEFFECTS alDeleteEffects;
@@ -33,6 +29,7 @@ LPALEFFECTI alEffecti;
 LPALEFFECTF alEffectf;
 // Filtros
 LPALGENFILTERS alGenFilters;
+LPALDELETEFILTERS alDeleteFilters;
 LPALISFILTER alIsFilter;
 LPALFILTERI alFilteri;
 LPALFILTERF alFilterf;
@@ -63,6 +60,7 @@ void assignFunctionPointers()
 	alEffectf = (LPALEFFECTF)alGetProcAddress("alEffectf");
 	// Filtros
 	alGenFilters = (LPALGENFILTERS)alGetProcAddress("alGenFilters");
+	alDeleteFilters = (LPALDELETEFILTERS)alGetProcAddress("alDeleteFilters");
 	alIsFilter = (LPALISFILTER)alGetProcAddress("alIsFilter");
 	alFilteri = (LPALFILTERI)alGetProcAddress("alFilteri");
 	alFilterf = (LPALFILTERF)alGetProcAddress("alFilterf");
@@ -93,6 +91,9 @@ void initOpenAL(bool useEffects)
 	// 1) Abrir el dispositivo
 	ALCdevice* pDevice = alcOpenDevice((ALCchar*)"DirectSound3D");
 	assert(pDevice != nullptr);
+
+	const ALCchar* string = alcGetString(pDevice, ALC_DEVICE_SPECIFIER);
+	std::cout << "Sound Device: " << string << std::endl;
 
 	// 2) Crear el contexto
 	// a) Sin efectos
@@ -221,12 +222,12 @@ void AudioManager::createEffect()
 	alGetError();
 	if (alIsEffect(effects[0]))
 	{
-		alEffecti(effects[0], AL_EFFECT_TYPE, AL_EFFECT_REVERB);
+		alEffecti(effects[0], AL_EFFECT_TYPE, AL_EFFECT_ECHO);
 		if (alGetError() != AL_NO_ERROR)
 			printf("Reverb Effect not supported\n");
 		// change Decay Time
-		else
-			alEffectf(effects[0], AL_REVERB_DECAY_TIME, 2.0f);
+		else{}
+			//alEffectf(effects[0], AL_REVERB_DECAY_TIME, 2.0f);
 	}
 
 	/* b) Flanger */
@@ -242,26 +243,10 @@ void AudioManager::createEffect()
 	}
 
 	/* (2) Try to create a Filter */
-	alGetError();
-	alGenFilters(1, &filters[0]);
-	if (alGetError() != AL_NO_ERROR)
-		printf("Error: could not generate filter\n");
-	if (alIsFilter(filters[0]))
-	{
-		/* Set Filter type to Low-Pass and set parameters */
-		alFilteri(filters[0], AL_FILTER_TYPE, AL_FILTER_LOWPASS);
-		if (alGetError() != AL_NO_ERROR)
-			printf("Low Pass Filter not supported\n");
-		else
-		{
-			alFilterf(filters[0], AL_LOWPASS_GAIN, 0.5f);
-			alFilterf(filters[0], AL_LOWPASS_GAINHF, 0.5f);
-		}
-	}
-
+	//lpFilter = new Filter(LowPass, 500);
 
 	/* (3) Attach Effect/Filter to Auxiliary Effect Slot */
-	alAuxiliaryEffectSloti(effectSlots[0], AL_EFFECTSLOT_EFFECT, effects[0]);
-	if (alGetError() != AL_NO_ERROR)
-		printf("Error: could not load effect into effect slot\n");
+	//alAuxiliaryEffectSloti(effectSlots[0], AL_EFFECTSLOT_EFFECT, effects[0]);
+	//if (alGetError() != AL_NO_ERROR)
+	//	printf("Error: could not load effect into effect slot\n");
 }

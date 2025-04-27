@@ -5,6 +5,7 @@
 #include "Defines.h"
 
 struct Audio;
+struct Filter;
 
 class AudioSource : public Component
 {
@@ -31,7 +32,13 @@ public:
 	inline float getVolume() const { return m_volume; }
 	inline float getPitch() const { return m_pitch; }
 
-	// Efectos
+	// - - Efectos - - //
+	void addFilter(Filter* f);
+	void removeFilter();
+
+	inline Filter* getDirectFilter() { return directFilter; }
+
+	//
 	void configureSends();
 	void attachFilter();
 
@@ -49,6 +56,9 @@ private:
 
 	// Velocidad a la que se mueve la fuente de audio
 	glm::vec3 m_vel;
+
+	// Filtros aplicados
+	Filter* directFilter;
 
 	// Funciones aauxiliares
 	void setup(Audio* audio);
