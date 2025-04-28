@@ -6,6 +6,7 @@
 
 struct Audio;
 struct Filter;
+struct Effect;
 
 class AudioSource : public Component
 {
@@ -32,14 +33,18 @@ public:
 	inline float getVolume() const { return m_volume; }
 	inline float getPitch() const { return m_pitch; }
 
-	// - - Efectos - - //
+	// - - Filtros y efectos - - //
 	void addFilter(Filter* f);
 	void removeFilter();
-
 	inline Filter* getDirectFilter() { return directFilter; }
+	//
+	void addEffect(Effect* e, unsigned int auxSend = 0);
+	void removeEffect(unsigned int auxSend);
+	Effect* getAuxSend(int i);
+	//
+	void addFilteredEffect(Filter* f, Effect* e, unsigned int auxSend = 0);
 
 	//
-	void configureSends();
 	void attachFilter();
 
 #ifdef __DEBUG_INFO__
@@ -59,6 +64,9 @@ private:
 
 	// Filtros aplicados
 	Filter* directFilter;
+
+	// Sends auxiliares
+	std::vector<Effect*> auxSends;
 
 	// Funciones aauxiliares
 	void setup(Audio* audio);

@@ -17,7 +17,7 @@ char teclas[NUM_TECLAS] = { 'a', 'w', 's', 'e', 'd', 'f', 't', 'g', 'y', 'h', 'u
 const std::string INSTRUMENT_NAMES[] = {"Seno", "Cuadrado", "Sierra", "Triangulo", "Ruido"};
 enum NoteEffect { Vibrato = 0, Tremolo = 1, Portamento = 2 };
 
-Piano::Piano() : LPF(nullptr)
+Piano::Piano() : reverb(nullptr)
 {
 	onda = new Audio(Seno, 440);
 	source = new AudioSource(onda);
@@ -26,10 +26,10 @@ Piano::Piano() : LPF(nullptr)
 Piano::~Piano()
 {
 	delete onda;
-	if (LPF != nullptr)
-		delete LPF;
-	if (BPF != nullptr)
-		delete BPF;
+	for (int i = 0; i < 3; i++)
+		delete filtros[i];
+	if (reverb != nullptr)
+		delete reverb;
 }
 
 void Piano::start()
@@ -38,9 +38,13 @@ void Piano::start()
 	m_instrument = Seno;
 
 	// Crea los filtros
-	LPF = new Filter(LowPass, 0.5);
-	BPF = new Filter(BandPass, 0.5);
-	activeFilter = BPF;
+	filtros[0] = new Filter(LowPass, 0.5);
+	filtros[1] = new Filter(HighPass, 0.5);
+	filtros[2] = new Filter(BandPass, 0.5);
+	activeFilter = filtros[1];
+
+	// Crea los efectos
+	reverb = new Effect(Echo);
 
 
 	// Crea las mallas para el visualizador
@@ -251,15 +255,27 @@ void Piano::controlFiltros(float deltaTime)
 	{
 		activeFilter->setFrequency(activeFilter->cutFreq - deltaTime);
 		// Esto no debería ser necesario
-		source->addFilter(activeFilter);
+		if (source->getDirectFilter() != nullptr)
+			source->addFilter(activeFilter);
 	}
 
 	if (InputManager::Instance()->getSpecialKey(GLUT_KEY_RIGHT))
 	{
 		activeFilter->setFrequency(activeFilter->cutFreq + deltaTime);
 		// Esto no debería ser necesario
-		source->addFilter(activeFilter);
+		if (source->getDirectFilter() != nullptr)
+			source->addFilter(activeFilter);
 	}
+
+	// Añadirle efecto de reverb
+	if (InputManager::Instance()->getKeyDown('r'))
+	{
+		if (source->getAuxSend(0) == nullptr)
+			source->addFilteredEffect(activeFilter, reverb, 0);
+		else
+			source->removeEffect(0);
+	}
+
 }
 
 // - - - - - - - Graficos - - - - - - - - //

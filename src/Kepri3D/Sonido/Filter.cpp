@@ -3,30 +3,18 @@
 //#include "AudioManager.h"
 #include "AudioManager.cpp"
 
-Filter::Filter(FilterType type, float cutFreq) : filterId(0)
+Filter::Filter(FilterType type, float cutFreq) : type(type), filterId(0)
 {
-	this->type = type;
-
 	// Crear el filtro
 	alGetError();
 	alGenFilters(1, &filterId);
+
 	// Gestión de errores
 	if (alGetError() != AL_NO_ERROR) { printf("Error: could not generate filter\n"); }
-
 	if (!alIsFilter(filterId)) { return; }
 
 	// Darle los parámetros adecuados
-	switch (type) 
-	{
-		case LowPass:
-			alFilteri(filterId, AL_FILTER_TYPE, AL_FILTER_LOWPASS);
-			break;
-		case BandPass:
-			alFilteri(filterId, AL_FILTER_TYPE, AL_FILTER_BANDPASS);
-			break;
-		default: 
-			break;
-	}
+	alFilteri(filterId, AL_FILTER_TYPE, AL_FILTER_NULL + type);
 	if (alGetError() != AL_NO_ERROR) { printf("Error: no hay soporte para este tipo de filtro\n"); }
 	setFrequency(cutFreq);
 }
@@ -42,6 +30,12 @@ void Filter::setFrequency(float newFreq)
 	{
 		alFilterf(filterId, AL_LOWPASS_GAIN, 1 - newFreq);
 		alFilterf(filterId, AL_LOWPASS_GAINHF, newFreq);
+		break;
+	}
+	case HighPass:
+	{
+		alFilterf(filterId, AL_HIGHPASS_GAIN, 1 - newFreq);
+		alFilterf(filterId, AL_HIGHPASS_GAINLF, newFreq);
 		break;
 	}
 	case BandPass:
@@ -64,4 +58,50 @@ void Filter::setFrequency(float newFreq)
 Filter::~Filter()
 {
 	alDeleteFilters(1, &filterId);
+}
+
+// - - - - - - - - - - - - - - - - - - - - 
+
+unsigned int Effect::s_effectSlots = 0;
+
+Effect::Effect(EffectType type) : type(type), effectId(0)
+{
+	// 1) Crear una ranura para el nuevo efecto
+	alGetError();
+	alGenAuxiliaryEffectSlots(1, &slotId);
+	if (alGetError() != AL_NO_ERROR) { printf("Error: no se pudo crear la ranura para el efecto\n"); }
+	s_effectSlots++;
+
+	// 2) Crear el efecto 
+	alGenEffects(1, &effectId);
+	if (alGetError() != AL_NO_ERROR) { printf("Error: no se pudo crear el efecto \n"); }
+	if (!alIsEffect(effectId)) { return; }
+
+	// Darle los parámetros adecuados
+	alEffecti(effectId, AL_EFFECT_TYPE, AL_EFFECT_NULL + type);
+	if (alGetError() != AL_NO_ERROR) { printf("Error: no hay soporte para este tipo de filtro\n"); }
+
+	// Específico del efecto
+	switch(type)
+	{
+	case Reverb:
+		alEffectf(effectId, AL_REVERB_DECAY_TIME, 2.0f);
+		break;
+	default:
+		break;
+	}
+	// alEffecti(effects[1], AL_FLANGER_PHASE, 180);
+
+
+	// 3) Insertar el efecto en la ranura
+	alAuxiliaryEffectSloti(slotId, AL_EFFECTSLOT_EFFECT, effectId);
+	if (alGetError() != AL_NO_ERROR) { printf("Error: could not load effect into effect slot\n"); }
+}
+
+Effect::~Effect()
+{
+	// Borrar el efecto y su ranura auxiliar
+	alDeleteEffects(1, &effectId);
+	alDeleteAuxiliaryEffectSlots(1, &slotId);
+	s_effectSlots--;
 }

@@ -19,12 +19,14 @@ void initOpenAL(bool useEffects = false);
 void assignFunctionPointers();
 
 /* Punteros a todas las funciones necesarias de la extensión EFX */
+// Ranuras
+LPALGENAUXILIARYEFFECTSLOTS alGenAuxiliaryEffectSlots;
+LPALDELETEAUXILIARYEFFECTSLOTS alDeleteAuxiliaryEffectSlots;
+LPALAUXILIARYEFFECTSLOTI alAuxiliaryEffectSloti;
+// Efectos
 LPALGENEFFECTS alGenEffects;
 LPALDELETEEFFECTS alDeleteEffects;
 LPALISEFFECT alIsEffect;
-// Efectos
-LPALGENAUXILIARYEFFECTSLOTS alGenAuxiliaryEffectSlots;
-LPALAUXILIARYEFFECTSLOTI alAuxiliaryEffectSloti;
 LPALEFFECTI alEffecti;
 LPALEFFECTF alEffectf;
 // Filtros
@@ -49,13 +51,14 @@ AudioManager* AudioManager::Instance()
 
 void assignFunctionPointers()
 {
+	// Ranuras
+	alGenAuxiliaryEffectSlots = (LPALGENAUXILIARYEFFECTSLOTS)alGetProcAddress("alGenAuxiliaryEffectSlots");
+	alDeleteAuxiliaryEffectSlots = (LPALDELETEAUXILIARYEFFECTSLOTS)alGetProcAddress("alDeleteAuxiliaryEffectSlots");
+	alAuxiliaryEffectSloti = (LPALAUXILIARYEFFECTSLOTI)alGetProcAddress("alAuxiliaryEffectSloti");
+	// Efectos
 	alGenEffects = (LPALGENEFFECTS)alGetProcAddress("alGenEffects");
 	alDeleteEffects = (LPALDELETEEFFECTS)alGetProcAddress("alDeleteEffects");
 	alIsEffect = (LPALISEFFECT)alGetProcAddress("alIsEffect");
-
-	// Efectos
-	alGenAuxiliaryEffectSlots = (LPALGENAUXILIARYEFFECTSLOTS)alGetProcAddress("alGenAuxiliaryEffectSlots");
-	alAuxiliaryEffectSloti = (LPALAUXILIARYEFFECTSLOTI)alGetProcAddress("alAuxiliaryEffectSloti");
 	alEffecti = (LPALEFFECTI)alGetProcAddress("alEffecti");
 	alEffectf = (LPALEFFECTF)alGetProcAddress("alEffectf");
 	// Filtros
@@ -197,56 +200,13 @@ void AudioManager::createEffect()
 	// Ranuras = 
 	// Efectos = reverb, distorsión, compresor, etc
 	// Filtros = HPF, LPF, BPF, Notch
-	ALuint uiLoop;
 
-	/* (1) Try to create 4 Auxiliary Effect Slots */
-	alGetError();
-	for (uiLoop = 0; uiLoop < 4; uiLoop++)
-	{
-		alGenAuxiliaryEffectSlots(1, &effectSlots[uiLoop]);
-		if (alGetError() != AL_NO_ERROR)
-			break;
-	}
-	printf("Generated %d Aux Effect Slots\n", uiLoop);
-
-	/* (2) Try to create 2 Effects */
-	for (uiLoop = 0; uiLoop < 2; uiLoop++)
-	{
-		alGenEffects(1, &effects[uiLoop]);
-		if (alGetError() != AL_NO_ERROR)
-			break;
-	}
-	printf("Generated %d Effects\n", uiLoop);
-
-	/* a) Reverb */
-	alGetError();
-	if (alIsEffect(effects[0]))
-	{
-		alEffecti(effects[0], AL_EFFECT_TYPE, AL_EFFECT_ECHO);
-		if (alGetError() != AL_NO_ERROR)
-			printf("Reverb Effect not supported\n");
-		// change Decay Time
-		else{}
-			//alEffectf(effects[0], AL_REVERB_DECAY_TIME, 2.0f);
-	}
-
-	/* b) Flanger */
-	alGetError();
-	if (alIsEffect(effects[1]))
-	{
-		alEffecti(effects[1], AL_EFFECT_TYPE, AL_EFFECT_FLANGER);
-		if (alGetError() != AL_NO_ERROR)
-			printf("Flanger effect not supported\n");
-		// change Phase
-		else
-			alEffecti(effects[1], AL_FLANGER_PHASE, 180);
-	}
+	/* (1) Try to create an Effect */
+	//new Effect(Echo);
+	//new Effect(Flanger);
 
 	/* (2) Try to create a Filter */
 	//lpFilter = new Filter(LowPass, 500);
 
 	/* (3) Attach Effect/Filter to Auxiliary Effect Slot */
-	//alAuxiliaryEffectSloti(effectSlots[0], AL_EFFECTSLOT_EFFECT, effects[0]);
-	//if (alGetError() != AL_NO_ERROR)
-	//	printf("Error: could not load effect into effect slot\n");
 }

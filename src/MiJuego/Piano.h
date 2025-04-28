@@ -7,7 +7,8 @@ class AudioSource;
 class Audio;
 class Entity;
 class UIElement;
-class Filter;
+struct Filter;
+struct Effect;
 
 class Piano : public Component
 {
@@ -38,9 +39,11 @@ private:
 	float targetPitch;
 
 	// Filtros
-	Filter* LPF;
-	Filter* BPF;
+	Filter* filtros [3];
 	Filter* activeFilter;
+
+	// Efectos
+	Effect* reverb;
 
 	// Visualizador de la onda
 	UIElement* waveVisualizer;

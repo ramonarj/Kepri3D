@@ -51,7 +51,6 @@ void AudioSource::setup(Audio* audio)
 	if (directFilter != nullptr)
 		addFilter(directFilter);
 	// Efectos
-	//configureSends();
 
 	m_audio = audio;
 }
@@ -137,39 +136,47 @@ void AudioSource::removeFilter()
 	directFilter = nullptr;
 }
 
-
-void AudioSource::configureSends()
+void AudioSource::addEffect(Effect* e, unsigned int auxSend)
 {
-	/* Configure Source Auxiliary Effect Slot Sends */
-
-	/* Set Source Send 0 to feed effectSlots[0] without filtering */
-	alSource3i(sourceId, AL_AUXILIARY_SEND_FILTER, AudioManager::Instance()->getSlot(0), 0, NULL);
+	// Conectar una de las salidas auxiliares de la fuente sin filtrar al efecto ("wet")
+	alSource3i(sourceId, AL_AUXILIARY_SEND_FILTER, e->slotId, auxSend, NULL);
 	if (alGetError() != AL_NO_ERROR)
-		printf("Failed to configure Source Send 0\n");
+		printf("Error: no se pudo conectar la fuente al efecto\n");
 
-	/*
-	// Set Source Send 1 to feed effectSlots[1] with filter "filters[0]" 
-	alSource3i(sourceId, AL_AUXILIARY_SEND_FILTER, AudioManager::Instance()->getSlot(1), 1,
-		AudioManager::Instance()->getFilter()->filterId);
-	if (alGetError() != AL_NO_ERROR)
-		printf("Failed to configure Source Send 1\n");
-	*/
-
-	/* Disable Send 0 */
-	alSource3i(sourceId, AL_AUXILIARY_SEND_FILTER, AL_EFFECTSLOT_NULL, 0, NULL);
-	if (alGetError() != AL_NO_ERROR)
-		printf("Failed to disable Source Send 0\n");
-
-	/* Disable Send 1 */
-	alSource3i(sourceId, AL_AUXILIARY_SEND_FILTER, AL_EFFECTSLOT_NULL, 1, NULL);
-	if (alGetError() != AL_NO_ERROR)
-		printf("Failed to disable Source Send 1\n");
+	auxSends.push_back(e);
 }
 
+void AudioSource::removeEffect(unsigned int auxSend)
+{
+	// Desactivar la salida auxiliar dada
+	alSource3i(sourceId, AL_AUXILIARY_SEND_FILTER, AL_EFFECTSLOT_NULL, auxSend, NULL);
+	if (alGetError() != AL_NO_ERROR)
+		printf("Error: no se pudo quitar el efecto\n");
+
+	auxSends.erase(auxSends.begin() + auxSend);
+}
+
+Effect* AudioSource::getAuxSend(int i)
+{
+	if (i >= auxSends.size())
+		return nullptr;
+	return auxSends[i];
+}
+
+void AudioSource::addFilteredEffect(Filter* f, Effect* e, unsigned int auxSend)
+{
+	// Enviar la señal al efecto dado, filtrándola por el camino
+	alSource3i(sourceId, AL_AUXILIARY_SEND_FILTER, e->slotId, auxSend, f->filterId);
+	if (alGetError() != AL_NO_ERROR)
+		printf("Failed to configure Source Send 1\n");
+
+	auxSends.push_back(e);
+}
 
 
 void AudioSource::attachFilter()
 {
+	// Quitarle el filtro a un efecto TODO
 	/*
 	// Filter the Source send 0 from 'sourceId' to 
 	// Auxiliary Effect Slot "effectSlots[0]" using Filter filters[0] 
