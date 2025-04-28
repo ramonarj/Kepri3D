@@ -1,7 +1,8 @@
 #version 330 core
 
 // Materiales, luces y shadowmaps
-#include structs.glsl
+#include material.glsl
+#include light.glsl
 
 // Variables que nos llegan desde el shader anterior
 in DATA

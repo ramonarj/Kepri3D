@@ -15,7 +15,8 @@ uniform sampler2D textura;
 uniform sampler2D reflectionMap;
 uniform samplerCube skybox;
 
-#include structs.glsl
+#include material.glsl
+#include light.glsl
 
 uniform Material material;
 

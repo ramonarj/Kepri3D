@@ -908,7 +908,7 @@ IndexMesh* IndexMesh::generateSphere(GLdouble radio, GLuint paralelos, GLuint me
 	/* Colores */
 	m->colores = new dvec4[m->numVertices];
 	for (int i = 0; i < m->numVertices; i++)
-		m->colores[i] = dvec4(0, 1, 0, 1);
+		m->colores[i] = dvec4(1, 1, 1, 1);
 
 	/* Normales */
 	m->SetNormals();

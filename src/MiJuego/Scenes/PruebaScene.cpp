@@ -134,8 +134,16 @@ void PruebaScene::setup()
 	// Un cono
 	Cono* cono = new Cono(2, 5, 30);
 	cono->setPosition({ 24,-0.95,10 });
-	cono->setMaterial("cobre");
+	cono->setMaterial("cono");
 	AddEntity(cono);
+
+	// Prueba vertex painting (degradado verde-azul)
+	int numVerts = cono->getRenderer()->getMesh()->getVerticesNum();
+	glm::dvec4* colores = cono->getRenderer()->getMesh()->getColors();
+	for (int i = 0; i < numVerts; i++)
+	{
+		colores[i] = Kepri::lerp({ 0, 1, 0, 1 }, { 0, 0, 1, 1 }, i / (float)numVerts);
+	}
 
 	// Un cubo multitextura
 	Cubo* cuboMT = new Cubo(2);
@@ -347,6 +355,7 @@ void PruebaScene::loadResources()
 	ResourceManager::Instance()->loadShader("clippable.vert", "", "default.frag", "clippable");
 	ResourceManager::Instance()->loadShader("terrain.vert", "terrain.tesc", "terrain.tese", "", "lights.frag", "terreno");
 	ResourceManager::Instance()->loadShader("reflejos.vert", "", "reflejos.frag", "reflejos");
+	ResourceManager::Instance()->loadShader("vertex_paint.vert", "", "vertex_paint.frag", "vertexPaint");
 
 	/* Materiales */
 	ResourceManager::Instance()->loadMaterial("pared.material", "pared");
@@ -371,6 +380,7 @@ void PruebaScene::loadResources()
 	ResourceManager::Instance()->loadMaterial("espejo.material", "espejo", "reflejos");
 	ResourceManager::Instance()->loadMaterial("reflejos.material", "reflejos", "reflejos");
 	ResourceManager::Instance()->loadMaterial("lego.material", "lego", "multitexture");
+	ResourceManager::Instance()->loadMaterial("cono.material", "cono", "vertexPaint");
 
 	// Prueba excepciones
 	ResourceManager::Instance()->loadTexture("ladrillo.bmp", "ladrillo");
@@ -532,6 +542,7 @@ void PruebaScene::PruebaMateriales()
 	esf->addComponent(new Collider(10));
 	esf->addComponent(new Rigid(esf->getModelMat(), Static));
 	AddEntity(esf);
+
 
 	// Cubo con reflejos
 	Cubo* cuboReflejos = new Cubo(6.0);
