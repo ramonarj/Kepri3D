@@ -329,6 +329,74 @@ void IndexMesh::setTangents()
 
 // - - - - - - - - - Mallas - - - - - - - - - - //
 
+void Mesh::createSquare(float lado, const glm::dvec3& centro, PolygonOrientation orientacion, glm::dvec3* vertices)
+{
+	//  0    2 
+	//  |  / |
+ 	//  | /  |
+	//  1    3
+	// TODO: hacerlo con matrices de rotacion
+	lado /= 2.0f;
+	switch(orientacion)
+	{
+	case Positive_X:
+	{
+		vertices[0] = { 0, lado, lado };
+		vertices[1] = { 0, -lado, lado };
+		vertices[2] = { 0, lado, -lado };
+		vertices[3] = { 0, -lado, -lado };
+		break;
+	}
+	case Negative_X:
+	{
+		vertices[0] = { 0, lado, -lado };
+		vertices[1] = { 0, -lado, -lado };
+		vertices[2] = { 0, lado, lado };
+		vertices[3] = { 0, -lado, lado };
+		break;
+	}
+
+	case Positive_Y:
+	{
+		vertices[0] = { -lado, 0, -lado };
+		vertices[1] = { -lado, 0, lado };
+		vertices[2] = { lado, 0, -lado };
+		vertices[3] = { lado, 0, lado };
+		break;
+	}
+	case Negative_Y:
+	{
+		vertices[0] = { -lado, 0, lado };
+		vertices[1] = { -lado, 0, -lado };
+		vertices[2] = { lado, 0, lado };
+		vertices[3] = { lado, 0, -lado };
+		break;
+	}
+	case Positive_Z:
+	{
+		vertices[0] = { -lado, lado, 0 };
+		vertices[1] = { -lado, -lado, 0 };
+		vertices[2] = { lado, lado, 0 };
+		vertices[3] = { lado, -lado, 0 };
+		break;
+	}
+	case Negative_Z:
+	{
+		vertices[0] = { lado, lado, 0 };
+		vertices[1] = { lado, -lado, 0 };
+		vertices[2] = { -lado, lado, 0 };
+		vertices[3] = { -lado, -lado, 0 };
+		break;
+	}
+	default:
+		break;
+	}
+
+	// Sumarle el desplazamiento del centro
+	for (int i = 0; i < 4; i++)
+		vertices[i] += centro;
+}
+
 Mesh* Mesh::generateAxesRGB(GLdouble l)
 {
 	Mesh* m = new Mesh();
@@ -699,91 +767,34 @@ IndexMesh* IndexMesh::generateCube(GLdouble size, bool equalFaces)
 	m->numIndices = 36; // 6 caras x 2 triángulos/cara x 3 vértices/triángulo
 
 	/* Array de vértices */
-	size /= 2.0;
-	m->vertices = new dvec3[m->numVertices]
-	{
-		// Cara frontal
-		{-size, size, size},
-		{-size, -size, size},
-		{size, -size, size},
-		{size, size, size},
-
-		// Cara derecha
-		{size, size, size},
-		{size, -size, size},
-		{size, -size, -size},
-		{size, size, -size},
-
-		// Cara trasera
-		{size, size, -size},
-		{size, -size, -size},
-		{-size, -size, -size},
-		{-size, size, -size},
-
-		// Cara izquierda
-		{-size, size, -size},
-		{-size, -size, -size},
-		{-size, -size, size},
-		{-size, size, size},
-
-		// Cara superior
-		{-size, size, -size},
-		{-size, size, size},
-		{size, size, size},
-		{size, size, -size},
-
-		// Cara inferior
-		{-size, -size, size},
-		{-size, -size, -size},
-		{size, -size, -size},
-		{size, -size, size}
-	};
+	m->vertices = new dvec3[m->numVertices]; // crear las 6 caras del cubo
+	createSquare(size, { size / 2.0f, 0, 0 }, PolygonOrientation(Positive_X), m->vertices + 0);
+	createSquare(size, { -size / 2.0f, 0, 0 }, PolygonOrientation(Negative_X), m->vertices + 4);
+	createSquare(size, { 0, size / 2.0f, 0 }, PolygonOrientation(Positive_Y), m->vertices + 8);
+	createSquare(size, { 0, -size / 2.0f, 0 }, PolygonOrientation(Negative_Y), m->vertices + 12);
+	createSquare(size, { 0, 0, size / 2.0f }, PolygonOrientation(Positive_Z), m->vertices + 16);
+	createSquare(size, { 0, 0, -size / 2.0f }, PolygonOrientation(Negative_Z), m->vertices + 20);
 
 	/* Colores para cada vértice */
 	m->colores = new dvec4[m->numVertices];
 	for (int i = 0; i < m->numVertices; i++)
 		m->colores[i] = dvec4(0.8, 0.8, 0.8, 1);
 
-	/* Especificar los triángulos */
-	m->indices = new GLuint[m->numIndices]
-	// Para cada cara...
-	//for(int i = 0; i < 6; i++)
-	//{
-	//	// Primer triángulo
-	//	m->indices[6 * i] = i;
-	//	m->indices[6 * i + 1] = i + 1;
-	//	m->indices[6 * i + 2] = i + 3;
-
-	//	// Segundo triángulo
-	//	m->indices[6 * i + 3] = i + 3;
-	//	m->indices[6 * i + 4] = i + 3;
-	//	m->indices[6 * i + 5] = i + 3;
-	//}
+	/* Índices para los triángulos */
+	m->indices = new GLuint[m->numIndices];
+	int i = 0;
+	for (int k = 0; k < m->numVertices; k += 4)
 	{
-		// Frente
-		0, 1, 3,
-		3, 1, 2,
-
-		// Derecha
-		4, 5, 7,
-		7, 5, 6,
-
-		// Atrás
-		8, 9, 11,
-		11, 9, 10,
-
-		// Izquierda
-		12, 13, 15,
-		15, 13, 14,
-
-		// Arriba
-		16, 17, 19,
-		19, 17, 18,
-
-		// Abajo
-		20, 21, 23,
-		23, 21, 22,
-	};
+		// Primer triángulo
+		m->indices[i] = k;
+		m->indices[i + 1] = k + 1;
+		m->indices[i + 2] = k + 2;
+		// Segundo triángulo
+		m->indices[i + 3] = k + 2;
+		m->indices[i + 4] = k + 1;
+		m->indices[i + 5] = k + 3;
+		i += 6;
+	}
 
 	/* Coordenadas de textura */
 	// Usar la textura completa para cada cara
@@ -794,8 +805,8 @@ IndexMesh* IndexMesh::generateCube(GLdouble size, bool equalFaces)
 		{
 			m->texCoords[i * 4] = { 0, 1 };
 			m->texCoords[i * 4 + 1] = { 0, 0 };
-			m->texCoords[i * 4 + 2] = { 1, 0 };
-			m->texCoords[i * 4 + 3] = { 1, 1 };
+			m->texCoords[i * 4 + 2] = { 1, 1 };
+			m->texCoords[i * 4 + 3] = { 1, 0 };
 		}
 	}
 	// Usar distintas (6) partes de la textura las distintas caras
@@ -803,23 +814,18 @@ IndexMesh* IndexMesh::generateCube(GLdouble size, bool equalFaces)
 	{
 		m->texCoords = new dvec2[m->numVertices]
 		{
-			// Frente
-			{0.251, 0.333}, {0.251, 0}, {0.5, 0}, {0.5, 0.333},
-
 			// Derecha
-			{0.501, 0.334}, {0.75, 0.334}, {0.75, 0.66}, {0.501, 0.66},
-
-			// Atrás
-			{0.5, 0.667}, {0.5, 1}, {0.251, 1}, {0.251, 0.667},
-
+			{0.501, 0.334}, {0.75, 0.334}, {0.501, 0.66} , {0.75, 0.66},
 			// Izquierda
-			{0.25, 0.666}, {0, 0.666}, {0, 0.334}, {0.25, 0.334},
-
+			{0.25, 0.666}, {0, 0.666}, {0.25, 0.334}, {0, 0.334},
 			// Arriba
-			{0.251, 0.666}, {0.251, 0.334}, {0.5, 0.334}, {0.5, 0.666},
-
+			{0.251, 0.666}, {0.251, 0.334}, {0.5, 0.666}, {0.5, 0.334},
 			// Abajo
-			{1, 0.334}, {1, 0.666}, {0.75, 0.666}, {0.75, 0.334}
+			{1, 0.334}, {1, 0.666}, {0.75, 0.334}, {0.75, 0.666},
+			// Frente
+			{ 0.251, 0.333 }, {0.251, 0}, {0.5, 0.333}, {0.5, 0},
+			// Atrás
+			{0.5, 0.667}, {0.5, 1}, {0.251, 0.667},{0.251, 1} 
 		};
 	}
 
@@ -1067,7 +1073,6 @@ IndexMesh* IndexMesh::generateCone(GLdouble radio, GLdouble altura, GLuint lados
 	return m;
 }
 
-
 IndexMesh* IndexMesh::generateToro(GLdouble radExt, GLdouble radInt, GLuint anillos, GLuint lineas)
 {
 	// TODO: poner coordenadas de textura
@@ -1278,77 +1283,31 @@ IndexMesh* IndexMesh::generateCubemap(GLdouble size)
 	m->numIndices = 36; // 6 caras x 2 triángulos/cara x 3 vértices/triángulo
 
 	/* Array de vértices */
-	size /= 2.0;
-	m->vertices = new dvec3[m->numVertices]
-	{
-		// Cara derecha
-		{size, size, -size},
-		{size, -size, -size},
-		{size, size, size},
-		{size, -size, size},
-
-		// Cara izquierda
-		{-size, size, size},
-		{-size, -size, size},
-		{-size, size, -size},
-		{-size, -size, -size},
-
-		// Cara superior
-		{size, size, -size},
-		{size, size, size},
-		{-size, size, -size},
-		{-size, size, size},
-
-
-		// Cara inferior
-		{size, -size, size},
-		{size, -size, -size},
-		{-size, -size, size},
-		{-size, -size, -size},
-
-		// Cara trasera
-		{-size, size, -size},
-		{-size, -size, -size},
-		{size, size, -size},
-		{size, -size, -size},
-
-		// Cara frontal
-		{size, size, size},
-		{size, -size, size},
-		{-size, size, size},
-		{-size, -size, size},
-	};
+	m->vertices = new dvec3[m->numVertices]; // crear las 6 caras del cubo; cada una apunta a un eje
+	createSquare(size, { size / 2.0f, 0, 0 }, PolygonOrientation(Positive_X), m->vertices + 0);
+	createSquare(size, { -size / 2.0f, 0, 0 }, PolygonOrientation(Negative_X), m->vertices + 4);
+	createSquare(size, { 0, size / 2.0f, 0 }, PolygonOrientation(Positive_Y), m->vertices + 8);
+	createSquare(size, { 0, -size / 2.0f, 0 }, PolygonOrientation(Negative_Y), m->vertices + 12);
+	createSquare(size, { 0, 0, size / 2.0f }, PolygonOrientation(Positive_Z), m->vertices + 16);
+	createSquare(size, { 0, 0, -size / 2.0f }, PolygonOrientation(Negative_Z), m->vertices + 20);
 
 	/* Índices para los triángulos */
-	m->indices = new GLuint[m->numIndices]
+	m->indices = new GLuint[m->numIndices];
+	int i = 0;
+	for (int k = 0; k < m->numVertices; k += 4)
 	{
-		// Derecha
-		0, 1, 2,
-		2, 1, 3,
-
-		// Izquierda
-		4, 5, 6,
-		6, 5, 7,
-
-		// Arriba
-		8, 9, 10,
-		10, 9, 11,
-
-		// Abajo
-		12, 13, 14,
-		14, 13, 15,
-
-		// Fondo
-		16, 17, 18,
-		18, 17, 19,
-
-		// Frente
-		20, 21, 22,
-		22, 21, 23,
-	};
+		// Primer triángulo
+		m->indices[i] = k + 2;
+		m->indices[i + 1] = k + 3;
+		m->indices[i + 2] = k;
+		// Segundo triángulo
+		m->indices[i + 3] = k;
+		m->indices[i + 4] = k + 3;
+		m->indices[i + 5] = k + 1;
+		i += 6;
+	}
 
 	/* No necesita colores, coordenadas de textura ni normales */
-
 	return m;
 }
 

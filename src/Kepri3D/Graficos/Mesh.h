@@ -86,11 +86,14 @@ protected:
 	glm::dvec3 volume = { 0, 0, 0 };
 
 	// Métodos auxiliares
-	/* Activa los arrays de vértices, colores y texturas */
+	/* Activa/desactiva los arrays de vértices, colores y texturas */
 	void enableArrays();
-
-	/* Desactiva los arrays de vértices, colores y texturas */
 	void disableArrays();
+
+	// Crea un cuadrado centrado en el origen de coordenadas y con una de las 6 orientaciones básicas. 
+	// Los vértices creados se añaden al array 'vertices', que debe tener espacio creado para al menos 4 elementos.
+	enum PolygonOrientation { Positive_X = 0, Negative_X = 1, Positive_Y = 2, Negative_Y = 3, Positive_Z = 4, Negative_Z = 5 };
+	static void createSquare(float lado, const glm::dvec3& centro, PolygonOrientation orientacion, glm::dvec3* vertices);
 };
 
 
