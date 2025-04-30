@@ -16,6 +16,8 @@ struct Filter
 	ALuint filterId;
 	FilterType type;
 	float cutFreq;
+
+	static void fetchPointers();
 };
 
 // - - - - - - - - - - - - - - - - 
@@ -30,6 +32,8 @@ struct Effect
 	ALuint effectId;
 	ALuint slotId;
 	EffectType type;
+
+	static void fetchPointers();
 
 private:
 	static unsigned int s_effectSlots;

@@ -1,7 +1,27 @@
 #include "Filter.h"
 
-//#include "AudioManager.h"
-#include "AudioManager.cpp"
+#include "AudioManager.h"
+#include "alext.h"
+
+#include <iostream>
+
+/* Punteros a todas las funciones necesarias de la extensión EFX */
+// Ranuras
+LPALGENAUXILIARYEFFECTSLOTS alGenAuxiliaryEffectSlots;
+LPALDELETEAUXILIARYEFFECTSLOTS alDeleteAuxiliaryEffectSlots;
+LPALAUXILIARYEFFECTSLOTI alAuxiliaryEffectSloti;
+// Efectos
+LPALGENEFFECTS alGenEffects;
+LPALDELETEEFFECTS alDeleteEffects;
+LPALISEFFECT alIsEffect;
+LPALEFFECTI alEffecti;
+LPALEFFECTF alEffectf;
+// Filtros
+LPALGENFILTERS alGenFilters;
+LPALDELETEFILTERS alDeleteFilters;
+LPALISFILTER alIsFilter;
+LPALFILTERI alFilteri;
+LPALFILTERF alFilterf;
 
 Filter::Filter(FilterType type, float cutFreq) : type(type), filterId(0)
 {
@@ -60,6 +80,20 @@ Filter::~Filter()
 	alDeleteFilters(1, &filterId);
 }
 
+void Filter::fetchPointers()
+{
+	// Filtros
+	alGenFilters = (LPALGENFILTERS)alGetProcAddress("alGenFilters");
+	alDeleteFilters = (LPALDELETEFILTERS)alGetProcAddress("alDeleteFilters");
+	alIsFilter = (LPALISFILTER)alGetProcAddress("alIsFilter");
+	alFilteri = (LPALFILTERI)alGetProcAddress("alFilteri");
+	alFilterf = (LPALFILTERF)alGetProcAddress("alFilterf");
+
+
+	if (!(alGenFilters && alIsFilter && alFilteri && alFilterf))
+		std::cout << "ERROR: Punteros a las funciones de OpenAL no encontrados";
+}
+
 // - - - - - - - - - - - - - - - - - - - - 
 
 unsigned int Effect::s_effectSlots = 0;
@@ -104,4 +138,27 @@ Effect::~Effect()
 	alDeleteEffects(1, &effectId);
 	alDeleteAuxiliaryEffectSlots(1, &slotId);
 	s_effectSlots--;
+}
+
+void Effect::fetchPointers()
+{
+	// Ranuras
+	alGenAuxiliaryEffectSlots = (LPALGENAUXILIARYEFFECTSLOTS)alGetProcAddress("alGenAuxiliaryEffectSlots");
+	alDeleteAuxiliaryEffectSlots = (LPALDELETEAUXILIARYEFFECTSLOTS)alGetProcAddress("alDeleteAuxiliaryEffectSlots");
+	alAuxiliaryEffectSloti = (LPALAUXILIARYEFFECTSLOTI)alGetProcAddress("alAuxiliaryEffectSloti");
+
+	// Efectos
+	alGenEffects = (LPALGENEFFECTS)alGetProcAddress("alGenEffects");
+	alDeleteEffects = (LPALDELETEEFFECTS)alGetProcAddress("alDeleteEffects");
+	alIsEffect = (LPALISEFFECT)alGetProcAddress("alIsEffect");
+	alEffecti = (LPALEFFECTI)alGetProcAddress("alEffecti");
+	alEffectf = (LPALEFFECTF)alGetProcAddress("alEffectf");
+
+	// Comprobar que ha ido bien
+	if (!(alGenEffects && alDeleteEffects && alIsEffect))
+	{
+		std::cout << "ERROR:Effect:Punteros a las funciones de OpenAL no encontrados";
+	}
+	if (!(alGenAuxiliaryEffectSlots && alAuxiliaryEffectSloti && alEffecti && alEffectf))
+		std::cout << "ERROR:Effect:Punteros a las funciones de OpenAL no encontrados";
 }

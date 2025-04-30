@@ -16,25 +16,6 @@
 AudioManager* AudioManager::s_instance = nullptr;
 
 void initOpenAL(bool useEffects = false);
-void assignFunctionPointers();
-
-/* Punteros a todas las funciones necesarias de la extensión EFX */
-// Ranuras
-LPALGENAUXILIARYEFFECTSLOTS alGenAuxiliaryEffectSlots;
-LPALDELETEAUXILIARYEFFECTSLOTS alDeleteAuxiliaryEffectSlots;
-LPALAUXILIARYEFFECTSLOTI alAuxiliaryEffectSloti;
-// Efectos
-LPALGENEFFECTS alGenEffects;
-LPALDELETEEFFECTS alDeleteEffects;
-LPALISEFFECT alIsEffect;
-LPALEFFECTI alEffecti;
-LPALEFFECTF alEffectf;
-// Filtros
-LPALGENFILTERS alGenFilters;
-LPALDELETEFILTERS alDeleteFilters;
-LPALISFILTER alIsFilter;
-LPALFILTERI alFilteri;
-LPALFILTERF alFilterf;
 
 AudioManager* AudioManager::Instance()
 {
@@ -43,40 +24,8 @@ AudioManager* AudioManager::Instance()
 		s_instance = new AudioManager();
 
 		initOpenAL(true);
-		// Prueba efectos
-		s_instance->createEffect();
 	}
 	return s_instance;
-}
-
-void assignFunctionPointers()
-{
-	// Ranuras
-	alGenAuxiliaryEffectSlots = (LPALGENAUXILIARYEFFECTSLOTS)alGetProcAddress("alGenAuxiliaryEffectSlots");
-	alDeleteAuxiliaryEffectSlots = (LPALDELETEAUXILIARYEFFECTSLOTS)alGetProcAddress("alDeleteAuxiliaryEffectSlots");
-	alAuxiliaryEffectSloti = (LPALAUXILIARYEFFECTSLOTI)alGetProcAddress("alAuxiliaryEffectSloti");
-	// Efectos
-	alGenEffects = (LPALGENEFFECTS)alGetProcAddress("alGenEffects");
-	alDeleteEffects = (LPALDELETEEFFECTS)alGetProcAddress("alDeleteEffects");
-	alIsEffect = (LPALISEFFECT)alGetProcAddress("alIsEffect");
-	alEffecti = (LPALEFFECTI)alGetProcAddress("alEffecti");
-	alEffectf = (LPALEFFECTF)alGetProcAddress("alEffectf");
-	// Filtros
-	alGenFilters = (LPALGENFILTERS)alGetProcAddress("alGenFilters");
-	alDeleteFilters = (LPALDELETEFILTERS)alGetProcAddress("alDeleteFilters");
-	alIsFilter = (LPALISFILTER)alGetProcAddress("alIsFilter");
-	alFilteri = (LPALFILTERI)alGetProcAddress("alFilteri");
-	alFilterf = (LPALFILTERF)alGetProcAddress("alFilterf");
-
-	/* Check function pointers are valid */
-	if (!(alGenEffects && alDeleteEffects && alIsEffect))
-	{
-		std::cout << "ERROR: Punteros a las funciones de OpenAL no encontrados";
-	}
-	if (!(alGenAuxiliaryEffectSlots && alAuxiliaryEffectSloti && alEffecti && alEffectf))
-		std::cout << "ERROR: Punteros a las funciones de OpenAL no encontrados";
-	if (!(alGenFilters && alIsFilter && alFilteri && alFilterf))
-		std::cout << "ERROR: Punteros a las funciones de OpenAL no encontrados";
 }
 
 void initOpenAL(bool useEffects)
@@ -132,7 +81,8 @@ void initOpenAL(bool useEffects)
 		printf("Device supports %d Aux Sends per Source\n", iSends);
 
 		/* Get the Effect Extension function pointers */
-		assignFunctionPointers();
+		Effect::fetchPointers();
+		Filter::fetchPointers();
 
 		/* EFX available and ready to be used ! */
 	}
@@ -192,21 +142,4 @@ void AudioManager::Update(float deltaTime)
 	// Control de errores
 	if (alGetError() != AL_NO_ERROR)
 		std::cout << "ERROR OPENAL" << std::endl;
-}
-
-
-void AudioManager::createEffect() 
-{
-	// Ranuras = 
-	// Efectos = reverb, distorsión, compresor, etc
-	// Filtros = HPF, LPF, BPF, Notch
-
-	/* (1) Try to create an Effect */
-	//new Effect(Echo);
-	//new Effect(Flanger);
-
-	/* (2) Try to create a Filter */
-	//lpFilter = new Filter(LowPass, 500);
-
-	/* (3) Attach Effect/Filter to Auxiliary Effect Slot */
 }
