@@ -1,5 +1,6 @@
 #include "AudioManager.h"
 
+#include "CoreAudio.h"
 #include "Audio.h"
 #include "Filter.h"
 
@@ -95,8 +96,7 @@ void initOpenAL(bool useEffects)
 	//alSpeedOfSound(1000);
 
 	// Gestión de errores
-	if (alGetError() != AL_NO_ERROR)
-		std::cout << "ERROR OPENAL" << std::endl;
+	checkALError("Error al inicial OpenAL");
 }
 
 void AudioManager::setListener(Entity* e)
@@ -140,6 +140,5 @@ void AudioManager::Update(float deltaTime)
 	} // Esto queda regular en la mayoría de los casos (en juegos de carreras sí interesaría)
 
 	// Control de errores
-	if (alGetError() != AL_NO_ERROR)
-		std::cout << "ERROR OPENAL" << std::endl;
+	checkALError("Error en AudioManager::update()");
 }

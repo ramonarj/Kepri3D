@@ -19,10 +19,10 @@
     </ProjectConfiguration>
   </ItemGroup>
   <PropertyGroup Label="Globals">
-    <VCProjectVersion>16.0</VCProjectVersion>
+    <VCProjectVersion>17.0</VCProjectVersion>
     <Keyword>Win32Proj</Keyword>
-    <ProjectGuid>{5ef19948-d3b9-49d4-9907-e30cd6367f7b}</ProjectGuid>
-    <RootNamespace>MiJuego</RootNamespace>
+    <ProjectGuid>{88b890b8-d5fd-45a0-a22b-7b4fd6eca081}</ProjectGuid>
+    <RootNamespace>KepriTests</RootNamespace>
     <WindowsTargetPlatformVersion>10.0</WindowsTargetPlatformVersion>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
@@ -72,29 +72,25 @@
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <OutDir>$(SolutionDir)bin\</OutDir>
-    <IntDir>$(SolutionDir)inter\$(ProjectName)\$(Platform)\$(Configuration)\</IntDir>
     <TargetName>$(ProjectName)_debug</TargetName>
-    <LibraryPath>$(SolutionDir)bin\;$(SolutionDir)dependencies\freeglut-3.6.0\VisualC\lib\$(Configuration)\;$(LibraryPath)</LibraryPath>
-    <IncludePath>$(SolutionDir)src\$(ProjectName)\;$(SolutionDir)src\$(ProjectName)\Managers\;$(IncludePath)</IncludePath>
+    <IntDir>$(SolutionDir)inter\$(ProjectName)\$(Platform)\$(Configuration)\</IntDir>
+    <LibraryPath>$(SolutionDir)bin;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <OutDir>$(SolutionDir)bin\</OutDir>
     <IntDir>$(SolutionDir)inter\$(ProjectName)\$(Platform)\$(Configuration)\</IntDir>
-    <LibraryPath>$(SolutionDir)bin\;$(SolutionDir)dependencies\freeglut-3.6.0\VisualC\lib\$(Configuration)\;$(LibraryPath)</LibraryPath>
-    <IncludePath>$(SolutionDir)src\$(ProjectName)\;$(SolutionDir)src\$(ProjectName)\Managers\;$(IncludePath)</IncludePath>
+    <LibraryPath>$(SolutionDir)bin;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <OutDir>$(SolutionDir)bin\</OutDir>
-    <IntDir>$(SolutionDir)inter\$(ProjectName)\$(Platform)\$(Configuration)\</IntDir>
     <TargetName>$(ProjectName)_debug</TargetName>
-    <LibraryPath>$(SolutionDir)bin\;$(SolutionDir)dependencies\freeglut-3.6.0\VisualC\lib\$(Configuration)\;$(LibraryPath)</LibraryPath>
-    <IncludePath>$(SolutionDir)src\$(ProjectName)\;$(SolutionDir)src\$(ProjectName)\Managers\;$(IncludePath)</IncludePath>
+    <IntDir>$(SolutionDir)inter\$(ProjectName)\$(Platform)\$(Configuration)\</IntDir>
+    <LibraryPath>$(SolutionDir)bin;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <OutDir>$(SolutionDir)bin\</OutDir>
     <IntDir>$(SolutionDir)inter\$(ProjectName)\$(Platform)\$(Configuration)\</IntDir>
-    <LibraryPath>$(SolutionDir)bin\;$(SolutionDir)dependencies\freeglut-3.6.0\VisualC\lib\$(Configuration)\;$(LibraryPath)</LibraryPath>
-    <IncludePath>$(SolutionDir)src\$(ProjectName)\;$(SolutionDir)src\$(ProjectName)\Managers\;$(IncludePath)</IncludePath>
+    <LibraryPath>$(SolutionDir)bin;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
@@ -102,7 +98,7 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>WIN32;_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>$(SolutionDir)src\Kepri3D\;$(SolutionDir)src\Kepri3D\Graficos\;$(SolutionDir)src\Kepri3D\Fisica\;$(SolutionDir)src\Kepri3D\Sonido\;$(SolutionDir)src\Kepri3D\Utils\;$(SolutionDir)src\Kepri3D\UI\;$(SolutionDir)dependencies\glm-1.0.1\glm\;$(SolutionDir)dependencies\freeglut-3.6.0\include\GL\;$(SolutionDir)dependencies\glew-2.2.0\include\GL\;$(SolutionDir)dependencies\openal-soft-1.20.0\include\AL\;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)src\Kepri3D\;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -118,13 +114,14 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>WIN32;NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>$(SolutionDir)src\Kepri3D\;$(SolutionDir)src\Kepri3D\Graficos\;$(SolutionDir)src\Kepri3D\Fisica\;$(SolutionDir)src\Kepri3D\Sonido\;$(SolutionDir)src\Kepri3D\Utils\;$(SolutionDir)src\Kepri3D\UI\;$(SolutionDir)dependencies\glm-1.0.1\glm\;$(SolutionDir)dependencies\freeglut-3.6.0\include\GL\;$(SolutionDir)dependencies\glew-2.2.0\include\GL\;$(SolutionDir)dependencies\openal-soft-1.20.0\include\AL\;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)src\Kepri3D\;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
       <GenerateDebugInformation>true</GenerateDebugInformation>
+      <AdditionalDependencies>Kepri3D.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
@@ -133,7 +130,7 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>$(SolutionDir)src\Kepri3D\;$(SolutionDir)src\Kepri3D\Graficos\;$(SolutionDir)src\Kepri3D\Fisica\;$(SolutionDir)src\Kepri3D\Sonido\;$(SolutionDir)src\Kepri3D\Utils\;$(SolutionDir)src\Kepri3D\UI\;$(SolutionDir)dependencies\glm-1.0.1\glm\;$(SolutionDir)dependencies\freeglut-3.6.0\include\GL\;$(SolutionDir)dependencies\glew-2.2.0\include\GL\;$(SolutionDir)dependencies\openal-soft-1.20.0\include\AL\;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)src\Kepri3D\;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -149,61 +146,22 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>$(SolutionDir)src\Kepri3D\;$(SolutionDir)src\Kepri3D\Graficos\;$(SolutionDir)src\Kepri3D\Fisica\;$(SolutionDir)src\Kepri3D\Sonido\;$(SolutionDir)src\Kepri3D\Utils\;$(SolutionDir)src\Kepri3D\UI\;$(SolutionDir)dependencies\glm-1.0.1\glm\;$(SolutionDir)dependencies\freeglut-3.6.0\include\GL\;$(SolutionDir)dependencies\glew-2.2.0\include\GL\;$(SolutionDir)dependencies\openal-soft-1.20.0\include\AL\;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)src\Kepri3D\;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
       <GenerateDebugInformation>true</GenerateDebugInformation>
+      <AdditionalDependencies>Kepri3D.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="..\..\src\MiJuego\Callbacks.cpp" />
-    <ClCompile Include="..\..\src\MiJuego\Components\AguaComp.cpp" />
-    <ClCompile Include="..\..\src\MiJuego\Components\Ambulancia.cpp" />
-    <ClCompile Include="..\..\src\MiJuego\Components\BloqueComp.cpp" />
-    <ClCompile Include="..\..\src\MiJuego\Components\DayCicle.cpp" />
-    <ClCompile Include="..\..\src\MiJuego\Components\Multiplayer.cpp" />
-    <ClCompile Include="..\..\src\MiJuego\Components\MultitexComp.cpp" />
-    <ClCompile Include="..\..\src\MiJuego\Components\ParallaxComp.cpp" />
-    <ClCompile Include="..\..\src\MiJuego\Components\RotationComp.cpp" />
-    <ClCompile Include="..\..\src\MiJuego\Generators\Viento.cpp" />
-    <ClCompile Include="..\..\src\MiJuego\Main.cpp" />
-    <ClCompile Include="..\..\src\MiJuego\Managers\AudioMan.cpp" />
-    <ClCompile Include="..\..\src\MiJuego\Managers\CameraController.cpp" />
-    <ClCompile Include="..\..\src\MiJuego\Managers\DebugText.cpp" />
-    <ClCompile Include="..\..\src\MiJuego\Managers\GameManager.cpp" />
-    <ClCompile Include="..\..\src\MiJuego\Managers\PhysicsMan.cpp" />
-    <ClCompile Include="..\..\src\MiJuego\Managers\SandboxMan.cpp" />
-    <ClCompile Include="..\..\src\MiJuego\Piano.cpp" />
-    <ClCompile Include="..\..\src\MiJuego\Scenes\PruebaScene.cpp" />
-    <ClCompile Include="..\..\src\MiJuego\Scenes\PruebaFisicas.cpp" />
-    <ClCompile Include="..\..\src\MiJuego\Scenes\PruebaSonido.cpp" />
-    <ClCompile Include="..\..\src\MiJuego\Scenes\Sandbox.cpp" />
+    <ClCompile Include="..\..\test\main.cpp" />
+    <ClCompile Include="..\..\test\Sonido\Audio_Test.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="..\..\src\MiJuego\Callbacks.h" />
-    <ClInclude Include="..\..\src\MiJuego\Components\AguaComp.h" />
-    <ClInclude Include="..\..\src\MiJuego\Components\Ambulancia.h" />
-    <ClInclude Include="..\..\src\MiJuego\Components\BloqueComp.h" />
-    <ClInclude Include="..\..\src\MiJuego\Components\DayCicle.h" />
-    <ClInclude Include="..\..\src\MiJuego\Components\Multiplayer.h" />
-    <ClInclude Include="..\..\src\MiJuego\Components\MultitexComp.h" />
-    <ClInclude Include="..\..\src\MiJuego\Components\ParallaxComp.h" />
-    <ClInclude Include="..\..\src\MiJuego\Components\RotationComp.h" />
-    <ClInclude Include="..\..\src\MiJuego\Generators\Viento.h" />
-    <ClInclude Include="..\..\src\MiJuego\Managers\AudioMan.h" />
-    <ClInclude Include="..\..\src\MiJuego\Managers\CameraController.h" />
-    <ClInclude Include="..\..\src\MiJuego\Managers\DebugText.h" />
-    <ClInclude Include="..\..\src\MiJuego\Managers\GameManager.h" />
-    <ClInclude Include="..\..\src\MiJuego\Managers\PhysicsMan.h" />
-    <ClInclude Include="..\..\src\MiJuego\Managers\SandboxMan.h" />
-    <ClInclude Include="..\..\src\MiJuego\Piano.h" />
-    <ClInclude Include="..\..\src\MiJuego\Scenes\PruebaScene.h" />
-    <ClInclude Include="..\..\src\MiJuego\Scenes\PruebaFisicas.h" />
-    <ClInclude Include="..\..\src\MiJuego\Scenes\PruebaSonido.h" />
-    <ClInclude Include="..\..\src\MiJuego\Scenes\Sandbox.h" />
+    <ClInclude Include="..\..\test\Sonido\Audio_Test.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

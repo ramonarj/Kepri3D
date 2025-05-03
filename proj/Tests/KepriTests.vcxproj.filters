@@ -1,0 +1,19 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="Sonido">
+      <UniqueIdentifier>{fc7f2f99-71ff-40a4-9e4b-aa1cf7c866a5}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="..\..\test\main.cpp" />
+    <ClCompile Include="..\..\test\Sonido\Audio_Test.cpp">
+      <Filter>Sonido</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="..\..\test\Sonido\Audio_Test.h">
+      <Filter>Sonido</Filter>
+    </ClInclude>
+  </ItemGroup>
+</Project>

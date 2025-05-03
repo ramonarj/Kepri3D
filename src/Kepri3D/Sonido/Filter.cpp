@@ -1,5 +1,6 @@
 #include "Filter.h"
 
+#include "CoreAudio.h"
 #include "AudioManager.h"
 #include "alext.h"
 
@@ -30,12 +31,12 @@ Filter::Filter(FilterType type, float cutFreq) : type(type), filterId(0)
 	alGenFilters(1, &filterId);
 
 	// Gestión de errores
-	if (alGetError() != AL_NO_ERROR) { printf("Error: could not generate filter\n"); }
+	checkALError("No se pudo crear el filtro");
 	if (!alIsFilter(filterId)) { return; }
 
 	// Darle los parámetros adecuados
 	alFilteri(filterId, AL_FILTER_TYPE, AL_FILTER_NULL + type);
-	if (alGetError() != AL_NO_ERROR) { printf("Error: no hay soporte para este tipo de filtro\n"); }
+	checkALError("No hay soporte para filtros de este tipo");
 	setFrequency(cutFreq);
 }
 
@@ -103,17 +104,17 @@ Effect::Effect(EffectType type) : type(type), effectId(0)
 	// 1) Crear una ranura para el nuevo efecto
 	alGetError();
 	alGenAuxiliaryEffectSlots(1, &slotId);
-	if (alGetError() != AL_NO_ERROR) { printf("Error: no se pudo crear la ranura para el efecto\n"); }
+	checkALError("No se pudo crear la ranura para el efecto");
 	s_effectSlots++;
 
 	// 2) Crear el efecto 
 	alGenEffects(1, &effectId);
-	if (alGetError() != AL_NO_ERROR) { printf("Error: no se pudo crear el efecto \n"); }
+	checkALError("No se pudo crear el efecto");
 	if (!alIsEffect(effectId)) { return; }
 
 	// Darle los parámetros adecuados
 	alEffecti(effectId, AL_EFFECT_TYPE, AL_EFFECT_NULL + type);
-	if (alGetError() != AL_NO_ERROR) { printf("Error: no hay soporte para este tipo de filtro\n"); }
+	checkALError("No hay soporte para efectos de este tipo");
 
 	// Específico del efecto
 	switch(type)
@@ -129,7 +130,7 @@ Effect::Effect(EffectType type) : type(type), effectId(0)
 
 	// 3) Insertar el efecto en la ranura
 	alAuxiliaryEffectSloti(slotId, AL_EFFECTSLOT_EFFECT, effectId);
-	if (alGetError() != AL_NO_ERROR) { printf("Error: could not load effect into effect slot\n"); }
+	checkALError("No se pudo cargar el efecto en la ranura");
 }
 
 Effect::~Effect()

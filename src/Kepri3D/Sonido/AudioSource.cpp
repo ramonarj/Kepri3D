@@ -1,9 +1,10 @@
 #include "AudioSource.h"
 
-#include "al.h"
-#include "alc.h"
+#include "CoreAudio.h"
 #include "alext.h"
-#include "alut.h"
+
+//#include "alc.h"
+//#include "alut.h"
 
 #include "Filter.h"
 #include "Audio.h"
@@ -140,8 +141,7 @@ void AudioSource::addEffect(Effect* e, unsigned int auxSend)
 {
 	// Conectar una de las salidas auxiliares de la fuente sin filtrar al efecto ("wet")
 	alSource3i(sourceId, AL_AUXILIARY_SEND_FILTER, e->slotId, auxSend, NULL);
-	if (alGetError() != AL_NO_ERROR)
-		printf("Error: no se pudo conectar la fuente al efecto\n");
+	checkALError("No se pudo conectar la fuente al efecto");
 
 	auxSends.push_back(e);
 }
@@ -149,9 +149,8 @@ void AudioSource::addEffect(Effect* e, unsigned int auxSend)
 void AudioSource::removeEffect(unsigned int auxSend)
 {
 	// Desactivar la salida auxiliar dada
-	alSource3i(sourceId, AL_AUXILIARY_SEND_FILTER, AL_EFFECTSLOT_NULL, auxSend, NULL);
-	if (alGetError() != AL_NO_ERROR)
-		printf("Error: no se pudo quitar el efecto\n");
+	alSource3i(sourceId, AL_AUXILIARY_SEND_FILTER, AL_EFFECTSLOT_NULL,auxSend, NULL);
+	checkALError("No se pudo quitar el efecto");
 
 	auxSends.erase(auxSends.begin() + auxSend);
 }
@@ -167,8 +166,7 @@ void AudioSource::addFilteredEffect(Filter* f, Effect* e, unsigned int auxSend)
 {
 	// Enviar la señal al efecto dado, filtrándola por el camino
 	alSource3i(sourceId, AL_AUXILIARY_SEND_FILTER, e->slotId, auxSend, f->filterId);
-	if (alGetError() != AL_NO_ERROR)
-		printf("Failed to configure Source Send 1\n");
+	checkALError("Failed to configure Source Send" + auxSend);
 
 	auxSends.push_back(e);
 }

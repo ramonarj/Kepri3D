@@ -2,11 +2,11 @@
 
 #include "../Kepri3D.h"
 
-#include "../AudioMan.h"
-#include "../CameraController.h"
-#include "../DebugText.h"
-#include "../Ambulancia.h"
-#include "../Piano.h"
+#include "AudioMan.h"
+#include "CameraController.h"
+#include "DebugText.h"
+#include "Components/Ambulancia.h"
+#include "Piano.h"
 
 void PruebaSonido::loadResources()
 {

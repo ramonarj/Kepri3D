@@ -2,13 +2,13 @@
 
 #include "../Kepri3D.h"
 
-#include "../RotationComp.h"
-#include "../CameraController.h"
-#include "../GameManager.h"
-#include "../PhysicsMan.h"
-#include "../DebugText.h"
-#include "../BloqueComp.h"
-#include "../Viento.h"
+#include "Components/RotationComp.h"
+#include "Components/BloqueComp.h"
+#include "Managers/CameraController.h"
+#include "Managers/GameManager.h"
+#include "Managers/PhysicsMan.h"
+#include "Managers/DebugText.h"
+#include "Generators/Viento.h"
 
 void PruebaFisicas::setup()
 {

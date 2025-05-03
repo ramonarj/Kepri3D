@@ -2,16 +2,16 @@
 
 #include "../Kepri3D.h"
 
-#include "../GameManager.h"
-#include "../DayCicle.h"
-#include "../RotationComp.h"
-#include "../CameraController.h"
-#include "../MultitexComp.h"
-#include "../ParallaxComp.h"
-#include "../AguaComp.h"
-#include "../DebugText.h"
-#include "../Callbacks.h"
-#include "../Multiplayer.h"
+#include "Managers/GameManager.h"
+#include "Components/DayCicle.h"
+#include "Components/RotationComp.h"
+#include "Managers/CameraController.h"
+#include "Components/MultitexComp.h"
+#include "Components/ParallaxComp.h"
+#include "Components/AguaComp.h"
+#include "Managers/DebugText.h"
+#include "Callbacks.h"
+#include "Components/Multiplayer.h"
 
 const float buttonScale = 0.28f;
 const float buttonMargin = 0.1f;

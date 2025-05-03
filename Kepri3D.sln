@@ -7,6 +7,8 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "MiJuego", "proj\MiJuego\MiJ
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Kepri3D", "proj\Kepri3D\Kepri3D.vcxproj", "{AFA6BC59-4471-421F-967B-5BC7E119116C}"
 EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "KepriTests", "proj\Tests\KepriTests.vcxproj", "{88B890B8-D5FD-45A0-A22B-7B4FD6ECA081}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|x64 = Debug|x64
@@ -31,6 +33,14 @@ Global
 		{AFA6BC59-4471-421F-967B-5BC7E119116C}.Release|x64.Build.0 = Release|x64
 		{AFA6BC59-4471-421F-967B-5BC7E119116C}.Release|x86.ActiveCfg = Release|Win32
 		{AFA6BC59-4471-421F-967B-5BC7E119116C}.Release|x86.Build.0 = Release|Win32
+		{88B890B8-D5FD-45A0-A22B-7B4FD6ECA081}.Debug|x64.ActiveCfg = Debug|x64
+		{88B890B8-D5FD-45A0-A22B-7B4FD6ECA081}.Debug|x64.Build.0 = Debug|x64
+		{88B890B8-D5FD-45A0-A22B-7B4FD6ECA081}.Debug|x86.ActiveCfg = Debug|Win32
+		{88B890B8-D5FD-45A0-A22B-7B4FD6ECA081}.Debug|x86.Build.0 = Debug|Win32
+		{88B890B8-D5FD-45A0-A22B-7B4FD6ECA081}.Release|x64.ActiveCfg = Release|x64
+		{88B890B8-D5FD-45A0-A22B-7B4FD6ECA081}.Release|x64.Build.0 = Release|x64
+		{88B890B8-D5FD-45A0-A22B-7B4FD6ECA081}.Release|x86.ActiveCfg = Release|Win32
+		{88B890B8-D5FD-45A0-A22B-7B4FD6ECA081}.Release|x86.Build.0 = Release|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

@@ -8,26 +8,17 @@
     <Filter Include="Scenes">
       <UniqueIdentifier>{ba38d5b1-8858-4b04-98f7-240d74c6aef0}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Archivos de origen\Graficos">
-      <UniqueIdentifier>{0404eb8c-dfd0-4357-ad2d-4fe1708f340e}</UniqueIdentifier>
+    <Filter Include="Generators">
+      <UniqueIdentifier>{3fd8059d-96a1-4669-a63e-28e804cef127}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Archivos de origen\Fisicas">
-      <UniqueIdentifier>{bca7530a-06b0-4543-95f7-1014b22eb7eb}</UniqueIdentifier>
+    <Filter Include="Componentes">
+      <UniqueIdentifier>{4525ff1f-602d-4a37-afe7-8d7bba081f5e}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Archivos de origen\Audio">
-      <UniqueIdentifier>{3ef00209-4149-4f2b-aa3e-1aebb154aaef}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Archivos de origen\Sandbox">
-      <UniqueIdentifier>{cd8ec647-0086-412b-ad02-7a95dd310b27}</UniqueIdentifier>
+    <Filter Include="Managers">
+      <UniqueIdentifier>{7852ea19-7cf9-4d6a-adb8-252d87be7f9f}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="..\..\src\MiJuego\CameraController.cpp">
-      <Filter>Archivos de origen</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\src\MiJuego\GameManager.cpp">
-      <Filter>Archivos de origen</Filter>
-    </ClCompile>
     <ClCompile Include="..\..\src\MiJuego\Main.cpp">
       <Filter>Archivos de origen</Filter>
     </ClCompile>
@@ -37,121 +28,127 @@
     <ClCompile Include="..\..\src\MiJuego\Scenes\PruebaFisicas.cpp">
       <Filter>Scenes</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\src\MiJuego\DebugText.cpp">
-      <Filter>Archivos de origen</Filter>
-    </ClCompile>
     <ClCompile Include="..\..\src\MiJuego\Callbacks.cpp">
       <Filter>Archivos de origen</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\src\MiJuego\AguaComp.cpp">
-      <Filter>Archivos de origen\Graficos</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\src\MiJuego\MultitexComp.cpp">
-      <Filter>Archivos de origen\Graficos</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\src\MiJuego\ParallaxComp.cpp">
-      <Filter>Archivos de origen\Graficos</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\src\MiJuego\RotationComp.cpp">
-      <Filter>Archivos de origen\Graficos</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\src\MiJuego\PhysicsMan.cpp">
-      <Filter>Archivos de origen\Fisicas</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\src\MiJuego\BloqueComp.cpp">
-      <Filter>Archivos de origen\Fisicas</Filter>
     </ClCompile>
     <ClCompile Include="..\..\src\MiJuego\Scenes\PruebaSonido.cpp">
       <Filter>Scenes</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\src\MiJuego\AudioMan.cpp">
-      <Filter>Archivos de origen\Audio</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\src\MiJuego\Piano.cpp">
-      <Filter>Archivos de origen\Audio</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\src\MiJuego\Ambulancia.cpp">
-      <Filter>Archivos de origen\Audio</Filter>
-    </ClCompile>
     <ClCompile Include="..\..\src\MiJuego\Scenes\Sandbox.cpp">
       <Filter>Scenes</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\src\MiJuego\DayCicle.cpp">
-      <Filter>Archivos de origen\Sandbox</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\src\MiJuego\SandboxMan.cpp">
-      <Filter>Archivos de origen\Sandbox</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\src\MiJuego\Viento.cpp">
-      <Filter>Archivos de origen\Fisicas</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\src\MiJuego\Multiplayer.cpp">
+    <ClCompile Include="..\..\src\MiJuego\Piano.cpp">
       <Filter>Archivos de origen</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\MiJuego\Managers\AudioMan.cpp">
+      <Filter>Managers</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\MiJuego\Managers\CameraController.cpp">
+      <Filter>Managers</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\MiJuego\Managers\DebugText.cpp">
+      <Filter>Managers</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\MiJuego\Managers\GameManager.cpp">
+      <Filter>Managers</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\MiJuego\Managers\PhysicsMan.cpp">
+      <Filter>Managers</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\MiJuego\Managers\SandboxMan.cpp">
+      <Filter>Managers</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\MiJuego\Components\AguaComp.cpp">
+      <Filter>Componentes</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\MiJuego\Components\Ambulancia.cpp">
+      <Filter>Componentes</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\MiJuego\Components\BloqueComp.cpp">
+      <Filter>Componentes</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\MiJuego\Components\DayCicle.cpp">
+      <Filter>Componentes</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\MiJuego\Components\Multiplayer.cpp">
+      <Filter>Componentes</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\MiJuego\Components\MultitexComp.cpp">
+      <Filter>Componentes</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\MiJuego\Components\ParallaxComp.cpp">
+      <Filter>Componentes</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\MiJuego\Components\RotationComp.cpp">
+      <Filter>Componentes</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\MiJuego\Generators\Viento.cpp">
+      <Filter>Generators</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="..\..\src\MiJuego\CameraController.h">
-      <Filter>Archivos de origen</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\src\MiJuego\GameManager.h">
-      <Filter>Archivos de origen</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\src\MiJuego\Scenes\PruebaScene.h">
       <Filter>Scenes</Filter>
     </ClInclude>
     <ClInclude Include="..\..\src\MiJuego\Scenes\PruebaFisicas.h">
       <Filter>Scenes</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\src\MiJuego\DebugText.h">
-      <Filter>Archivos de origen</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\src\MiJuego\Callbacks.h">
       <Filter>Archivos de origen</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\src\MiJuego\AguaComp.h">
-      <Filter>Archivos de origen\Graficos</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\src\MiJuego\MultitexComp.h">
-      <Filter>Archivos de origen\Graficos</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\src\MiJuego\ParallaxComp.h">
-      <Filter>Archivos de origen\Graficos</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\src\MiJuego\RotationComp.h">
-      <Filter>Archivos de origen\Graficos</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\src\MiJuego\PhysicsMan.h">
-      <Filter>Archivos de origen\Fisicas</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\src\MiJuego\BloqueComp.h">
-      <Filter>Archivos de origen\Fisicas</Filter>
     </ClInclude>
     <ClInclude Include="..\..\src\MiJuego\Scenes\PruebaSonido.h">
       <Filter>Scenes</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\src\MiJuego\AudioMan.h">
-      <Filter>Archivos de origen\Audio</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\src\MiJuego\Piano.h">
-      <Filter>Archivos de origen\Audio</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\src\MiJuego\Ambulancia.h">
-      <Filter>Archivos de origen\Audio</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\src\MiJuego\Scenes\Sandbox.h">
       <Filter>Scenes</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\src\MiJuego\DayCicle.h">
-      <Filter>Archivos de origen\Sandbox</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\src\MiJuego\SandboxMan.h">
-      <Filter>Archivos de origen\Sandbox</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\src\MiJuego\Viento.h">
-      <Filter>Archivos de origen\Fisicas</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\src\MiJuego\Multiplayer.h">
+    <ClInclude Include="..\..\src\MiJuego\Piano.h">
       <Filter>Archivos de origen</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\MiJuego\Managers\AudioMan.h">
+      <Filter>Managers</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\MiJuego\Managers\CameraController.h">
+      <Filter>Managers</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\MiJuego\Managers\DebugText.h">
+      <Filter>Managers</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\MiJuego\Managers\GameManager.h">
+      <Filter>Managers</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\MiJuego\Managers\PhysicsMan.h">
+      <Filter>Managers</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\MiJuego\Managers\SandboxMan.h">
+      <Filter>Managers</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\MiJuego\Components\AguaComp.h">
+      <Filter>Componentes</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\MiJuego\Components\Ambulancia.h">
+      <Filter>Componentes</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\MiJuego\Components\BloqueComp.h">
+      <Filter>Componentes</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\MiJuego\Components\DayCicle.h">
+      <Filter>Componentes</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\MiJuego\Components\Multiplayer.h">
+      <Filter>Componentes</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\MiJuego\Components\MultitexComp.h">
+      <Filter>Componentes</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\MiJuego\Components\ParallaxComp.h">
+      <Filter>Componentes</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\MiJuego\Components\RotationComp.h">
+      <Filter>Componentes</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\MiJuego\Generators\Viento.h">
+      <Filter>Generators</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

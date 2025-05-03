@@ -198,6 +198,7 @@
     <ClCompile Include="..\..\src\Kepri3D\Sonido\AudioManager.cpp" />
     <ClCompile Include="..\..\src\Kepri3D\Sonido\Audio.cpp" />
     <ClCompile Include="..\..\src\Kepri3D\Sonido\AudioSource.cpp" />
+    <ClCompile Include="..\..\src\Kepri3D\Sonido\CoreAudio.cpp" />
     <ClCompile Include="..\..\src\Kepri3D\Sonido\Filter.cpp" />
     <ClCompile Include="..\..\src\Kepri3D\Terreno.cpp" />
     <ClCompile Include="..\..\src\Kepri3D\UI\Button.cpp" />
@@ -240,6 +241,7 @@
     <ClInclude Include="..\..\src\Kepri3D\Sonido\AudioManager.h" />
     <ClInclude Include="..\..\src\Kepri3D\Sonido\Audio.h" />
     <ClInclude Include="..\..\src\Kepri3D\Sonido\AudioSource.h" />
+    <ClInclude Include="..\..\src\Kepri3D\Sonido\CoreAudio.h" />
     <ClInclude Include="..\..\src\Kepri3D\Sonido\Filter.h" />
     <ClInclude Include="..\..\src\Kepri3D\Terreno.h" />
     <ClInclude Include="..\..\src\Kepri3D\UI\Button.h" />

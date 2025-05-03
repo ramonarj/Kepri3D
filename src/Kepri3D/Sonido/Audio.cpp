@@ -3,8 +3,7 @@
 #include <fstream>
 #include <iostream>
 
-#include "al.h"
-#include "alut.h"
+#include "CoreAudio.h"
 #include "Utils.h" // PI
 
 Audio::Audio(const std::string& filePath, AudioFormat formato)
@@ -23,107 +22,43 @@ Audio::Audio(const std::string& filePath, AudioFormat formato)
 	// Sonido monofónico
 	if (channel == 1)
 	{
-		if (bps == 8)
-			format = AL_FORMAT_MONO8;
-		else 
-			format = AL_FORMAT_MONO16;
+		if (bps == 8) format = AL_FORMAT_MONO8;
+		else format = AL_FORMAT_MONO16;
 	}
 	// Sonido estereofónico (>1 canal)
 	else 
 	{
-		if (bps == 8)
-			format = AL_FORMAT_STEREO8;
-		else 
-			format = AL_FORMAT_STEREO16;
+		if (bps == 8) format = AL_FORMAT_STEREO8;
+		else  format = AL_FORMAT_STEREO16;
 	}
 
 	// Crear buffer de sonido y rellenarlo con los datos y formato correcto
 	alGenBuffers(1, &bufferId);
 	alBufferData(bufferId, format, data, size, sampleRate);
 
-	ALenum error = alGetError();
-	if (error != AL_NO_ERROR)
-		std::cout << "Error " << error << " al crear el Audio Buffer para " << filePath << std::endl;
+	// control errores
+	checkALError("No se pudo crear el Audio Buffer para " + filePath);
 
 	delete data; // Liberar la memoria
 }
 
 Audio::Audio(WaveForm tipoOnda, float freq)
 {
-	int sampleRate = 44100; int bps = 8; int maxAmp = 255; //para 8 bit
+	int sampleRate = 44100;
 	// Duración variable (depende de la frecuencia); hacemos que el audio contenga solamente 1 ciclo de la onda
 	// menos para el ruido, que lo hacemos de 1 segundo
 	float dur = tipoOnda == Ruido ? 1.0 : 1.0 / freq;
 
 	// Crear (sintetizar) la onda
 	int size = dur * sampleRate;
-	char* data = new char[size];
-	switch(tipoOnda)
-	{
-	case Seno:
-	{
-		for (int i = 0; i < size; i++)
-		{
-			float val = (float)i / (float)sampleRate; //entre 0-1
-			float dato = 127 * (sin(val * 2 * PI * freq) + 1);
-			data[i] = dato;
-		}
-		break;
-	}
-	case Cuadrado:
-	{
-		for (int i = 0; i < size; i++)
-		{
-			float val = (float)i / ((float)sampleRate / freq); 
-			val -= (int)val; //entre 0-1
-			if (val >= 0.5) val = 1;
-			else val = 0;
-			data[i] = (float)(255.0 * val);
-		}
-		break;
-	}
-	case Sierra:
-	{
-		for (int i = 0; i < size; i++)
-		{
-			float val = (float)i / ((float)sampleRate / freq); 
-			val -= (int)val; //entre 0-1
-			data[i] = (float)(255.0 * val);
-		}
-		break;
-	}
-	case Triangular:
-	{
-		for (int i = 0; i < size; i++)
-		{
-			float val = (float)i / ((float)sampleRate / freq);
-			val -= (int)val; //entre 0-1
-			if (val < 0.25) val = val * 2 + 0.5;
-			else if (val < 0.75) val = 1 - ((val - 0.25) / 0.5);
-			else val = (val - 0.75) * 2;
-
-			data[i] = (float)(255.0 * val);
-		}
-		break;
-	}
-	case Ruido:
-	{
-		for (int i = 0; i < size; i++)
-			data[i] = float(rand() % 255);
-		break;
-	}
-	default:
-		break;
-	}
+	unsigned char* data = generateWave(tipoOnda, freq, sampleRate);
 
 	// Crear buffer de sonido y rellenarlo con los datos y formato correcto
 	alGenBuffers(1, &bufferId);
 	alBufferData(bufferId, AL_FORMAT_MONO8, data, size, sampleRate);
 
 	// Comprobación de errores
-	ALenum error = alGetError();
-	if (error != AL_NO_ERROR)
-		std::cout << "Error " << error << " al crear la onda de audio" << std::endl;
+	checkALError("No se pudo crear la onda de audio");
 
 	delete data; 
 }
@@ -139,16 +74,19 @@ unsigned char* Audio::generateWave(WaveForm tipoOnda, float freq, float sampleRa
 
 unsigned char* Audio::generateWave(WaveForm tipoOnda, float freq, float sampleRate, float duracion)
 {
+	// 0 = pico de onda negativo // 128 = onda con amplitud cero // 255 = pico de amplitud positivo
+	float maxVal = 255;
 	// Crear (sintetizar) la onda
 	int size = duracion * sampleRate;
 	unsigned char* data = new unsigned char[size];
+	float val;
 	switch (tipoOnda)
 	{
 	case Seno:
 	{
 		for (int i = 0; i < size; i++)
 		{
-			float val = (float)i / (float)sampleRate; //entre 0-1
+			val = (float)i / (float)sampleRate; //entre 0-1
 			float dato = 127 * (sin(val * 2 * PI * freq) + 1);
 			data[i] = dato;
 		}
@@ -158,9 +96,9 @@ unsigned char* Audio::generateWave(WaveForm tipoOnda, float freq, float sampleRa
 	{
 		for (int i = 0; i < size; i++)
 		{
-			float val = (float)i / ((float)sampleRate / freq);
+			val = (float)i / ((float)sampleRate / freq);
 			val -= (int)val; //entre 0-1
-			if (val >= 0.5) val = 1;
+			if (val <= 0.5) val = 1;
 			else val = 0;
 			data[i] = (float)(255.0 * val);
 		}
@@ -170,9 +108,10 @@ unsigned char* Audio::generateWave(WaveForm tipoOnda, float freq, float sampleRa
 	{
 		for (int i = 0; i < size; i++)
 		{
-			float val = (float)i / ((float)sampleRate / freq);
+			val = (float)i / ((float)sampleRate / freq);
 			val -= (int)val; //entre 0-1
-			data[i] = (float)(255.0 * val);
+			if (val <= 0.5) data[i] = 128 + 255 * val;
+			else data[i] = 128 * (val * 2.0 - 1);
 		}
 		break;
 	}
@@ -180,7 +119,7 @@ unsigned char* Audio::generateWave(WaveForm tipoOnda, float freq, float sampleRa
 	{
 		for (int i = 0; i < size; i++)
 		{
-			float val = (float)i / ((float)sampleRate / freq);
+			val = (float)i / ((float)sampleRate / freq);
 			val -= (int)val; //entre 0-1
 			if (val < 0.25) val = val * 2 + 0.5;
 			else if (val < 0.75) val = 1 - ((val - 0.25) / 0.5);

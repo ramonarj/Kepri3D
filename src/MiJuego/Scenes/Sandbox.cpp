@@ -2,9 +2,9 @@
 
 #include "Kepri3D.h"
 
-#include "../CameraController.h"
-#include "../DebugText.h"
-#include "../SandboxMan.h"
+#include "CameraController.h"
+#include "DebugText.h"
+#include "SandboxMan.h"
 
 void Sandbox::setup()
 {
