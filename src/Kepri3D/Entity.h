@@ -72,6 +72,7 @@ public:
 	const Shader* getShader() const;
 	inline Renderer* getRenderer() const { return m_renderer; }
 	inline std::vector<Component*> getComponents() { return m_componentes; }
+	inline std::vector<Entity*> getChildren() { return m_children; }
 	inline const glm::dmat4& getModelMat() const { return modelMat; }
 
 	// Ejes locales de la entidad

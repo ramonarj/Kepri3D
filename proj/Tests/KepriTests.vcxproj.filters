@@ -4,16 +4,25 @@
     <Filter Include="Sonido">
       <UniqueIdentifier>{fc7f2f99-71ff-40a4-9e4b-aa1cf7c866a5}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Core">
+      <UniqueIdentifier>{0e519eac-6c66-405d-93f5-fa4f3dac0e66}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\..\test\main.cpp" />
-    <ClCompile Include="..\..\test\Sonido\Audio_Test.cpp">
+    <ClCompile Include="..\..\test\Sonido\Audio_test.cpp">
       <Filter>Sonido</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\test\Entity_test.cpp">
+      <Filter>Core</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="..\..\test\Sonido\Audio_Test.h">
+    <ClInclude Include="..\..\test\Sonido\Audio_test.h">
       <Filter>Sonido</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\test\Entity_test.h">
+      <Filter>Core</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

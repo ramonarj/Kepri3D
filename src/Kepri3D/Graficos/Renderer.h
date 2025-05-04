@@ -10,6 +10,7 @@ class Mesh;
 class Renderer : public Component
 {
 public:
+	Renderer() : m_mesh(nullptr), m_materials(nullptr), m_volumeMesh(nullptr){}
 	Renderer(Mesh* mesh);
 	~Renderer();
 

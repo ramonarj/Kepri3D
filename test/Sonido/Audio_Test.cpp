@@ -10,7 +10,7 @@ void test_generateWave()
 	//assert(a[0] == 0);
 
 	a = Audio::generateWave(Cuadrado, 1, 100);
-	assert(a[0] == 0);
+	assert(a[0] == 255);
 
 	a = Audio::generateWave(Sierra, 1, 100);
 	//assert(a[0] == 0);

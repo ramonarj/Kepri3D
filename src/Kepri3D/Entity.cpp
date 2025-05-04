@@ -46,10 +46,12 @@ void Entity::defaultValues()
 
 void Entity::addComponent(Component* c)
 {
+	if (c == nullptr) { return; }
 	// Comprobar que no lo tenga ya
 	for (Component* it : m_componentes)
 		if (it == c)
 			return;
+
 	// Añadirlo a la lista y darle nuestra referencia
 	m_componentes.push_back(c);
 	c->setEntity(this);

@@ -86,6 +86,11 @@ void CleanMap(std::map<std::string, T*>& map)
 /* Convierte un archivo en una cadena de texto, incluyendo los saltos de línea que haya */
 std::string FileToString(const char* fileName);
 
+inline bool sameVector(const glm::dvec3& v1, const glm::dvec3& v2) 
+{
+	return glm::length(v1 - v2) < 0.0000001;
+}
+
 namespace Kepri
 {
 	/* Interpolación lineal */
