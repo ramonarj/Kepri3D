@@ -160,10 +160,12 @@
     <ClCompile Include="..\..\test\Entity_test.cpp" />
     <ClCompile Include="..\..\test\main.cpp" />
     <ClCompile Include="..\..\test\Sonido\Audio_test.cpp" />
+    <ClCompile Include="..\..\test\TestSuite.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\test\Entity_test.h" />
     <ClInclude Include="..\..\test\Sonido\Audio_test.h" />
+    <ClInclude Include="..\..\test\TestSuite.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

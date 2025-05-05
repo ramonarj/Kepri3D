@@ -4,7 +4,13 @@
 #include <iostream>
 #include <assert.h>
 
-void test_generateWave()
+void AudioSuite::setup()
+{
+	addTest(test_generateWave);
+	addTest(test2);
+}
+
+void AudioSuite::test_generateWave()
 {
 	unsigned char* a = Audio::generateWave(Seno, 1, 100);
 	//assert(a[0] == 0);

@@ -6,16 +6,19 @@
 int main()
 {
 	// Audio
-	test_generateWave();
+	TestSuite::runTests<AudioSuite>();
 
 	// Entidades
-	test_addComponent();
-	test_right();
-	test_up();
-	test_forward();
-	test_setParent();
+	TestSuite::runTests<EntitySuite>();
 
+	// Log
+	std::cout << "- - - Todos los tests ejecutados (" << TestSuite::testsPasados() << "/" << TestSuite::testsTotales() 
+		<< ") - - -" << std::endl;
 
-	std::cout << "- - - Todos los tests pasados - - - ";
+	std::vector<SuiteInfo> suites = TestSuite::suitesInfo();
+	for(int i = 0; i < suites.size(); i++)
+	{
+		std::cout << "    ->Suite '" << suites[i].nombre << "': " << suites[i].numTests << std::endl;
+	}
 	int e; std::cin >> e;
 }

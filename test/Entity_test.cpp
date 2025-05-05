@@ -7,7 +7,18 @@
 #include <iostream>
 #include <assert.h>
 
-void test_addComponent()
+void EntitySuite::setup()
+{
+	addTest(test_addComponent);
+
+	addTest(test_right);
+	addTest(test_up);
+	addTest(test_forward);
+
+	addTest(test_setParent);
+}
+
+void EntitySuite::test_addComponent()
 {
 	Entity e;
 	// Componente nullptr
@@ -23,7 +34,7 @@ void test_addComponent()
 	assert(e.getComponent<Rigid>() == nullptr);
 }
 
-void test_right()
+void EntitySuite::test_right()
 {
 	Entity e;
 	assert(glm::length(e.right()) == 1);
@@ -40,7 +51,7 @@ void test_right()
 	assert(sameVector(e.right(), {0, 0, -1}));
 }
 
-void test_up()
+void EntitySuite::test_up()
 {
 	Entity e;
 	assert(glm::length(e.up()) == 1);
@@ -50,7 +61,7 @@ void test_up()
 	assert(sameVector(e.up(), { 0, 1, 0 }));
 }
 
-void test_forward()
+void EntitySuite::test_forward()
 {
 	Entity e;
 	assert(glm::length(e.forward()) == 1);
@@ -59,7 +70,7 @@ void test_forward()
 	assert(sameVector(e.forward(), {0, 0, 1}));
 }
 
-void test_setParent()
+void EntitySuite::test_setParent()
 {
 	Entity e, e2;
 	Entity* parent = new Entity();

@@ -1,15 +1,21 @@
 #ifndef __ENTITY_TEST__
 #define __ENTITY_TEST__
 
+#include "TestSuite.h"
 
-void test_addComponent();
+class EntitySuite : public TestSuite
+{
+public:
+	void setup() override;
+protected:
+	// Tests
+	Test test_addComponent();
 
-void test_right();
-void test_up();
-void test_forward();
+	Test test_right();
+	Test test_up();
+	Test test_forward();
 
-void test_setParent();
-
-
+	Test test_setParent();
+};
 
 #endif
