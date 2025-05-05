@@ -11,13 +11,30 @@ class Texture;
 
 const unsigned int NUM_TEXTURES = 8;
 
+// Texturas principales usadas por el material, que siempre se pasan al shader
+#define DIFFUSE_MAP 0
+#define SECONDARY_MAP 1
+#define SPECULAR_MAP 2
+#define NORMAL_MAP 3
+#define DISPLACEMENT_MAP 4
+#define REFLECTION_MAP 5
+#define SKYBOX_MAP 6
+#define EMISSION_MAP 7
+
 class Material
 {
 public: 
+#define estate 2
+	static const glm::vec4 DEFAULT_AMBIENT;
+	static const glm::vec4 DEFAULT_DIFFUSE;
+	static const glm::vec4 DEFAULT_SPECULAR;
+	static const glm::vec4 DEFAULT_EMISSION;
+	static const float DEFAULT_BRILLO;
+
 	/* Constructora por defecto */
 	Material();
 	Material(glm::fvec4 ambient, glm::fvec4 diffuse, glm::fvec4 specular,
-		glm::fvec4 emission = { 0, 0, 0, 1 }, GLfloat brillo = 0);
+		glm::fvec4 emission = DEFAULT_EMISSION, GLfloat brillo = 0);
 
 	/* Carga el material en la Fixed Pipeline */
 	virtual void load();
@@ -36,8 +53,8 @@ public:
 	inline const glm::vec4& getDiffuse() const { return m_diffuse; }
 	inline const glm::vec3& getSpecular() const { return m_specular; }
 	inline const glm::vec4& getEmission() const { return m_emission; }
-	inline GLfloat getBrillo() const { return m_brillo; } // (0 - 128)
-	inline const Texture* getTexture(GLuint i) const { return m_textures[i]; }
+	inline float getBrillo() const { return m_brillo; } // (0 - 128)
+	const Texture* getTexture(GLuint i) const;
 	inline bool needsTangents() { return m_needsTangents; }
 
 	/* - - - - - Uniforms - - - - - */
@@ -71,7 +88,7 @@ private:
 	glm::fvec4 m_specular;
 
 	/* Exponente especular { 0 - 128 } */
-	GLfloat m_brillo;
+	float m_brillo;
 
 	/* Para materiales que 'emiten' luz (o más bien, que se ven cuando no hay luz) */
 	glm::fvec4 m_emission;
@@ -82,15 +99,7 @@ private:
 	/* Necesita que la malla provea vectores tangentes/no */
 	bool m_needsTangents;
 
-	/* Texturas utilizadas por el material */
-	// 0 = Textura Principal
-	// 1 = Textura Secundaria
-	// 2 = Specular Map
-	// 3 = Normal Map
-	// 4 = Displacement Map
-	// 5 = Reflection Map
-	// 6 = Skybox
-	// 7 = Emission Map
+	/* Texturas principales del material */
 	Texture* m_textures[NUM_TEXTURES];
 
 	/* - - Uniforms - - */

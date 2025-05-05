@@ -1,13 +1,13 @@
 #ifndef __TEST_SUITE__
 #define __TEST_SUITE__
 
+#include <assert.h>
 #include <vector>
 #include <iostream>
 
 typedef void(*Callback)();
 
 #define Test static void
-#define NOMBRE(VAR) #VAR
 
 struct SuiteInfo
 {
@@ -31,6 +31,7 @@ public:
 protected:
 	virtual void setup() = 0;
 	inline void addTest(Callback test) { m_callbacks.push_back(test); }
+	inline void addTests(const std::vector<Callback>& tests) { for (Callback test : tests) m_callbacks.push_back(test); }
 
 	unsigned int numTests = 0;
 

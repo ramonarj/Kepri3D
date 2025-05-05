@@ -1,5 +1,5 @@
-#ifndef __ENTITY_TEST__
-#define __ENTITY_TEST__
+#ifndef __ENTITY_SUITE__
+#define __ENTITY_SUITE__
 
 #include "TestSuite.h"
 

@@ -5,6 +5,12 @@
 #include "Shader.h"
 #include <string>
 
+const glm::vec4 Material::DEFAULT_AMBIENT = { 0.2, 0.2, 0.2, 1.0 };
+const glm::vec4 Material::DEFAULT_DIFFUSE = { 0.8, 0.8, 0.8, 1.0 };
+const glm::vec4 Material::DEFAULT_SPECULAR = { 0.1, 0.1, 0.1, 1.0 };
+const glm::vec4 Material::DEFAULT_EMISSION = { 0.0, 0.0, 0.0, 1.0 };
+const float Material::DEFAULT_BRILLO = 8;
+
 GLuint Material::m_shading;
 bool Material::fresnel = true;
 bool Material::s_useTextures = true;
@@ -18,11 +24,11 @@ std::string g_texNames[NUM_TEXTURES] = { "textura", "textura2", "material.specul
 Material::Material()
 {
 	// Valores por defecto
-	m_ambient = { 0.2, 0.2, 0.2, 1.0 };
-	m_diffuse = { 0.8, 0.8, 0.8, 1.0 };
-	m_specular = { 0.1, 0.1, 0.1, 1.0 };
-	m_emission = { 0.0, 0.0, 0.0, 1.0 };
-	m_brillo = 8;
+	m_ambient = DEFAULT_AMBIENT;
+	m_diffuse = DEFAULT_DIFFUSE;
+	m_specular = DEFAULT_SPECULAR;
+	m_emission = DEFAULT_EMISSION;
+	m_brillo = DEFAULT_BRILLO;
 	m_face = GL_FRONT;
 	for (int i = 0; i < NUM_TEXTURES; i++)
 		m_textures[i] = nullptr;
@@ -45,12 +51,22 @@ Material::Material(glm::fvec4 ambient, glm::fvec4 diffuse, glm::fvec4 specular, 
 	m_needsTangents = false;
 }
 
+const Texture* Material::getTexture(GLuint i) const
+{
+	if (i < 0 || i >= NUM_TEXTURES) { return nullptr; }
+	return m_textures[i];
+}
+
 void Material::setTexture(unsigned int i, Texture* tex)
 {
+	if (i < 0 || i >= NUM_TEXTURES) { return; }
+
 	m_textures[i] = tex;
-	// Si es un normal map, necesitaremos tangentes de la malla
-	if (i == 3 || i == 4)
-		m_needsTangents = true;
+	// Si es un normal map, o mapa de desplazamiento, necesitaremos tangentes de la malla
+	if (i == NORMAL_MAP || i == DISPLACEMENT_MAP)
+	{
+		m_needsTangents = (tex != nullptr);
+	}
 }
 
 void Material::load()
@@ -144,6 +160,8 @@ void Material::sendCustomUniforms(Shader* sh)
 		i++;
 	}
 }
+
+// - - - - - -  - 
 
 void Material::setFloat(const std::string& name, float value)
 {

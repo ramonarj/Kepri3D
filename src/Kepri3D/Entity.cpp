@@ -256,7 +256,7 @@ void Entity::setShader(const std::string& shaderID)
 
 void Entity::setTexture(const std::string& textureID)
 {
-	getMaterial()->setTexture(0, ResourceManager::Instance()->getTexture(textureID));
+	getMaterial()->setTexture(DIFFUSE_MAP, ResourceManager::Instance()->getTexture(textureID));
 }
 
 // - - - - - - - - - - - - - - - - - 

@@ -185,22 +185,22 @@ bool ResourceManager::loadMaterial(const std::string& materialName, const std::s
 					if (!loadTexture(diffuseMap + ".png", diffuseMap))
 						loadTexture(diffuseMap + ".bmp", diffuseMap);
 			}
-			material->setTexture(0, getTexture(diffuseMap));
+			material->setTexture(DIFFUSE_MAP, getTexture(diffuseMap));
 		}
 		if (secondaryMap != "")
-			material->setTexture(1, getTexture(secondaryMap));
+			material->setTexture(SECONDARY_MAP, getTexture(secondaryMap));
 		if (specularMap != "")
-			material->setTexture(2, getTexture(specularMap));
+			material->setTexture(SPECULAR_MAP, getTexture(specularMap));
 		if (normalMap != "")
-			material->setTexture(3, getTexture(normalMap));
+			material->setTexture(NORMAL_MAP, getTexture(normalMap));
 		if (parallaxMap != "")
-			material->setTexture(4, getTexture(parallaxMap));
+			material->setTexture(DISPLACEMENT_MAP, getTexture(parallaxMap));
 		if (reflectionMap != "")
-			material->setTexture(5, getTexture(reflectionMap));
+			material->setTexture(REFLECTION_MAP, getTexture(reflectionMap));
 		if (skybox != "")
-			material->setTexture(6, getTexture(skybox));
+			material->setTexture(SKYBOX_MAP, getTexture(skybox));
 		if (emissionMap != "")
-			material->setTexture(7, getTexture(emissionMap));
+			material->setTexture(EMISSION_MAP, getTexture(emissionMap));
 
 		// Indicarle qué shader usa
 		material->setShader(getShader(shaderId));

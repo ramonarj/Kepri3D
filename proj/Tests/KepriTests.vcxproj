@@ -158,12 +158,14 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="..\..\test\Entity_test.cpp" />
+    <ClCompile Include="..\..\test\Graficos\MaterialSuite.cpp" />
     <ClCompile Include="..\..\test\main.cpp" />
     <ClCompile Include="..\..\test\Sonido\Audio_test.cpp" />
     <ClCompile Include="..\..\test\TestSuite.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\test\Entity_test.h" />
+    <ClInclude Include="..\..\test\Graficos\MaterialSuite.h" />
     <ClInclude Include="..\..\test\Sonido\Audio_test.h" />
     <ClInclude Include="..\..\test\TestSuite.h" />
   </ItemGroup>

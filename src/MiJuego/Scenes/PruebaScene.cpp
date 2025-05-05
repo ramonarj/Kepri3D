@@ -163,7 +163,7 @@ void PruebaScene::setup()
 
 	// Hierba
 	Hierba* hierba = new Hierba(2.5, 3);
-	hierba->getMaterial()->setTexture(0, ResourceManager::Instance()->getTexture("hierba"));
+	hierba->getMaterial()->setTexture(DIFFUSE_MAP, ResourceManager::Instance()->getTexture("hierba"));
 	hierba->setPosition({ 15, 0.5, 5 });
 	hierba->rotate(-PI / 2, { 0, 1, 0 }, GLOBAL);
 	hierba->addComponent(new RotationComp(0.75));
@@ -516,7 +516,7 @@ void PruebaScene::PruebaMateriales()
 	// Pared sin normal map para comparar
 	Grid* pared2 = new Grid(1, 1, 15, 15);
 	pared2->setMaterial("pared");
-	pared2->getMaterial()->setTexture(3, nullptr); //quitarle el normal map
+	pared2->getMaterial()->setTexture(NORMAL_MAP, nullptr); //quitarle el normal map
 	pared2->setPosition({ 10,6.5,-15 });
 	pared2->rotate(PI / 2, { 1,0,0 });
 	//pared2->receiveShadows(false);
@@ -554,7 +554,7 @@ void PruebaScene::PruebaMateriales()
 	// Esfera con reflejos
 	Esfera* esfReflejos = new Esfera(6, 30, 40);
 	esfReflejos->setMaterial("reflejos");
-	//esfReflejos->getMaterial()->setTexture(6, ResourceManager::Instance()->getTexture("citySkybox"));
+	//esfReflejos->getMaterial()->setTexture(SKYBOX_MAP, ResourceManager::Instance()->getTexture("citySkybox"));
 	esfReflejos->setPosition({ 40,25,0 });
 	AddEntity(esfReflejos);
 

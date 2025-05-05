@@ -1,8 +1,6 @@
 #include "Audio_Test.h"
 
 #include "Sonido/Audio.h"
-#include <iostream>
-#include <assert.h>
 
 void AudioSuite::setup()
 {

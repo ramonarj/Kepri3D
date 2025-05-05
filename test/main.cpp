@@ -2,6 +2,7 @@
 
 #include "Sonido/Audio_test.h"
 #include "Entity_test.h"
+#include "Graficos/MaterialSuite.h"
 
 int main()
 {
@@ -10,6 +11,9 @@ int main()
 
 	// Entidades
 	TestSuite::runTests<EntitySuite>();
+
+	// Materiales
+	TestSuite::runTests<MaterialSuite>();
 
 	// Log
 	std::cout << "- - - Todos los tests ejecutados (" << TestSuite::testsPasados() << "/" << TestSuite::testsTotales() 

@@ -4,9 +4,6 @@
 #include "Graficos/Renderer.h"
 #include "Fisica/Rigid.h"
 
-#include <iostream>
-#include <assert.h>
-
 void EntitySuite::setup()
 {
 	addTest(test_addComponent);

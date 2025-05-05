@@ -7,6 +7,9 @@
     <Filter Include="Core">
       <UniqueIdentifier>{0e519eac-6c66-405d-93f5-fa4f3dac0e66}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Graficos">
+      <UniqueIdentifier>{8067686d-b6d1-49b6-8e52-825d723efb7a}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\..\test\main.cpp" />
@@ -17,6 +20,9 @@
       <Filter>Core</Filter>
     </ClCompile>
     <ClCompile Include="..\..\test\TestSuite.cpp" />
+    <ClCompile Include="..\..\test\Graficos\MaterialSuite.cpp">
+      <Filter>Graficos</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\test\Sonido\Audio_test.h">
@@ -26,5 +32,8 @@
       <Filter>Core</Filter>
     </ClInclude>
     <ClInclude Include="..\..\test\TestSuite.h" />
+    <ClInclude Include="..\..\test\Graficos\MaterialSuite.h">
+      <Filter>Graficos</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>
