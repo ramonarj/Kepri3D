@@ -20,8 +20,14 @@ enum NoteEffect { Vibrato = 0, Tremolo = 1, Portamento = 2 };
 Piano::Piano() : reverb(nullptr)
 {
 	onda = new Audio(Seno, 440);
-	source = new AudioSource(onda);
-	source->setLoop(true);
+	for (int i = 0; i < MAX_NOTAS; i++)
+	{
+		sources.push_back(new AudioSource(onda));
+		sources[i]->setLoop(true);
+		sources[i]->setActive(false);
+		teclasPulsadas.push_back(' ');
+	}
+	unaNota = true;
 }
 Piano::~Piano()
 {
@@ -34,7 +40,10 @@ Piano::~Piano()
 
 void Piano::start()
 {
-	entity->addComponent(source);
+	// El piano tiene tantos AudioSource como teclas se puedan pulsar a la vez, 
+	// porque cada AudioSource solo reproduce 1 sonido
+	for (int i = 0; i < MAX_NOTAS; i++)
+		entity->addComponent(sources[i]);
 	m_instrument = Seno;
 
 	// Crea los filtros
@@ -94,11 +103,13 @@ void Piano::update(float deltaTime)
 	controlFiltros(deltaTime);
 }
 
-void Piano::playNote(int nota)
+void Piano::playNote(int nota, int src)
 {
+	sources[src]->setActive(true);
+
 	// Cambiar el pitch de acuerdo a la nota y a la escala
 	float pitch = frecuencias[nota] * pow(2, escala);
-	if(pitch != source->getPitch())
+	if(pitch != sources[src]->getPitch())
 	{
 		if (portamento)
 		{
@@ -107,20 +118,15 @@ void Piano::playNote(int nota)
 		}
 		else
 		{
-			source->setPitch(pitch);
+			sources[src]->setPitch(pitch);
 			vibratoNote = pitch;
 		}
 	}
 
-	// Empezar a tocar nota si no estaba ya tocandose alguna
-	if (!playing)
-	{
-		source->play();
-		playing = true;
-
-		porting = false;
-		source->setPitch(pitch);
-	}
+	// Empezar a tocar la nota
+	sources[src]->play();
+	porting = false;
+	sources[src]->setPitch(pitch);
 }
 
 void Piano::cambioSinte()
@@ -136,7 +142,8 @@ void Piano::cambioSinte()
 
 			// Poner una con la forma especificada
 			onda = new Audio(WaveForm(i), 440);
-			source->setAudio(onda);
+			for(int i = 0; i < MAX_NOTAS; i++)
+				sources[i]->setAudio(onda);
 			keyPressed = true;
 			m_instrument = i;
 			renderWave();
@@ -155,24 +162,33 @@ void Piano::controlEscalas()
 
 void Piano::controlNotas()
 {
-	// Comprobar si se está tocando alguna de las teclas del instrumento
-	int i = 0; bool tocada = false;
-	while (i < NUM_TECLAS && !tocada)
+	int src = getFreeSource();
+	// Solo si hay fuentes libres donde alojar sonidos
+	if (src >= 0)
 	{
-		if (InputManager::Instance()->getKey(teclas[i]))
+		// 1) Pulsación de nuevas teclas
+		for (int i = 0; i < NUM_TECLAS; i++)
 		{
-			playNote(i);
-			tocada = true;
+			if (InputManager::Instance()->getKeyDown(teclas[i]))
+			{
+				playNote(i, src);
+				teclasPulsadas[src] = teclas[i];
+				//std::cout << "Pulsada " << teclasPulsadas[src] << std::endl;
+			}
 		}
-		i++;
 	}
 
-	// Detener la reproducción del audio
-	if (!tocada && playing)
+	// 2) Levantar una tecla que estuviera pulsada 
+	for (int i = 0; i < MAX_NOTAS; i++)
 	{
-		source->pause();
-		playing = false;
-		porting = false;
+		if (!sources[i]->isActive()) { continue; }
+		if (!InputManager::Instance()->getKey(teclasPulsadas[i]))
+		{
+			// Detener la reproducción del audio
+			sources[i]->pause();
+			sources[i]->setActive(false);
+			//std::cout << "Levantada " << teclasPulsadas[i] << std::endl;
+		}
 	}
 }
 
@@ -180,13 +196,13 @@ void Piano::controlVibrato(float deltaTime)
 {
 	if (InputManager::Instance()->getKeyDown('v'))
 	{
-		vibratoNote = source->getPitch();
+		vibratoNote = sources[0]->getPitch();
 		renderEffect(Vibrato, true);
 	}
 	if (InputManager::Instance()->getKey('v'))
 	{
 		vibratoInit += deltaTime;
-		source->setPitch(vibratoNote + VIBRATO_RANGE * sin(vibratoInit * VIBRATO_FREQ));
+		sources[0]->setPitch(vibratoNote + VIBRATO_RANGE * sin(vibratoInit * VIBRATO_FREQ));
 	}
 	else { renderEffect(Vibrato, false); }
 }
@@ -195,19 +211,20 @@ void Piano::controlTremolo(float deltaTime)
 {
 	if (InputManager::Instance()->getKeyDown('c')) // la 't' ya está pillada por una nota
 	{
-		noteVolume = source->getVolume();
+		noteVolume = sources[0]->getVolume();
 		renderEffect(Tremolo, true);
 	}
 
 	if (InputManager::Instance()->getKey('c'))
 	{
 		tremoloInit += deltaTime;
-		source->setVolume(noteVolume + TREMOLO_RANGE * sin(tremoloInit * TREMOLO_FREQ));
+		for(int i = 0; i < MAX_NOTAS; i++)
+			sources[i]->setVolume(noteVolume + TREMOLO_RANGE * sin(tremoloInit * TREMOLO_FREQ));
 	}
 	else
 	{
 		renderEffect(Tremolo, false);
-		source->setVolume(1); // el valor por defecto
+		sources[0]->setVolume(1); // el valor por defecto
 	}
 }
 
@@ -223,18 +240,18 @@ void Piano::controlPortamento(float deltaTime)
 	{
 		// Avanzar un poco la nota
 		float newPitch;
-		if(targetPitch < source->getPitch())
-			newPitch = source->getPitch() - deltaTime * PORTAMENTO_VEL;
+		if(targetPitch < sources[0]->getPitch())
+			newPitch = sources[0]->getPitch() - deltaTime * PORTAMENTO_VEL;
 		else
-			newPitch = source->getPitch() + deltaTime * PORTAMENTO_VEL;
-		source->setPitch(newPitch);
+			newPitch = sources[0]->getPitch() + deltaTime * PORTAMENTO_VEL;
+		sources[0]->setPitch(newPitch);
 		vibratoNote = newPitch;
 
 		// Fin del portamento
 		if (abs(targetPitch - newPitch) < 0.05)
 		{
 			porting = false;
-			source->setPitch(targetPitch);
+			sources[0]->setPitch(targetPitch);
 		}
 	}
 }
@@ -244,10 +261,13 @@ void Piano::controlFiltros(float deltaTime)
 	// Activar/desactivar el filtro LPF
 	if(InputManager::Instance()->getKeyDown('l'))
 	{
-		if (source->getDirectFilter() == nullptr)
-			source->addFilter(activeFilter);
-		else
-			source->removeFilter();
+		for(int i = 0; i < MAX_NOTAS; i++)
+		{
+			if (sources[i]->getDirectFilter() == nullptr)
+				sources[i]->addFilter(activeFilter);
+			else
+				sources[i]->removeFilter();
+		}
 	}
 
 	// Desplazar la frecuencia de corte del filtro
@@ -255,29 +275,51 @@ void Piano::controlFiltros(float deltaTime)
 	{
 		activeFilter->setFrequency(activeFilter->cutFreq - deltaTime);
 		// Esto no debería ser necesario
-		if (source->getDirectFilter() != nullptr)
-			source->addFilter(activeFilter);
+		for (int i = 0; i < MAX_NOTAS; i++)
+		{
+			if (sources[i]->getDirectFilter() != nullptr)
+				sources[i]->addFilter(activeFilter);
+		}
 	}
 
 	if (InputManager::Instance()->getSpecialKey(GLUT_KEY_RIGHT))
 	{
 		activeFilter->setFrequency(activeFilter->cutFreq + deltaTime);
 		// Esto no debería ser necesario
-		if (source->getDirectFilter() != nullptr)
-			source->addFilter(activeFilter);
+		for (int i = 0; i < MAX_NOTAS; i++)
+		{
+			if (sources[i]->getDirectFilter() != nullptr)
+				sources[i]->addFilter(activeFilter);
+		}
 	}
 
 	// Añadirle efecto de reverb
 	if (InputManager::Instance()->getKeyDown('r'))
 	{
-		if (source->getAuxSend(0) == nullptr)
-			source->addFilteredEffect(activeFilter, reverb, 0);
-		else
-			source->removeEffect(0);
+		for (int i = 0; i < MAX_NOTAS; i++)
+		{
+			if (sources[i]->getAuxSend(0) == nullptr)
+				sources[i]->addFilteredEffect(activeFilter, reverb, 0);
+			else
+				sources[i]->removeEffect(0);
+		}
 	}
 
 }
 
+int Piano::getFreeSource()
+{
+	int src = -1;
+	int i = 0; 
+	while(i < MAX_NOTAS && src < 0)
+	{
+		if (!sources[i]->isActive())
+			src = i;
+		i++;
+	}
+
+	return src;
+}
 // - - - - - - - Graficos - - - - - - - - //
 
 void Piano::renderWave()

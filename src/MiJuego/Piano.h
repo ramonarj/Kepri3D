@@ -13,6 +13,7 @@ struct Effect;
 class Piano : public Component
 {
 public:
+	const int MAX_NOTAS = 4;
 	Piano();
 	~Piano();
 
@@ -20,9 +21,10 @@ public:
 	void update(float deltaTime) override;
 private:
 	bool pianoActive = false;
-	bool playing = false;
 	int escala = 0;
-	AudioSource* source;
+	bool unaNota;
+	std::vector<AudioSource*> sources;
+	std::vector<char> teclasPulsadas;
 	Audio* onda;
 
 	unsigned int m_instrument;
@@ -51,7 +53,7 @@ private:
 	std::string waveName;
 
 	// Toca una de las 12 notas disponibles, de semitono en semitono (0 = 440Hz, 11 = 880Hz)
-	void playNote(int nota);
+	void playNote(int nota, int src);
 	void controlEscalas();
 	void controlNotas();
 	void cambioSinte();
@@ -59,6 +61,8 @@ private:
 	void controlTremolo(float deltaTime);
 	void controlPortamento(float deltaTime);
 	void controlFiltros(float deltaTime);
+
+	int getFreeSource();
 
 	// Graficos
 	void renderWave();

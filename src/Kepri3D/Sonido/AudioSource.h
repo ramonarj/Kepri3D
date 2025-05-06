@@ -11,6 +11,7 @@ struct Effect;
 class AudioSource : public Component
 {
 public:
+	AudioSource() {}
 	AudioSource(Audio* audio);
 	AudioSource(const std::string& audioID);
 	~AudioSource();
