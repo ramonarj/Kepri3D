@@ -140,7 +140,8 @@ bool ResourceManager::loadMaterial(const std::string& materialName, const std::s
 		// Leer todos los mapas
 		std::string diffuseMap, secondaryMap, specularMap, normalMap, parallaxMap, emissionMap, skybox, reflectionMap;
 		diffuseMap = secondaryMap = specularMap = normalMap = parallaxMap = emissionMap = skybox = reflectionMap = "";
-		for(int i = 0; i < 5; i++)
+		std::vector<std::pair<std::string, std::string>> mapasExtra; int numMapasExtra = 0;
+		for(int i = 0; i < 5; i++) // TODO: 5??
 		{
 			std::string tipo;
 			stream >> tipo;
@@ -160,12 +161,21 @@ bool ResourceManager::loadMaterial(const std::string& materialName, const std::s
 				stream >> skybox;
 			else if (tipo == "map_reflection")
 				stream >> reflectionMap;
-			// Etiqueta inválida
-			else if(tipo != "")
+			// Mapa definido por el usuario
+			else 
 			{
-				std::cout << "WARNING: etiqueta '" << tipo << "' no reconocida en \"" << materialName << "\"" << std::endl;
-				stream >> tipo;
+				mapasExtra.push_back(std::pair<std::string, std::string>());
+				mapasExtra[numMapasExtra].first = tipo;
+				stream >> mapasExtra[numMapasExtra].second;
+				numMapasExtra++;
 			}
+
+			// Etiqueta inválida
+			//else if(tipo != "")
+			//{
+			//	std::cout << "WARNING: etiqueta '" << tipo << "' no reconocida en \"" << materialName << "\"" << std::endl;
+			//	stream >> tipo;
+			//}
 		}
 
 		// Cerrar el archivo
@@ -201,6 +211,12 @@ bool ResourceManager::loadMaterial(const std::string& materialName, const std::s
 			material->setTexture(SKYBOX_MAP, getTexture(skybox));
 		if (emissionMap != "")
 			material->setTexture(EMISSION_MAP, getTexture(emissionMap));
+
+		// Mapas extra
+		for(int i = 0; i < numMapasExtra; i++)
+		{
+			material->setTexture(mapasExtra[i].first, getTexture(mapasExtra[i].second));
+		}
 
 		// Indicarle qué shader usa
 		material->setShader(getShader(shaderId));

@@ -20,7 +20,7 @@ void Sandbox::setup()
 
 	// Suelo
 	Grid* grid = new Grid(100, 100, 5, 5);
-	grid->setMaterial("tierra");
+	grid->setMaterial("blendTerrain");
 	grid->getMaterial()->setVec2("tiling", { 20, 20 });
 	AddEntity(grid);
 
@@ -57,11 +57,17 @@ void Sandbox::loadResources()
 	ResourceManager::Instance()->loadTexture("UI\\panel.png", "panel");
 	ResourceManager::Instance()->loadTexture("cesped.jpg", "cesped");
 	ResourceManager::Instance()->loadTexture("tierra.jpg", "tierra");
+	ResourceManager::Instance()->loadTexture("nieve.jpg", "nieve");
+	ResourceManager::Instance()->loadTexture("agua.jpg", "agua");
+	ResourceManager::Instance()->loadTexture("blendMap.png", "blendMap");
 
 	ResourceManager::Instance()->loadCubemapTexture({ "skyboxes/techno/right.png", "skyboxes/techno/left.png", "skyboxes/techno/bottom.png",
 		"skyboxes/techno/top.png", "skyboxes/techno/front.png", "skyboxes/techno/back.png" }, "technoSkybox");
 
+	/* - - Shaders - - */
+	ResourceManager::Instance()->loadShader("blendMap.vert", "", "blendMap.frag", "blendMap");
+
 	/* - -  Materiales - - */
 	ResourceManager::Instance()->loadMaterial("cesped.material", "cesped", "default");
-	ResourceManager::Instance()->loadMaterial("tierra.material", "tierra", "default");
+	ResourceManager::Instance()->loadMaterial("blendTerrain.material", "blendTerrain", "blendMap");
 }

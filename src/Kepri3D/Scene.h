@@ -183,7 +183,7 @@ private:
 	// Sombras
 	// 0 = sin sombras, 1 = sombras duras, 2 = sombras suaves
 	int shadowsState = 0;
-	bool frustrumCulling = true;
+	bool frustrumCulling = false;
 };
 
 #endif

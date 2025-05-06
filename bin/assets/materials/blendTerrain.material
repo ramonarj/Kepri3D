@@ -3,4 +3,8 @@
 0.1 0.1 0.1 1.0
 0.0 0.0 0.0 1.0
 8.0
-map_Kd nieve
+map_Kd blendMap
+map1 cesped
+map2 tierra
+map3 nieve
+map4 agua
