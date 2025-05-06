@@ -4,6 +4,12 @@
 #include "Entity_test.h"
 #include "Graficos/MaterialSuite.h"
 
+#ifdef _DEBUG
+#	define TEST_CONFIG "Debug"
+#else
+#	define TEST_CONFIG "Release"
+#endif
+
 int main()
 {
 	// Audio
@@ -16,6 +22,7 @@ int main()
 	TestSuite::runTests<MaterialSuite>();
 
 	// Log
+	std::cout << "Configuracion: " << TEST_CONFIG << std::endl;
 	std::cout << "- - - Todos los tests ejecutados (" << TestSuite::testsPasados() << "/" << TestSuite::testsTotales() 
 		<< ") - - -" << std::endl;
 

@@ -6,6 +6,13 @@
 #include "Scenes/PruebaFisicas.h"
 #include "Scenes/Sandbox.h"
 
+// Necesario para que no se quejen por la consola
+#ifndef _DEBUG
+#	ifdef _WIN32
+#		pragma comment(linker, "/SUBSYSTEM:windows /ENTRY:mainCRTStartup")
+#	endif
+#endif
+
 int main(int argc, char*argv[])
 {
 	// Detección de basura dinámica
@@ -15,8 +22,8 @@ int main(int argc, char*argv[])
 	Game::Instance()->init(argc, argv, 800, 600, "Mi juego");
 
 	// 2) Cargar la escena inicial
-	Scene* escena = new PruebaScene();
-	//Scene* escena = new PruebaFisicas();
+	//Scene* escena = new PruebaScene();
+	Scene* escena = new PruebaFisicas();
 	//Scene* escena = new PruebaSonido();
 	//Scene* escena = new Sandbox();
 	Game::Instance()->loadScene(escena);

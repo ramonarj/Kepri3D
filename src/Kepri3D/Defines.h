@@ -2,6 +2,8 @@
 #define __KEPRI_DEFINES__
 
 // Información de Debug sobre gráficos, físicas, audio y más
+#ifdef _DEBUG
 #define __DEBUG_INFO__
+#endif
 
 #endif

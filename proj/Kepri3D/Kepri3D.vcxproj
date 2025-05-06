@@ -94,7 +94,7 @@
     <OutDir>$(SolutionDir)bin\</OutDir>
     <IntDir>$(SolutionDir)inter\$(ProjectName)\$(Platform)\$(Configuration)\</IntDir>
     <IncludePath>$(SolutionDir)dependencies\glm-1.0.1\glm\;$(SolutionDir)dependencies\freeglut-3.6.0\include\GL\;$(SolutionDir)dependencies\glew-2.2.0\include\GL\;$(SolutionDir)dependencies\openal-soft-1.20.0\include\AL\;$(IncludePath)</IncludePath>
-    <LibraryPath>$(SolutionDir)dependencies\freeglut-3.6.0\VisualC\lib\$(Configuration)\;$(SolutionDir)dependencies\glew-2.2.0\lib\$(Configuration)\$(Platform)\;$(SolutionDir)dependencies\openal-soft-1.20.0\lib\;$(LibraryPath)</LibraryPath>
+    <LibraryPath>$(SolutionDir)dependencies\freeglut-3.6.0\VisualC\lib\$(Configuration)\;$(SolutionDir)dependencies\glew-2.2.0\lib\$(Configuration)\$(Platform)\;$(SolutionDir)dependencies\openal-soft-1.20.0\lib\$(Platform)\;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
@@ -167,7 +167,7 @@
       <AdditionalDependencies>glew32.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <Lib>
-      <AdditionalDependencies>glew32d.lib;OpenAL32.lib;alut.lib</AdditionalDependencies>
+      <AdditionalDependencies>glew32.lib;OpenAL32.lib;alut.lib</AdditionalDependencies>
     </Lib>
   </ItemDefinitionGroup>
   <ItemGroup>

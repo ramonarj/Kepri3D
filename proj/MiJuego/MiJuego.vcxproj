@@ -152,10 +152,11 @@
       <AdditionalIncludeDirectories>$(SolutionDir)src\Kepri3D\;$(SolutionDir)src\Kepri3D\Graficos\;$(SolutionDir)src\Kepri3D\Fisica\;$(SolutionDir)src\Kepri3D\Sonido\;$(SolutionDir)src\Kepri3D\Utils\;$(SolutionDir)src\Kepri3D\UI\;$(SolutionDir)dependencies\glm-1.0.1\glm\;$(SolutionDir)dependencies\freeglut-3.6.0\include\GL\;$(SolutionDir)dependencies\glew-2.2.0\include\GL\;$(SolutionDir)dependencies\openal-soft-1.20.0\include\AL\;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
-      <SubSystem>Console</SubSystem>
+      <SubSystem>Windows</SubSystem>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
       <GenerateDebugInformation>true</GenerateDebugInformation>
+      <AdditionalDependencies>Kepri3D.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>

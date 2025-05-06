@@ -576,7 +576,7 @@ void PruebaScene::PruebaMateriales()
 	VBOEntity* vboEnt = new VBOEntity();
 	vboEnt->setMaterial("default");
 	vboEnt->setPosition({ 0,1,-5 });
-	AddEntity(vboEnt);
+	//AddEntity(vboEnt);
 
 	// Entidad con EBO
 	EBOEntity* eboEnt = new EBOEntity();
