@@ -19,7 +19,7 @@ CameraController::CameraController(Camera* cam)
 void CameraController::start()
 {
 	Game::Instance()->getCamera()->setFOVX(90);
-	Game::Instance()->getCamera()->setAspectRatio(800.0 / 800.0);
+	Game::Instance()->getCamera()->setAspectRatio(1.0);
 }
 
 void CameraController::update(float deltaTime)

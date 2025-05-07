@@ -565,6 +565,9 @@ void Scene::AddComposite(Shader* sh, bool active)
 
 void Scene::resize(int width, int height)
 {
+	// Resize canvas
+	m_canvas->resize(width, height);
+
 	// Resize Scene Visible Area 
 	for (Camera* cam : m_cameras)
 		cam->setAspectRatio((float)width / (float)height);

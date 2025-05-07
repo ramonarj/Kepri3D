@@ -30,7 +30,6 @@ void Sandbox::setup()
 
 	/* - - Canvas - - */
 	m_canvas = new Canvas();
-	m_canvas->setSize(800, 600);
 
 	/* - - GameManager - - */
 	Entity* gm = new Entity();

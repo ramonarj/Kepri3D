@@ -27,17 +27,21 @@ public:
 
 	void setScaleUI(float x, float y);
 
+	void resize(float propX, float propY);
+
 protected:
+	friend class Canvas;
+
 	/* Referencia al canvas que pertenece */
 	Canvas* canvas;
 
 	/* Posición que ocupa en el canvas */
-	int x;
-	int y;
+	float x;
+	float y;
 
 	/* Dimensiones, en píxeles, que ocupa respecto al tamaño de referencia del canvas */
-	int width;
-	int height;
+	float width;
+	float height;
 };
 
 #endif

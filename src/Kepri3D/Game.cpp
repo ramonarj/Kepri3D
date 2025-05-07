@@ -27,12 +27,13 @@ unsigned int fps = 0;
 
 void Game::init(int argc, char* argv[], int windowWidth, int windowHeight, const std::string& windowName)
 {
-	// 1) Iniciar GLUT (la ventana) y GLEW (el contexto de OpenGL)
-	iniciarGlut(argc, argv, windowWidth, windowHeight);
-	iniciarGLEW();
 	this->windowName = windowName;
 	this->windowWidth = windowWidth;
 	this->windowHeight = windowHeight;
+
+	// 1) Iniciar GLUT (la ventana) y GLEW (el contexto de OpenGL)
+	iniciarGlut(argc, argv, windowWidth, windowHeight);
+	iniciarGLEW();
 
 	// Iniciar los subsistemas de input y audio
 	InputManager::Instance();

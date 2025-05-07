@@ -350,22 +350,12 @@ Collider* PhysicsSystem::raycastPro(const vector3& origen, const vector3& dir, r
 bool PhysicsSystem::raycastFromScreen(vector2 origen, real dist)
 {
 	Camera* cam = Game::Instance()->getCamera();
-	// 1) Pasar de Screen Space a NDC [{800, 600} --> {-1, 1}]
+	// 1) Pasar de Screen Space a NDC [{windowW, windowH} --> {-1, 1}]
 	vector2 screenSize = { cam->getVP()->getW(), cam->getVP()->getH() };
 	vector2 NDCpos = (origen / screenSize) * 2.0 - 1.0;
 
 	// 2) Pasar de NDC a View Space
 	vector4 VIEWpos = glm::inverse(cam->getProjMat()) * vector4(NDCpos.x, -NDCpos.y, -1.0, 1.0); //-1 por el S.coords. mano derecha
-
-	// Método alternativo: usando los parámetros de la mat.proy. directamente
-	/*
-	real fov = 45.0;
-	real aspectRatio = 600.0 / 800.0;
-	real arInv = 1.0 / aspectRatio;
-	// d = distancia focal de la cámara
-	real d = 1.0 / glm::tan(fov);
-	vector4 VIEWpos = { NDCpos.x / d, aspectRatio * NDCpos.y / d, -1.0, 1.0 };
-	*/
 	
 	// 3) Pasar de View Space a World Space
 	vector4 WORLDpos = cam->getModelMat() * VIEWpos;
@@ -390,7 +380,7 @@ bool PhysicsSystem::raycastFromScreen(vector2 origen, real dist)
 Collider* PhysicsSystem::raycastFromScreenPro(vector2 origen, real dist)
 {
 	Camera* cam = Game::Instance()->getCamera();
-	// 1) Pasar de Screen Space a NDC [{800, 600} --> {-1, 1}]
+	// 1) Pasar de Screen Space a NDC [{windowW, windowH} --> {-1, 1}]
 	vector2 screenSize = { cam->getVP()->getW(), cam->getVP()->getH() };
 	vector2 NDCpos = (origen / screenSize) * 2.0 - 1.0;
 

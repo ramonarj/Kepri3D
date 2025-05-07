@@ -193,7 +193,6 @@ void PruebaScene::setup()
 
 	/* - - Canvas - - */
 	m_canvas = new Canvas();
-	m_canvas->setSize(800, 600);
 
 	// Textos de prueba
 	//ABCDEFGHIJKLMNOPQRSTUVWXYZ
@@ -575,9 +574,9 @@ void PruebaScene::PruebaMateriales()
 	AddEntity(tejado);
 
 	// Entidad con VBO
-	VBOEntity* vboEnt = new VBOEntity();
-	vboEnt->setMaterial("default");
-	vboEnt->setPosition({ 0,1,-5 });
+	//VBOEntity* vboEnt = new VBOEntity();
+	//vboEnt->setMaterial("default");
+	//vboEnt->setPosition({ 0,1,-5 });
 	//AddEntity(vboEnt);
 
 	// Entidad con EBO

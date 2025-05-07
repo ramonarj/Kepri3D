@@ -55,6 +55,8 @@ void Button::update(float deltaTime)
 		// Calcular el rectángulo
 		glm::ivec2 mousePos = InputManager::Instance()->getMousePos();
 		mousePos.y = canvas->getHeight() - mousePos.y;
+
+		//std::cout << mousePos.x << ", " << mousePos.y << std::endl;
 		// Entrar en el hover
 		if (insideRect(mousePos.x, mousePos.y))
 		{

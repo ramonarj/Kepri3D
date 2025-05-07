@@ -179,7 +179,7 @@ private:
 	bool onFrustrum(Entity* e);
 
 	// Modelo de iluminación. 0 = Phong, 1 = Blinn-phong
-	bool blinn = false;
+	bool blinn = true;
 	// Sombras
 	// 0 = sin sombras, 1 = sombras duras, 2 = sombras suaves
 	int shadowsState = 0;

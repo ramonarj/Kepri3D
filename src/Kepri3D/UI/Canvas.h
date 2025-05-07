@@ -33,6 +33,8 @@ public:
 	/* Aspect ratio (altura / ancho) */
 	inline double aspectRatio() const { return (double)width / height; }
 
+	void resize(int newWidth, int newHeight);
+
 private:
 	std::vector<UIElement*> m_elements;
 

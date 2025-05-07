@@ -9,7 +9,7 @@ Editor::Editor(Game* game, int w, int h)
 	this->pGame = game;
 
 	glutInitWindowSize(w, h);
-	glutInitWindowPosition(250 + 800, 100);
+	glutInitWindowPosition(250 + game->getWindowSize().x, 100);
 	editorWindow = glutCreateWindow("Kepri3D Editor");
 
 	// Callbacks

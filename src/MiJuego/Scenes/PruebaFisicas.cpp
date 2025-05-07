@@ -102,7 +102,6 @@ void PruebaFisicas::setup()
 
 	/* - - Canvas - - */
 	m_canvas = new Canvas();
-	m_canvas->setSize(800, 600);
 
 	// Información de Debug
 	Entity* debugTxt = new Entity("DebugText");

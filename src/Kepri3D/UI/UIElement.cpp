@@ -25,3 +25,16 @@ void UIElement::setScaleUI(float x, float y)
 	width *= x;
 	height *= y;
 }
+
+void UIElement::resize(float propX, float propY)
+{
+	for(Entity* ui: m_children)
+	{
+		// TODO: mejorar
+		dynamic_cast<UIElement*>(ui)->resize(propX, propY);
+	}
+	width *= propX;
+	height *= propY;
+	x *= propX;
+	y *= propY;
+}
