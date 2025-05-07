@@ -16,6 +16,8 @@
 unsigned int AudioSource::numSources = 0;
 #endif
 
+unsigned int AudioSource::MAX_EFFECTS = 4;
+
 AudioSource::AudioSource(Audio* audio) : m_loop(false), m_volume(1), m_pitch(1), directFilter(nullptr)
 {
 	setup(audio);
@@ -48,10 +50,16 @@ void AudioSource::setup(Audio* audio)
 	//alSourcef(sourceId, AL_MAX_DISTANCE, 100.0f); // a partir de qué distancia deja de atenuarse
 	//alSourcef(sourceId, AL_REFERENCE_DISTANCE, 1.0f); // radio dentro del cual la ganancia no aumenta más
 	//alSourcef(sourceId, AL_ROLLOFF_FACTOR, 3.0f); // penddiente de la recta/curva de atenuación
-	// Filtros
+	
+	// Reconectar filtros
 	if (directFilter != nullptr)
 		addFilter(directFilter);
-	// Efectos
+	// Reconectar efectos
+	for (int i = 0; i < auxSends.size(); i++)
+	{
+		alSource3i(sourceId, AL_AUXILIARY_SEND_FILTER, auxSends[i]->slotId, i, NULL);
+		checkALError("No se pudo conectar la fuente al efecto");
+	}
 
 	m_audio = audio;
 }
@@ -137,13 +145,16 @@ void AudioSource::removeFilter()
 	directFilter = nullptr;
 }
 
-void AudioSource::addEffect(Effect* e, unsigned int auxSend)
+bool AudioSource::addEffect(Effect* e)
 {
+	if (e == nullptr || auxSends.size() >= MAX_EFFECTS) { return false; }
+
 	// Conectar una de las salidas auxiliares de la fuente sin filtrar al efecto ("wet")
-	alSource3i(sourceId, AL_AUXILIARY_SEND_FILTER, e->slotId, auxSend, NULL);
+	alSource3i(sourceId, AL_AUXILIARY_SEND_FILTER, e->slotId, auxSends.size(), NULL);
 	checkALError("No se pudo conectar la fuente al efecto");
 
 	auxSends.push_back(e);
+	return true;
 }
 
 void AudioSource::removeEffect(unsigned int auxSend)
@@ -155,11 +166,44 @@ void AudioSource::removeEffect(unsigned int auxSend)
 	auxSends.erase(auxSends.begin() + auxSend);
 }
 
-Effect* AudioSource::getAuxSend(int i)
+void AudioSource::removeEffect(Effect* effect)
+{
+	if (effect == nullptr || !hasEffect(effect)) { return; }
+
+	int i = 0; bool found = false;
+	while (i < auxSends.size())
+	{
+		if (auxSends[i] == effect && !found)
+			found = true;
+		i++;
+	}
+
+	// Desactivar la salida auxiliar dada
+	alSource3i(sourceId, AL_AUXILIARY_SEND_FILTER, AL_EFFECTSLOT_NULL, i - 1, NULL);
+	checkALError("No se pudo quitar el efecto");
+
+	auxSends[i - 1] = nullptr;
+	auxSends.erase(auxSends.begin() + (i - 1));
+}
+
+Effect* AudioSource::getEffect(int i)
 {
 	if (i >= auxSends.size())
 		return nullptr;
 	return auxSends[i];
+}
+
+bool AudioSource::hasEffect(Effect* effect)
+{
+	int i = 0; bool found = false;
+	while (i < auxSends.size() && !found)
+	{
+		if (auxSends[i] == effect)
+			found = true;
+		i++;
+	}
+
+	return found;
 }
 
 void AudioSource::addFilteredEffect(Filter* f, Effect* e, unsigned int auxSend)

@@ -178,6 +178,24 @@ void ReverbFX::setDecayTime(float f) {
 	reconnect();
 }
 
+// - - - - - - - - - - - 
+
+ChorusFX::ChorusFX() : Effect(Chorus)
+{
+	// Valores por defecto
+	reconnect();
+}
+
+void ChorusFX::setFeedback(float f)
+{
+	Kepri::clamp(f, -0.99, 0.99);
+
+	alEffectf(effectId, AL_CHORUS_FEEDBACK, f);
+	reconnect();
+}
+
+// - - - - - - - - - - - 
+
 EchoFX::EchoFX() : Effect(Echo)
 {
 	// Valores por defecto
@@ -196,5 +214,30 @@ void EchoFX::setFeedback(float f)
 	Kepri::clamp(f, 0, 1);
 
 	alEffectf(effectId, AL_ECHO_FEEDBACK, f);
+	reconnect();
+}
+
+// - - - - - - - - - - - 
+
+DistorsionFX::DistorsionFX() : Effect(Distorsion)
+{
+	// Valores por defecto
+	reconnect();
+}
+
+// - - - - - - - - - - - 
+
+WahWahFX::WahWahFX() : Effect(WahWah)
+{
+	// Valores por defecto
+	reconnect();
+}
+
+
+void WahWahFX::setAttackTime(float f)
+{
+	Kepri::clamp(f, 0.0001, 1);
+
+	alEffectf(effectId, AL_AUTOWAH_ATTACK_TIME, f);
 	reconnect();
 }

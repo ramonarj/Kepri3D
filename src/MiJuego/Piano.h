@@ -8,8 +8,7 @@ class Audio;
 class Entity;
 class UIElement;
 struct Filter;
-struct ReverbFX;
-struct EchoFX;
+struct Effect;
 class Button;
 
 class Piano : public Component
@@ -47,8 +46,8 @@ private:
 	Filter* activeFilter;
 
 	// Efectos
-	ReverbFX* reverb;
-	EchoFX* echo;
+	static const unsigned int NUM_EFFECTS = 5;
+	Effect* effects[NUM_EFFECTS];
 
 	// Controles
 	std::vector<Button*> botones;
@@ -78,10 +77,12 @@ private:
 	void createVisualizers();
 
 	// Callbacks para los botones
-	void addReverb();
-	void addEcho();
+	void addEffect(int index);
 	static void addReverbCallback(Component*);
 	static void addEchoCallback(Component*);
+	static void addChorusCallback(Component*);
+	static void addDistorsionCallback(Component*);
+	static void addWahWahCallback(Component*);
 };
 
 #endif

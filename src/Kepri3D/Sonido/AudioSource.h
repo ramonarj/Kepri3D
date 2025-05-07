@@ -38,10 +38,13 @@ public:
 	void addFilter(Filter* f);
 	void removeFilter();
 	inline Filter* getDirectFilter() { return directFilter; }
-	//
-	void addEffect(Effect* e, unsigned int auxSend = 0);
+
+	/* Añade un efecto ya creado a la fuente. Devuelve 'true' si se añade correctamente, 'false' e.o.c. */
+	bool addEffect(Effect* e);
 	void removeEffect(unsigned int auxSend);
-	Effect* getAuxSend(int i);
+	void removeEffect(Effect* effect);
+	Effect* getEffect(int i);
+	bool hasEffect(Effect* effect);
 	//
 	void addFilteredEffect(Filter* f, Effect* e, unsigned int auxSend = 0);
 
@@ -68,6 +71,8 @@ private:
 
 	// Sends auxiliares
 	std::vector<Effect*> auxSends;
+
+	static unsigned int MAX_EFFECTS;
 
 	// Funciones aauxiliares
 	void setup(Audio* audio);

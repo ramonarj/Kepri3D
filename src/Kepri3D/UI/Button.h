@@ -21,7 +21,7 @@ public:
 	inline void setCallback(Callback cb) { m_callback = cb; }
 
 	// Lo mismo pero para una función miembro (estática) de un componente. TODO: mejorar
-	inline void setCallback2(ComponentCallback cb, Component* caller)
+	inline void setCallback(ComponentCallback cb, Component* caller)
 	{
 		m_callback2 = cb;
 		m_caller = caller;

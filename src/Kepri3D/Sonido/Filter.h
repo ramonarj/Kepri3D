@@ -24,9 +24,8 @@ struct Filter
 
 struct Effect
 {
-	enum EffectType { Reverb = 1, Chorus = 2, Distorsion = 3, Echo = 4 };
+	enum EffectType { Reverb = 1, Chorus = 2, Distorsion = 3, Echo = 4, WahWah = 10 };
 
-	Effect(EffectType type);
 	virtual ~Effect();
 
 	// Métodos
@@ -40,6 +39,7 @@ struct Effect
 	static void fetchPointers();
 
 protected:
+	Effect(EffectType type);
 	void reconnect();
 private:
 	static unsigned int s_effectSlots;
@@ -55,6 +55,14 @@ struct ReverbFX : public Effect
 	void setDecayTime(float f);
 };
 
+struct ChorusFX : public Effect
+{
+	ChorusFX();
+	~ChorusFX() {}
+
+	void setFeedback(float f);
+};
+
 struct EchoFX : public Effect
 {
 	EchoFX();
@@ -62,6 +70,20 @@ struct EchoFX : public Effect
 
 	void setDelay(float f);
 	void setFeedback(float f);
+};
+
+struct DistorsionFX : public Effect
+{
+	DistorsionFX();
+	~DistorsionFX() {}
+};
+
+struct WahWahFX : public Effect
+{
+	WahWahFX();
+	~WahWahFX() {}
+
+	void setAttackTime(float f);
 };
 
 #endif

@@ -17,40 +17,31 @@ char teclas[NUM_TECLAS] = { 'a', 'w', 's', 'e', 'd', 'f', 't', 'g', 'y', 'h', 'u
 const std::string INSTRUMENT_NAMES[] = {"Seno", "Cuadrado", "Sierra", "Triangulo", "Ruido"};
 enum NoteEffect { Vibrato = 0, Tremolo = 1, Portamento = 2 };
 
-void Piano::addReverb()
+void Piano::addEffect(int fxIndex)
 {
-	for (int i = 0; i < MAX_NOTAS; i++)
-	{
-		// Ponerle el efecto
-		if (sources[i]->getAuxSend(0) == nullptr)
-		{
-			sources[i]->addEffect(reverb, 0);
-			botones[0]->setTexture("botonPulsado");
-		}
-		// Quitarlo	
-		else
-		{
-			sources[i]->removeEffect(0);
-			botones[0]->setTexture("boton");
-		}
-	}
-}
+	if (fxIndex >= NUM_EFFECTS) { return; }
 
-void Piano::addEcho()
-{
+	Effect* fx = effects[fxIndex];
+	bool messageDisplayed = false;
+	// Por cada source:
 	for (int i = 0; i < MAX_NOTAS; i++)
 	{
 		// Ponerle el efecto
-		if (sources[i]->getAuxSend(1) == nullptr)
+		if (!sources[i]->hasEffect(fx))
 		{
-			sources[i]->addEffect(echo, 1);
-			botones[1]->setTexture("botonPulsado");
+			if (sources[i]->addEffect(fx)) // a lo mejor no admite más efectos
+				botones[fxIndex]->setTexture("botonPulsado");
+			else if(!messageDisplayed)
+			{
+				std::cout << "Demasiados efectos" << std::endl;
+				messageDisplayed = true;
+			}
 		}
-		// Quitarlo	
+		// Quitarselo	
 		else
 		{
-			sources[i]->removeEffect(1);
-			botones[1]->setTexture("boton");
+			sources[i]->removeEffect(fx);
+			botones[fxIndex]->setTexture("boton");
 		}
 	}
 }
@@ -58,16 +49,34 @@ void Piano::addEcho()
 void Piano::addReverbCallback(Component* c)
 {
 	Piano* p = static_cast<Piano*>(c);
-	p->addReverb();
+	p->addEffect(0);
 }
 
 void Piano::addEchoCallback(Component* c)
 {
 	Piano* p = static_cast<Piano*>(c);
-	p->addEcho();
+	p->addEffect(1);
 }
 
-Piano::Piano() : reverb(nullptr), echo(nullptr)
+void Piano::addChorusCallback(Component* c)
+{
+	Piano* p = static_cast<Piano*>(c);
+	p->addEffect(2);
+}
+
+void Piano::addDistorsionCallback(Component* c)
+{
+	Piano* p = static_cast<Piano*>(c);
+	p->addEffect(3);
+}
+
+void Piano::addWahWahCallback(Component* c)
+{
+	Piano* p = static_cast<Piano*>(c);
+	p->addEffect(4);
+}
+
+Piano::Piano() 
 {
 	onda = new Audio(Seno, 440);
 	for (int i = 0; i < MAX_NOTAS; i++)
@@ -84,10 +93,8 @@ Piano::~Piano()
 	delete onda;
 	for (int i = 0; i < 3; i++)
 		delete filtros[i];
-	if (reverb != nullptr)
-		delete reverb;
-	if (echo != nullptr)
-		delete echo;
+	for (int i = 0; i < NUM_EFFECTS; i++)
+		delete effects[i];
 }
 
 void Piano::start()
@@ -201,6 +208,7 @@ void Piano::cambioSinte()
 			onda = new Audio(WaveForm(i), 440);
 			for(int i = 0; i < MAX_NOTAS; i++)
 				sources[i]->setAudio(onda);
+
 			keyPressed = true;
 			m_instrument = i;
 			renderWave();
@@ -349,20 +357,6 @@ void Piano::controlFiltros(float deltaTime)
 				sources[i]->addFilter(activeFilter);
 		}
 	}
-
-	// Añadirle efecto de reverb
-	if (InputManager::Instance()->getKeyDown('r'))
-	{
-		for (int i = 0; i < MAX_NOTAS; i++)
-		{
-			if (sources[i]->getAuxSend(0) == nullptr)
-				sources[i]->addEffect(reverb, 0);
-				//sources[i]->addEffect(activeFilter, reverb, 0);
-			else
-				sources[i]->removeEffect(0);
-		}
-	}
-
 }
 
 int Piano::getFreeSource()
@@ -404,56 +398,60 @@ void Piano::renderEffect(unsigned int effect, bool render)
 void Piano::createEffects()
 {
 	// Reverb
-	reverb = new ReverbFX();
+	ReverbFX* reverb = new ReverbFX();
 	reverb->setGain(0.05);
 	reverb->setDecayTime(5.0f);
+	effects[0] = reverb;
 	// Eco
-	echo = new EchoFX();
+	EchoFX* echo = new EchoFX();
 	echo->setGain(0.05);
 	echo->setDelay(2.0f);
 	echo->setFeedback(0.1f);
+	effects[1] = echo;
+	// Chorus
+	ChorusFX* chorus = new ChorusFX();
+	chorus->setGain(0.25);
+	chorus->setFeedback(-1);
+	effects[2] = chorus;
+	// Distorsion
+	DistorsionFX* distorsion = new DistorsionFX();
+	//distorsion->setGain(0.5);
+	effects[3] = distorsion;
+	// WahWah
+	WahWahFX* wahwah = new WahWahFX();
+	wahwah->setGain(0.3);
+	//wahwah->setAttackTime(1.0f);
+	effects[4] = wahwah;
 }
 
 void Piano::createControls()
 {
 	// Botones
 	Canvas* c = Game::Instance()->getScene()->getCanvas();
-	Button* boton = new Button(100, 50, c);
-	boton->setTexture("boton");
 
-	ComponentCallback cb = &Piano::addReverbCallback;
-	boton->setCallback2(cb, this);
-	boton->setHoverTexture("botonHover");
+	ComponentCallback cb[NUM_EFFECTS] = { &Piano::addReverbCallback, &Piano::addEchoCallback, 
+		&Piano::addChorusCallback, &Piano::addDistorsionCallback, &Piano::addWahWahCallback };
+	std::string buttonNames[NUM_EFFECTS] = { "REVERB", "ECHO", "CHORUS", "DISTORSION", "WAHWAH"};
 
-	boton->setPositionUI(0.5, 0.8);
-	c->addElement(boton);
-	botones.push_back(boton);
+	// Añadir todos los botones
+	for(int i = 0; i < NUM_EFFECTS; i++)
+	{
+		Button* boton = new Button(100, 50, c);
+		boton->setTexture("boton");
+		boton->setHoverTexture("botonHover");
+		boton->setCallback(cb[i], this);
+		boton->setPositionUI(0.15 + i * 0.15, 0.3);
+		c->addElement(boton);
 
-	// El texto que contiene
-	Text* t = new Text("REVERB", c, { 1, 1, 1, 1 });
-	t->setPositionUI(0.43, 0.5); // alineado a la izquierda
-	t->setScaleUI(0.7, 0.7);
-	t->setGrosor(1.5);
-	t->setParent(boton);
+		botones.push_back(boton);
 
-	// Lo mismo con el eco
-	boton = new Button(100, 50, c);
-	boton->setTexture("boton");
-
-	cb = &Piano::addEchoCallback;
-	boton->setCallback2(cb, this);
-	boton->setHoverTexture("botonHover");
-
-	boton->setPositionUI(0.75, 0.8);
-	c->addElement(boton);
-	botones.push_back(boton);
-
-	// El texto que contiene
-	t = new Text("ECHO", c, { 1, 1, 1, 1 });
-	t->setPositionUI(0.43, 0.5); // alineado a la izquierda
-	t->setScaleUI(0.7, 0.7);
-	t->setGrosor(1.5);
-	t->setParent(boton);
+		// El texto que contiene
+		Text* t = new Text(buttonNames[i], c, {1, 1, 1, 1});
+		t->setPositionUI(0.43, 0.5); // alineado a la izquierda
+		t->setScaleUI(0.7, 0.7);
+		t->setGrosor(1.5);
+		t->setParent(boton);
+	}
 }
 
 void Piano::createVisualizers()
