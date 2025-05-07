@@ -8,7 +8,8 @@
 #include "Mesh.h"
 #include "Camera.h"
 
-Button::Button(unsigned int w, unsigned int h, Canvas* canvas) : m_callback(nullptr)
+Button::Button(unsigned int w, unsigned int h, Canvas* canvas) : m_callback(nullptr), m_callback2(nullptr), m_caller(nullptr),
+	m_hover(false)
 {
 	// Dimenssiones
 	width = w;
@@ -29,19 +30,69 @@ Button::Button(unsigned int w, unsigned int h, Canvas* canvas) : m_callback(null
 
 void Button::update(float deltaTime)
 {
-	if (m_callback == nullptr)
+	if (m_callback == nullptr && m_callback2 == nullptr)
 		return;
-	// Clic izquierdo del ratón
-	if(InputManager::Instance()->getMouseKeyDown(LEFT))
+
+	// Intentamos optimizarlo un poco
+	if(m_hoverTex == nullptr)
 	{
-		glm::ivec2 mousePos = InputManager::Instance()->getMousePos();
-		mousePos.y = canvas->getHeight() - mousePos.y;
-		//std::cout << "{ " << mousePos.x << ", " << mousePos.y << " }" << std::endl;
-		// Se ha pulsado dentro del rectángulo del botón
-		if(mousePos.x > (x - width / 2.0) && mousePos.x < (x + width / 2.0) &&
-			mousePos.y > (y - height / 2.0) && mousePos.y < (y + height / 2.0))
+		// Clic izquierdo del ratón
+		if (InputManager::Instance()->getMouseKeyDown(LEFT))
 		{
-			m_callback();
+			glm::ivec2 mousePos = InputManager::Instance()->getMousePos();
+			mousePos.y = canvas->getHeight() - mousePos.y;
+
+			// Se ha pulsado dentro del rectángulo del botón
+			if (insideRect(mousePos.x, mousePos.y))
+			{
+				callAllCallbacks();
+			}
 		}
 	}
+
+	else
+	{
+		// Calcular el rectángulo
+		glm::ivec2 mousePos = InputManager::Instance()->getMousePos();
+		mousePos.y = canvas->getHeight() - mousePos.y;
+		// Entrar en el hover
+		if (insideRect(mousePos.x, mousePos.y))
+		{
+			getMaterial()->setTexture(DIFFUSE_MAP, m_hoverTex);
+			m_hover = true;
+			if (InputManager::Instance()->getMouseKeyDown(LEFT))
+			{
+				callAllCallbacks();
+			}
+		}
+		// Salir del hover
+		else if(m_hover)
+		{
+			getMaterial()->setTexture(DIFFUSE_MAP, m_texture);
+			m_hover = false;
+		}
+	}
+}
+
+void Button::setTexture(const std::string& textureID)
+{
+	m_texture = ResourceManager::Instance()->getTexture(textureID);
+	getMaterial()->setTexture(DIFFUSE_MAP, m_texture);
+}
+
+void Button::setHoverTexture(const std::string& textureID)
+{
+	m_hoverTex = ResourceManager::Instance()->getTexture(textureID);
+}
+
+bool Button::insideRect(int mouseX, int mouseY)
+{
+	return (mouseX > (x - width / 2.0) && mouseX < (x + width / 2.0) &&
+		mouseY >(y - height / 2.0) && mouseY < (y + height / 2.0));
+}
+
+void Button::callAllCallbacks()
+{
+	if (m_callback != nullptr) m_callback();
+	if (m_callback2 != nullptr) m_callback2(m_caller);
 }

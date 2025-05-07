@@ -17,7 +17,57 @@ char teclas[NUM_TECLAS] = { 'a', 'w', 's', 'e', 'd', 'f', 't', 'g', 'y', 'h', 'u
 const std::string INSTRUMENT_NAMES[] = {"Seno", "Cuadrado", "Sierra", "Triangulo", "Ruido"};
 enum NoteEffect { Vibrato = 0, Tremolo = 1, Portamento = 2 };
 
-Piano::Piano() : reverb(nullptr)
+void Piano::addReverb()
+{
+	for (int i = 0; i < MAX_NOTAS; i++)
+	{
+		// Ponerle el efecto
+		if (sources[i]->getAuxSend(0) == nullptr)
+		{
+			sources[i]->addEffect(reverb, 0);
+			botones[0]->setTexture("botonPulsado");
+		}
+		// Quitarlo	
+		else
+		{
+			sources[i]->removeEffect(0);
+			botones[0]->setTexture("boton");
+		}
+	}
+}
+
+void Piano::addEcho()
+{
+	for (int i = 0; i < MAX_NOTAS; i++)
+	{
+		// Ponerle el efecto
+		if (sources[i]->getAuxSend(1) == nullptr)
+		{
+			sources[i]->addEffect(echo, 1);
+			botones[1]->setTexture("botonPulsado");
+		}
+		// Quitarlo	
+		else
+		{
+			sources[i]->removeEffect(1);
+			botones[1]->setTexture("boton");
+		}
+	}
+}
+
+void Piano::addReverbCallback(Component* c)
+{
+	Piano* p = static_cast<Piano*>(c);
+	p->addReverb();
+}
+
+void Piano::addEchoCallback(Component* c)
+{
+	Piano* p = static_cast<Piano*>(c);
+	p->addEcho();
+}
+
+Piano::Piano() : reverb(nullptr), echo(nullptr)
 {
 	onda = new Audio(Seno, 440);
 	for (int i = 0; i < MAX_NOTAS; i++)
@@ -36,6 +86,8 @@ Piano::~Piano()
 		delete filtros[i];
 	if (reverb != nullptr)
 		delete reverb;
+	if (echo != nullptr)
+		delete echo;
 }
 
 void Piano::start()
@@ -53,11 +105,14 @@ void Piano::start()
 	activeFilter = filtros[1];
 
 	// Crea los efectos
-	reverb = new Effect(Echo);
-
+	createEffects();
 
 	// Crea las mallas para el visualizador
 	createVisualizers();
+
+	// Crea los botones de control
+	createControls();
+	// TODO: si se crean primero los controles y después los visualizadores, peta
 
 	// Pintado inicial
 	renderWave();
@@ -78,6 +133,8 @@ void Piano::update(float deltaTime)
 		camController->setActive(!pianoActive);
 		// Ocultar graficos
 		waveVisualizer->getRenderer()->setActive(pianoActive);
+		// Mostrar cursos
+		InputManager::Instance()->setCursor(pianoActive ? GLUT_CURSOR_RIGHT_ARROW : GLUT_CURSOR_NONE);
 	}
 	if (!pianoActive) { return; }
 
@@ -135,7 +192,7 @@ void Piano::cambioSinte()
 	bool keyPressed = false; int i = 0;
 	while (!keyPressed && i < 5)
 	{
-		if (InputManager::Instance()->getKeyDown('1' + i))
+		if (i != m_instrument && InputManager::Instance()->getKeyDown('1' + i))
 		{
 			// Borrar la onda anterior
 			delete onda;
@@ -299,7 +356,8 @@ void Piano::controlFiltros(float deltaTime)
 		for (int i = 0; i < MAX_NOTAS; i++)
 		{
 			if (sources[i]->getAuxSend(0) == nullptr)
-				sources[i]->addFilteredEffect(activeFilter, reverb, 0);
+				sources[i]->addEffect(reverb, 0);
+				//sources[i]->addEffect(activeFilter, reverb, 0);
 			else
 				sources[i]->removeEffect(0);
 		}
@@ -341,6 +399,61 @@ void Piano::renderWave()
 void Piano::renderEffect(unsigned int effect, bool render)
 {
 	effectVisualizers[effect]->getRenderer()->setActive(render);
+}
+
+void Piano::createEffects()
+{
+	// Reverb
+	reverb = new ReverbFX();
+	reverb->setGain(0.05);
+	reverb->setDecayTime(5.0f);
+	// Eco
+	echo = new EchoFX();
+	echo->setGain(0.05);
+	echo->setDelay(2.0f);
+	echo->setFeedback(0.1f);
+}
+
+void Piano::createControls()
+{
+	// Botones
+	Canvas* c = Game::Instance()->getScene()->getCanvas();
+	Button* boton = new Button(100, 50, c);
+	boton->setTexture("boton");
+
+	ComponentCallback cb = &Piano::addReverbCallback;
+	boton->setCallback2(cb, this);
+	boton->setHoverTexture("botonHover");
+
+	boton->setPositionUI(0.5, 0.8);
+	c->addElement(boton);
+	botones.push_back(boton);
+
+	// El texto que contiene
+	Text* t = new Text("REVERB", c, { 1, 1, 1, 1 });
+	t->setPositionUI(0.43, 0.5); // alineado a la izquierda
+	t->setScaleUI(0.7, 0.7);
+	t->setGrosor(1.5);
+	t->setParent(boton);
+
+	// Lo mismo con el eco
+	boton = new Button(100, 50, c);
+	boton->setTexture("boton");
+
+	cb = &Piano::addEchoCallback;
+	boton->setCallback2(cb, this);
+	boton->setHoverTexture("botonHover");
+
+	boton->setPositionUI(0.75, 0.8);
+	c->addElement(boton);
+	botones.push_back(boton);
+
+	// El texto que contiene
+	t = new Text("ECHO", c, { 1, 1, 1, 1 });
+	t->setPositionUI(0.43, 0.5); // alineado a la izquierda
+	t->setScaleUI(0.7, 0.7);
+	t->setGrosor(1.5);
+	t->setParent(boton);
 }
 
 void Piano::createVisualizers()

@@ -22,11 +22,15 @@ struct Filter
 
 // - - - - - - - - - - - - - - - - 
 
-enum EffectType { Reverb = 1, Chorus = 2, Distorsion = 3, Echo = 4 };
 struct Effect
 {
+	enum EffectType { Reverb = 1, Chorus = 2, Distorsion = 3, Echo = 4 };
+
 	Effect(EffectType type);
-	~Effect();
+	virtual ~Effect();
+
+	// Métodos
+	void setGain(float f);
 
 	// Atributos
 	ALuint effectId;
@@ -35,8 +39,29 @@ struct Effect
 
 	static void fetchPointers();
 
+protected:
+	void reconnect();
 private:
 	static unsigned int s_effectSlots;
+};
+
+
+// - - - - Los distintos efectos - - - - //
+struct ReverbFX : public Effect
+{
+	ReverbFX();
+	~ReverbFX(){}
+
+	void setDecayTime(float f);
+};
+
+struct EchoFX : public Effect
+{
+	EchoFX();
+	~EchoFX() {}
+
+	void setDelay(float f);
+	void setFeedback(float f);
 };
 
 #endif

@@ -8,7 +8,9 @@ class Audio;
 class Entity;
 class UIElement;
 struct Filter;
-struct Effect;
+struct ReverbFX;
+struct EchoFX;
+class Button;
 
 class Piano : public Component
 {
@@ -45,7 +47,11 @@ private:
 	Filter* activeFilter;
 
 	// Efectos
-	Effect* reverb;
+	ReverbFX* reverb;
+	EchoFX* echo;
+
+	// Controles
+	std::vector<Button*> botones;
 
 	// Visualizador de la onda
 	UIElement* waveVisualizer;
@@ -67,7 +73,15 @@ private:
 	// Graficos
 	void renderWave();
 	void renderEffect(unsigned int effect, bool render);
+	void createEffects();
+	void createControls();
 	void createVisualizers();
+
+	// Callbacks para los botones
+	void addReverb();
+	void addEcho();
+	static void addReverbCallback(Component*);
+	static void addEchoCallback(Component*);
 };
 
 #endif

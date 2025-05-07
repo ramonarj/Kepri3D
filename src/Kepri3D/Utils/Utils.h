@@ -93,6 +93,9 @@ inline bool sameVector(const glm::dvec3& v1, const glm::dvec3& v2)
 
 namespace Kepri
 {
+	/* Restringir valores a un intervalo cerrado [a, b]*/
+	void clamp(float& f, float a, float b);
+
 	/* Interpolación lineal */
 	float lerp(float a, float b, float l);
 	glm::vec3 lerp(const glm::vec3& a, const glm::vec3& b, float l);

@@ -226,6 +226,7 @@ void PruebaScene::setup()
 		//b->setScaleUI(buttonScale, buttonScale);
 		b->setCallback(callbacks[i]);
 		b->setTexture("boton");
+		b->setHoverTexture("botonHover");
 		b->setParent(botonesMenu); // hijos del nodo vacío
 
 		// El texto que contiene
@@ -340,6 +341,7 @@ void PruebaScene::loadResources()
 
 	// Canvas
 	ResourceManager::Instance()->loadTexture("UI\\boton.png", "boton");
+	ResourceManager::Instance()->loadTexture("UI\\botonHover.png", "botonHover");
 	ResourceManager::Instance()->loadTexture("UI\\panel.png", "panel");
 
 	// Skyboxes - el orden tiene que ser este (top y bottom están invertidos por alguna razón)

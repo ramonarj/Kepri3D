@@ -39,6 +39,12 @@ void PrintVector(const glm::vec3& v)
 	std::cout << stream.str();
 }
 
+void Kepri::clamp(float& f, float a, float b)
+{
+	if (f < a) f = a;
+	else if (f > b) f = b;
+}
+
 float Kepri::lerp(float a, float b, float l)
 {
 	if (l < 0) l = 0;

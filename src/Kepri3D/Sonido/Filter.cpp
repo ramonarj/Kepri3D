@@ -3,6 +3,7 @@
 #include "CoreAudio.h"
 #include "AudioManager.h"
 #include "alext.h"
+#include "Utils.h"
 
 #include <iostream>
 
@@ -11,6 +12,7 @@
 LPALGENAUXILIARYEFFECTSLOTS alGenAuxiliaryEffectSlots;
 LPALDELETEAUXILIARYEFFECTSLOTS alDeleteAuxiliaryEffectSlots;
 LPALAUXILIARYEFFECTSLOTI alAuxiliaryEffectSloti;
+LPALAUXILIARYEFFECTSLOTF alAuxiliaryEffectSlotf;
 // Efectos
 LPALGENEFFECTS alGenEffects;
 LPALDELETEEFFECTS alDeleteEffects;
@@ -42,8 +44,7 @@ Filter::Filter(FilterType type, float cutFreq) : type(type), filterId(0)
 
 void Filter::setFrequency(float newFreq)
 {
-	if (newFreq < 0) { newFreq = 0; }
-	else if (newFreq > 1) { newFreq = 1; }
+	Kepri::clamp(newFreq, 0, 1);
 
 	switch(type)
 	{
@@ -112,23 +113,19 @@ Effect::Effect(EffectType type) : type(type), effectId(0)
 	checkALError("No se pudo crear el efecto");
 	if (!alIsEffect(effectId)) { return; }
 
-	// Darle los parámetros adecuados
+	// 3) Darle el tipo adecuado
 	alEffecti(effectId, AL_EFFECT_TYPE, AL_EFFECT_NULL + type);
 	checkALError("No hay soporte para efectos de este tipo");
+}
 
-	// Específico del efecto
-	switch(type)
-	{
-	case Reverb:
-		alEffectf(effectId, AL_REVERB_DECAY_TIME, 2.0f);
-		break;
-	default:
-		break;
-	}
-	// alEffecti(effects[1], AL_FLANGER_PHASE, 180);
+void Effect::setGain(float gain)
+{
+	Kepri::clamp(gain, 0, 1);
+	alAuxiliaryEffectSlotf(slotId, AL_EFFECTSLOT_GAIN, gain);
+}
 
-
-	// 3) Insertar el efecto en la ranura
+void Effect::reconnect()
+{
 	alAuxiliaryEffectSloti(slotId, AL_EFFECTSLOT_EFFECT, effectId);
 	checkALError("No se pudo cargar el efecto en la ranura");
 }
@@ -147,6 +144,7 @@ void Effect::fetchPointers()
 	alGenAuxiliaryEffectSlots = (LPALGENAUXILIARYEFFECTSLOTS)alGetProcAddress("alGenAuxiliaryEffectSlots");
 	alDeleteAuxiliaryEffectSlots = (LPALDELETEAUXILIARYEFFECTSLOTS)alGetProcAddress("alDeleteAuxiliaryEffectSlots");
 	alAuxiliaryEffectSloti = (LPALAUXILIARYEFFECTSLOTI)alGetProcAddress("alAuxiliaryEffectSloti");
+	alAuxiliaryEffectSlotf = (LPALAUXILIARYEFFECTSLOTF)alGetProcAddress("alAuxiliaryEffectSlotf");
 
 	// Efectos
 	alGenEffects = (LPALGENEFFECTS)alGetProcAddress("alGenEffects");
@@ -162,4 +160,41 @@ void Effect::fetchPointers()
 	}
 	if (!(alGenAuxiliaryEffectSlots && alAuxiliaryEffectSloti && alEffecti && alEffectf))
 		std::cout << "ERROR:Effect:Punteros a las funciones de OpenAL no encontrados";
+}
+
+// - - - - 
+
+ReverbFX::ReverbFX() : Effect(Reverb)
+{
+	// Valores por defecto
+	alEffectf(effectId, AL_REVERB_DECAY_TIME, 2.0f);
+
+	// Hay que volver a hacer la conexión
+	reconnect();
+}
+
+void ReverbFX::setDecayTime(float f) {
+	alEffectf(effectId, AL_REVERB_DECAY_TIME, f);
+	reconnect();
+}
+
+EchoFX::EchoFX() : Effect(Echo)
+{
+	// Valores por defecto
+	alEffectf(effectId, AL_ECHO_DELAY, 2.0f);
+	reconnect();
+}
+
+void EchoFX::setDelay(float f)
+{
+	alEffectf(effectId, AL_ECHO_DELAY, f);
+	reconnect();
+}
+
+void EchoFX::setFeedback(float f)
+{
+	Kepri::clamp(f, 0, 1);
+
+	alEffectf(effectId, AL_ECHO_FEEDBACK, f);
+	reconnect();
 }
