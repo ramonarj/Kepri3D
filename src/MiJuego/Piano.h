@@ -69,6 +69,7 @@ private:
 	void controlTremolo(float deltaTime);
 	void controlPortamento(float deltaTime);
 	void controlFiltros(float deltaTime);
+	void controlGrabacion(float deltaTime);
 
 	int getFreeSource();
 

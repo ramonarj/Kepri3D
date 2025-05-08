@@ -5,6 +5,9 @@
 #include <string>
 #include <iostream>
 
+struct ALCdevice;
+
 void checkALError(const std::string& message = "");
+void checkALCError(ALCdevice* device, const std::string& message = "");
 
 #endif

@@ -18,6 +18,12 @@ AudioManager* AudioManager::s_instance = nullptr;
 
 void initOpenAL(bool useEffects = false);
 
+// Punteros al dispositivo de sonido y al contexto de OpenAL
+ALCdevice* m_device = nullptr;
+ALCcontext* m_context = nullptr;
+
+ALCdevice* m_recordingDevice = nullptr;
+
 AudioManager* AudioManager::Instance()
 {
 	if (s_instance == nullptr)
@@ -39,21 +45,19 @@ void initOpenAL(bool useEffects)
 	*/
 
 	// - Con ALC -
-	ALCcontext* pContext = nullptr;
-
 	// 1) Abrir el dispositivo
-	ALCdevice* pDevice = alcOpenDevice((ALCchar*)"DirectSound3D");
-	assert(pDevice != nullptr);
+	m_device = alcOpenDevice((ALCchar*)"DirectSound3D");
+	assert(m_device != nullptr);
 
-	const ALCchar* string = alcGetString(pDevice, ALC_DEVICE_SPECIFIER);
+	const ALCchar* string = alcGetString(m_device, ALC_DEVICE_SPECIFIER);
 	std::cout << "Sound Device: " << string << std::endl;
 
 	// 2) Crear el contexto
 	// a) Sin efectos
 	if (!useEffects) 
 	{
-		pContext = alcCreateContext(pDevice, NULL); // NULL porque no activamos ningún flag
-		alcMakeContextCurrent(pContext);
+		m_context = alcCreateContext(m_device, NULL); // NULL porque no activamos ningún flag
+		alcMakeContextCurrent(m_context);
 	}
 	// b) Con efectos EFX (reverb, etc.)
 	else
@@ -62,7 +66,7 @@ void initOpenAL(bool useEffects)
 		ALCint iSends = 0;
 
 		/* Query for Effect Extension */
-		if (alcIsExtensionPresent(pDevice, "ALC_EXT_EFX") == AL_FALSE)
+		if (alcIsExtensionPresent(m_device, "ALC_EXT_EFX") == AL_FALSE)
 		{
 			printf("ERROR: EFX Extension not found!\n");
 			return;
@@ -71,14 +75,14 @@ void initOpenAL(bool useEffects)
 		/* Use Context creation hint to request 4 Auxiliary sends per Source */
 		attribs[0] = ALC_MAX_AUXILIARY_SENDS;
 		attribs[1] = 4;
-		pContext = alcCreateContext(pDevice, attribs);
-		assert(pContext != nullptr);
+		m_context = alcCreateContext(m_device, attribs);
+		assert(m_context != nullptr);
 
 		/* Activate the context */
-		alcMakeContextCurrent(pContext);
+		alcMakeContextCurrent(m_context);
 
 		/* Retrieve the actual number of Aux Sends available on each Source */
-		alcGetIntegerv(pDevice, ALC_MAX_AUXILIARY_SENDS, 1, &iSends);
+		alcGetIntegerv(m_device, ALC_MAX_AUXILIARY_SENDS, 1, &iSends);
 		printf("Device supports %d Aux Sends per Source\n", iSends);
 
 		/* Get the Effect Extension function pointers */
@@ -141,4 +145,45 @@ void AudioManager::Update(float deltaTime)
 
 	// Control de errores
 	checkALError("Error en AudioManager::update()");
+}
+
+void AudioManager::record()
+{
+	m_recording = true;
+	std::cout << "Grabando..." << std::endl;
+
+	// Lista de dispositivos de grabación disponibles
+	std::string str = alcGetString(NULL, ALC_CAPTURE_DEVICE_SPECIFIER);
+	std::cout << str << std::endl;
+
+	// Abrir el dispositivo de grabación. Buffer de grabación para máximo 10 segundos, a 1000 muestras/segundo
+	m_recordingDevice = alcCaptureOpenDevice(NULL, 1000, AL_FORMAT_MONO8, 1000 * 8 * 10);
+	checkALCError(m_recordingDevice, "Error dispositivo grabación");
+
+	// Empezar a grabar
+	alcCaptureStart(m_recordingDevice);
+	checkALCError(m_recordingDevice, "No se pudo empezar a grabar");
+}
+
+void AudioManager::stopRecord()
+{
+	m_recording = false;
+	std::cout << "Grabación finalizada: ";
+
+	// Ver cuántas muestras hay para recoger
+	ALCint numSamples = 0;
+	alcGetIntegerv(m_recordingDevice, ALC_CAPTURE_SAMPLES, 1, &numSamples);
+	std::cout << numSamples << " samples disponibles" << std::endl;
+
+	// Recogerlas
+	char* buffer = new char[numSamples];
+	alcCaptureSamples(m_recordingDevice, (ALCvoid*)buffer, numSamples);
+	checkALCError(m_recordingDevice, "Error al capturar samples");
+
+	for (int i = 0; i < numSamples; i++)
+		std::cout << buffer[i] << " ";
+
+	// Terminar la grabación
+	alcCaptureStop(m_recordingDevice);
+	checkALCError(m_recordingDevice, "Error al dejar de grabar");
 }

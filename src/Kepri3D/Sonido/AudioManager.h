@@ -7,7 +7,6 @@ class Entity;
 
 const float DOPPLER_FACTOR = 1.0f;
 
-
 class AudioManager
 {
 public:
@@ -26,6 +25,11 @@ public:
 
 	void Update(float deltaTime);
 
+	/* Abre un dispositivo de captura y empieza a grabar */
+	void record();
+	void stopRecord();
+	inline bool isRecording() const { return m_recording; }
+
 private:
 	AudioManager() : listener(nullptr), m_volume(1) {}
 	~AudioManager() {}
@@ -37,6 +41,8 @@ private:
 
 	// Volumen total 
 	float m_volume;
+
+	bool m_recording = false;
 
 	//glm::dvec3* m_position;
 };

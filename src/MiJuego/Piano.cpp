@@ -175,6 +175,9 @@ void Piano::update(float deltaTime)
 
 	// Filtros
 	controlFiltros(deltaTime);
+
+	// Grabar audio
+	controlGrabacion(deltaTime);
 }
 
 void Piano::playNote(int nota, int src)
@@ -381,6 +384,17 @@ void Piano::controlFiltros(float deltaTime)
 			if (sources[i]->getDirectFilter() != nullptr)
 				sources[i]->addFilter(activeFilter);
 		}
+	}
+}
+
+void Piano::controlGrabacion(float deltaTime)
+{
+	if(InputManager::Instance()->getKeyDown('r'))
+	{
+		if(!AudioManager::Instance()->isRecording())
+			AudioManager::Instance()->record();
+		else
+			AudioManager::Instance()->stopRecord();
 	}
 }
 
