@@ -15,7 +15,7 @@ class Piano : public Component
 {
 public:
 	const int MAX_NOTAS = 4;
-	Piano();
+	Piano(const std::vector<std::string>& samples = {});
 	~Piano();
 
 	void start() override;
@@ -24,10 +24,13 @@ private:
 	bool pianoActive = false;
 	int escala = 0;
 	bool unaNota;
+	// Fuente sonora para cada tecla
 	std::vector<AudioSource*> sources;
 	std::vector<char> teclasPulsadas;
-	Audio* onda;
 
+	// Audio para los instrumentos
+	std::vector<Audio*> m_samples;
+	Audio* onda;
 	unsigned int m_instrument;
 
 	// Vibrato
@@ -49,7 +52,7 @@ private:
 	static const unsigned int NUM_EFFECTS = 5;
 	Effect* effects[NUM_EFFECTS];
 
-	// Controles
+	// Controles del canvas
 	std::vector<Button*> botones;
 
 	// Visualizador de la onda

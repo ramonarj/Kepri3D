@@ -5,6 +5,7 @@
 #include "AudioMan.h"
 #include "CameraController.h"
 
+unsigned int NUM_INSTRUMENTS = 5;
 const int NUM_ESCALAS = 3;
 const int NUM_TECLAS = 13;
 const float VIBRATO_FREQ = 40; // LFO
@@ -14,7 +15,7 @@ const float TREMOLO_RANGE = 1;
 const float PORTAMENTO_VEL = 4;
 float frecuencias[NUM_TECLAS] = { 1, 1.06, 1.12, 1.19, 1.26, 1.33, 1.41, 1.5, 1.59, 1.68, 1.78, 1.89, 2 };
 char teclas[NUM_TECLAS] = { 'a', 'w', 's', 'e', 'd', 'f', 't', 'g', 'y', 'h', 'u', 'j', 'k' };
-const std::string INSTRUMENT_NAMES[] = {"Seno", "Cuadrado", "Sierra", "Triangulo", "Ruido"};
+std::vector<std::string> INSTRUMENT_NAMES = {"Seno", "Cuadrado", "Sierra", "Triangulo", "Ruido"};
 enum NoteEffect { Vibrato = 0, Tremolo = 1, Portamento = 2 };
 
 void Piano::addEffect(int fxIndex)
@@ -76,8 +77,9 @@ void Piano::addWahWahCallback(Component* c)
 	p->addEffect(4);
 }
 
-Piano::Piano() 
+Piano::Piano(const std::vector<std::string>& samples) 
 {
+	// Ondas básicas
 	onda = new Audio(Seno, 440);
 	for (int i = 0; i < MAX_NOTAS; i++)
 	{
@@ -87,6 +89,14 @@ Piano::Piano()
 		teclasPulsadas.push_back(' ');
 	}
 	unaNota = true;
+
+	// Intrumentos grabados
+	for(int i = 0; i < samples.size(); i++)
+	{
+		m_samples.push_back(ResourceManager::Instance()->getAudio(samples[i]));
+		NUM_INSTRUMENTS++;
+		INSTRUMENT_NAMES.push_back(samples[i]);
+	}
 }
 Piano::~Piano()
 {
@@ -197,21 +207,36 @@ void Piano::cambioSinte()
 {
 	// Teclas 1 - 5
 	bool keyPressed = false; int i = 0;
-	while (!keyPressed && i < 5)
+	while (!keyPressed && i < NUM_INSTRUMENTS)
 	{
 		if (i != m_instrument && InputManager::Instance()->getKeyDown('1' + i))
 		{
-			// Borrar la onda anterior
-			delete onda;
-
-			// Poner una con la forma especificada
-			onda = new Audio(WaveForm(i), 440);
-			for(int i = 0; i < MAX_NOTAS; i++)
-				sources[i]->setAudio(onda);
-
-			keyPressed = true;
 			m_instrument = i;
-			renderWave();
+
+			// Borrar la onda anterior
+			if(onda != nullptr)
+			{
+				delete onda;
+				onda = nullptr;
+			}
+
+			// Sintetizadores
+			if(i < 5)
+			{
+				// Poner una con la forma especificada
+				onda = new Audio(WaveForm(i), 440);
+				for (int i = 0; i < MAX_NOTAS; i++)
+					sources[i]->setAudio(onda);
+
+				renderWave();
+			}
+			// Samples
+			else
+			{
+				for (int j = 0; j < MAX_NOTAS; j++)
+					sources[j]->setAudio(m_samples[i - 5]);
+			}
+			keyPressed = true;
 		}
 		i++;
 	}
@@ -250,7 +275,7 @@ void Piano::controlNotas()
 		if (!InputManager::Instance()->getKey(teclasPulsadas[i]))
 		{
 			// Detener la reproducción del audio
-			sources[i]->pause();
+			sources[i]->stop();
 			sources[i]->setActive(false);
 			//std::cout << "Levantada " << teclasPulsadas[i] << std::endl;
 		}

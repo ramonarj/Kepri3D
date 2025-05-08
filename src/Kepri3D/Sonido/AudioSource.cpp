@@ -28,7 +28,7 @@ AudioSource::AudioSource(Audio* audio) : m_loop(false), m_volume(1), m_pitch(1),
 
 AudioSource::AudioSource(const std::string& audioID) : m_loop(false), m_volume(1), m_pitch(1), directFilter(nullptr)
 {
-	Audio* audio = (Audio*)&ResourceManager::Instance()->getAudio(audioID);
+	Audio* audio = ResourceManager::Instance()->getAudio(audioID);
 	setup(audio);
 #ifdef __DEBUG_INFO__
 	numSources++;

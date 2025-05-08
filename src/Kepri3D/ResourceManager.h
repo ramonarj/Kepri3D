@@ -92,7 +92,7 @@ public:
 	const Material getMaterial(const std::string& id);
 	Shader* getShader(const std::string& id);
 	Shader* getComposite(const std::string& id);
-	const Audio& getAudio(const std::string& id);
+	Audio* getAudio(const std::string& id);
 
 	// Otros métodos
 	void enableMipmaps(bool b);

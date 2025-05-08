@@ -382,13 +382,13 @@ bool ResourceManager::loadAudio(const std::string& fileName, const std::string& 
 	return true;
 }
 
-const Audio& ResourceManager::getAudio(const std::string& id)
+Audio* ResourceManager::getAudio(const std::string& id)
 {
 	// Si no se encuentra el shader especificado, se devuelve el predeterminado
 	if (audios.find(id) != audios.end())
-		return *audios[id];
+		return audios[id];
 	else
-		return *audios["default"];
+		return audios["default"];
 }
 
 // - - - - - - - - - - 

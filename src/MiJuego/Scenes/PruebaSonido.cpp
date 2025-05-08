@@ -27,7 +27,8 @@ void PruebaSonido::loadResources()
 	ResourceManager::Instance()->loadAudio("ambulancia.wav", "ambulancia");
 	ResourceManager::Instance()->loadAudio("seno.wav", "senoLa");
 	ResourceManager::Instance()->loadAudio("senoDo.wav", "senoDo");
-	ResourceManager::Instance()->loadAudio("doFlauta.wav", "doFlauta");
+	ResourceManager::Instance()->loadAudio("doFlauta.wav", "flauta");
+	ResourceManager::Instance()->loadAudio("piano.wav", "piano");
 }
 
 void PruebaSonido::setup()
@@ -63,7 +64,7 @@ void PruebaSonido::setup()
 
 
 	// - - AudioManager - - //
-	Audio* fxConcha = (Audio*)&ResourceManager::Instance()->getAudio("concha");
+	Audio* fxConcha = ResourceManager::Instance()->getAudio("concha");
 	Entity* audioMan = new Entity("AudioMan");
 	audioMan->addComponent(new AudioMan(audioComp, fxConcha));
 	audioMan->addComponent(new CameraController(m_camera));
@@ -77,7 +78,7 @@ void PruebaSonido::setup()
 
 	// - - Piano - - //
 	//AudioSource* pianoSrc = new AudioSource("senoLa");
-	audioMan->addComponent(new Piano());
+	audioMan->addComponent(new Piano({ "flauta", "piano" }));
 
 	// - - Audio sintetizado - - //
 	//Audio* seno = new Audio(Triangular, 440.5);
