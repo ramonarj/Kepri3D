@@ -30,7 +30,10 @@ const int MSAA_SAMPLES = 4;
 class Game
 {
 public:
-	/* Devuelve un puntero a la isntancia */
+	static const int INITIAL_WINDOW_X = 250;
+	static const int INITIAL_WINDOW_Y = 100;
+
+	/* Devuelve un puntero a la instancia */
 	static Game* Instance()
 	{
 		if (instance == nullptr)
@@ -42,7 +45,7 @@ public:
 	~Game();
 
 	/* Crea la ventana, inicializa OpenGL y inicializa la primera escena */
-	void init(int argc, char* argv[], int windowWidth, int windowHeight, const std::string& windowName);
+	void init(int argc, char* argv[], int windowWidth, int windowHeight, const std::string& windowName, bool fullscreen = false);
 
 	/* Carga la escena inicial del juego */
 	void loadScene(Scene* scene);
@@ -64,7 +67,7 @@ public:
 
 	// Añade un puerto de vista
 	Viewport* addViewport(int w, int h, int x, int y);
-	Viewport* getViewport(int i = 0) { return m_viewports[i]; }
+	Viewport* getViewport(int i = 0);
 
 	// Getters
 	Camera* getCamera(int i = 0) const;
@@ -128,7 +131,7 @@ private:
 	std::vector<Viewport*> m_viewports;
 
 	/* Referencia al editor */
-	Editor* pEditor;
+	Editor* pEditor = nullptr;
 
 	/* Instante del último update */
 	GLuint last_update_tick = 0;
@@ -143,7 +146,7 @@ private:
 
 	// - Métodos auxiliares - //
 	/* Inicializa GLUT */
-	void iniciarGlut(int argc, char* argv[], int windowW, int windowH);
+	void iniciarGlut(int argc, char* argv[], int windowW, int windowH, bool fullscreen);
 
 	/* Inicializa GLEW */
 	void iniciarGLEW();

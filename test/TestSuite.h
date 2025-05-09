@@ -18,6 +18,8 @@ struct SuiteInfo
 class TestSuite
 {
 public:
+	static void init(int argc, char* argv[]) { s_argc = argc; s_argv = argv; }
+	
 	// Ejecutar una suite concreta //
 	template<typename T>
 	static void runTests();
@@ -29,11 +31,15 @@ public:
 	static unsigned int testsFallados() { return s_testsFallados; }
 
 protected:
+	/* Se ejecuta antes de empezar a hacer los tests */
 	virtual void setup() = 0;
 	inline void addTest(Callback test) { m_callbacks.push_back(test); }
 	inline void addTests(const std::vector<Callback>& tests) { for (Callback test : tests) m_callbacks.push_back(test); }
 
 	unsigned int numTests = 0;
+
+	static int s_argc;
+	static char** s_argv;
 
 private:
 	std::vector<Callback> m_callbacks;

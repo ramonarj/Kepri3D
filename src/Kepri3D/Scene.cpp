@@ -566,7 +566,8 @@ void Scene::AddComposite(Shader* sh, bool active)
 void Scene::resize(int width, int height)
 {
 	// Resize canvas
-	m_canvas->resize(width, height);
+	if(m_canvas != nullptr)
+		m_canvas->resize(width, height);
 
 	// Resize Scene Visible Area 
 	for (Camera* cam : m_cameras)
@@ -635,6 +636,12 @@ Camera* Scene::addCamera(Viewport* vp)
 		return cam;
 	}
 	return nullptr;
+}
+
+Camera* Scene::getCamera(int i) const
+{
+	if (i >= m_cameras.size()) { return nullptr; }
+	return m_cameras[i];
 }
 
 void Scene::bindUBOs()

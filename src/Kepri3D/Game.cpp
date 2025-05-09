@@ -25,14 +25,14 @@ void editorDisplay();
 unsigned int currentSec = 0;
 unsigned int fps = 0;
 
-void Game::init(int argc, char* argv[], int windowWidth, int windowHeight, const std::string& windowName)
+void Game::init(int argc, char* argv[], int windowWidth, int windowHeight, const std::string& windowName, bool fullscreen)
 {
 	this->windowName = windowName;
 	this->windowWidth = windowWidth;
 	this->windowHeight = windowHeight;
 
 	// 1) Iniciar GLUT (la ventana) y GLEW (el contexto de OpenGL)
-	iniciarGlut(argc, argv, windowWidth, windowHeight);
+	iniciarGlut(argc, argv, windowWidth, windowHeight, fullscreen);
 	iniciarGLEW();
 
 	// Iniciar los subsistemas de input y audio
@@ -119,6 +119,7 @@ void Game::exitGame()
 
 void Game::run()
 {
+	if (scene == nullptr) { return; }
 	glutMainLoop();
 }
 
@@ -176,7 +177,8 @@ void Game::update()
 
 void Game::clean()
 {
-	delete pEditor;
+	if(pEditor != nullptr)
+		delete pEditor;
 
 	delete instance;
 	instance = nullptr;
@@ -195,8 +197,15 @@ Viewport* Game::addViewport(int w, int h, int x, int y)
 	return vp;
 }
 
+Viewport* Game::getViewport(int i)
+{
+	if (i >= m_viewports.size()) { return nullptr; }
+	return m_viewports[i];
+}
+
 Camera* Game::getCamera(int i) const 
 { 
+	if (scene == nullptr) { return nullptr; }
 	return scene->getCamera(i);
 }
 
@@ -222,7 +231,7 @@ Game::~Game()
 	Scene::clean();
 }
 
-void Game::iniciarGlut(int argc, char* argv[], int windowW, int windowH)
+void Game::iniciarGlut(int argc, char* argv[], int windowW, int windowH, bool fullscreen)
 {
 	// Inicializar GLUT y crear la ventana
 	std::cout << "Starting console..." << '\n';
@@ -246,11 +255,12 @@ void Game::iniciarGlut(int argc, char* argv[], int windowW, int windowH)
 
 	// - - - Ventana del juego - - - //
 	glutInitWindowSize(windowW, windowH);   // window size
-	glutInitWindowPosition(250, 100);
+	glutInitWindowPosition(INITIAL_WINDOW_X, INITIAL_WINDOW_Y);
 	glutWindow = glutCreateWindow(windowName.c_str());  // nombre de la ventana
 
 	glutIgnoreKeyRepeat(true);
-	//glutFullScreen();
+	if(fullscreen)
+		glutFullScreen();
 }
 
 void Game::iniciarGLEW()

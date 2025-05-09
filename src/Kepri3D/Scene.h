@@ -57,7 +57,7 @@ public:
 	void AddEntity(Entity* e);
 	// Camara
 	Camera* addCamera(Viewport* vp);
-	inline Camera* getCamera(int i = 0) const { return m_cameras[i]; }
+	Camera* getCamera(int i = 0) const;
 	inline unsigned int numberOfCameras() const { return m_cameras.size(); }
 
 	/* Añade un efecto de postprocesado a la escena */
@@ -122,7 +122,7 @@ protected:
 	Skybox* m_skybox;
 
 	/* Canvas de la escena */
-	Canvas* m_canvas;
+	Canvas* m_canvas = nullptr;
 
 	/* Malla para pintar los efectos */
 	static Mesh* m_effectsMesh;

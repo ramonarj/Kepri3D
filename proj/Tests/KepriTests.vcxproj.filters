@@ -23,6 +23,9 @@
     <ClCompile Include="..\..\test\Graficos\MaterialSuite.cpp">
       <Filter>Graficos</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\test\Game_test.cpp">
+      <Filter>Core</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\test\Sonido\Audio_test.h">
@@ -34,6 +37,9 @@
     <ClInclude Include="..\..\test\TestSuite.h" />
     <ClInclude Include="..\..\test\Graficos\MaterialSuite.h">
       <Filter>Graficos</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\test\Game_test.h">
+      <Filter>Core</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

@@ -2,6 +2,7 @@
 
 #include "Sonido/Audio_test.h"
 #include "Entity_test.h"
+#include "Game_test.h"
 #include "Graficos/MaterialSuite.h"
 
 #ifdef _DEBUG
@@ -10,15 +11,18 @@
 #	define TEST_CONFIG "Release"
 #endif
 
-int main()
+int main(int argc, char* argv[])
 {
+	TestSuite::init(argc, argv);
+
+	// Core
+	TestSuite::runTests<EntitySuite>();
+	TestSuite::runTests<GameSuite>();
+
 	// Audio
 	TestSuite::runTests<AudioSuite>();
 
-	// Entidades
-	TestSuite::runTests<EntitySuite>();
-
-	// Materiales
+	// Gráficos
 	TestSuite::runTests<MaterialSuite>();
 
 	// Log
