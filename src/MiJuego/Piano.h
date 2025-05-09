@@ -30,6 +30,7 @@ private:
 
 	// Audio para los instrumentos
 	std::vector<Audio*> m_samples;
+	Audio* m_recording = nullptr;
 	Audio* onda;
 	unsigned int m_instrument;
 

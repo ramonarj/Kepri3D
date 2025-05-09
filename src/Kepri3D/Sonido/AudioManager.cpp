@@ -147,43 +147,41 @@ void AudioManager::Update(float deltaTime)
 	checkALError("Error en AudioManager::update()");
 }
 
-void AudioManager::record()
+void AudioManager::record(int record_freq, float maxTime)
 {
-	m_recording = true;
-	std::cout << "Grabando..." << std::endl;
-
 	// Lista de dispositivos de grabación disponibles
 	std::string str = alcGetString(NULL, ALC_CAPTURE_DEVICE_SPECIFIER);
 	std::cout << str << std::endl;
 
-	// Abrir el dispositivo de grabación. Buffer de grabación para máximo 10 segundos, a 1000 muestras/segundo
-	m_recordingDevice = alcCaptureOpenDevice(NULL, 1000, AL_FORMAT_MONO8, 1000 * 8 * 10);
+	// Abrir el dispositivo de grabación. Buffer de grabación para máximo 10 segundos
+	m_recordingDevice = alcCaptureOpenDevice(NULL, record_freq, AL_FORMAT_MONO8, ALCsizei(record_freq * maxTime));
 	checkALCError(m_recordingDevice, "Error dispositivo grabación");
 
 	// Empezar a grabar
 	alcCaptureStart(m_recordingDevice);
 	checkALCError(m_recordingDevice, "No se pudo empezar a grabar");
+
+	m_recording = true;
+	std::cout << "Grabando..." << std::endl;
 }
 
-void AudioManager::stopRecord()
+AudioSample* AudioManager::stopRecord(AudioSample* buffer, int& numSamples)
 {
 	m_recording = false;
 	std::cout << "Grabación finalizada: ";
 
 	// Ver cuántas muestras hay para recoger
-	ALCint numSamples = 0;
 	alcGetIntegerv(m_recordingDevice, ALC_CAPTURE_SAMPLES, 1, &numSamples);
 	std::cout << numSamples << " samples disponibles" << std::endl;
 
 	// Recogerlas
-	char* buffer = new char[numSamples];
+	buffer = new AudioSample[numSamples];
 	alcCaptureSamples(m_recordingDevice, (ALCvoid*)buffer, numSamples);
 	checkALCError(m_recordingDevice, "Error al capturar samples");
-
-	for (int i = 0; i < numSamples; i++)
-		std::cout << buffer[i] << " ";
 
 	// Terminar la grabación
 	alcCaptureStop(m_recordingDevice);
 	checkALCError(m_recordingDevice, "Error al dejar de grabar");
+
+	return buffer;
 }

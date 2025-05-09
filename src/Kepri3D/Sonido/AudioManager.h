@@ -4,6 +4,7 @@
 class Entity;
 
 #include "al.h"
+#include "CoreAudio.h"
 
 const float DOPPLER_FACTOR = 1.0f;
 
@@ -25,9 +26,9 @@ public:
 
 	void Update(float deltaTime);
 
-	/* Abre un dispositivo de captura y empieza a grabar */
-	void record();
-	void stopRecord();
+	/* Abre un dispositivo de captura y empieza a grabar, un máximo de segundos dado */
+	void record(int record_freq, float maxTime = 10.0f);
+	AudioSample* stopRecord(AudioSample* buffer, int& numSamples);
 	inline bool isRecording() const { return m_recording; }
 
 private:

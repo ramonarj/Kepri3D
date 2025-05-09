@@ -1,5 +1,6 @@
 #include "CoreAudio.h"
 
+#include "al.h"
 #include "alc.h"
 
 void checkALError(const std::string& message)

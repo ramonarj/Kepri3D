@@ -101,6 +101,8 @@ Piano::Piano(const std::vector<std::string>& samples)
 Piano::~Piano()
 {
 	delete onda;
+	if (m_recording != nullptr)
+		delete m_recording;
 	for (int i = 0; i < 3; i++)
 		delete filtros[i];
 	for (int i = 0; i < NUM_EFFECTS; i++)
@@ -208,7 +210,19 @@ void Piano::playNote(int nota, int src)
 
 void Piano::cambioSinte()
 {
-	// Teclas 1 - 5
+	// Tecla 0 (grabación)
+	if (InputManager::Instance()->getKeyDown('0') && m_recording != nullptr)
+	{
+		m_instrument = NUM_INSTRUMENTS;
+
+		//
+		for (int j = 0; j < MAX_NOTAS; j++)
+			sources[j]->setAudio(m_recording);
+
+		return;
+	}
+
+	// Teclas 1 - 7
 	bool keyPressed = false; int i = 0;
 	while (!keyPressed && i < NUM_INSTRUMENTS)
 	{
@@ -391,10 +405,27 @@ void Piano::controlGrabacion(float deltaTime)
 {
 	if(InputManager::Instance()->getKeyDown('r'))
 	{
+		// Empezar a grabar
 		if(!AudioManager::Instance()->isRecording())
-			AudioManager::Instance()->record();
+			AudioManager::Instance()->record(22050);
+		// Dejar de grabar
 		else
-			AudioManager::Instance()->stopRecord();
+		{
+			// Conseguir las muestras de audio
+			AudioSample* samples = nullptr; int numSamples = 0;
+			samples = AudioManager::Instance()->stopRecord(samples, numSamples);
+
+			// Limpiar los silencios al principio y al final
+			samples = Audio::cleanSamples(samples, numSamples);
+
+			// Normalizar
+			Audio::normalize(samples, numSamples);
+
+			// Crear un instrumento que use lo grabado
+			if (m_recording != nullptr) { delete m_recording; }
+			m_recording = new Audio(samples, numSamples, 22050);
+			delete samples;
+		}
 	}
 }
 
