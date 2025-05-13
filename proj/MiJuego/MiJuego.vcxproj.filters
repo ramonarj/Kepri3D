@@ -17,6 +17,9 @@
     <Filter Include="Managers">
       <UniqueIdentifier>{7852ea19-7cf9-4d6a-adb8-252d87be7f9f}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Player">
+      <UniqueIdentifier>{077b82af-1697-4792-9584-8fc5ae7f8a0a}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\..\src\MiJuego\Main.cpp">
@@ -85,6 +88,12 @@
     <ClCompile Include="..\..\src\MiJuego\Generators\Viento.cpp">
       <Filter>Generators</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\src\MiJuego\PlayerController.cpp">
+      <Filter>Player</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\MiJuego\TPCamera.cpp">
+      <Filter>Player</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\src\MiJuego\Scenes\PruebaScene.h">
@@ -149,6 +158,12 @@
     </ClInclude>
     <ClInclude Include="..\..\src\MiJuego\Generators\Viento.h">
       <Filter>Generators</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\MiJuego\PlayerController.h">
+      <Filter>Player</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\MiJuego\TPCamera.h">
+      <Filter>Player</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

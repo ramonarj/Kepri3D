@@ -210,6 +210,17 @@ void Entity::scale(const glm::dvec3& scale)
 	modelMat = glm::scale(modelMat, scale);
 }
 
+void Entity::lookAt(const glm::dvec3& point, const glm::dvec3& up) 
+{
+	modelMat = glm::inverse(glm::lookAt(glm::dvec3(modelMat[3]), point, up));
+}
+
+glm::dvec3 Entity::forward()
+{
+	if (m_parent == nullptr) { return modelMat[2]; }
+	else return m_parent->getModelMat() * modelMat[2]; // des-acumular transformaciones
+}
+
 void Entity::setParent(Entity* parent)
 {
 	// Actualizar referencia al padre

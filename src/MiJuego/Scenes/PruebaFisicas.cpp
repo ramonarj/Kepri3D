@@ -9,6 +9,8 @@
 #include "Managers/PhysicsMan.h"
 #include "Managers/DebugText.h"
 #include "Generators/Viento.h"
+#include "PlayerController.h"
+#include "TPCamera.h"
 
 void PruebaFisicas::setup()
 {
@@ -127,6 +129,22 @@ void PruebaFisicas::setup()
 	// Añadirla a la escena
 	AddEntity(particleSys);
 
+	// -- JUGADOR -- //
+	Rigid* player = createRigidEsfera("Player", { 0, 0, 0 }, Dynamic, 80, true);
+	Entity* playerEnt = player->getEntity();
+	playerEnt->addComponent(new PlayerController());
+	//playerEnt->rotate(PI, { 0, 1, 0 });
+
+	// Cabeza
+	Esfera* cabeza = new Esfera(0.5);
+	cabeza->translate({ 0, 1, 0 });
+	cabeza->setParent(playerEnt);
+	cabeza->setTexture("cobre");
+	//cabeza->rotate(PI, { 0, 1.5, 0 });
+
+	TPCamera* tpCam = new TPCamera(player->getEntity());
+	m_camera->addComponent(tpCam);
+
 	// PhysicsMan
 	//Entity* phyMan = new Entity("PhysicsManager");
 	PhysicsMan* phyManComp = new PhysicsMan(nullptr, sombra, liquido);
@@ -136,9 +154,10 @@ void PruebaFisicas::setup()
 	/* - - GameManager - - */
 	// Componente CameraController
 	CameraController* camComp = new CameraController(m_camera);
+	
 	// Componente GameManager
 	GameManager* gmComp = new GameManager(this, m_camera, nullptr, particleSys);
-	AddEntity(new Entity({camComp, gmComp}, "GameManager"));
+	AddEntity(new Entity({ gmComp}, "GameManager"));
 
 
 	/* - - - Efectos de postprocesado (el orden importa) - - - */

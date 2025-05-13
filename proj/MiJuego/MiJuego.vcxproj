@@ -178,10 +178,12 @@
     <ClCompile Include="..\..\src\MiJuego\Managers\PhysicsMan.cpp" />
     <ClCompile Include="..\..\src\MiJuego\Managers\SandboxMan.cpp" />
     <ClCompile Include="..\..\src\MiJuego\Piano.cpp" />
+    <ClCompile Include="..\..\src\MiJuego\PlayerController.cpp" />
     <ClCompile Include="..\..\src\MiJuego\Scenes\PruebaScene.cpp" />
     <ClCompile Include="..\..\src\MiJuego\Scenes\PruebaFisicas.cpp" />
     <ClCompile Include="..\..\src\MiJuego\Scenes\PruebaSonido.cpp" />
     <ClCompile Include="..\..\src\MiJuego\Scenes\Sandbox.cpp" />
+    <ClCompile Include="..\..\src\MiJuego\TPCamera.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\src\MiJuego\Callbacks.h" />
@@ -201,10 +203,12 @@
     <ClInclude Include="..\..\src\MiJuego\Managers\PhysicsMan.h" />
     <ClInclude Include="..\..\src\MiJuego\Managers\SandboxMan.h" />
     <ClInclude Include="..\..\src\MiJuego\Piano.h" />
+    <ClInclude Include="..\..\src\MiJuego\PlayerController.h" />
     <ClInclude Include="..\..\src\MiJuego\Scenes\PruebaScene.h" />
     <ClInclude Include="..\..\src\MiJuego\Scenes\PruebaFisicas.h" />
     <ClInclude Include="..\..\src\MiJuego\Scenes\PruebaSonido.h" />
     <ClInclude Include="..\..\src\MiJuego\Scenes\Sandbox.h" />
+    <ClInclude Include="..\..\src\MiJuego\TPCamera.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

@@ -11,6 +11,7 @@ PhysicsMan::PhysicsMan(Rigid* r, Entity* sombra, Liquido* liquido)
 
 void PhysicsMan::start()
 {
+	/*
 	// Ponerle un Rigid a la cámara
 	Collider* colEsfera = new Collider(2.0);
 	colEsfera->setVisible(true);
@@ -23,6 +24,7 @@ void PhysicsMan::start()
 	// Añadirla a la escena
 	//colCamara->setParent(entity);
 	//Game::Instance()->getScene()->AddEntity(colCamara);
+	*/
 }
 
 void PhysicsMan::update(float deltaTime)

@@ -53,6 +53,8 @@ public:
 	/* Escala la entidad la cantidad dada en cada eje */
 	void scale(const glm::dvec3& scale);
 
+	void lookAt(const glm::dvec3& point, const glm::dvec3& up = { 0, 1, 0 });
+
 	// - - - - Setters - - - - //
 	inline void setActive(bool b) { m_active = b; }
 	inline void setName(const std::string& name) { m_name = name; }
@@ -78,7 +80,7 @@ public:
 	// Ejes locales de la entidad
 	inline glm::dvec3 right() { return modelMat[0]; }
 	inline glm::dvec3 up() { return modelMat[1]; }
-	inline glm::dvec3 forward() { return modelMat[2]; }
+	glm::dvec3 forward(); // TODO: hacer lo mismo con right() y up()
 
 	/* Devuelve un componente del tipo requerido */
 	template<typename T>
